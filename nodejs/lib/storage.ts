@@ -137,6 +137,56 @@ export function saveTheme(theme: Theme) {
   localStorage.setItem(THEME_KEY, theme)
 }
 
+// ─── Katana target device ────────────────────────────────────────────────────
+//
+// The `.kat` patch format is MODEL-SCOPED, not universal: the Katana Librarian
+// app enumerates each generation (MkI / MkII / Gen 3) and cabinet variant
+// (50 / 100 / Head / Artist / GO) as a distinct model with its own offset map
+// and enum ordinals. The patch writer must know the target before it can place
+// bytes. This selection is the amp the generated patch is built for.
+//
+// v1 ground truth is KATANA MkII (see docs/kat-format.md); other generations
+// are listed but the writer widens to them only as each is proven against real
+// exports. IDs mirror the app's model enum; labels are the retail names.
+
+export type KatanaDevice =
+  | 'katana-50-mk1' | 'katana-100-mk1' | 'katana-head-mk1' | 'katana-artist-mk1'
+  | 'katana-50-mk2' | 'katana-100-mk2' | 'katana-head-mk2' | 'katana-artist-mk2'
+  | 'katana-50-mk3' | 'katana-100-mk3' | 'katana-head-mk3' | 'katana-artist-mk3'
+  | 'katana-go' | 'katana-go-bass'
+
+export const KATANA_DEVICES: { id: KatanaDevice; label: string; group: string }[] = [
+  { id: 'katana-50-mk2',     label: 'KATANA-50 MkII',       group: 'MkII' },
+  { id: 'katana-100-mk2',    label: 'KATANA-100 MkII',      group: 'MkII' },
+  { id: 'katana-head-mk2',   label: 'KATANA-Head MkII',     group: 'MkII' },
+  { id: 'katana-artist-mk2', label: 'KATANA-Artist MkII',   group: 'MkII' },
+  { id: 'katana-50-mk3',     label: 'KATANA-50 Gen 3',      group: 'Gen 3' },
+  { id: 'katana-100-mk3',    label: 'KATANA-100 Gen 3',     group: 'Gen 3' },
+  { id: 'katana-head-mk3',   label: 'KATANA-Head Gen 3',    group: 'Gen 3' },
+  { id: 'katana-artist-mk3', label: 'KATANA-Artist Gen 3',  group: 'Gen 3' },
+  { id: 'katana-50-mk1',     label: 'KATANA-50 (MkI)',      group: 'MkI' },
+  { id: 'katana-100-mk1',    label: 'KATANA-100 (MkI)',     group: 'MkI' },
+  { id: 'katana-head-mk1',   label: 'KATANA-Head (MkI)',    group: 'MkI' },
+  { id: 'katana-artist-mk1', label: 'KATANA-Artist (MkI)',  group: 'MkI' },
+  { id: 'katana-go',         label: 'KATANA:GO',            group: 'Portable' },
+  { id: 'katana-go-bass',    label: 'KATANA:GO Bass',       group: 'Portable' },
+]
+
+const DEVICE_KEY = 'katana_device'
+const DEFAULT_DEVICE: KatanaDevice = 'katana-100-mk2'
+
+const VALID_DEVICES = new Set<KatanaDevice>(KATANA_DEVICES.map(d => d.id))
+
+export function getDefaultDevice(): KatanaDevice {
+  if (typeof window === 'undefined') return DEFAULT_DEVICE
+  const stored = localStorage.getItem(DEVICE_KEY) as KatanaDevice | null
+  return stored && VALID_DEVICES.has(stored) ? stored : DEFAULT_DEVICE
+}
+
+export function saveDefaultDevice(device: KatanaDevice) {
+  localStorage.setItem(DEVICE_KEY, device)
+}
+
 // ─── Provider + model preferences ────────────────────────────────────────────
 //
 // Provider selection is a single string; model selection is per-provider

@@ -8,6 +8,7 @@ import { sendChatStream, initAuth, getProviders, getProviderModels, extractDocum
 import {
   loadConversations, upsertConversation, deleteConversation, renameConversation,
   clearAllConversations, autoTitle, relativeTime, getTheme, saveTheme, type Theme,
+  getDefaultDevice, saveDefaultDevice, KATANA_DEVICES, type KatanaDevice,
   getSelectedProvider, setSelectedProvider, getSelectedModel, setSelectedModel,
   getWebSearchEnabled, setWebSearchEnabled,
   getCustomSystemPrompt, setCustomSystemPrompt,
@@ -267,6 +268,7 @@ function DeleteConfirmModal({ label, onConfirm, onCancel }: { label: string; onC
 
 function SettingsPanel({
   theme, onTheme,
+  device, onDevice,
   providers, selectedProvider, onProvider,
   customSystemPrompt, onSystemPrompt,
   customTemperature, onTemperature,
@@ -275,6 +277,8 @@ function SettingsPanel({
 }: {
   theme: Theme
   onTheme: (t: Theme) => void
+  device: KatanaDevice
+  onDevice: (d: KatanaDevice) => void
   providers: AvailableProvider[]
   selectedProvider: string
   onProvider: (p: string) => void
@@ -289,6 +293,7 @@ function SettingsPanel({
 }) {
   const [closing, setClosing] = useState(false)
   const [themeOpen, setThemeOpen] = useState(false)
+  const [deviceOpen, setDeviceOpen] = useState(false)
   const [providerOpen, setProviderOpen] = useState(false)
   const [localeOpen, setLocaleOpen] = useState(false)
   // Local draft state for the system prompt textarea so the user can type
@@ -313,6 +318,15 @@ function SettingsPanel({
 
   const active = THEMES_LIVE.find(t => t.id === theme) ?? THEMES_LIVE[0]
   const activeProvider = providers.find(p => p.id === selectedProvider) ?? providers[0]
+  const activeDevice = KATANA_DEVICES.find(d => d.id === device) ?? KATANA_DEVICES[0]
+  // Group the flat device list by generation for the dropdown, preserving
+  // first-seen group order (MkII first — the v1 ground-truth target).
+  const DEVICE_GROUPS: { label: string; ids: KatanaDevice[] }[] = []
+  for (const d of KATANA_DEVICES) {
+    let g = DEVICE_GROUPS.find(x => x.label === d.group)
+    if (!g) { g = { label: d.group, ids: [] }; DEVICE_GROUPS.push(g) }
+    g.ids.push(d.id)
+  }
 
   return (
     <>
@@ -326,6 +340,50 @@ function SettingsPanel({
         </div>
 
         <div className="flex-1 overflow-y-auto p-5 space-y-6">
+          {/* Katana device — the amp the generated patch targets */}
+          <div>
+            <p className="text-[10px] font-semibold text-fg-3 uppercase tracking-wider mb-2">Amp Model</p>
+            <div className="relative">
+              <button
+                onClick={() => setDeviceOpen(o => !o)}
+                className="flex w-full items-center gap-2.5 rounded-lg border border-white/10 bg-surface-2 px-3 py-2.5 text-sm text-fg hover:bg-surface-3 transition-colors"
+              >
+                <span className="flex-1 text-left">{activeDevice.label}</span>
+                <span className="text-[10px] text-fg-4 uppercase">{activeDevice.group}</span>
+                <ChevronIcon open={deviceOpen} />
+              </button>
+              {deviceOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setDeviceOpen(false)} />
+                  <div className="absolute left-0 right-0 top-full z-20 mt-1 rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden max-h-[60vh] overflow-y-auto">
+                    {DEVICE_GROUPS.map(group => (
+                      <div key={group.label}>
+                        <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-fg-4 bg-surface">{group.label}</p>
+                        {group.ids.map(id => {
+                          const d = KATANA_DEVICES.find(x => x.id === id)
+                          if (!d) return null
+                          const isActive = device === d.id
+                          return (
+                            <button
+                              key={d.id}
+                              onClick={() => { onDevice(d.id); setDeviceOpen(false) }}
+                              className={`flex w-full items-center gap-2.5 px-3 py-2 text-sm transition-colors ${
+                                isActive ? 'text-primary bg-primary/10' : 'text-fg-2 hover:bg-surface-3 hover:text-fg'
+                              }`}
+                            >
+                              <span className="flex-1 text-left">{d.label}</span>
+                              {isActive && <span className="ml-1 text-primary shrink-0">✓</span>}
+                            </button>
+                          )
+                        })}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
           {/* Language */}
           {availableLocales.length > 1 && (
             <div>
@@ -952,6 +1010,7 @@ export default function Home({
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
   const [theme, setTheme] = useState<Theme>('dark')
+  const [device, setDevice] = useState<KatanaDevice>('katana-100-mk2')
   const [confirmDelete, setConfirmDelete] = useState<{ label: string; doDelete: () => void } | null>(null)
   const [search, setSearch] = useState('')
   const [providers, setProviders] = useState<AvailableProvider[]>([])
@@ -1020,6 +1079,7 @@ export default function Home({
     const t = getTheme()
     setTheme(t)
     document.documentElement.setAttribute('data-theme', t)
+    setDevice(getDefaultDevice())
 
     // Voice capability probes. Web Speech API: SpeechRecognition (input)
     // and SpeechSynthesis (output). Both gated separately because some
@@ -1237,6 +1297,11 @@ export default function Home({
     setTheme(t)
     saveTheme(t)
     document.documentElement.setAttribute('data-theme', t)
+  }, [])
+
+  const handleDevice = useCallback((d: KatanaDevice) => {
+    setDevice(d)
+    saveDefaultDevice(d)
   }, [])
 
   const handleProvider = useCallback((p: string) => {
@@ -2080,6 +2145,8 @@ export default function Home({
         <SettingsPanel
           theme={theme}
           onTheme={handleTheme}
+          device={device}
+          onDevice={handleDevice}
           providers={providers}
           selectedProvider={provider}
           onProvider={handleProvider}
