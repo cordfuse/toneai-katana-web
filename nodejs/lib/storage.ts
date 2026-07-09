@@ -108,33 +108,29 @@ export function relativeTime(ts: number): string {
 // Theme is just a string — IDs come from runtime config and aren't known
 // at compile time. Validation happens at runtime via the allowed set
 // the server injects into window.__CHATFRAME.
-export type Theme = string
+// Amp-flavored palette ported from mighty-ai-qr-web: 10 voicings, each with a
+// dark and a `-lt` light variant, plus dark/oled/light. CSS lives in
+// app/globals.css under `[data-theme="<id>"]`; swatch metadata in app/_Home.tsx.
+export type Theme =
+  | 'dark' | 'oled' | 'light'
+  | 'tweed' | 'tweed-lt' | 'amber' | 'amber-lt' | 'british' | 'british-lt'
+  | 'oxblood' | 'oxblood-lt' | 'silver' | 'silver-lt' | 'pedalboard' | 'pedalboard-lt'
+  | 'blackface' | 'blackface-lt' | 'plexi' | 'plexi-lt'
 
-const THEME_KEY = 'chatframe_theme'
+const THEME_KEY = 'katana_theme'
+const DEFAULT_THEME: Theme = 'dark'
 
-// Read SSR-injected globals. SSR safe: returns sensible fallbacks when
-// window isn't defined yet (server render, tests).
-function getInjectedAllowedThemes(): string[] | null {
-  if (typeof window === 'undefined') return null
-  const w = window as unknown as { __CHATFRAME?: { allowedThemeIds?: string[] } }
-  return w.__CHATFRAME?.allowedThemeIds ?? null
-}
-function getInjectedDefaultTheme(): string {
-  if (typeof window === 'undefined') return 'dracula'
-  const w = window as unknown as { __CHATFRAME?: { defaultTheme?: string } }
-  return w.__CHATFRAME?.defaultTheme ?? 'dracula'
-}
+const VALID_THEMES = new Set<Theme>([
+  'dark', 'oled', 'light',
+  'tweed', 'tweed-lt', 'amber', 'amber-lt', 'british', 'british-lt',
+  'oxblood', 'oxblood-lt', 'silver', 'silver-lt', 'pedalboard', 'pedalboard-lt',
+  'blackface', 'blackface-lt', 'plexi', 'plexi-lt',
+])
 
 export function getTheme(): Theme {
-  if (typeof window === 'undefined') return 'dracula'
-  const stored = localStorage.getItem(THEME_KEY)
-  const allowed = getInjectedAllowedThemes()
-  const fallback = getInjectedDefaultTheme()
-  // Guard against stale IDs (e.g. a forker removed a custom theme but a
-  // user still has the old id in localStorage) — fall back to default.
-  if (!stored) return fallback
-  if (!allowed) return stored  // server didn't inject — trust the value
-  return allowed.includes(stored) ? stored : fallback
+  if (typeof window === 'undefined') return DEFAULT_THEME
+  const stored = localStorage.getItem(THEME_KEY) as Theme | null
+  return stored && VALID_THEMES.has(stored) ? stored : DEFAULT_THEME
 }
 
 export function saveTheme(theme: Theme) {

@@ -75,7 +75,7 @@ const defaults: ChatframeConfig = {
   welcomeMessage: '',
   starterPrompts: [],
   checkForUpdatesUrl: 'https://github.com/cordfuse/chatframe/releases',
-  defaultTheme: 'dracula',
+  defaultTheme: 'dark',
   hideBuiltInThemes: false,
   themes: [],
   icon192: '/branding/icon-192.png',
@@ -83,17 +83,16 @@ const defaults: ChatframeConfig = {
 }
 
 const BUILT_IN_THEME_IDS = [
-  // dark
-  'oled', 'dracula', 'one-dark', 'tokyo-night', 'nord', 'solarized-dark',
-  'gruvbox-dark', 'monokai', 'catppuccin-mocha', 'night-owl',
-  'synthwave', 'github-dark', 'palenight',
-  // light
-  'solarized-light', 'github-light', 'catppuccin-latte',
-  'one-light', 'tokyo-night-light', 'ayu-light', 'gruvbox-light',
-  'quiet-light', 'light-plus', 'material-lighter', 'nord-light', 'min-light',
+  // neutral
+  'dark', 'oled', 'light',
+  // amp voicings — dark
+  'tweed', 'amber', 'british', 'oxblood', 'silver', 'pedalboard', 'blackface', 'plexi',
+  // amp voicings — light
+  'tweed-lt', 'amber-lt', 'british-lt', 'oxblood-lt', 'silver-lt',
+  'pedalboard-lt', 'blackface-lt', 'plexi-lt',
 ]
 
-const BUILT_IN_BG_FALLBACK = '#282a36'  // Dracula bg, matches :root in globals.css
+const BUILT_IN_BG_FALLBACK = '#202124'  // 'dark' bg, matches :root in globals.css
 
 function locateConfigFile(): string | null {
   const explicit = process.env.CHATFRAME_CONFIG_PATH
@@ -282,8 +281,8 @@ export function loadChatframeConfig(): LoadedConfig {
 
   const defaultTheme: string =
     allowedThemeIds.includes(config.defaultTheme) ? config.defaultTheme :
-    allowedThemeIds.includes('dracula') ? 'dracula' :
-    (allowedThemeIds[0] ?? 'dracula')
+    allowedThemeIds.includes('dark') ? 'dark' :
+    (allowedThemeIds[0] ?? 'dark')
 
   const themeColor = config.themes.find(t => t.id === defaultTheme)?.colors.bg ?? BUILT_IN_BG_FALLBACK
 

@@ -37,39 +37,37 @@ interface ThemeMeta {
   fg: string
 }
 
+// Amp-flavored palette ported from mighty-ai-qr-web. 10 voicings (Fender tweed,
+// Marshall plexi/british, etc.), each with a dark + `-lt` light variant, plus
+// plain dark/oled/light. CSS lives in app/globals.css under `[data-theme]`.
 const THEMES: ThemeMeta[] = [
-  // dark (13 — OLED first for the AMOLED-screen crowd)
-  { id: 'oled',              label: 'OLED',             desc: 'Pure black',       bg: '#000000', primary: '#00bcd4', fg: '#e0e0e0' },
-  { id: 'dracula',           label: 'Dracula',          desc: 'Purple night',     bg: '#282a36', primary: '#bd93f9', fg: '#f8f8f2' },
-  { id: 'one-dark',          label: 'One Dark',         desc: 'Atom classic',     bg: '#282c34', primary: '#61afef', fg: '#abb2bf' },
-  { id: 'tokyo-night',       label: 'Tokyo Night',      desc: 'Neon city',        bg: '#1a1b26', primary: '#7aa2f7', fg: '#c0caf5' },
-  { id: 'nord',              label: 'Nord',             desc: 'Arctic',           bg: '#2e3440', primary: '#88c0d0', fg: '#eceff4' },
-  { id: 'solarized-dark',    label: 'Solarized Dark',   desc: 'Ethan Schoonover', bg: '#002b36', primary: '#268bd2', fg: '#93a1a1' },
-  { id: 'gruvbox-dark',      label: 'Gruvbox Dark',     desc: 'Retro warmth',     bg: '#282828', primary: '#fabd2f', fg: '#ebdbb2' },
-  { id: 'monokai',           label: 'Monokai',          desc: 'TextMate roots',   bg: '#272822', primary: '#a6e22e', fg: '#f8f8f2' },
-  { id: 'catppuccin-mocha',  label: 'Catppuccin Mocha', desc: 'Pastel night',     bg: '#1e1e2e', primary: '#cba6f7', fg: '#cdd6f4' },
-  { id: 'night-owl',         label: 'Night Owl',        desc: 'Sarah Drasner',    bg: '#011627', primary: '#82aaff', fg: '#d6deeb' },
-  { id: 'synthwave',         label: "Synthwave '84",    desc: 'Retro neon',       bg: '#262335', primary: '#ff7edb', fg: '#f4eee4' },
-  { id: 'github-dark',       label: 'GitHub Dark',      desc: 'Official',         bg: '#0d1117', primary: '#58a6ff', fg: '#c9d1d9' },
-  { id: 'palenight',         label: 'Palenight',        desc: 'Material',         bg: '#292d3e', primary: '#82aaff', fg: '#a6accd' },
-  // light (12)
-  { id: 'solarized-light',   label: 'Solarized Light',  desc: 'Ethan Schoonover', bg: '#fdf6e3', primary: '#268bd2', fg: '#586e75' },
-  { id: 'github-light',      label: 'GitHub Light',     desc: 'Official',         bg: '#ffffff', primary: '#0969da', fg: '#1f2328' },
-  { id: 'catppuccin-latte',  label: 'Catppuccin Latte', desc: 'Pastel day',       bg: '#eff1f5', primary: '#8839ef', fg: '#4c4f69' },
-  { id: 'one-light',         label: 'One Light',        desc: 'Atom light',       bg: '#fafafa', primary: '#4078f2', fg: '#383a42' },
-  { id: 'tokyo-night-light', label: 'Tokyo Night Light',desc: 'Day variant',      bg: '#d5d6db', primary: '#34548a', fg: '#343b58' },
-  { id: 'ayu-light',         label: 'Ayu Light',        desc: 'Minimal warmth',   bg: '#fafafa', primary: '#ff8f40', fg: '#5c6166' },
-  { id: 'gruvbox-light',     label: 'Gruvbox Light',    desc: 'Retro day',        bg: '#fbf1c7', primary: '#b57614', fg: '#3c3836' },
-  { id: 'quiet-light',       label: 'Quiet Light',      desc: 'VS Code',          bg: '#f5f5f5', primary: '#4271ae', fg: '#333333' },
-  { id: 'light-plus',        label: 'Light+',           desc: 'VS Code default',  bg: '#ffffff', primary: '#007acc', fg: '#000000' },
-  { id: 'material-lighter',  label: 'Material Lighter', desc: 'Material light',   bg: '#fafafa', primary: '#6182b8', fg: '#546e7a' },
-  { id: 'nord-light',        label: 'Nord Light',       desc: 'Snow + Frost',     bg: '#eceff4', primary: '#5e81ac', fg: '#2e3440' },
-  { id: 'min-light',         label: 'Min Light',        desc: 'Minimal',          bg: '#fbfbfb', primary: '#2196f3', fg: '#222222' },
+  // neutral
+  { id: 'dark',          label: 'Dark',             desc: 'Google dark',      bg: '#202124', primary: '#8ab4f8', fg: '#e8eaed' },
+  { id: 'oled',          label: 'OLED',             desc: 'Pure black',       bg: '#000000', primary: '#00bcd4', fg: '#e0e0e0' },
+  { id: 'light',         label: 'Light',            desc: 'Clean light',      bg: '#f0f2f5', primary: '#1a73e8', fg: '#202124' },
+  // amp voicings — dark
+  { id: 'tweed',         label: 'Tweed',            desc: 'Fender warmth',    bg: '#221608', primary: '#d4a843', fg: '#f5e6c8' },
+  { id: 'amber',         label: 'Amber',            desc: 'Tube glow',        bg: '#160f00', primary: '#ffab40', fg: '#ffe4a0' },
+  { id: 'british',       label: 'British',          desc: 'Marshall green',   bg: '#0c1a0c', primary: '#c9a227', fg: '#e2edd6' },
+  { id: 'oxblood',       label: 'Oxblood',          desc: 'Vintage tolex',    bg: '#180808', primary: '#e07070', fg: '#f5dede' },
+  { id: 'silver',        label: 'Silver Panel',     desc: 'Boutique silver',  bg: '#1a1c1e', primary: '#b8a882', fg: '#dce3e8' },
+  { id: 'pedalboard',    label: 'Pedalboard',       desc: 'Signal chain',     bg: '#0f1410', primary: '#5a9e4a', fg: '#c8d4c0' },
+  { id: 'blackface',     label: 'Blackface',        desc: 'Fender silver',    bg: '#0a0e1a', primary: '#7eb8d4', fg: '#d8dff0' },
+  { id: 'plexi',         label: 'Plexi',            desc: 'Marshall gold',    bg: '#1a1200', primary: '#d4930a', fg: '#f0e6c8' },
+  // amp voicings — light
+  { id: 'tweed-lt',      label: 'Tweed Light',      desc: 'Cream linen',      bg: '#efe9d6', primary: '#9a7418', fg: '#2e1a04' },
+  { id: 'amber-lt',      label: 'Amber Light',      desc: 'Warm parchment',   bg: '#f5edcc', primary: '#c07800', fg: '#2a1c00' },
+  { id: 'british-lt',    label: 'British Light',    desc: 'Sage panel',       bg: '#e8eddc', primary: '#7a6010', fg: '#101a06' },
+  { id: 'oxblood-lt',    label: 'Oxblood Light',    desc: 'Blush cream',      bg: '#f0e4e4', primary: '#8a2020', fg: '#200808' },
+  { id: 'silver-lt',     label: 'Silver Light',     desc: 'Platinum day',     bg: '#e8eaec', primary: '#7a6840', fg: '#16181a' },
+  { id: 'pedalboard-lt', label: 'Pedalboard Light', desc: 'Military sage',    bg: '#dce8d8', primary: '#386820', fg: '#0c1c08' },
+  { id: 'blackface-lt',  label: 'Blackface Light',  desc: 'Silver-blue day',  bg: '#d8e4f0', primary: '#1a5a9a', fg: '#060e1c' },
+  { id: 'plexi-lt',      label: 'Plexi Light',      desc: 'Gold parchment',   bg: '#f0e8c8', primary: '#8a6000', fg: '#1c1000' },
 ]
 
 const BUILT_IN_THEME_GROUPS: { label: string; ids: Theme[] }[] = [
-  { label: 'Dark',  ids: ['oled','dracula','one-dark','tokyo-night','nord','solarized-dark','gruvbox-dark','monokai','catppuccin-mocha','night-owl','synthwave','github-dark','palenight'] },
-  { label: 'Light', ids: ['solarized-light','github-light','catppuccin-latte','one-light','tokyo-night-light','ayu-light','gruvbox-light','quiet-light','light-plus','material-lighter','nord-light','min-light'] },
+  { label: 'Dark',  ids: ['dark','oled','tweed','amber','british','oxblood','silver','pedalboard','blackface','plexi'] },
+  { label: 'Light', ids: ['light','tweed-lt','amber-lt','british-lt','oxblood-lt','silver-lt','pedalboard-lt','blackface-lt','plexi-lt'] },
 ]
 
 const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION ?? '0.1.0'
@@ -380,29 +378,9 @@ function SettingsPanel({
   // (read at runtime via window.__CHATFRAME). Custom themes are appended to the
   // built-in groups by category; if hideBuiltIns is true, only customs show.
   const branding = getChatframeBranding()
-  const customThemeMeta: ThemeMeta[] = branding.customThemes.map(t => ({
-    id: t.id,
-    label: t.name,
-    desc: t.category === 'dark' ? 'Custom dark' : 'Custom light',
-    bg: t.colors?.bg ?? '#000000',
-    primary: t.colors?.primary ?? '#888888',
-    fg: t.colors?.fg ?? '#ffffff',
-  }))
-  const THEMES_LIVE: ThemeMeta[] = branding.hideBuiltIns ? customThemeMeta : [...THEMES, ...customThemeMeta]
-  const THEME_GROUPS_LIVE: { label: string; ids: Theme[] }[] = (() => {
-    const baseGroups = branding.hideBuiltIns ? [] : BUILT_IN_THEME_GROUPS
-    const customDark = customThemeMeta.filter(t => branding.customThemes.find(c => c.id === t.id)?.category === 'dark').map(t => t.id)
-    const customLight = customThemeMeta.filter(t => branding.customThemes.find(c => c.id === t.id)?.category === 'light').map(t => t.id)
-    const out: { label: string; ids: Theme[] }[] = baseGroups.map(g => ({
-      label: g.label,
-      ids: g.label === 'Dark' ? [...g.ids, ...customDark] : g.label === 'Light' ? [...g.ids, ...customLight] : g.ids,
-    }))
-    if (branding.hideBuiltIns) {
-      if (customDark.length) out.push({ label: 'Dark', ids: customDark })
-      if (customLight.length) out.push({ label: 'Light', ids: customLight })
-    }
-    return out
-  })()
+  // Themes are the fixed amp palette — no runtime/config-driven custom themes.
+  const THEMES_LIVE: ThemeMeta[] = THEMES
+  const THEME_GROUPS_LIVE: { label: string; ids: Theme[] }[] = BUILT_IN_THEME_GROUPS
 
   const active = THEMES_LIVE.find(t => t.id === theme) ?? THEMES_LIVE[0]
   const activeProvider = providers.find(p => p.id === selectedProvider) ?? providers[0]
@@ -1051,7 +1029,7 @@ export default function Home({
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
-  const [theme, setTheme] = useState<Theme>('dracula')
+  const [theme, setTheme] = useState<Theme>('dark')
   const [confirmDelete, setConfirmDelete] = useState<{ label: string; doDelete: () => void } | null>(null)
   const [search, setSearch] = useState('')
   const [providers, setProviders] = useState<AvailableProvider[]>([])

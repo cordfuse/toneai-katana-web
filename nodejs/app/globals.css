@@ -2,434 +2,314 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Themes ──────────────────────────────────────────────────────────────────
- *
- * 15 popular developer themes (12 dark + 3 light). Default = Dracula.
- * To add a theme: add a `[data-theme="<id>"]` block here AND a corresponding
- * `{ id, label }` entry in app/page.tsx's THEMES array AND extend the Theme
- * type union in lib/storage.ts. New light themes also need their id added to
- * the light-mode override selectors at the bottom of this file.
- */
+/* ─── Themes ─────────────────────────────────────────────────────────────────*/
 
-/* Dracula — https://draculatheme.com/ */
-:root, [data-theme="dracula"] {
-  --bg:         #282a36;
-  --surface:    #343746;
-  --surface-2:  #44475a;
-  --surface-3:  #565a73;
-  --primary:    #bd93f9;
-  --on-primary: #1a1a25;
-  --fg:         #f8f8f2;
-  --fg-2:       #c8c8c0;
-  --fg-3:       #8a8a82;
-  --fg-4:       #6272a4;
-  --scrollbar:  rgba(189,147,249,0.25);
-  --scrollbar-h:rgba(189,147,249,0.45);
-  --error-bg:     rgba(255,85,85,0.18);
-  --error-border: rgba(255,85,85,0.40);
-  --error-fg:     #ff5555;
+:root, [data-theme="dark"] {
+  --bg:         #202124;
+  --surface:    #292a2d;
+  --surface-2:  #35363a;
+  --surface-3:  #3c4043;
+  --primary:    #8ab4f8;
+  --on-primary: #1a1c1e;
+  --fg:         #e8eaed;
+  --fg-2:       #bdc1c6;
+  --fg-3:       #9aa0a6;
+  --fg-4:       #5f6368;
+  --scrollbar:  rgba(255,255,255,0.15);
+  --scrollbar-h:rgba(255,255,255,0.25);
+  --error-bg:     rgba(127,29,29,0.25);
+  --error-border: rgba(185,28,28,0.35);
+  --error-fg:     #f87171;
 }
 
-/* OLED — pure black, optimized for AMOLED screens. Cyan accent like mighty.
-   Placed after Dracula so its rules win the source-order tiebreaker
-   against `:root, [data-theme="dracula"]` (same specificity). */
+[data-theme="light"] {
+  --bg:         #f0f2f5;
+  --surface:    #ffffff;
+  --surface-2:  #f0f2f5;
+  --surface-3:  #e4e6ea;
+  --primary:    #1a73e8;
+  --on-primary: #ffffff;
+  --fg:         #202124;
+  --fg-2:       #3c4043;
+  --fg-3:       #5f6368;
+  --fg-4:       #80868b;
+  --scrollbar:  rgba(0,0,0,0.15);
+  --scrollbar-h:rgba(0,0,0,0.25);
+}
+
+/* Tweed — Fender tweed warmth, tobacco brown with cream and gold */
+[data-theme="tweed"] {
+  --bg:         #221608;
+  --surface:    #2e1e0c;
+  --surface-2:  #3d2a14;
+  --surface-3:  #4d361c;
+  --primary:    #d4a843;
+  --on-primary: #130900;
+  --fg:         #f5e6c8;
+  --fg-2:       #cfb98a;
+  --fg-3:       #a08a5c;
+  --fg-4:       #705e38;
+  --scrollbar:  rgba(212,168,67,0.2);
+  --scrollbar-h:rgba(212,168,67,0.4);
+}
+
+/* Amber — glowing tube amp, deep black with molten orange */
+[data-theme="amber"] {
+  --bg:         #160f00;
+  --surface:    #201600;
+  --surface-2:  #2c1e00;
+  --surface-3:  #3a2800;
+  --primary:    #ffab40;
+  --on-primary: #160800;
+  --fg:         #ffe4a0;
+  --fg-2:       #ffc84a;
+  --fg-3:       #c89020;
+  --fg-4:       #8a6010;
+  --scrollbar:  rgba(255,171,64,0.2);
+  --scrollbar-h:rgba(255,171,64,0.4);
+}
+
+/* British — Marshall olive green with gold plate */
+[data-theme="british"] {
+  --bg:         #0c1a0c;
+  --surface:    #142014;
+  --surface-2:  #1c2e1c;
+  --surface-3:  #243c24;
+  --primary:    #c9a227;
+  --on-primary: #080e00;
+  --fg:         #e2edd6;
+  --fg-2:       #b0c498;
+  --fg-3:       #7a9860;
+  --fg-4:       #4e6c38;
+  --scrollbar:  rgba(201,162,39,0.2);
+  --scrollbar-h:rgba(201,162,39,0.4);
+}
+
+/* Oxblood — vintage tolex burgundy, rich dark red */
+[data-theme="oxblood"] {
+  --bg:         #180808;
+  --surface:    #220e0e;
+  --surface-2:  #301414;
+  --surface-3:  #3e1c1c;
+  --primary:    #e07070;
+  --on-primary: #180000;
+  --fg:         #f5dede;
+  --fg-2:       #d4a8a8;
+  --fg-3:       #a87070;
+  --fg-4:       #7a4444;
+  --scrollbar:  rgba(224,112,112,0.2);
+  --scrollbar-h:rgba(224,112,112,0.4);
+}
+
+/* OLED — pure black, cyan accent */
 [data-theme="oled"] {
   --bg:         #000000;
   --surface:    #0d0d0d;
   --surface-2:  #1a1a1a;
-  --surface-3:  #262626;
+  --surface-3:  #242424;
   --primary:    #00bcd4;
-  --on-primary: #001317;
+  --on-primary: #000e10;
   --fg:         #e0e0e0;
-  --fg-2:       #b3b3b3;
+  --fg-2:       #b0b0b0;
   --fg-3:       #808080;
-  --fg-4:       #595959;
-  --scrollbar:  rgba(0,188,212,0.25);
-  --scrollbar-h:rgba(0,188,212,0.45);
-  --error-bg:     rgba(255,82,82,0.18);
-  --error-border: rgba(255,82,82,0.40);
-  --error-fg:     #ff5252;
+  --fg-4:       #505050;
+  --scrollbar:  rgba(0,188,212,0.2);
+  --scrollbar-h:rgba(0,188,212,0.4);
 }
 
-/* One Dark — Atom */
-[data-theme="one-dark"] {
-  --bg:         #282c34;
-  --surface:    #2c313a;
-  --surface-2:  #353b45;
-  --surface-3:  #3e4451;
-  --primary:    #61afef;
-  --on-primary: #0a1018;
-  --fg:         #abb2bf;
-  --fg-2:       #9099a8;
-  --fg-3:       #6b727e;
-  --fg-4:       #4f5666;
-  --scrollbar:  rgba(97,175,239,0.25);
-  --scrollbar-h:rgba(97,175,239,0.45);
+/* Silver Panel — boutique amp, brushed aluminium */
+[data-theme="silver"] {
+  --bg:         #1a1c1e;
+  --surface:    #26292c;
+  --surface-2:  #32363a;
+  --surface-3:  #3e4348;
+  --primary:    #b8a882;
+  --on-primary: #0e0c08;
+  --fg:         #dce3e8;
+  --fg-2:       #a8b4bc;
+  --fg-3:       #748088;
+  --fg-4:       #4a5258;
+  --scrollbar:  rgba(184,168,130,0.2);
+  --scrollbar-h:rgba(184,168,130,0.4);
 }
 
-/* Tokyo Night */
-[data-theme="tokyo-night"] {
-  --bg:         #1a1b26;
-  --surface:    #1f2335;
-  --surface-2:  #24283b;
-  --surface-3:  #2f3549;
-  --primary:    #7aa2f7;
-  --on-primary: #0a0c16;
-  --fg:         #c0caf5;
-  --fg-2:       #a9b1d6;
-  --fg-3:       #737aa2;
-  --fg-4:       #565f89;
-  --scrollbar:  rgba(122,162,247,0.25);
-  --scrollbar-h:rgba(122,162,247,0.45);
+/* Pedalboard — signal chain, industrial olive */
+[data-theme="pedalboard"] {
+  --bg:         #0f1410;
+  --surface:    #171d18;
+  --surface-2:  #1f2820;
+  --surface-3:  #283328;
+  --primary:    #5a9e4a;
+  --on-primary: #020800;
+  --fg:         #c8d4c0;
+  --fg-2:       #96a88e;
+  --fg-3:       #647c5c;
+  --fg-4:       #405038;
+  --scrollbar:  rgba(90,158,74,0.2);
+  --scrollbar-h:rgba(90,158,74,0.4);
 }
 
-/* Nord — https://www.nordtheme.com/ */
-[data-theme="nord"] {
-  --bg:         #2e3440;
-  --surface:    #3b4252;
-  --surface-2:  #434c5e;
-  --surface-3:  #4c566a;
-  --primary:    #88c0d0;
-  --on-primary: #0c1218;
-  --fg:         #eceff4;
-  --fg-2:       #d8dee9;
-  --fg-3:       #9ba4b3;
-  --fg-4:       #6b7383;
-  --scrollbar:  rgba(136,192,208,0.25);
-  --scrollbar-h:rgba(136,192,208,0.45);
+/* Blackface — Fender blackface era, navy with silver */
+[data-theme="blackface"] {
+  --bg:         #0a0e1a;
+  --surface:    #111827;
+  --surface-2:  #1a2436;
+  --surface-3:  #223044;
+  --primary:    #7eb8d4;
+  --on-primary: #020810;
+  --fg:         #d8dff0;
+  --fg-2:       #a0aac4;
+  --fg-3:       #6878a0;
+  --fg-4:       #3c4a70;
+  --scrollbar:  rgba(126,184,212,0.2);
+  --scrollbar-h:rgba(126,184,212,0.4);
 }
 
-/* Solarized Dark — Ethan Schoonover */
-[data-theme="solarized-dark"] {
-  --bg:         #002b36;
-  --surface:    #073642;
-  --surface-2:  #0e4451;
-  --surface-3:  #19566a;
-  --primary:    #268bd2;
-  --on-primary: #001016;
-  --fg:         #93a1a1;
-  --fg-2:       #839496;
-  --fg-3:       #586e75;
-  --fg-4:       #475c63;
-  --scrollbar:  rgba(38,139,210,0.25);
-  --scrollbar-h:rgba(38,139,210,0.45);
+/* Plexi — Marshall Plexi gold, dark brown */
+[data-theme="plexi"] {
+  --bg:         #1a1200;
+  --surface:    #251a00;
+  --surface-2:  #332400;
+  --surface-3:  #422e00;
+  --primary:    #d4930a;
+  --on-primary: #0e0600;
+  --fg:         #f0e6c8;
+  --fg-2:       #c8b078;
+  --fg-3:       #967840;
+  --fg-4:       #6a5020;
+  --scrollbar:  rgba(212,147,10,0.2);
+  --scrollbar-h:rgba(212,147,10,0.4);
 }
 
-/* Gruvbox Dark (medium) */
-[data-theme="gruvbox-dark"] {
-  --bg:         #282828;
-  --surface:    #32302f;
-  --surface-2:  #3c3836;
-  --surface-3:  #504945;
-  --primary:    #fabd2f;
-  --on-primary: #1a1200;
-  --fg:         #ebdbb2;
-  --fg-2:       #d5c4a1;
-  --fg-3:       #a89984;
-  --fg-4:       #7c6f64;
-  --scrollbar:  rgba(250,189,47,0.22);
-  --scrollbar-h:rgba(250,189,47,0.42);
+/* Tweed Light — cream linen, warm tobacco text, gold primary */
+[data-theme="tweed-lt"] {
+  --bg:         #efe9d6;
+  --surface:    #fdf7ea;
+  --surface-2:  #efe9d6;
+  --surface-3:  #e2d7bc;
+  --primary:    #9a7418;
+  --on-primary: #fdf7ea;
+  --fg:         #2e1a04;
+  --fg-2:       #4e3010;
+  --fg-3:       #7a5828;
+  --fg-4:       #a88040;
+  --scrollbar:  rgba(154,116,24,0.25);
+  --scrollbar-h:rgba(154,116,24,0.45);
 }
 
-/* Monokai */
-[data-theme="monokai"] {
-  --bg:         #272822;
-  --surface:    #2f3027;
-  --surface-2:  #3e3d32;
-  --surface-3:  #49483e;
-  --primary:    #a6e22e;
-  --on-primary: #15170a;
-  --fg:         #f8f8f2;
-  --fg-2:       #cfcfc2;
-  --fg-3:       #9b9b8c;
-  --fg-4:       #75715e;
-  --scrollbar:  rgba(166,226,46,0.22);
-  --scrollbar-h:rgba(166,226,46,0.42);
+/* Amber Light — warm parchment, deep amber */
+[data-theme="amber-lt"] {
+  --bg:         #f5edcc;
+  --surface:    #fdf8e8;
+  --surface-2:  #f5edcc;
+  --surface-3:  #e8dab0;
+  --primary:    #c07800;
+  --on-primary: #fdf8e8;
+  --fg:         #2a1c00;
+  --fg-2:       #4a3208;
+  --fg-3:       #7a5818;
+  --fg-4:       #aa8030;
+  --scrollbar:  rgba(192,120,0,0.25);
+  --scrollbar-h:rgba(192,120,0,0.45);
 }
 
-/* Catppuccin Mocha — https://catppuccin.com/ */
-[data-theme="catppuccin-mocha"] {
-  --bg:         #1e1e2e;
-  --surface:    #313244;
-  --surface-2:  #45475a;
-  --surface-3:  #585b70;
-  --primary:    #cba6f7;
-  --on-primary: #11111b;
-  --fg:         #cdd6f4;
-  --fg-2:       #bac2de;
-  --fg-3:       #a6adc8;
-  --fg-4:       #7f849c;
-  --scrollbar:  rgba(203,166,247,0.25);
-  --scrollbar-h:rgba(203,166,247,0.45);
+/* British Light — sage parchment, forest green text, gold primary */
+[data-theme="british-lt"] {
+  --bg:         #e8eddc;
+  --surface:    #f6faf0;
+  --surface-2:  #e8eddc;
+  --surface-3:  #d8e4c8;
+  --primary:    #7a6010;
+  --on-primary: #f6faf0;
+  --fg:         #101a06;
+  --fg-2:       #203810;
+  --fg-3:       #3a5a20;
+  --fg-4:       #608048;
+  --scrollbar:  rgba(122,96,16,0.25);
+  --scrollbar-h:rgba(122,96,16,0.45);
 }
 
-/* Night Owl — Sarah Drasner */
-[data-theme="night-owl"] {
-  --bg:         #011627;
-  --surface:    #0b2942;
-  --surface-2:  #1d3b53;
-  --surface-3:  #2a4a64;
-  --primary:    #82aaff;
-  --on-primary: #001020;
-  --fg:         #d6deeb;
-  --fg-2:       #a5b5cb;
-  --fg-3:       #7e8aa1;
-  --fg-4:       #637777;
-  --scrollbar:  rgba(130,170,255,0.25);
-  --scrollbar-h:rgba(130,170,255,0.45);
+/* Oxblood Light — blush cream, deep burgundy */
+[data-theme="oxblood-lt"] {
+  --bg:         #f0e4e4;
+  --surface:    #fdf5f5;
+  --surface-2:  #f0e4e4;
+  --surface-3:  #e4d0d0;
+  --primary:    #8a2020;
+  --on-primary: #fdf5f5;
+  --fg:         #200808;
+  --fg-2:       #3a1010;
+  --fg-3:       #682828;
+  --fg-4:       #a05050;
+  --scrollbar:  rgba(138,32,32,0.25);
+  --scrollbar-h:rgba(138,32,32,0.45);
 }
 
-/* Synthwave '84 — Robb Owen */
-[data-theme="synthwave"] {
-  --bg:         #2a2139;
-  --surface:    #34294a;
-  --surface-2:  #3f3158;
-  --surface-3:  #4a3a68;
-  --primary:    #ff7edb;
-  --on-primary: #1a0f1f;
-  --fg:         #f4f4ff;
-  --fg-2:       #cabaff;
-  --fg-3:       #9a86c9;
-  --fg-4:       #6a5e8c;
-  --scrollbar:  rgba(255,126,219,0.28);
-  --scrollbar-h:rgba(255,126,219,0.48);
+/* Silver Light — platinum panel, warm charcoal text */
+[data-theme="silver-lt"] {
+  --bg:         #e8eaec;
+  --surface:    #f8f9fa;
+  --surface-2:  #e8eaec;
+  --surface-3:  #d8dce0;
+  --primary:    #7a6840;
+  --on-primary: #f8f9fa;
+  --fg:         #16181a;
+  --fg-2:       #363c40;
+  --fg-3:       #546068;
+  --fg-4:       #8a9298;
+  --scrollbar:  rgba(122,104,64,0.25);
+  --scrollbar-h:rgba(122,104,64,0.45);
 }
 
-/* GitHub Dark */
-[data-theme="github-dark"] {
-  --bg:         #0d1117;
-  --surface:    #161b22;
-  --surface-2:  #21262d;
-  --surface-3:  #30363d;
-  --primary:    #58a6ff;
-  --on-primary: #050a14;
-  --fg:         #c9d1d9;
-  --fg-2:       #b1bac4;
-  --fg-3:       #8b949e;
-  --fg-4:       #6e7681;
-  --scrollbar:  rgba(88,166,255,0.25);
-  --scrollbar-h:rgba(88,166,255,0.45);
+/* Pedalboard Light — military sage, dark olive text */
+[data-theme="pedalboard-lt"] {
+  --bg:         #dce8d8;
+  --surface:    #f0f8ec;
+  --surface-2:  #dce8d8;
+  --surface-3:  #cad8c4;
+  --primary:    #386820;
+  --on-primary: #f0f8ec;
+  --fg:         #0c1c08;
+  --fg-2:       #1c3810;
+  --fg-3:       #365828;
+  --fg-4:       #5a8048;
+  --scrollbar:  rgba(56,104,32,0.25);
+  --scrollbar-h:rgba(56,104,32,0.45);
 }
 
-/* Material Palenight */
-[data-theme="palenight"] {
-  --bg:         #292d3e;
-  --surface:    #2f3447;
-  --surface-2:  #383e54;
-  --surface-3:  #444b65;
-  --primary:    #82aaff;
-  --on-primary: #0e1320;
-  --fg:         #a6accd;
-  --fg-2:       #8c93b8;
-  --fg-3:       #6c739a;
-  --fg-4:       #4e537a;
-  --scrollbar:  rgba(130,170,255,0.25);
-  --scrollbar-h:rgba(130,170,255,0.45);
+/* Blackface Light — silver-blue Fender panel, navy text */
+[data-theme="blackface-lt"] {
+  --bg:         #d8e4f0;
+  --surface:    #f0f6fd;
+  --surface-2:  #d8e4f0;
+  --surface-3:  #c4d4e8;
+  --primary:    #1a5a9a;
+  --on-primary: #f0f6fd;
+  --fg:         #060e1c;
+  --fg-2:       #102040;
+  --fg-3:       #283c68;
+  --fg-4:       #506090;
+  --scrollbar:  rgba(26,90,154,0.25);
+  --scrollbar-h:rgba(26,90,154,0.45);
 }
 
-/* ─── Light themes ───────────────────────────────────────────────────────── */
-
-/* Solarized Light — Ethan Schoonover */
-[data-theme="solarized-light"] {
-  --bg:         #fdf6e3;
-  --surface:    #eee8d5;
-  --surface-2:  #e3ddc5;
-  --surface-3:  #d4cfb8;
-  --primary:    #268bd2;
-  --on-primary: #ffffff;
-  --fg:         #586e75;
-  --fg-2:       #657b83;
-  --fg-3:       #839496;
-  --fg-4:       #93a1a1;
-  --scrollbar:  rgba(38,139,210,0.25);
-  --scrollbar-h:rgba(38,139,210,0.45);
+/* Plexi Light — warm parchment, deep mahogany text */
+[data-theme="plexi-lt"] {
+  --bg:         #f0e8c8;
+  --surface:    #fdf6e4;
+  --surface-2:  #f0e8c8;
+  --surface-3:  #e4d4a4;
+  --primary:    #8a6000;
+  --on-primary: #fdf6e4;
+  --fg:         #1c1000;
+  --fg-2:       #3a2800;
+  --fg-3:       #6a4810;
+  --fg-4:       #9a7030;
+  --scrollbar:  rgba(138,96,0,0.25);
+  --scrollbar-h:rgba(138,96,0,0.45);
 }
 
-/* GitHub Light */
-[data-theme="github-light"] {
-  --bg:         #ffffff;
-  --surface:    #f6f8fa;
-  --surface-2:  #eaeef2;
-  --surface-3:  #d0d7de;
-  --primary:    #0969da;
-  --on-primary: #ffffff;
-  --fg:         #1f2328;
-  --fg-2:       #424a53;
-  --fg-3:       #656d76;
-  --fg-4:       #8c959f;
-  --scrollbar:  rgba(9,105,218,0.22);
-  --scrollbar-h:rgba(9,105,218,0.42);
-}
-
-/* Catppuccin Latte — https://catppuccin.com/ */
-[data-theme="catppuccin-latte"] {
-  --bg:         #eff1f5;
-  --surface:    #e6e9ef;
-  --surface-2:  #dce0e8;
-  --surface-3:  #ccd0da;
-  --primary:    #1e66f5;
-  --on-primary: #ffffff;
-  --fg:         #4c4f69;
-  --fg-2:       #5c5f77;
-  --fg-3:       #6c6f85;
-  --fg-4:       #7c7f93;
-  --scrollbar:  rgba(30,102,245,0.22);
-  --scrollbar-h:rgba(30,102,245,0.42);
-}
-
-/* One Light — Atom */
-[data-theme="one-light"] {
-  --bg:         #fafafa;
-  --surface:    #f0f0f0;
-  --surface-2:  #e5e5e6;
-  --surface-3:  #d3d3d3;
-  --primary:    #4078f2;
-  --on-primary: #ffffff;
-  --fg:         #383a42;
-  --fg-2:       #50545e;
-  --fg-3:       #696c77;
-  --fg-4:       #a0a1a7;
-  --scrollbar:  rgba(64,120,242,0.22);
-  --scrollbar-h:rgba(64,120,242,0.42);
-}
-
-/* Tokyo Night Light */
-[data-theme="tokyo-night-light"] {
-  --bg:         #d5d6db;
-  --surface:    #cbccd1;
-  --surface-2:  #c4c8da;
-  --surface-3:  #b2b5c1;
-  --primary:    #34548a;
-  --on-primary: #ffffff;
-  --fg:         #343b58;
-  --fg-2:       #4a5089;
-  --fg-3:       #6172b0;
-  --fg-4:       #8c8ca0;
-  --scrollbar:  rgba(52,84,138,0.22);
-  --scrollbar-h:rgba(52,84,138,0.42);
-}
-
-/* Ayu Light */
-[data-theme="ayu-light"] {
-  --bg:         #fafafa;
-  --surface:    #f3f4f5;
-  --surface-2:  #e7eaed;
-  --surface-3:  #d8dadc;
-  --primary:    #ff8f40;
-  --on-primary: #ffffff;
-  --fg:         #5c6166;
-  --fg-2:       #6d6f6e;
-  --fg-3:       #828c99;
-  --fg-4:       #abb0b6;
-  --scrollbar:  rgba(255,143,64,0.22);
-  --scrollbar-h:rgba(255,143,64,0.42);
-}
-
-/* Gruvbox Light */
-[data-theme="gruvbox-light"] {
-  --bg:         #fbf1c7;
-  --surface:    #ebdbb2;
-  --surface-2:  #d5c4a1;
-  --surface-3:  #bdae93;
-  --primary:    #b57614;
-  --on-primary: #ffffff;
-  --fg:         #3c3836;
-  --fg-2:       #504945;
-  --fg-3:       #665c54;
-  --fg-4:       #7c6f64;
-  --scrollbar:  rgba(181,118,20,0.22);
-  --scrollbar-h:rgba(181,118,20,0.42);
-}
-
-/* Quiet Light — VS Code */
-[data-theme="quiet-light"] {
-  --bg:         #f5f5f5;
-  --surface:    #ececec;
-  --surface-2:  #dde0e3;
-  --surface-3:  #c2c5c8;
-  --primary:    #4271ae;
-  --on-primary: #ffffff;
-  --fg:         #333333;
-  --fg-2:       #4d4d4c;
-  --fg-3:       #6f6f6f;
-  --fg-4:       #999999;
-  --scrollbar:  rgba(66,113,174,0.22);
-  --scrollbar-h:rgba(66,113,174,0.42);
-}
-
-/* Light+ — VS Code default light */
-[data-theme="light-plus"] {
-  --bg:         #ffffff;
-  --surface:    #f3f3f3;
-  --surface-2:  #ececec;
-  --surface-3:  #d4d4d4;
-  --primary:    #007acc;
-  --on-primary: #ffffff;
-  --fg:         #000000;
-  --fg-2:       #333333;
-  --fg-3:       #6b6b6b;
-  --fg-4:       #919191;
-  --scrollbar:  rgba(0,122,204,0.22);
-  --scrollbar-h:rgba(0,122,204,0.42);
-}
-
-/* Material Lighter */
-[data-theme="material-lighter"] {
-  --bg:         #fafafa;
-  --surface:    #ffffff;
-  --surface-2:  #eeffff;
-  --surface-3:  #d6d8d9;
-  --primary:    #6182b8;
-  --on-primary: #ffffff;
-  --fg:         #546e7a;
-  --fg-2:       #6c8290;
-  --fg-3:       #90a4ae;
-  --fg-4:       #b0bec5;
-  --scrollbar:  rgba(97,130,184,0.22);
-  --scrollbar-h:rgba(97,130,184,0.42);
-}
-
-/* Nord Light — Polar Night inverted with Snow + Frost */
-[data-theme="nord-light"] {
-  --bg:         #eceff4;
-  --surface:    #e5e9f0;
-  --surface-2:  #d8dee9;
-  --surface-3:  #c8d0db;
-  --primary:    #5e81ac;
-  --on-primary: #ffffff;
-  --fg:         #2e3440;
-  --fg-2:       #3b4252;
-  --fg-3:       #4c566a;
-  --fg-4:       #6b7383;
-  --scrollbar:  rgba(94,129,172,0.22);
-  --scrollbar-h:rgba(94,129,172,0.42);
-}
-
-/* Min Light — minimal */
-[data-theme="min-light"] {
-  --bg:         #fbfbfb;
-  --surface:    #f0f0f0;
-  --surface-2:  #e5e5e5;
-  --surface-3:  #d0d0d0;
-  --primary:    #2196f3;
-  --on-primary: #ffffff;
-  --fg:         #222222;
-  --fg-2:       #333333;
-  --fg-3:       #555555;
-  --fg-4:       #888888;
-  --scrollbar:  rgba(33,150,243,0.22);
-  --scrollbar-h:rgba(33,150,243,0.42);
-}
-
-/* ─── Base ───────────────────────────────────────────────────────────────── */
-
-html {
-  /* Smidge up from the browser default 16px → 17px. Tailwind's text-*
-     classes are rem-based, so every text-xs/sm/base/lg scales proportionally
-     (text-sm 14px → ~14.9px, text-base 16px → 17px). One knob, no
-     per-component churn. */
-  font-size: 17px;
-}
+/* ─── Base ───────────────────────────────────────────────────────────────────*/
 
 html, body {
   height: 100%;
@@ -437,8 +317,7 @@ html, body {
   padding: 0;
   background: var(--bg);
   color: var(--fg);
-  /* --font-sans is set by next/font/google (Inter) in layout.tsx. */
-  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   transition: background 0.25s ease, color 0.25s ease;
 }
@@ -450,61 +329,21 @@ html, body {
 ::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-h); }
 
-/* Light-mode error palette + light-on-light border overrides — enumerate
-   each light theme id here when adding new ones. */
-[data-theme="solarized-light"],
-[data-theme="github-light"],
-[data-theme="catppuccin-latte"],
-[data-theme="one-light"],
-[data-theme="tokyo-night-light"],
-[data-theme="ayu-light"],
-[data-theme="gruvbox-light"],
-[data-theme="quiet-light"],
-[data-theme="light-plus"],
-[data-theme="material-lighter"],
-[data-theme="nord-light"],
-[data-theme="min-light"] {
+/* Light-mode error colours */
+[data-theme="light"],
+[data-theme$="-lt"] {
   --error-bg:     rgba(254,226,226,0.9);
   --error-border: rgba(185,28,28,0.3);
   --error-fg:     #b91c1c;
 }
 
-[data-theme="solarized-light"]   .border-white\/10,
-[data-theme="github-light"]      .border-white\/10,
-[data-theme="catppuccin-latte"]  .border-white\/10,
-[data-theme="one-light"]         .border-white\/10,
-[data-theme="tokyo-night-light"] .border-white\/10,
-[data-theme="ayu-light"]         .border-white\/10,
-[data-theme="gruvbox-light"]     .border-white\/10,
-[data-theme="quiet-light"]       .border-white\/10,
-[data-theme="light-plus"]        .border-white\/10,
-[data-theme="material-lighter"]  .border-white\/10,
-[data-theme="nord-light"]        .border-white\/10,
-[data-theme="min-light"]         .border-white\/10 { border-color: rgba(0,0,0,0.10) !important; }
-[data-theme="solarized-light"]   .border-white\/20,
-[data-theme="github-light"]      .border-white\/20,
-[data-theme="catppuccin-latte"]  .border-white\/20,
-[data-theme="one-light"]         .border-white\/20,
-[data-theme="tokyo-night-light"] .border-white\/20,
-[data-theme="ayu-light"]         .border-white\/20,
-[data-theme="gruvbox-light"]     .border-white\/20,
-[data-theme="quiet-light"]       .border-white\/20,
-[data-theme="light-plus"]        .border-white\/20,
-[data-theme="material-lighter"]  .border-white\/20,
-[data-theme="nord-light"]        .border-white\/20,
-[data-theme="min-light"]         .border-white\/20 { border-color: rgba(0,0,0,0.16) !important; }
-[data-theme="solarized-light"]   .divide-white\/10 > * + *,
-[data-theme="github-light"]      .divide-white\/10 > * + *,
-[data-theme="catppuccin-latte"]  .divide-white\/10 > * + *,
-[data-theme="one-light"]         .divide-white\/10 > * + *,
-[data-theme="tokyo-night-light"] .divide-white\/10 > * + *,
-[data-theme="ayu-light"]         .divide-white\/10 > * + *,
-[data-theme="gruvbox-light"]     .divide-white\/10 > * + *,
-[data-theme="quiet-light"]       .divide-white\/10 > * + *,
-[data-theme="light-plus"]        .divide-white\/10 > * + *,
-[data-theme="material-lighter"]  .divide-white\/10 > * + *,
-[data-theme="nord-light"]        .divide-white\/10 > * + *,
-[data-theme="min-light"]         .divide-white\/10 > * + * { border-color: rgba(0,0,0,0.10) !important; }
+/* Light-mode border override — white/10 is invisible on light bg */
+[data-theme="light"] .border-white\/10,
+[data-theme$="-lt"]  .border-white\/10  { border-color: rgba(0,0,0,0.10) !important; }
+[data-theme="light"] .border-white\/20,
+[data-theme$="-lt"]  .border-white\/20  { border-color: rgba(0,0,0,0.16) !important; }
+[data-theme="light"] .divide-white\/10 > * + *,
+[data-theme$="-lt"]  .divide-white\/10 > * + * { border-color: rgba(0,0,0,0.10) !important; }
 
 /* ─── Prose (AI markdown) ────────────────────────────────────────────────── */
 
