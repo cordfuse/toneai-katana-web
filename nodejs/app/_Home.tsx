@@ -4,13 +4,12 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { v4 as uuidv4 } from 'uuid'
-import { sendChatStream, initAuth, getProviders, getProviderModels, getMcpServers, extractDocument, type AvailableProvider, type ProviderModel, type AvailableMcpServer, type MultimodalMessage, type ContentBlock } from '@/lib/api'
+import { sendChatStream, initAuth, getProviders, getProviderModels, extractDocument, type AvailableProvider, type ProviderModel, type MultimodalMessage, type ContentBlock } from '@/lib/api'
 import {
   loadConversations, upsertConversation, deleteConversation, renameConversation,
   clearAllConversations, autoTitle, relativeTime, getTheme, saveTheme, type Theme,
   getSelectedProvider, setSelectedProvider, getSelectedModel, setSelectedModel,
   getWebSearchEnabled, setWebSearchEnabled,
-  getEnabledMcps, setEnabledMcps,
   getCustomSystemPrompt, setCustomSystemPrompt,
   getTemperature, setTemperature,
   exportAll, importConversationsJson, resetAllData,
@@ -233,15 +232,6 @@ const RefreshIcon = () => (
 )
 const GlobeIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-)
-// MCP brand mark: four diamonds arranged around a center point.
-const McpIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-    <rect x="10" y="1" width="4" height="4" transform="rotate(45 12 3)"/>
-    <rect x="10" y="19" width="4" height="4" transform="rotate(45 12 21)"/>
-    <rect x="1" y="10" width="4" height="4" transform="rotate(45 3 12)"/>
-    <rect x="19" y="10" width="4" height="4" transform="rotate(45 21 12)"/>
-  </svg>
 )
 const AttachIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
@@ -1035,9 +1025,6 @@ export default function Home({
   const [providers, setProviders] = useState<AvailableProvider[]>([])
   const [webSearchAvailable, setWebSearchAvailable] = useState(false)
   const [webSearch, setWebSearch] = useState(false)
-  const [mcpServers, setMcpServers] = useState<AvailableMcpServer[]>([])
-  const [enabledMcps, setEnabledMcpsState] = useState<string[]>([])
-  const [mcpMenuOpen, setMcpMenuOpen] = useState(false)
   const [toolRunning, setToolRunning] = useState<{ name: string; query?: string } | null>(null)
   // Generation settings: null = use server default. UI shows a placeholder
   // hint when unset so user knows what value will actually be used.
@@ -1199,17 +1186,6 @@ export default function Home({
       } catch (e) {
         console.error('providers fetch failed:', e)
       }
-      // MCP servers — independent fetch, failures here just mean the picker
-      // shows up empty (or not at all). Won't block the chat flow.
-      try {
-        const servers = await getMcpServers()
-        setMcpServers(servers)
-        const availableIds = new Set(servers.filter(s => s.available).map(s => s.id))
-        const stored = getEnabledMcps().filter(id => availableIds.has(id))
-        setEnabledMcpsState(stored)
-      } catch (e) {
-        console.error('mcps fetch failed:', e)
-      }
     })()
   }, [])
 
@@ -1301,14 +1277,6 @@ export default function Home({
     recognitionRef.current = r
     r.start()
   }, [isListening, locale])
-
-  const toggleMcp = useCallback((id: string) => {
-    setEnabledMcpsState(prev => {
-      const next = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
-      setEnabledMcps(next)
-      return next
-    })
-  }, [])
 
   const handleSystemPrompt = useCallback((s: string | null) => {
     setCustomSystemPromptState(s)
@@ -1548,7 +1516,6 @@ export default function Home({
         abort.signal,
         {
           provider, model, webSearch,
-          mcpServers: enabledMcps.length > 0 ? enabledMcps : undefined,
           systemPrompt: customSystemPrompt ?? undefined,
           temperature: customTemperature ?? undefined,
         },
@@ -1608,7 +1575,7 @@ export default function Home({
       setToolRunning(null)
       abortRef.current = null
     }
-  }, [activeId, conversations, provider, model, webSearch, enabledMcps, customSystemPrompt, customTemperature, buildWireMessages, updateUrl])
+  }, [activeId, conversations, provider, model, webSearch, customSystemPrompt, customTemperature, buildWireMessages, updateUrl])
 
   // One-click starter prompts: skip the input field entirely, fire the
   // prompt as a user message immediately. Mirrors the empty-state chip
@@ -2105,69 +2072,6 @@ export default function Home({
                   >
                     <GlobeIcon />
                   </button>
-                )}
-                {/* MCP picker — opens a menu of available servers; user
-                    checks one or more to include in the next message.
-                    Hidden in kiosk mode → server enables every configured
-                    MCP server on every request. */}
-                {mcpServers.length > 0 && flags.showMcp && (
-                  <div className="relative">
-                    <button
-                      onClick={() => setMcpMenuOpen(o => !o)}
-                      title={enabledMcps.length > 0
-                        ? `MCP: ${enabledMcps.length} active — click to manage`
-                        : 'MCP: none active — click to enable'}
-                      aria-label="Toggle MCP servers"
-                      aria-pressed={enabledMcps.length > 0}
-                      className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
-                        enabledMcps.length > 0
-                          ? 'text-primary bg-primary/15 hover:bg-primary/25'
-                          : 'text-fg-3 hover:bg-surface-2 hover:text-fg'
-                      }`}
-                    >
-                      <McpIcon />
-                    </button>
-                    {mcpMenuOpen && (
-                      <>
-                        <div className="fixed inset-0 z-30" onClick={() => setMcpMenuOpen(false)} />
-                        <div className="absolute left-0 bottom-full z-40 mb-1 min-w-[14rem] rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden">
-                          <div className="px-3 py-2 text-[10px] font-semibold text-fg-3 uppercase tracking-wider border-b border-white/10">
-                            MCP servers
-                          </div>
-                          {mcpServers.map(s => {
-                            const checked = enabledMcps.includes(s.id)
-                            const disabled = !s.available
-                            return (
-                              <button
-                                key={s.id}
-                                disabled={disabled}
-                                onClick={() => toggleMcp(s.id)}
-                                className={`flex w-full items-center gap-2 px-3 py-2 text-xs text-left transition-colors ${
-                                  disabled
-                                    ? 'text-fg-4 cursor-not-allowed'
-                                    : 'text-fg-2 hover:bg-surface-3 hover:text-fg'
-                                }`}
-                              >
-                                <span className={`flex h-4 w-4 items-center justify-center rounded border ${
-                                  checked ? 'border-primary bg-primary/20 text-primary' : 'border-white/20'
-                                }`}>
-                                  {checked && (
-                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                      <polyline points="20 6 9 17 4 12"/>
-                                    </svg>
-                                  )}
-                                </span>
-                                <span className="flex-1 truncate">{s.label}</span>
-                                <span className="text-[10px] text-fg-4">
-                                  {disabled ? 'offline' : `${s.toolCount} tools`}
-                                </span>
-                              </button>
-                            )
-                          })}
-                        </div>
-                      </>
-                    )}
-                  </div>
                 )}
               </div>
               <div className="flex items-center gap-1.5">
