@@ -120,28 +120,6 @@ function locateConfigFile(): string | null {
   return null
 }
 
-export interface KioskFlags {
-  showHeader: boolean
-  showHeaderIcon: boolean
-  showHeaderTitle: boolean
-  showSettings: boolean
-  persistChat: boolean
-  showWebSearch: boolean
-  showMcp: boolean
-  showModelPicker: boolean
-  showAttachments: boolean
-  showVoiceInput: boolean
-  showVoiceOutput: boolean
-  // v0.7.0 — operator-suppression flags for kiosk / whitelabel / regulated
-  // deployments. All default ON to keep the full-UI experience for plain forks.
-  showSystemPromptEdit: boolean     // hide the system-prompt textarea in settings
-  showTemperatureEdit: boolean      // hide the temperature slider in settings
-  showImportExportReset: boolean    // hide the import / export / reset row in settings
-  showDownloadChat: boolean         // hide the "Download chat" entry in the kebab menu
-  showClearAllConversations: boolean // hide the "Clear all" button in the sidebar
-  showMessageActions: boolean       // hide per-message copy / edit / regenerate buttons
-  showSourcesCitations: boolean     // hide web-search source attribution under assistant replies
-}
 
 interface LoadedConfig {
   config: ChatframeConfig
@@ -154,7 +132,6 @@ interface LoadedConfig {
   allowedThemeIds: string[]
   defaultTheme: string
   themeColor: string
-  flags: KioskFlags
   // i18n: all locale maps merged together (built-ins + any operator JSON
   // dropped in <configDir>/locales/*.json). Sent to the client wholesale
   // so t() lookups are sync. List of locale codes ordered alphabetically
@@ -167,41 +144,7 @@ interface LoadedConfig {
   defaultLocale: string
 }
 
-// Kiosk visibility flags. All default ON (full UI). Setting any to '0' or
-// 'false' hides the corresponding control. A hidden control means the feature
-// runs server-side with whatever's configured (web search uses TAVILY if set;
-// MCP uses every server in chatframe-mcp.json; model picker uses CHATFRAME_PROVIDER +
-// CHATFRAME_MODEL). To disable a feature entirely, don't configure it.
-function envBool(name: string, defaultValue: boolean): boolean {
-  const v = process.env[name]
-  if (v === undefined || v === '') return defaultValue
-  if (v === '0' || v.toLowerCase() === 'false') return false
-  if (v === '1' || v.toLowerCase() === 'true') return true
-  return defaultValue
-}
 
-export function loadKioskFlags(): KioskFlags {
-  return {
-    showHeader:      envBool('CHATFRAME_SHOW_HEADER',       true),
-    showHeaderIcon:  envBool('CHATFRAME_SHOW_HEADER_ICON',  true),
-    showHeaderTitle: envBool('CHATFRAME_SHOW_HEADER_TITLE', true),
-    showSettings:    envBool('CHATFRAME_SHOW_SETTINGS',     true),
-    persistChat:     envBool('CHATFRAME_PERSIST_CHAT',      true),
-    showWebSearch:   envBool('CHATFRAME_SHOW_WEB_SEARCH',   true),
-    showMcp:         envBool('CHATFRAME_SHOW_MCP',          true),
-    showModelPicker: envBool('CHATFRAME_SHOW_MODEL_PICKER', true),
-    showAttachments: envBool('CHATFRAME_SHOW_ATTACHMENTS',  true),
-    showVoiceInput:  envBool('CHATFRAME_SHOW_VOICE_INPUT',  true),
-    showVoiceOutput: envBool('CHATFRAME_SHOW_VOICE_OUTPUT', true),
-    showSystemPromptEdit:      envBool('CHATFRAME_SHOW_SYSTEM_PROMPT_EDIT',      true),
-    showTemperatureEdit:       envBool('CHATFRAME_SHOW_TEMPERATURE_EDIT',        true),
-    showImportExportReset:     envBool('CHATFRAME_SHOW_IMPORT_EXPORT_RESET',     true),
-    showDownloadChat:          envBool('CHATFRAME_SHOW_DOWNLOAD_CHAT',           true),
-    showClearAllConversations: envBool('CHATFRAME_SHOW_CLEAR_ALL_CONVERSATIONS', true),
-    showMessageActions:        envBool('CHATFRAME_SHOW_MESSAGE_ACTIONS',         true),
-    showSourcesCitations:      envBool('CHATFRAME_SHOW_SOURCES',                 true),
-  }
-}
 
 // Reads the file fresh each call. JSON is tiny (~1KB) and Node caches the
 // directory lookup; the read itself is microseconds. No memoization here is
@@ -329,7 +272,6 @@ export function loadChatframeConfig(): LoadedConfig {
   return {
     config, themeCss, customCss,
     allowedThemeIds, defaultTheme, themeColor,
-    flags: loadKioskFlags(),
     locales, localeCodes, defaultLocale,
   }
 }

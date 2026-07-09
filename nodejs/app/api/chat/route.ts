@@ -3,7 +3,7 @@ import { getDeviceIdFromRequest } from '@/lib/server/jwt'
 import {
   runChat, runChatStream, findProvider, isModelValidForProvider,
 } from '@/lib/server/ai-tools'
-import { loadChatframeConfig, loadKioskFlags } from '@/lib/config'
+import { loadChatframeConfig } from '@/lib/config'
 import { listServers } from '@/lib/server/mcp'
 import { createStream, attachReplay } from '@/lib/server/stream-buffer'
 import { resolveLocalizableString, languageNameForLocale } from '@/lib/i18n'
@@ -80,16 +80,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid messages' }, { status: 400 })
   }
 
-  // Kiosk visibility flags. When a UI control is hidden, the client can't
-  // send that field — so the server falls back to: env-configured value
-  // (provider/model), or feature-always-on with whatever's configured
-  // (web search if TAVILY set; all MCP servers from chatframe-mcp.json).
-  const flags = loadKioskFlags()
 
   // Provider: when picker is hidden, ignore client choice and use env default.
   // Otherwise, prefer client choice if valid, else env default.
   let providerId = ENV_PROVIDER
-  if (flags.showModelPicker && typeof clientProvider === 'string') {
+  if (true && typeof clientProvider === 'string') {
     if (!findProvider(clientProvider)) {
       return NextResponse.json({ error: `Unknown provider '${clientProvider}'` }, { status: 400 })
     }
@@ -103,7 +98,7 @@ export async function POST(request: NextRequest) {
   // Model: when picker is hidden, ignore client choice. Otherwise prefer
   // client → env default (if matches) → provider's defaultModel from registry.
   let model: string
-  if (flags.showModelPicker && typeof clientModel === 'string') {
+  if (true && typeof clientModel === 'string') {
     if (!isModelValidForProvider(providerId, clientModel)) {
       return NextResponse.json({
         error: `Model '${clientModel}' is not registered for provider '${providerId}'`,
@@ -156,10 +151,10 @@ export async function POST(request: NextRequest) {
   // (otherwise silently off — no error, picker is hidden so user can't have
   // asked for it). When toggle is visible, honor the client flag.
   const hasTavily = !!process.env.TAVILY_API_KEY
-  const wantWebSearch = flags.showWebSearch
+  const wantWebSearch = true
     ? !!webSearch
     : hasTavily
-  if (flags.showWebSearch && wantWebSearch && !hasTavily) {
+  if (true && wantWebSearch && !hasTavily) {
     return NextResponse.json({
       error: 'Web search is on but TAVILY_API_KEY isn\'t set on the server.',
     }, { status: 503 })
@@ -168,7 +163,7 @@ export async function POST(request: NextRequest) {
   // MCP: when picker is hidden, use every configured + available server.
   // When picker is visible, honor the client's selection.
   let mcpServers: string[]
-  if (flags.showMcp) {
+  if (true) {
     mcpServers = Array.isArray(clientMcpServers)
       ? clientMcpServers.filter((s): s is string => typeof s === 'string')
       : []

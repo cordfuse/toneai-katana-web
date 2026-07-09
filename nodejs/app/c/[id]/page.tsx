@@ -10,7 +10,7 @@ import { resolveLocalizableString, resolveLocalizableStringArray } from '@/lib/i
 // sidebar state survive between conv switches.
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const { config, flags, localeCodes, defaultLocale } = loadChatframeConfig()
+  const { config, localeCodes, defaultLocale } = loadChatframeConfig()
   const activeLocale = await resolveLocale(localeCodes, defaultLocale)
   return (
     <Home
@@ -18,7 +18,6 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       appName={config.name}
       welcomeMessage={resolveLocalizableString(config.welcomeMessage, activeLocale)}
       starterPrompts={resolveLocalizableStringArray(config.starterPrompts, activeLocale)}
-      flags={flags}
     />
   )
 }

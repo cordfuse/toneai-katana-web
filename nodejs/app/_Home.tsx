@@ -98,65 +98,6 @@ function getChatframeBranding(): ChatframeBranding {
   }
 }
 
-// Kiosk visibility flags from window.__CHATFRAME.flags. All default true (full
-// UI) when the global isn't present, so non-kiosk SSR/tests behave normally.
-interface ChatframeFlags {
-  showHeader: boolean
-  showHeaderIcon: boolean
-  showHeaderTitle: boolean
-  showSettings: boolean
-  persistChat: boolean
-  showWebSearch: boolean
-  showMcp: boolean
-  showModelPicker: boolean
-  showAttachments: boolean
-  showVoiceInput: boolean
-  showVoiceOutput: boolean
-  // v0.7.0 — operator-suppression flags. All default ON. Mirror of KioskFlags.
-  showSystemPromptEdit: boolean
-  showTemperatureEdit: boolean
-  showImportExportReset: boolean
-  showDownloadChat: boolean
-  showClearAllConversations: boolean
-  showMessageActions: boolean
-  showSourcesCitations: boolean
-}
-function getChatframeFlags(): ChatframeFlags {
-  const fallback = {
-    showHeader: true, showHeaderIcon: true, showHeaderTitle: true,
-    showSettings: true, persistChat: true,
-    showWebSearch: true, showMcp: true, showModelPicker: true,
-    showAttachments: true,
-    showVoiceInput: true, showVoiceOutput: true,
-    showSystemPromptEdit: true, showTemperatureEdit: true, showImportExportReset: true,
-    showDownloadChat: true, showClearAllConversations: true, showMessageActions: true,
-    showSourcesCitations: true,
-  }
-  if (typeof window === 'undefined') return fallback
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const f = (window as any).__CHATFRAME?.flags
-  if (!f || typeof f !== 'object') return fallback
-  return {
-    showHeader:      f.showHeader      !== false,
-    showHeaderIcon:  f.showHeaderIcon  !== false,
-    showHeaderTitle: f.showHeaderTitle !== false,
-    showSettings:    f.showSettings    !== false,
-    persistChat:     f.persistChat     !== false,
-    showWebSearch:   f.showWebSearch   !== false,
-    showMcp:         f.showMcp         !== false,
-    showModelPicker: f.showModelPicker !== false,
-    showAttachments: f.showAttachments !== false,
-    showVoiceInput:  f.showVoiceInput  !== false,
-    showVoiceOutput: f.showVoiceOutput !== false,
-    showSystemPromptEdit:      f.showSystemPromptEdit      !== false,
-    showTemperatureEdit:       f.showTemperatureEdit       !== false,
-    showImportExportReset:     f.showImportExportReset     !== false,
-    showDownloadChat:          f.showDownloadChat          !== false,
-    showClearAllConversations: f.showClearAllConversations !== false,
-    showMessageActions:        f.showMessageActions        !== false,
-    showSourcesCitations:      f.showSourcesCitations      !== false,
-  }
-}
 
 // ─── icons ───────────────────────────────────────────────────────────────────
 
@@ -331,7 +272,6 @@ function SettingsPanel({
   customTemperature, onTemperature,
   onExport, onImport, onResetAll,
   onClose,
-  flags,
 }: {
   theme: Theme
   onTheme: (t: Theme) => void
@@ -346,7 +286,6 @@ function SettingsPanel({
   onImport: () => void
   onResetAll: () => void
   onClose: () => void
-  flags: ChatframeFlags
 }) {
   const [closing, setClosing] = useState(false)
   const [themeOpen, setThemeOpen] = useState(false)
@@ -547,7 +486,7 @@ function SettingsPanel({
           )}
 
           {/* System prompt */}
-          {flags.showSystemPromptEdit && (
+          {(
           <div>
             <p className="text-[10px] font-semibold text-fg-3 uppercase tracking-wider mb-2">{t('settings.systemPrompt', 'System prompt')}</p>
             <textarea
@@ -573,7 +512,7 @@ function SettingsPanel({
           )}
 
           {/* Temperature */}
-          {flags.showTemperatureEdit && (
+          {(
           <div>
             <div className="flex items-baseline justify-between mb-1">
               <p className="text-[10px] font-semibold text-fg-3 uppercase tracking-wider">{t('settings.temperature', 'Temperature')}</p>
@@ -600,7 +539,7 @@ function SettingsPanel({
           )}
 
           {/* Data: Import / Export / Reset on a single row */}
-          {flags.showImportExportReset && (
+          {(
           <div>
             <p className="text-[10px] font-semibold text-fg-3 uppercase tracking-wider mb-2">{t('settings.data', 'Data')}</p>
             <div className="grid grid-cols-3 gap-2">
@@ -993,19 +932,12 @@ export default function Home({
   appName = 'ChatFrame',
   welcomeMessage = '',
   starterPrompts = [],
-  flags: serverFlags,
 }: {
   initialConvId?: string
   appName?: string
   welcomeMessage?: string
   starterPrompts?: string[]
-  flags?: ChatframeFlags
 } = {}) {
-  // Kiosk visibility flags. Source of truth is the server prop (SSR-correct,
-  // no hydration mismatch). Fall back to window.__CHATFRAME when the prop is
-  // missing (older callers/tests). Both ultimately resolve to "all true"
-  // (full UI) when nothing's configured.
-  const flags: ChatframeFlags = serverFlags ?? getChatframeFlags()
   const t = useT()
   const locale = useLocale()
   const [conversations, setConversations] = useState<Conversation[]>([])
@@ -1106,7 +1038,7 @@ export default function Home({
     // Kiosk: skip history hydration when chat persistence is off. Any
     // pre-existing localStorage entries stay untouched (a misconfiguration
     // revert shouldn't lose data) but they're not shown either.
-    if (flags.persistChat) {
+    if (true) {
       const loaded = loadConversations()
       setConversations(loaded)
       // Hydrate the active conversation from the URL (e.g. /c/<id> hard load).
@@ -1136,7 +1068,7 @@ export default function Home({
     // without remounting Home. Skip entirely when persistence is off —
     // we never push /c/<id> URLs in kiosk mode, so there's nothing to
     // restore from history, and we shouldn't surface stored data anyway.
-    if (flags.persistChat) {
+    if (true) {
       const onPop = () => {
         const path = window.location.pathname
         const m = path.match(/^\/c\/([^/]+)\/?$/)
@@ -1544,7 +1476,7 @@ export default function Home({
       // Kiosk: skip every persistence step when chat history is disabled.
       // In-memory `messages` state already shows the user the conversation;
       // we just don't write anything to localStorage or the URL.
-      if (flags.persistChat) {
+      if (true) {
         const convId = activeId ?? uuidv4()
         const now = Date.now()
         const existing = conversations.find(c => c.id === convId)
@@ -1650,7 +1582,7 @@ export default function Home({
   // ── render ──
   return (
     <div className="flex h-full bg-bg text-fg">
-      {flags.persistChat && (
+      {(
         <Sidebar
           visible={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
@@ -1666,15 +1598,15 @@ export default function Home({
             doDelete: clearAll,
           })}
           appName={appName}
-          showClearAll={flags.showClearAllConversations}
+          showClearAll={true}
         />
       )}
 
       {/* main column */}
       <div className="flex-1 flex flex-col min-w-0 bg-bg">
-        {flags.showHeader && (
+        {(
         <header className="chatframe-header px-3 py-3 flex items-center gap-1 shrink-0 z-10">
-          {flags.persistChat && (
+          {(
             <button
               onClick={() => setSidebarOpen(true)}
               className="flex h-9 w-9 items-center justify-center rounded-lg text-fg-3 hover:bg-surface hover:text-fg transition-colors"
@@ -1684,10 +1616,10 @@ export default function Home({
               <MenuIcon />
             </button>
           )}
-          {(flags.showHeaderIcon || flags.showHeaderTitle) && (
+          {(
             <span className="flex items-center gap-1.5">
-              {flags.showHeaderIcon && <ChatframeIcon />}
-              {flags.showHeaderTitle && <h1 className="text-sm font-medium text-fg">{appName}</h1>}
+              {<ChatframeIcon />}
+              {<h1 className="text-sm font-medium text-fg">{appName}</h1>}
             </span>
           )}
           <div className="flex-1" />
@@ -1716,7 +1648,7 @@ export default function Home({
                       <RefreshIcon />
                       <span>{t('header.refresh', 'Reload')}</span>
                     </button>
-                    {flags.persistChat && (
+                    {(
                       <button
                         onClick={() => { setHeaderMenuOpen(false); newConversation() }}
                         className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-fg hover:bg-surface-3 transition-colors"
@@ -1725,7 +1657,7 @@ export default function Home({
                         <span>{t('header.newChat', 'New chat')}</span>
                       </button>
                     )}
-                    {flags.showDownloadChat && messages.length > 0 && (
+                    {messages.length > 0 && (
                       <button
                         onClick={() => {
                           setHeaderMenuOpen(false)
@@ -1742,7 +1674,7 @@ export default function Home({
                         <span>{t('header.downloadChat', 'Download chat')}</span>
                       </button>
                     )}
-                    {activeId && flags.persistChat && (
+                    {activeId && (
                       <button
                         onClick={() => {
                           setHeaderMenuOpen(false)
@@ -1759,7 +1691,7 @@ export default function Home({
                         <span>{t('header.deleteChat', 'Delete chat')}</span>
                       </button>
                     )}
-                    {flags.showSettings && (
+                    {(
                       <button
                         onClick={() => { setHeaderMenuOpen(false); setSettingsOpen(true) }}
                         className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-fg hover:bg-surface-3 transition-colors"
@@ -1821,8 +1753,8 @@ export default function Home({
                 isLastAssistant={m.role === 'assistant' && m.id === messages[messages.length - 1]?.id}
                 onEditAndResend={editAndResend}
                 onRegenerate={regenerate}
-                showActions={flags.showMessageActions}
-                showSources={flags.showSourcesCitations}
+                showActions={true}
+                showSources={true}
               />
             ))}
           </div>
@@ -1892,7 +1824,7 @@ export default function Home({
                 the bottom. Hidden in kiosk mode → server uses CHATFRAME_PROVIDER
                 + CHATFRAME_MODEL env defaults regardless of any stored client
                 preference. */}
-            {providers.length > 0 && flags.showModelPicker && (() => {
+            {providers.length > 0 && (() => {
               const providerInfo = providers.find(p => p.id === provider)
               if (!providerInfo) return null
               const modelsForDropdown = liveModels[providerInfo.id] ?? providerInfo.models
@@ -1993,7 +1925,7 @@ export default function Home({
               {/* attach button + model pill on the left */}
               <div className="flex items-center gap-1.5">
                 {/* attach button — hidden in kiosk when attachments are off */}
-                {flags.showAttachments && (
+                {(
                   <div className="relative">
                     <button
                       onClick={() => setAttachMenuOpen(o => !o)}
@@ -2032,11 +1964,10 @@ export default function Home({
                 )}
                 {/* TTS toggle — speak assistant replies via Web Speech API
                     once the stream completes. Hidden when the browser
-                    doesn't expose speechSynthesis (rare) or the operator
-                    disabled it via CHATFRAME_SHOW_VOICE_OUTPUT=0. Off by
-                    default (auto-speak is invasive on shared devices);
+                    doesn't expose speechSynthesis (rare).
+                    Off by default (auto-speak is invasive on shared devices);
                     preference persists via localStorage. */}
-                {voiceOutputAvailable && flags.showVoiceOutput && (
+                {voiceOutputAvailable && (
                   <button
                     onClick={handleTtsToggle}
                     title={ttsEnabled
@@ -2056,7 +1987,7 @@ export default function Home({
                 {/* Web search toggle — only when server has TAVILY_API_KEY
                     AND the kiosk hasn't hidden the button. When hidden, the
                     server forces web search ON for every message. */}
-                {webSearchAvailable && flags.showWebSearch && (
+                {webSearchAvailable && (
                   <button
                     onClick={() => handleWebSearch(!webSearch)}
                     title={webSearch
@@ -2080,10 +2011,9 @@ export default function Home({
                     right recognizer by default. Auto-sends on silence
                     (recognition.onend) — voice flow goes question →
                     transcript → send without a tap. Hidden when the
-                    browser doesn't expose SpeechRecognition OR the
-                    operator disabled it via CHATFRAME_SHOW_VOICE_INPUT=0.
+                    browser doesn't expose SpeechRecognition.
                     Disabled while streaming to avoid mid-reply input. */}
-                {voiceInputAvailable && flags.showVoiceInput && (
+                {voiceInputAvailable && (
                   <button
                     onClick={toggleListening}
                     disabled={streaming}
@@ -2176,7 +2106,6 @@ export default function Home({
             },
           })}
           onClose={() => setSettingsOpen(false)}
-          flags={flags}
         />
       )}
       {confirmDelete && (

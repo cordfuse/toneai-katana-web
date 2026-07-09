@@ -10,14 +10,13 @@ import { resolveLocalizableString, resolveLocalizableStringArray } from '@/lib/i
 export const dynamic = 'force-dynamic'
 
 export default async function Page() {
-  const { config, flags, localeCodes, defaultLocale } = loadChatframeConfig()
+  const { config, localeCodes, defaultLocale } = loadChatframeConfig()
   const activeLocale = await resolveLocale(localeCodes, defaultLocale)
   return (
     <Home
       appName={config.name}
       welcomeMessage={resolveLocalizableString(config.welcomeMessage, activeLocale)}
       starterPrompts={resolveLocalizableStringArray(config.starterPrompts, activeLocale)}
-      flags={flags}
     />
   )
 }

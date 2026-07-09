@@ -40,7 +40,7 @@ export async function generateViewport(): Promise<Viewport> {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const { config, themeCss, customCss, allowedThemeIds, defaultTheme, flags, locales, localeCodes, defaultLocale } = loadChatframeConfig()
+  const { config, themeCss, customCss, allowedThemeIds, defaultTheme, locales, localeCodes, defaultLocale } = loadChatframeConfig()
 
   // Resolve the per-request locale: cookie wins, else server default.
   // Done server-side so SSR renders directly in the chosen locale —
@@ -52,7 +52,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // IDs (built-ins + custom) so the picker's stored choice validates before
   // React hydrates. Also stashes the config on window so client code can
   // read branding (header text, footer link) without a server round-trip.
-  const themeBootstrap = `(function(){try{var T={${allowedThemeIds.map(id => `'${id}':1`).join(',')}};var t=localStorage.getItem('chatframe_theme');document.documentElement.setAttribute('data-theme',T[t]?t:'${defaultTheme}')}catch(e){}})()`
+  const themeBootstrap = `(function(){try{var T={${allowedThemeIds.map(id => `'${id}':1`).join(',')}};var t=localStorage.getItem('katana_theme');document.documentElement.setAttribute('data-theme',T[t]?t:'${defaultTheme}')}catch(e){}})()`
   // Resolve any localizable operator content to the active locale BEFORE
   // shipping it to the client. The client never sees the per-locale map
   // shape — by the time strings hit window.__CHATFRAME, they're plain values
@@ -72,7 +72,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     defaultTheme,
     allowedThemeIds,
     customThemes: config.themes,
-    flags,
     locale: activeLocale,
     availableLocales: localeCodes,
   })};`
