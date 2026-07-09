@@ -1,0 +1,70 @@
+# Chatframe — production single-host compose, Caddy-fronted with auto-HTTPS.
+#
+# Caddy terminates TLS at the edge (uses Let's Encrypt for public domains
+# automatically) and reverse-proxies to the app on a private compose network.
+# The app itself is not exposed on a host port.
+#
+# Pre-flight:
+#   1. Edit ./Caddyfile and replace YOUR_DOMAIN with your actual hostname.
+#   2. cp .env.example .env  →  fill in JWT_SECRET, ANTHROPIC_API_KEY, etc.
+#   3. docker compose -f docker-compose.prod.yml up -d --build
+#   4. Caddy will provision a TLS cert on first request to your domain.
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: cordfuse/chatframe:prod
+    container_name: chatframe
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    environment:
+      CHATFRAME_CONFIG_DIR: /app/config
+
+      CHATFRAME_PROVIDER: ${CHATFRAME_PROVIDER:-anthropic}
+      CHATFRAME_MODEL: ${CHATFRAME_MODEL:-claude-sonnet-4-6}
+      CHATFRAME_SYSTEM_PROMPT: ${CHATFRAME_SYSTEM_PROMPT:-You are a helpful AI assistant.}
+      CHATFRAME_TEMPERATURE: ${CHATFRAME_TEMPERATURE:-1.0}
+
+      CHATFRAME_SHOW_SETTINGS:     ${CHATFRAME_SHOW_SETTINGS:-1}
+      CHATFRAME_PERSIST_CHAT:      ${CHATFRAME_PERSIST_CHAT:-1}
+      CHATFRAME_SHOW_WEB_SEARCH:   ${CHATFRAME_SHOW_WEB_SEARCH:-1}
+      CHATFRAME_SHOW_MCP:          ${CHATFRAME_SHOW_MCP:-1}
+      CHATFRAME_SHOW_MODEL_PICKER: ${CHATFRAME_SHOW_MODEL_PICKER:-1}
+      CHATFRAME_SHOW_ATTACHMENTS:  ${CHATFRAME_SHOW_ATTACHMENTS:-1}
+
+    volumes:
+      # Persistent config volume — same convention as the dev compose.
+      # Point this at wherever the operator keeps Chatframe's config on the host
+      # (e.g. /srv/chatframe-config:/app/config).
+      - ../nodejs/config:/app/config
+
+    networks:
+      - internal
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: chatframe-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data       # ACME state, must persist for cert reuse
+      - caddy-config:/config
+    networks:
+      - internal
+    depends_on:
+      - app
+
+volumes:
+  caddy-data:
+  caddy-config:
+
+networks:
+  internal:

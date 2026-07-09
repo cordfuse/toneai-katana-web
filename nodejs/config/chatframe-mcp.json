@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "mslearn": {
+      "type": "http",
+      "url": "https://learn.microsoft.com/api/mcp",
+      "label": "Microsoft Learn"
+    }
+  }
+}

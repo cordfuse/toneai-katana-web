@@ -1,0 +1,622 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Themes ──────────────────────────────────────────────────────────────────
+ *
+ * 15 popular developer themes (12 dark + 3 light). Default = Dracula.
+ * To add a theme: add a `[data-theme="<id>"]` block here AND a corresponding
+ * `{ id, label }` entry in app/page.tsx's THEMES array AND extend the Theme
+ * type union in lib/storage.ts. New light themes also need their id added to
+ * the light-mode override selectors at the bottom of this file.
+ */
+
+/* Dracula — https://draculatheme.com/ */
+:root, [data-theme="dracula"] {
+  --bg:         #282a36;
+  --surface:    #343746;
+  --surface-2:  #44475a;
+  --surface-3:  #565a73;
+  --primary:    #bd93f9;
+  --on-primary: #1a1a25;
+  --fg:         #f8f8f2;
+  --fg-2:       #c8c8c0;
+  --fg-3:       #8a8a82;
+  --fg-4:       #6272a4;
+  --scrollbar:  rgba(189,147,249,0.25);
+  --scrollbar-h:rgba(189,147,249,0.45);
+  --error-bg:     rgba(255,85,85,0.18);
+  --error-border: rgba(255,85,85,0.40);
+  --error-fg:     #ff5555;
+}
+
+/* OLED — pure black, optimized for AMOLED screens. Cyan accent like mighty.
+   Placed after Dracula so its rules win the source-order tiebreaker
+   against `:root, [data-theme="dracula"]` (same specificity). */
+[data-theme="oled"] {
+  --bg:         #000000;
+  --surface:    #0d0d0d;
+  --surface-2:  #1a1a1a;
+  --surface-3:  #262626;
+  --primary:    #00bcd4;
+  --on-primary: #001317;
+  --fg:         #e0e0e0;
+  --fg-2:       #b3b3b3;
+  --fg-3:       #808080;
+  --fg-4:       #595959;
+  --scrollbar:  rgba(0,188,212,0.25);
+  --scrollbar-h:rgba(0,188,212,0.45);
+  --error-bg:     rgba(255,82,82,0.18);
+  --error-border: rgba(255,82,82,0.40);
+  --error-fg:     #ff5252;
+}
+
+/* One Dark — Atom */
+[data-theme="one-dark"] {
+  --bg:         #282c34;
+  --surface:    #2c313a;
+  --surface-2:  #353b45;
+  --surface-3:  #3e4451;
+  --primary:    #61afef;
+  --on-primary: #0a1018;
+  --fg:         #abb2bf;
+  --fg-2:       #9099a8;
+  --fg-3:       #6b727e;
+  --fg-4:       #4f5666;
+  --scrollbar:  rgba(97,175,239,0.25);
+  --scrollbar-h:rgba(97,175,239,0.45);
+}
+
+/* Tokyo Night */
+[data-theme="tokyo-night"] {
+  --bg:         #1a1b26;
+  --surface:    #1f2335;
+  --surface-2:  #24283b;
+  --surface-3:  #2f3549;
+  --primary:    #7aa2f7;
+  --on-primary: #0a0c16;
+  --fg:         #c0caf5;
+  --fg-2:       #a9b1d6;
+  --fg-3:       #737aa2;
+  --fg-4:       #565f89;
+  --scrollbar:  rgba(122,162,247,0.25);
+  --scrollbar-h:rgba(122,162,247,0.45);
+}
+
+/* Nord — https://www.nordtheme.com/ */
+[data-theme="nord"] {
+  --bg:         #2e3440;
+  --surface:    #3b4252;
+  --surface-2:  #434c5e;
+  --surface-3:  #4c566a;
+  --primary:    #88c0d0;
+  --on-primary: #0c1218;
+  --fg:         #eceff4;
+  --fg-2:       #d8dee9;
+  --fg-3:       #9ba4b3;
+  --fg-4:       #6b7383;
+  --scrollbar:  rgba(136,192,208,0.25);
+  --scrollbar-h:rgba(136,192,208,0.45);
+}
+
+/* Solarized Dark — Ethan Schoonover */
+[data-theme="solarized-dark"] {
+  --bg:         #002b36;
+  --surface:    #073642;
+  --surface-2:  #0e4451;
+  --surface-3:  #19566a;
+  --primary:    #268bd2;
+  --on-primary: #001016;
+  --fg:         #93a1a1;
+  --fg-2:       #839496;
+  --fg-3:       #586e75;
+  --fg-4:       #475c63;
+  --scrollbar:  rgba(38,139,210,0.25);
+  --scrollbar-h:rgba(38,139,210,0.45);
+}
+
+/* Gruvbox Dark (medium) */
+[data-theme="gruvbox-dark"] {
+  --bg:         #282828;
+  --surface:    #32302f;
+  --surface-2:  #3c3836;
+  --surface-3:  #504945;
+  --primary:    #fabd2f;
+  --on-primary: #1a1200;
+  --fg:         #ebdbb2;
+  --fg-2:       #d5c4a1;
+  --fg-3:       #a89984;
+  --fg-4:       #7c6f64;
+  --scrollbar:  rgba(250,189,47,0.22);
+  --scrollbar-h:rgba(250,189,47,0.42);
+}
+
+/* Monokai */
+[data-theme="monokai"] {
+  --bg:         #272822;
+  --surface:    #2f3027;
+  --surface-2:  #3e3d32;
+  --surface-3:  #49483e;
+  --primary:    #a6e22e;
+  --on-primary: #15170a;
+  --fg:         #f8f8f2;
+  --fg-2:       #cfcfc2;
+  --fg-3:       #9b9b8c;
+  --fg-4:       #75715e;
+  --scrollbar:  rgba(166,226,46,0.22);
+  --scrollbar-h:rgba(166,226,46,0.42);
+}
+
+/* Catppuccin Mocha — https://catppuccin.com/ */
+[data-theme="catppuccin-mocha"] {
+  --bg:         #1e1e2e;
+  --surface:    #313244;
+  --surface-2:  #45475a;
+  --surface-3:  #585b70;
+  --primary:    #cba6f7;
+  --on-primary: #11111b;
+  --fg:         #cdd6f4;
+  --fg-2:       #bac2de;
+  --fg-3:       #a6adc8;
+  --fg-4:       #7f849c;
+  --scrollbar:  rgba(203,166,247,0.25);
+  --scrollbar-h:rgba(203,166,247,0.45);
+}
+
+/* Night Owl — Sarah Drasner */
+[data-theme="night-owl"] {
+  --bg:         #011627;
+  --surface:    #0b2942;
+  --surface-2:  #1d3b53;
+  --surface-3:  #2a4a64;
+  --primary:    #82aaff;
+  --on-primary: #001020;
+  --fg:         #d6deeb;
+  --fg-2:       #a5b5cb;
+  --fg-3:       #7e8aa1;
+  --fg-4:       #637777;
+  --scrollbar:  rgba(130,170,255,0.25);
+  --scrollbar-h:rgba(130,170,255,0.45);
+}
+
+/* Synthwave '84 — Robb Owen */
+[data-theme="synthwave"] {
+  --bg:         #2a2139;
+  --surface:    #34294a;
+  --surface-2:  #3f3158;
+  --surface-3:  #4a3a68;
+  --primary:    #ff7edb;
+  --on-primary: #1a0f1f;
+  --fg:         #f4f4ff;
+  --fg-2:       #cabaff;
+  --fg-3:       #9a86c9;
+  --fg-4:       #6a5e8c;
+  --scrollbar:  rgba(255,126,219,0.28);
+  --scrollbar-h:rgba(255,126,219,0.48);
+}
+
+/* GitHub Dark */
+[data-theme="github-dark"] {
+  --bg:         #0d1117;
+  --surface:    #161b22;
+  --surface-2:  #21262d;
+  --surface-3:  #30363d;
+  --primary:    #58a6ff;
+  --on-primary: #050a14;
+  --fg:         #c9d1d9;
+  --fg-2:       #b1bac4;
+  --fg-3:       #8b949e;
+  --fg-4:       #6e7681;
+  --scrollbar:  rgba(88,166,255,0.25);
+  --scrollbar-h:rgba(88,166,255,0.45);
+}
+
+/* Material Palenight */
+[data-theme="palenight"] {
+  --bg:         #292d3e;
+  --surface:    #2f3447;
+  --surface-2:  #383e54;
+  --surface-3:  #444b65;
+  --primary:    #82aaff;
+  --on-primary: #0e1320;
+  --fg:         #a6accd;
+  --fg-2:       #8c93b8;
+  --fg-3:       #6c739a;
+  --fg-4:       #4e537a;
+  --scrollbar:  rgba(130,170,255,0.25);
+  --scrollbar-h:rgba(130,170,255,0.45);
+}
+
+/* ─── Light themes ───────────────────────────────────────────────────────── */
+
+/* Solarized Light — Ethan Schoonover */
+[data-theme="solarized-light"] {
+  --bg:         #fdf6e3;
+  --surface:    #eee8d5;
+  --surface-2:  #e3ddc5;
+  --surface-3:  #d4cfb8;
+  --primary:    #268bd2;
+  --on-primary: #ffffff;
+  --fg:         #586e75;
+  --fg-2:       #657b83;
+  --fg-3:       #839496;
+  --fg-4:       #93a1a1;
+  --scrollbar:  rgba(38,139,210,0.25);
+  --scrollbar-h:rgba(38,139,210,0.45);
+}
+
+/* GitHub Light */
+[data-theme="github-light"] {
+  --bg:         #ffffff;
+  --surface:    #f6f8fa;
+  --surface-2:  #eaeef2;
+  --surface-3:  #d0d7de;
+  --primary:    #0969da;
+  --on-primary: #ffffff;
+  --fg:         #1f2328;
+  --fg-2:       #424a53;
+  --fg-3:       #656d76;
+  --fg-4:       #8c959f;
+  --scrollbar:  rgba(9,105,218,0.22);
+  --scrollbar-h:rgba(9,105,218,0.42);
+}
+
+/* Catppuccin Latte — https://catppuccin.com/ */
+[data-theme="catppuccin-latte"] {
+  --bg:         #eff1f5;
+  --surface:    #e6e9ef;
+  --surface-2:  #dce0e8;
+  --surface-3:  #ccd0da;
+  --primary:    #1e66f5;
+  --on-primary: #ffffff;
+  --fg:         #4c4f69;
+  --fg-2:       #5c5f77;
+  --fg-3:       #6c6f85;
+  --fg-4:       #7c7f93;
+  --scrollbar:  rgba(30,102,245,0.22);
+  --scrollbar-h:rgba(30,102,245,0.42);
+}
+
+/* One Light — Atom */
+[data-theme="one-light"] {
+  --bg:         #fafafa;
+  --surface:    #f0f0f0;
+  --surface-2:  #e5e5e6;
+  --surface-3:  #d3d3d3;
+  --primary:    #4078f2;
+  --on-primary: #ffffff;
+  --fg:         #383a42;
+  --fg-2:       #50545e;
+  --fg-3:       #696c77;
+  --fg-4:       #a0a1a7;
+  --scrollbar:  rgba(64,120,242,0.22);
+  --scrollbar-h:rgba(64,120,242,0.42);
+}
+
+/* Tokyo Night Light */
+[data-theme="tokyo-night-light"] {
+  --bg:         #d5d6db;
+  --surface:    #cbccd1;
+  --surface-2:  #c4c8da;
+  --surface-3:  #b2b5c1;
+  --primary:    #34548a;
+  --on-primary: #ffffff;
+  --fg:         #343b58;
+  --fg-2:       #4a5089;
+  --fg-3:       #6172b0;
+  --fg-4:       #8c8ca0;
+  --scrollbar:  rgba(52,84,138,0.22);
+  --scrollbar-h:rgba(52,84,138,0.42);
+}
+
+/* Ayu Light */
+[data-theme="ayu-light"] {
+  --bg:         #fafafa;
+  --surface:    #f3f4f5;
+  --surface-2:  #e7eaed;
+  --surface-3:  #d8dadc;
+  --primary:    #ff8f40;
+  --on-primary: #ffffff;
+  --fg:         #5c6166;
+  --fg-2:       #6d6f6e;
+  --fg-3:       #828c99;
+  --fg-4:       #abb0b6;
+  --scrollbar:  rgba(255,143,64,0.22);
+  --scrollbar-h:rgba(255,143,64,0.42);
+}
+
+/* Gruvbox Light */
+[data-theme="gruvbox-light"] {
+  --bg:         #fbf1c7;
+  --surface:    #ebdbb2;
+  --surface-2:  #d5c4a1;
+  --surface-3:  #bdae93;
+  --primary:    #b57614;
+  --on-primary: #ffffff;
+  --fg:         #3c3836;
+  --fg-2:       #504945;
+  --fg-3:       #665c54;
+  --fg-4:       #7c6f64;
+  --scrollbar:  rgba(181,118,20,0.22);
+  --scrollbar-h:rgba(181,118,20,0.42);
+}
+
+/* Quiet Light — VS Code */
+[data-theme="quiet-light"] {
+  --bg:         #f5f5f5;
+  --surface:    #ececec;
+  --surface-2:  #dde0e3;
+  --surface-3:  #c2c5c8;
+  --primary:    #4271ae;
+  --on-primary: #ffffff;
+  --fg:         #333333;
+  --fg-2:       #4d4d4c;
+  --fg-3:       #6f6f6f;
+  --fg-4:       #999999;
+  --scrollbar:  rgba(66,113,174,0.22);
+  --scrollbar-h:rgba(66,113,174,0.42);
+}
+
+/* Light+ — VS Code default light */
+[data-theme="light-plus"] {
+  --bg:         #ffffff;
+  --surface:    #f3f3f3;
+  --surface-2:  #ececec;
+  --surface-3:  #d4d4d4;
+  --primary:    #007acc;
+  --on-primary: #ffffff;
+  --fg:         #000000;
+  --fg-2:       #333333;
+  --fg-3:       #6b6b6b;
+  --fg-4:       #919191;
+  --scrollbar:  rgba(0,122,204,0.22);
+  --scrollbar-h:rgba(0,122,204,0.42);
+}
+
+/* Material Lighter */
+[data-theme="material-lighter"] {
+  --bg:         #fafafa;
+  --surface:    #ffffff;
+  --surface-2:  #eeffff;
+  --surface-3:  #d6d8d9;
+  --primary:    #6182b8;
+  --on-primary: #ffffff;
+  --fg:         #546e7a;
+  --fg-2:       #6c8290;
+  --fg-3:       #90a4ae;
+  --fg-4:       #b0bec5;
+  --scrollbar:  rgba(97,130,184,0.22);
+  --scrollbar-h:rgba(97,130,184,0.42);
+}
+
+/* Nord Light — Polar Night inverted with Snow + Frost */
+[data-theme="nord-light"] {
+  --bg:         #eceff4;
+  --surface:    #e5e9f0;
+  --surface-2:  #d8dee9;
+  --surface-3:  #c8d0db;
+  --primary:    #5e81ac;
+  --on-primary: #ffffff;
+  --fg:         #2e3440;
+  --fg-2:       #3b4252;
+  --fg-3:       #4c566a;
+  --fg-4:       #6b7383;
+  --scrollbar:  rgba(94,129,172,0.22);
+  --scrollbar-h:rgba(94,129,172,0.42);
+}
+
+/* Min Light — minimal */
+[data-theme="min-light"] {
+  --bg:         #fbfbfb;
+  --surface:    #f0f0f0;
+  --surface-2:  #e5e5e5;
+  --surface-3:  #d0d0d0;
+  --primary:    #2196f3;
+  --on-primary: #ffffff;
+  --fg:         #222222;
+  --fg-2:       #333333;
+  --fg-3:       #555555;
+  --fg-4:       #888888;
+  --scrollbar:  rgba(33,150,243,0.22);
+  --scrollbar-h:rgba(33,150,243,0.42);
+}
+
+/* ─── Base ───────────────────────────────────────────────────────────────── */
+
+html {
+  /* Smidge up from the browser default 16px → 17px. Tailwind's text-*
+     classes are rem-based, so every text-xs/sm/base/lg scales proportionally
+     (text-sm 14px → ~14.9px, text-base 16px → 17px). One knob, no
+     per-component churn. */
+  font-size: 17px;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  /* --font-sans is set by next/font/google (Inter) in layout.tsx. */
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+* { box-sizing: border-box; }
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-h); }
+
+/* Light-mode error palette + light-on-light border overrides — enumerate
+   each light theme id here when adding new ones. */
+[data-theme="solarized-light"],
+[data-theme="github-light"],
+[data-theme="catppuccin-latte"],
+[data-theme="one-light"],
+[data-theme="tokyo-night-light"],
+[data-theme="ayu-light"],
+[data-theme="gruvbox-light"],
+[data-theme="quiet-light"],
+[data-theme="light-plus"],
+[data-theme="material-lighter"],
+[data-theme="nord-light"],
+[data-theme="min-light"] {
+  --error-bg:     rgba(254,226,226,0.9);
+  --error-border: rgba(185,28,28,0.3);
+  --error-fg:     #b91c1c;
+}
+
+[data-theme="solarized-light"]   .border-white\/10,
+[data-theme="github-light"]      .border-white\/10,
+[data-theme="catppuccin-latte"]  .border-white\/10,
+[data-theme="one-light"]         .border-white\/10,
+[data-theme="tokyo-night-light"] .border-white\/10,
+[data-theme="ayu-light"]         .border-white\/10,
+[data-theme="gruvbox-light"]     .border-white\/10,
+[data-theme="quiet-light"]       .border-white\/10,
+[data-theme="light-plus"]        .border-white\/10,
+[data-theme="material-lighter"]  .border-white\/10,
+[data-theme="nord-light"]        .border-white\/10,
+[data-theme="min-light"]         .border-white\/10 { border-color: rgba(0,0,0,0.10) !important; }
+[data-theme="solarized-light"]   .border-white\/20,
+[data-theme="github-light"]      .border-white\/20,
+[data-theme="catppuccin-latte"]  .border-white\/20,
+[data-theme="one-light"]         .border-white\/20,
+[data-theme="tokyo-night-light"] .border-white\/20,
+[data-theme="ayu-light"]         .border-white\/20,
+[data-theme="gruvbox-light"]     .border-white\/20,
+[data-theme="quiet-light"]       .border-white\/20,
+[data-theme="light-plus"]        .border-white\/20,
+[data-theme="material-lighter"]  .border-white\/20,
+[data-theme="nord-light"]        .border-white\/20,
+[data-theme="min-light"]         .border-white\/20 { border-color: rgba(0,0,0,0.16) !important; }
+[data-theme="solarized-light"]   .divide-white\/10 > * + *,
+[data-theme="github-light"]      .divide-white\/10 > * + *,
+[data-theme="catppuccin-latte"]  .divide-white\/10 > * + *,
+[data-theme="one-light"]         .divide-white\/10 > * + *,
+[data-theme="tokyo-night-light"] .divide-white\/10 > * + *,
+[data-theme="ayu-light"]         .divide-white\/10 > * + *,
+[data-theme="gruvbox-light"]     .divide-white\/10 > * + *,
+[data-theme="quiet-light"]       .divide-white\/10 > * + *,
+[data-theme="light-plus"]        .divide-white\/10 > * + *,
+[data-theme="material-lighter"]  .divide-white\/10 > * + *,
+[data-theme="nord-light"]        .divide-white\/10 > * + *,
+[data-theme="min-light"]         .divide-white\/10 > * + * { border-color: rgba(0,0,0,0.10) !important; }
+
+/* ─── Prose (AI markdown) ────────────────────────────────────────────────── */
+
+.prose-ai p {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+}
+
+.prose-ai p:last-child { margin-bottom: 0; }
+
+.prose-ai h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--fg);
+  margin-top: 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.prose-ai h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--fg-2);
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.prose-ai ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.4rem 0;
+}
+
+.prose-ai ul li {
+  font-size: 0.875rem;
+  color: var(--fg-2);
+  padding: 0.15rem 0 0.15rem 1rem;
+  position: relative;
+}
+
+.prose-ai ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0.25rem;
+  color: var(--primary);
+  font-weight: bold;
+}
+
+.prose-ai strong {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+/* ─── Per-area surface tokens ────────────────────────────────────────────── */
+/* Each of the three main chrome surfaces (header bar, assistant message
+   bubble, composer pill) gets its own override token so operators can
+   restyle one without dragging the others along. All default to
+   var(--surface) so themes that don't set the per-area token look
+   identical to before.
+   Override examples in custom CSS / theme JSON:
+     --header-bg:           #1a1a2e;
+     --assistant-bubble-bg: rgba(255,255,255,0.04);
+     --composer-bg:         #0f0f1a;
+*/
+.chatframe-header           { background-color: var(--header-bg,           var(--surface)); }
+.chatframe-assistant-bubble { background-color: var(--assistant-bubble-bg, var(--surface)); }
+.chatframe-composer-pill    { background-color: var(--composer-bg,         var(--surface)); }
+
+/* ─── Header fade strip ──────────────────────────────────────────────────── */
+/* The header's surface color extended downward and faded to transparent
+   so the chat area's bg shows through smoothly underneath. 100% opaque
+   at top (same color as the header itself, no visible seam) → 0% opaque
+   at bottom (chat-area bg fully visible). Uses the same --header-bg
+   override so the fade always matches the header's actual color. */
+.chatframe-header { position: relative; }
+.chatframe-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 24px;
+  background: linear-gradient(to bottom, var(--header-bg, var(--surface)), transparent);
+  pointer-events: none;
+}
+
+/* ─── Composer fade strip ────────────────────────────────────────────────── */
+/* Mirror of the header fade, flipped: a 24px strip ABOVE the composer that
+   goes from transparent (top) to var(--bg) (bottom), so chat content
+   scrolling up to the composer dissolves into the page bg instead of
+   hitting a hard edge. (The page bg, not the composer surface — this
+   fade hides scroll content, not the composer pill.) */
+.chatframe-composer { position: relative; }
+.chatframe-composer::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 24px;
+  background: linear-gradient(to top, var(--bg), transparent);
+  pointer-events: none;
+}
+
+/* ─── Animations ─────────────────────────────────────────────────────────── */
+
+@keyframes bounce-dot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+.typing-dot:nth-child(1) { animation: bounce-dot 1.2s ease-in-out infinite 0ms; }
+.typing-dot:nth-child(2) { animation: bounce-dot 1.2s ease-in-out infinite 150ms; }
+.typing-dot:nth-child(3) { animation: bounce-dot 1.2s ease-in-out infinite 300ms; }

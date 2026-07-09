@@ -1,0 +1,17 @@
+# Next.js + Quill app — specific to this subfolder
+
+# Next.js build output
+.next/
+out/
+
+# next-pwa was removed (it caused stale-SW UI bugs after the mighty-ai-qr-web
+# fork). public/sw.js is now a hand-written self-destruct SW — checked in.
+# Workbox patterns remain ignored in case next-pwa is ever reintroduced.
+public/workbox-*.js
+public/workbox-*.js.map
+
+# Build artifacts
+tsconfig.tsbuildinfo
+
+# Local runtime data (if/when the app starts persisting)
+data/

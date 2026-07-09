@@ -1,0 +1,49 @@
+{
+  "name": "chatframe",
+  "version": "0.7.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build && rm -rf .next/standalone/.next/static .next/standalone/public .next/standalone/config && cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/public && cp -r config .next/standalone/config",
+    "start": "node --env-file-if-exists=.env.local --env-file-if-exists=config/.env .next/standalone/server.js",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@ai-sdk/amazon-bedrock": "^4.0.121",
+    "@ai-sdk/anthropic": "^3.0.86",
+    "@ai-sdk/cohere": "^3.0.39",
+    "@ai-sdk/google": "^3.0.83",
+    "@ai-sdk/groq": "^3.0.42",
+    "@ai-sdk/mistral": "^3.0.40",
+    "@ai-sdk/openai": "^3.0.74",
+    "@ai-sdk/openai-compatible": "^2.0.51",
+    "@ai-sdk/perplexity": "^3.0.36",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "ai": "^6.0.209",
+    "jsonwebtoken": "^9.0.3",
+    "mammoth": "^1.12.0",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-markdown": "^9.0.1",
+    "remark-gfm": "^4.0.0",
+    "token.js": "^0.7.1",
+    "unpdf": "^1.6.2",
+    "uuid": "^11.0.0",
+    "xlsx": "^0.18.5",
+    "yaml": "^2.9.0"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/uuid": "^10",
+    "autoprefixer": "^10",
+    "eslint": "^9",
+    "eslint-config-next": "^15.1.0",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}

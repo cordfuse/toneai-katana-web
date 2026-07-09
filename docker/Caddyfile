@@ -1,0 +1,18 @@
+# Caddy site config — reverse-proxies to the Chatframe app container.
+#
+# For a PUBLIC domain (Let's Encrypt auto-TLS):
+#   chatframe.example.com {
+#       reverse_proxy app:3000
+#   }
+#
+# For an INTERNAL hostname (Caddy's own self-signed CA — needed because
+# Let's Encrypt can't validate .internal / .lan / .local domains):
+#   `tls internal` tells Caddy to mint a cert from its built-in CA.
+#   Browsers will warn until you trust the Caddy root CA on your devices.
+#   Root cert lives at /data/caddy/pki/authorities/local/root.crt inside
+#   the caddy container (mounted as the caddy-data volume).
+
+chatframe.linux.internal {
+    tls internal
+    reverse_proxy app:3000
+}

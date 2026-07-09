@@ -1,0 +1,80 @@
+# Chatframe — single-host compose. Direct port exposure, no reverse proxy.
+# Use docker-compose.prod.yml for a Caddy-fronted TLS deployment.
+#
+# Quick start:
+#   1. cp .env.example .env             # then edit .env with your API keys
+#   2. docker compose up --build        # build + run
+#   3. open http://localhost:3008
+#
+# The container reads its branding/themes/MCP config from a host-mounted
+# volume (default: ../nodejs/config). Edit files in that dir on the host and
+# the next page request picks up the changes — no rebuild, no restart.
+#
+# Build context is the repo root so the Dockerfile can COPY from nodejs/.
+
+services:
+  chatframe:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: cordfuse/chatframe:dev
+    container_name: chatframe
+    restart: unless-stopped
+
+    # Host:container. Change the left side to whatever you want exposed
+    # on the host (3008 chosen to avoid conflicting with other dev servers).
+    ports:
+      - "3008:3000"
+
+    # Operator secrets live in .env (gitignored). Provider API keys, JWT
+    # secret, etc. See .env.example for the full list.
+    env_file:
+      - .env
+
+    environment:
+      # Where the app reads chatframe.config.json, chatframe-mcp.json, icons/, etc.
+      # Must match the container-side mount target below.
+      CHATFRAME_CONFIG_DIR: /app/config
+
+      # ── Defaults applied when the corresponding .env value is unset ──
+      # Operator overrides any of these by uncommenting the matching line
+      # in .env. Anything left at the default is just baseline behavior.
+
+      # Provider + model — default to anthropic / sonnet 4.6. Switch to
+      # any provider for which you've supplied an API key in .env.
+      CHATFRAME_PROVIDER: ${CHATFRAME_PROVIDER:-anthropic}
+      CHATFRAME_MODEL: ${CHATFRAME_MODEL:-claude-sonnet-4-6}
+
+      # System prompt + temperature — server-side defaults. Users can
+      # override per-conversation in the Settings panel (unless kiosk
+      # mode hides it; see flags below).
+      CHATFRAME_SYSTEM_PROMPT: ${CHATFRAME_SYSTEM_PROMPT:-You are a helpful AI assistant.}
+      CHATFRAME_TEMPERATURE: ${CHATFRAME_TEMPERATURE:-1.0}
+
+      # ── Kiosk visibility flags (1 = show, 0 = hide) ──
+      # When a control is hidden, the underlying feature still runs server-
+      # side using whatever's configured (see docs/kiosk-mode.md). To make
+      # something a true no-op, don't configure the backing key/server.
+      CHATFRAME_SHOW_SETTINGS:     ${CHATFRAME_SHOW_SETTINGS:-1}
+      CHATFRAME_PERSIST_CHAT:      ${CHATFRAME_PERSIST_CHAT:-1}
+      CHATFRAME_SHOW_WEB_SEARCH:   ${CHATFRAME_SHOW_WEB_SEARCH:-1}
+      CHATFRAME_SHOW_MCP:          ${CHATFRAME_SHOW_MCP:-1}
+      CHATFRAME_SHOW_MODEL_PICKER: ${CHATFRAME_SHOW_MODEL_PICKER:-1}
+      CHATFRAME_SHOW_ATTACHMENTS:  ${CHATFRAME_SHOW_ATTACHMENTS:-1}
+
+    volumes:
+      # The persistent config volume. Single mount point for ALL operator
+      # customizations: chatframe.config.json (branding + themes + welcome +
+      # starter prompts + icon paths), chatframe-mcp.json (MCP servers),
+      # icons/ (PNGs the config references via /branding/*).
+      #
+      # The default points at the in-repo config so a forker can `docker
+      # compose up` and see the canonical defaults. Replace with your own
+      # path for production:
+      #   - /srv/chatframe-config:/app/config
+      - ../nodejs/config:/app/config
+
+    # Lets the container reach services on the host machine — useful for
+    # local model providers (Ollama, LM Studio) running on the host.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
