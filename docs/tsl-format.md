@@ -1,10 +1,13 @@
 # The `.tsl` format — what we know
 
-> **Update 2026-07-09:** we now have KATANA MkII ground truth. The Katana
-> Librarian app stores patches as binary `.kat` files, reverse-engineered in
-> [kat-format.md](kat-format.md) from 20 factory samples. `.kat` is the binary
-> image of the same parameters `.tsl` holds as JSON. **Build against kat-format.md**
-> — this file remains only for the JSON/liveset side.
+> **Update 2026-07-09:** we now have decompiled ground truth — but for **KATANA
+> MkI**, not MkII. The Katana Librarian app stores patches as binary files
+> (`.kat` = MkI, `.kat2` = MkII, `.kat3` = MkIII), fully specced in
+> [kat-format.md](kat-format.md) from the app's bytecode + 20 factory samples.
+> `.kat` is the binary image of the same parameters `.tsl` holds as JSON.
+> **Build against kat-format.md** — this file remains only for the JSON/liveset
+> side. MkII/MkIII byte layouts are recoverable from the same bytecode but have
+> no sample files to validate against yet.
 
 Research notes, gathered before scaffolding. **Read this before writing a patch
 writer.** It separates verified fact from assumption, because most of what is
