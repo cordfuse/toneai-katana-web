@@ -1,5 +1,11 @@
 # The `.tsl` format — what we know
 
+> **Update 2026-07-09:** we now have KATANA MkII ground truth. The Katana
+> Librarian app stores patches as binary `.kat` files, reverse-engineered in
+> [kat-format.md](kat-format.md) from 20 factory samples. `.kat` is the binary
+> image of the same parameters `.tsl` holds as JSON. **Build against kat-format.md**
+> — this file remains only for the JSON/liveset side.
+
 Research notes, gathered before scaffolding. **Read this before writing a patch
 writer.** It separates verified fact from assumption, because most of what is
 published about `.tsl` is about a *different device*.
