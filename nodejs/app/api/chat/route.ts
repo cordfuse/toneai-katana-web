@@ -167,15 +167,10 @@ export async function POST(request: NextRequest) {
   // Web search: when toggle is hidden, force ON if TAVILY key is set
   // (otherwise silently off — no error, picker is hidden so user can't have
   // asked for it). When toggle is visible, honor the client flag.
-  const hasTavily = !!process.env.TAVILY_API_KEY
-  const wantWebSearch = true
-    ? !!webSearch
-    : hasTavily
-  if (true && wantWebSearch && !hasTavily) {
-    return NextResponse.json({
-      error: 'Web search is on but TAVILY_API_KEY isn\'t set on the server.',
-    }, { status: 503 })
-  }
+  // Web search runs through Anthropic's native web-search tool (resolveSearch
+  // wires it for the anthropic provider) — no Tavily key required. Tavily is
+  // only an alternative backend, so its absence must not 503 a search request.
+  const wantWebSearch = !!webSearch
 
   // MCP: when picker is hidden, use every configured + available server.
   // When picker is visible, honor the client's selection.
