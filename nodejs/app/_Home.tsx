@@ -112,9 +112,9 @@ function getChatframeBranding(): ChatframeBranding {
 
 // ─── icons ───────────────────────────────────────────────────────────────────
 
-// The header shows the icon (config/icons/icon-192.png via /branding) next to
-// the wordmark; the same icon set also drives the PWA install prompt, the
-// home-screen shortcut, and the browser tab.
+// The UI shows no app icon — just the wordmark. The icon set (config/icons via
+// /branding) still drives the PWA install prompt, home-screen shortcut, and
+// browser tab; it's simply not rendered in-page.
 
 // Up arrow, not a paper plane — pairs with StopIcon as a submit/halt toggle.
 // Stroked rather than filled so it reads at the same visual weight as the
@@ -953,13 +953,11 @@ function MessageItem({ msg, streaming, isLastAssistant, onEditAndResend, onRegen
 export default function Home({
   initialConvId,
   appName = 'ToneAI Kat',
-  iconUrl = '/branding/icon-192.png',
   welcomeMessage = '',
   starterPrompts = [],
 }: {
   initialConvId?: string
   appName?: string
-  iconUrl?: string
   welcomeMessage?: string
   starterPrompts?: string[]
 } = {}) {
@@ -1785,11 +1783,7 @@ export default function Home({
           {(
             // Hidden at lg+, where the sidebar is persistent (lg:relative) and
             // already shows the app name — the header copy would be a duplicate.
-            <span className="flex items-center gap-2 lg:hidden">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={iconUrl} alt="" width={24} height={24} className="h-6 w-6 rounded shrink-0" />
-              <h1 className="text-sm font-medium text-fg">{appName}</h1>
-            </span>
+            <h1 className="text-sm font-medium text-fg lg:hidden">{appName}</h1>
           )}
           <div className="flex-1" />
           {/* Free-tier counter. Hidden entirely in BYOK mode — a countdown
