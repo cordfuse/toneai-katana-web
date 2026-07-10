@@ -208,19 +208,20 @@ export async function fetchServerLog(): Promise<LogEntry[]> {
 
 /**
  * Build the merged client+server diagnostic log and trigger a browser download.
- * Client and server entries are unioned and sorted by timestamp into one JSONL
- * file — the single artifact a user sends when reporting an issue.
+ * Client and server entries are unioned and sorted by timestamp into one plain
+ * .txt file (one JSON object per line) — the single artifact a user sends when
+ * reporting an issue.
  */
 export async function downloadDiagnostics(): Promise<void> {
   const [server, client] = [await fetchServerLog(), getClientLog()]
   const merged = [...client, ...server].sort((a, b) => a.ts - b.ts)
-  const jsonl = merged.map((e) => JSON.stringify(e)).join('\n') + '\n'
-  const blob = new Blob([jsonl], { type: 'application/x-ndjson' })
+  const text = merged.map((e) => JSON.stringify(e)).join('\n') + '\n'
+  const blob = new Blob([text], { type: 'text/plain' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   const stamp = new Date().toISOString().replace(/[:.]/g, '-')
   a.href = url
-  a.download = `toneai-log-${stamp}.jsonl`
+  a.download = `toneai-log-${stamp}.txt`
   document.body.appendChild(a)
   a.click()
   a.remove()

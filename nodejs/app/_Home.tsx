@@ -590,7 +590,7 @@ function SettingsPanel({
             )}
           </div>
 
-          {/* Diagnostics — download a single JSONL of client + server events for
+          {/* Diagnostics — download a single .txt of client + server events for
               this browser, for reporting issues. Contains your prompts and the
               tones generated; secrets are scrubbed out before it is written. */}
           <div>
