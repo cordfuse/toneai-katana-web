@@ -7,7 +7,7 @@ import type { KatanaDevice } from '@/lib/storage'
 import { TONE_PATCH_SCHEMA } from '@/lib/patch/schema'
 import {
   writePatchTsl, tslString, tslFilename,
-  AMP_NAMES, OD_DS_NAMES, DELAY_NAMES, REVERB_NAMES,
+  AMP_NAMES, OD_DS_NAMES, FX_NAMES, DELAY_NAMES, REVERB_NAMES,
   type TonePatch,
 } from '@/lib/patch'
 
@@ -29,11 +29,16 @@ export function katanaSystemPrompt(ctx: ToneContext): string {
     `Target amp: ${ctx.deviceLabel}.`,
     ctx.rig ? `Their guitar: ${ctx.rig}. Voice the patch for that instrument.` : ``,
     ``,
-    `When the player asks for a tone, you MUST call the design_tone_patch tool with a complete patch. Choose the amp voicing, gain staging, EQ, booster/overdrive, and time-based effects that best match the request. Only use amp and effect names from these lists:`,
+    `When a request names a song, artist, or specific recorded tone whose real rig or settings you are not certain of, use the web_search tool FIRST to ground your choices — the player's actual amp, pedals, and known settings — then design. When the request is a plain description ("warm clean", "tight metal"), no search is needed.`,
+    ``,
+    `When the player asks for a tone, you MUST call the design_tone_patch tool with a complete patch. Choose the amp voicing, gain staging, EQ, booster/overdrive, modulation, and time-based effects that best match the request. Only use amp and effect names from these lists:`,
     `- Amps: ${AMP_NAMES.join(', ')}.`,
     `- Overdrive/booster: ${OD_DS_NAMES.join(', ')}.`,
+    `- Mod / FX (two slots, fx1 and fx2): ${FX_NAMES.join(', ')}.`,
     `- Delay: ${DELAY_NAMES.join(', ')}.`,
     `- Reverb: ${REVERB_NAMES.join(', ')}.`,
+    ``,
+    `The KATANA has two mod/FX slots (fx1, fx2). Reach for them whenever the sound genuinely calls for movement or shaping — chorus for shimmer and 80s cleans, phaser or flanger for sweep, tremolo for surf and vintage pulse, a compressor for tight funk or country picking, an EQ or wah where it belongs. Don't force effects onto a dry, direct tone, but don't leave the slots empty out of habit either: if the reference tone has modulation, use it.`,
     ``,
     `Knobs are 0–100. Keep the patch name under 16 characters. After the tool call, briefly (2–3 sentences) explain the choices in plain language — the amp and why, the drive, the key effects. Do not print the raw parameters; the app shows those. If the player is just chatting and not asking for a tone, answer normally without calling the tool.`,
   ].filter(Boolean).join('\n')
