@@ -40,6 +40,20 @@ function youtubeUrl(tone: TonePatchResult): string {
   return `https://www.youtube.com/results?search_query=${encodeURIComponent(q + ' guitar')}`
 }
 
+/** The mod/FX knobs a slot carries, in display order — only the ones the effect
+ *  actually set (the writer defaults the rest). Empty when the slot is off. */
+function fxParams(fx: TonePatch['fx1']): [string, number][] | undefined {
+  if (!fx?.on) return undefined
+  const order: [keyof NonNullable<TonePatch['fx1']>, string][] = [
+    ['rate', 'rate'], ['depth', 'depth'], ['reso', 'reso'],
+    ['sustain', 'sustain'], ['attack', 'attack'], ['tone', 'tone'], ['level', 'level'],
+  ]
+  const rows = order
+    .map(([k, label]) => [label, fx[k]] as [string, unknown])
+    .filter((r): r is [string, number] => typeof r[1] === 'number')
+  return rows.length ? rows : undefined
+}
+
 /** Flatten a patch into display rows for the scrollable settings list. */
 interface SettingRow { block: string; on: boolean; detail: string; params?: [string, number][] }
 function patchRows(p: TonePatch): SettingRow[] {
@@ -53,8 +67,8 @@ function patchRows(p: TonePatch): SettingRow[] {
     block: 'Booster / OD', on: p.booster.on, detail: p.booster.on ? p.booster.type : 'off',
     params: p.booster.on ? [['drive', p.booster.drive], ['tone', p.booster.tone], ['level', p.booster.level]] : undefined,
   })
-  if (p.fx1) rows.push({ block: 'FX 1', on: p.fx1.on, detail: p.fx1.on ? p.fx1.type : 'off' })
-  if (p.fx2) rows.push({ block: 'FX 2', on: p.fx2.on, detail: p.fx2.on ? p.fx2.type : 'off' })
+  if (p.fx1) rows.push({ block: 'FX 1', on: p.fx1.on, detail: p.fx1.on ? p.fx1.type : 'off', params: fxParams(p.fx1) })
+  if (p.fx2) rows.push({ block: 'FX 2', on: p.fx2.on, detail: p.fx2.on ? p.fx2.type : 'off', params: fxParams(p.fx2) })
   rows.push({
     block: 'Delay', on: p.delay.on, detail: p.delay.on ? p.delay.type : 'off',
     params: p.delay.on ? [['time(ms)', p.delay.timeMs], ['f.back', p.delay.feedback], ['level', p.delay.level]] : undefined,

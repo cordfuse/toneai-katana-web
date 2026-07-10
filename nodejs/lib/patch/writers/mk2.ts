@@ -16,9 +16,9 @@
 //      needs the 2×7 encoding + exact ranges, not yet pinned. On/off, type, and
 //      the 0–100 knobs (all single-byte) are placed.
 
-import type { TonePatch } from '../intent'
+import type { TonePatch, ModFx } from '../intent'
 import { AMP_BY_NAME, OD_DS_BY_NAME, FX_BY_NAME, DELAY_BY_NAME, REVERB_BY_NAME } from '../enums'
-import { MK2_SECTIONS, MK2_OFFSETS } from '../mk2/sections'
+import { MK2_SECTIONS, MK2_OFFSETS, FX_PARAM_LAYOUT } from '../mk2/sections'
 import { type SectionMap, toTsl } from '../tsl'
 import { scaleKnob, writePatchName as writeName16 } from '../writer'
 
@@ -49,6 +49,20 @@ function put(sections: SectionMap, slot: Slot, value: number): void {
   arr[slot.offset] = value < 0 ? 0 : value > 127 ? 127 : Math.round(value)
 }
 
+/** Write one FX slot: on flag, type, and every modelled sub-param for that type.
+ *  A param the model set is used as-is; one it left unset gets the effect's
+ *  musical default — never a zero, which would mute the effect. */
+function writeFx(sections: SectionMap, section: string, onSlot: Slot, typeSlot: Slot, fx: ModFx): void {
+  put(sections, onSlot, 1)
+  put(sections, typeSlot, enumByte(FX_BY_NAME, fx.type, 'FX type'))
+  const layout = FX_PARAM_LAYOUT[fx.type]
+  if (!layout) return
+  for (const { knob, offset, def } of layout) {
+    const v = fx[knob]
+    put(sections, { section, offset }, scaleKnob(typeof v === 'number' ? v : def))
+  }
+}
+
 /** Build the MkII section map from tone intent. */
 export function buildMk2Sections(patch: TonePatch): SectionMap {
   const s = freshSections()
@@ -76,9 +90,10 @@ export function buildMk2Sections(patch: TonePatch): SectionMap {
     put(s, O.odLevel, scaleKnob(patch.booster.level))
   }
 
-  // Mod/FX — type only for now (sub-param trees per type not yet modelled).
-  if (patch.fx1?.on) { put(s, O.fx1On, 1); put(s, O.fx1Type, enumByte(FX_BY_NAME, patch.fx1.type, 'FX type')) }
-  if (patch.fx2?.on) { put(s, O.fx2On, 1); put(s, O.fx2Type, enumByte(FX_BY_NAME, patch.fx2.type, 'FX type')) }
+  // Mod/FX — on, type, and the modelled sub-params (FX_PARAM_LAYOUT). Effect
+  // types outside the layout write type-only, which is correct.
+  if (patch.fx1?.on) writeFx(s, 'Fx(1)', O.fx1On, O.fx1Type, patch.fx1)
+  if (patch.fx2?.on) writeFx(s, 'Fx(2)', O.fx2On, O.fx2Type, patch.fx2)
 
   // Delay — TIME is multi-byte (2×7); left at default until pinned.
   put(s, O.delayOn, patch.delay.on ? 1 : 0)

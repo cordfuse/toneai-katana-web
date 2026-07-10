@@ -44,10 +44,21 @@ export interface Booster {
 
 export interface ModFx {
   on: boolean
-  /** One of the shared MOD/FX pool (enums.ts FX_TYPES). Sub-params are not yet
-   *  modelled — the writer applies the type and leaves defaults until the
-   *  per-type trees are traced. */
+  /** One of the shared MOD/FX pool (enums.ts FX_TYPES). */
   type: FxName
+  // Common mod/dynamics knobs (0–100). Which apply depends on `type` — the writer
+  // maps each to that effect's real byte offset (mk2 FX_PARAM_LAYOUT) and stamps a
+  // musical default for any left unset, so an "on" effect is never silent. Effect
+  // types outside the modelled set ignore these and write type-only.
+  rate?: Knob
+  depth?: Knob
+  level?: Knob
+  /** Resonance / feedback — phaser, flanger. */
+  reso?: Knob
+  /** Compressor: sustain, attack, tone. */
+  sustain?: Knob
+  attack?: Knob
+  tone?: Knob
 }
 
 export interface Delay {

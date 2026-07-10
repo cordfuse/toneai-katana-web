@@ -94,3 +94,60 @@ export const MK2_OFFSETS = {
   fx2On:   { section: 'Fx(2)', offset: 0 },
   fx2Type: { section: 'Fx(2)', offset: 1 },
 } as const
+
+/** One tunable knob within an FX effect: which ModFx field feeds it, the byte
+ *  offset inside the FX section, and a musical default stamped when the field is
+ *  unset (so an "on" effect is never left with zeroed — silent — parameters). */
+export interface FxParamSlot {
+  knob: 'rate' | 'depth' | 'level' | 'reso' | 'sustain' | 'attack' | 'tone'
+  offset: number
+  def: number
+}
+
+// Per-effect sub-parameter layout inside an FX section. Offsets are relative to
+// the FX section base and are identical for Fx(1) and Fx(2) (verified against
+// mk2/param-table.json). Only the mod/dynamics effects the designer reaches for
+// are modelled; any FX type NOT listed here is written type-only (byte 0/1),
+// which is correct for effects whose params we don't yet expose. Defaults are in
+// 0–100 knob space; the writer scales them like every other knob.
+export const FX_PARAM_LAYOUT: Record<string, readonly FxParamSlot[]> = {
+  Comp: [
+    { knob: 'sustain', offset: 23, def: 60 },
+    { knob: 'attack', offset: 24, def: 45 },
+    { knob: 'tone', offset: 25, def: 50 },
+    { knob: 'level', offset: 26, def: 60 },
+  ],
+  Phaser: [
+    { knob: 'rate', offset: 127, def: 45 },
+    { knob: 'depth', offset: 128, def: 60 },
+    { knob: 'reso', offset: 130, def: 40 },
+    { knob: 'level', offset: 132, def: 60 },
+  ],
+  Flanger: [
+    { knob: 'rate', offset: 134, def: 35 },
+    { knob: 'depth', offset: 135, def: 55 },
+    { knob: 'reso', offset: 137, def: 45 },
+    { knob: 'level', offset: 139, def: 60 },
+  ],
+  Tremolo: [
+    { knob: 'rate', offset: 142, def: 55 },
+    { knob: 'depth', offset: 143, def: 65 },
+    { knob: 'level', offset: 144, def: 60 },
+  ],
+  Vibrato: [
+    { knob: 'rate', offset: 159, def: 45 },
+    { knob: 'depth', offset: 160, def: 55 },
+    { knob: 'level', offset: 163, def: 60 },
+  ],
+  // Katana "Chorus" runs the 2x2 (dual-band) stereo-chorus engine — one rate/
+  // depth/level pair per band. We drive both bands from the same knobs so a
+  // single "chorus, subtle" intent maps sensibly.
+  Chorus: [
+    { knob: 'rate', offset: 176, def: 40 },
+    { knob: 'depth', offset: 177, def: 50 },
+    { knob: 'level', offset: 179, def: 70 },
+    { knob: 'rate', offset: 180, def: 40 },
+    { knob: 'depth', offset: 181, def: 50 },
+    { knob: 'level', offset: 183, def: 70 },
+  ],
+}

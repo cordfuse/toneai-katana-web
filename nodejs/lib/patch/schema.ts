@@ -23,6 +23,28 @@ const ampChannel = {
   },
 } as const
 
+// A mod/FX slot. Only `on` + `type` are required; the knobs are optional and
+// which ones matter depends on the effect. Set the ones that apply — the writer
+// stamps a musical default for any you omit. Modulation (Chorus, Phaser,
+// Flanger, Tremolo, Vibrato): rate, depth, level (+ reso for Phaser/Flanger).
+// Comp: sustain, attack, tone, level. Other effect types ignore the knobs.
+const modFx = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['on', 'type'],
+  properties: {
+    on: { type: 'boolean' },
+    type: { type: 'string', enum: [...FX_NAMES] },
+    rate: { ...knob, description: 'Modulation speed (Chorus/Phaser/Flanger/Tremolo/Vibrato).' },
+    depth: { ...knob, description: 'Modulation depth.' },
+    level: { ...knob, description: 'Effect output level.' },
+    reso: { ...knob, description: 'Resonance/feedback (Phaser, Flanger).' },
+    sustain: { ...knob, description: 'Compressor sustain.' },
+    attack: { ...knob, description: 'Compressor attack.' },
+    tone: { ...knob, description: 'Compressor tone.' },
+  },
+} as const
+
 export const TONE_PATCH_SCHEMA = {
   type: 'object',
   additionalProperties: false,
@@ -49,24 +71,8 @@ export const TONE_PATCH_SCHEMA = {
       },
     },
 
-    fx1: {
-      type: 'object',
-      additionalProperties: false,
-      required: ['on', 'type'],
-      properties: {
-        on: { type: 'boolean' },
-        type: { type: 'string', enum: [...FX_NAMES], description: 'Modulation/FX block 1.' },
-      },
-    },
-    fx2: {
-      type: 'object',
-      additionalProperties: false,
-      required: ['on', 'type'],
-      properties: {
-        on: { type: 'boolean' },
-        type: { type: 'string', enum: [...FX_NAMES], description: 'Modulation/FX block 2.' },
-      },
-    },
+    fx1: { ...modFx, description: 'Modulation/FX block 1.' },
+    fx2: { ...modFx, description: 'Modulation/FX block 2.' },
 
     delay: {
       type: 'object',
