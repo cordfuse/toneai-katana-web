@@ -1919,7 +1919,7 @@ export default function Home({
         setQuotaVersion(v => v + 1)
       }
     }
-  }, [activeId, conversations, provider, model, webSearch, apiKey, customSystemPrompt, customTemperature, buildWireMessages, updateUrl])
+  }, [activeId, conversations, provider, model, webSearch, apiKey, customSystemPrompt, customTemperature, device, gear, position, buildWireMessages, updateUrl])
 
   // One-click starter prompts: skip the input field entirely, fire the
   // prompt as a user message immediately. Mirrors the empty-state chip
