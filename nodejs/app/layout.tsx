@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
-import { loadChatframeConfig } from '@/lib/config'
+import { loadToneaiConfig } from '@/lib/config'
 import { resolveLocale } from '@/lib/i18n/server'
 import { I18nProvider } from '@/lib/i18n/client'
 import { resolveLocalizableString, resolveLocalizableStringArray } from '@/lib/i18n'
@@ -25,7 +25,7 @@ const inter = Inter({
 // trigger dynamic evaluation). Lets the config file changes flow without
 // rebuild.
 export async function generateMetadata(): Promise<Metadata> {
-  const { config, localeCodes, defaultLocale } = loadChatframeConfig()
+  const { config, localeCodes, defaultLocale } = loadToneaiConfig()
   const activeLocale = await resolveLocale(localeCodes, defaultLocale)
   return {
     title: config.name,
@@ -35,12 +35,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export async function generateViewport(): Promise<Viewport> {
-  const { themeColor } = loadChatframeConfig()
+  const { themeColor } = loadToneaiConfig()
   return { themeColor, width: 'device-width', initialScale: 1 }
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const { config, themeCss, customCss, allowedThemeIds, defaultTheme, locales, localeCodes, defaultLocale } = loadChatframeConfig()
+  const { config, themeCss, customCss, allowedThemeIds, defaultTheme, locales, localeCodes, defaultLocale } = loadToneaiConfig()
 
   // Resolve the per-request locale: cookie wins, else server default.
   // Done server-side so SSR renders directly in the chosen locale —
@@ -55,14 +55,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const themeBootstrap = `(function(){try{var T={${allowedThemeIds.map(id => `'${id}':1`).join(',')}};var t=localStorage.getItem('katana_theme');document.documentElement.setAttribute('data-theme',T[t]?t:'${defaultTheme}')}catch(e){}})()`
   // Resolve any localizable operator content to the active locale BEFORE
   // shipping it to the client. The client never sees the per-locale map
-  // shape — by the time strings hit window.__CHATFRAME, they're plain values
+  // shape — by the time strings hit window.__TONEAI, they're plain values
   // matching the active locale. (Languages-resolved-at-server-render is
   // the same pattern as t() lookups; consistent locale story.)
   const resolvedTagline = resolveLocalizableString(config.tagline, activeLocale)
   const resolvedWelcome = resolveLocalizableString(config.welcomeMessage, activeLocale)
   const resolvedStarters = resolveLocalizableStringArray(config.starterPrompts, activeLocale)
 
-  const configBootstrap = `window.__CHATFRAME=${JSON.stringify({
+  const configBootstrap = `window.__TONEAI=${JSON.stringify({
     name: config.name,
     shortName: config.shortName,
     icon192: config.icon192,
@@ -86,7 +86,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     >
       <head>
         {/* Block browser auto-translate (Chrome on Android is the
-            common offender). Chatframe's own i18n handles language
+            common offender). ToneAI Kat's own i18n handles language
             switching; auto-translate would clobber strings, break
             voice locale alignment, and produce confusing mismatches
             between picked language and visible text. The translate="no"

@@ -4,7 +4,7 @@ import { checkAndIncrementQuota } from '@/lib/server/quota'
 import {
   runChat, runChatStream, findProvider, isModelValidForProvider,
 } from '@/lib/server/ai-tools'
-import { loadChatframeConfig } from '@/lib/config'
+import { loadToneaiConfig } from '@/lib/config'
 import { listServers } from '@/lib/server/mcp'
 import { createStream, attachReplay } from '@/lib/server/stream-buffer'
 import { resolveLocalizableString, languageNameForLocale } from '@/lib/i18n'
@@ -47,19 +47,19 @@ function resolveToneContext(rawDevice: unknown, rawRig: unknown): ToneContext {
 
 export const maxDuration = 300
 
-const ENV_PROVIDER = process.env.CHATFRAME_PROVIDER ?? 'anthropic'
-// The default chat model — env-driven (CHATFRAME_MODEL), Sonnet by default.
+const ENV_PROVIDER = process.env.TONEAI_PROVIDER ?? 'anthropic'
+// The default chat model — env-driven (TONEAI_MODEL), Sonnet by default.
 // Same source the provider registry uses, so client and server agree.
 const ENV_MODEL = DEFAULT_MODEL
 
 // Auto-append a one-line language instruction so the model knows to
 // respond in the user's chosen UI language. English is the no-op default
 // since most system prompts and model defaults already use English.
-// Operator can opt out by setting CHATFRAME_LOCALE_HINT=0 (mostly useful
+// Operator can opt out by setting TONEAI_LOCALE_HINT=0 (mostly useful
 // during testing or for prompts that already handle this).
 function applyLocaleHint(systemPrompt: string, locale: string): string {
   if (locale === 'en') return systemPrompt
-  if (process.env.CHATFRAME_LOCALE_HINT === '0') return systemPrompt
+  if (process.env.TONEAI_LOCALE_HINT === '0') return systemPrompt
   const language = languageNameForLocale(locale)
   return `${systemPrompt}\n\nRespond in ${language} unless the user writes in a different language.`
 }
@@ -76,7 +76,7 @@ function envNumber(name: string): number | undefined {
 }
 function resolveTemperature(clientValue: unknown): number {
   if (typeof clientValue === 'number' && Number.isFinite(clientValue)) return clientValue
-  return envNumber('CHATFRAME_TEMPERATURE') ?? HARDCODED_TEMPERATURE
+  return envNumber('TONEAI_TEMPERATURE') ?? HARDCODED_TEMPERATURE
 }
 export async function POST(request: NextRequest) {
   console.log('[chat] request received')
@@ -209,11 +209,11 @@ export async function POST(request: NextRequest) {
     mcpServers = all.filter(s => s.available).map(s => s.id)
   }
 
-  // Resolve the active UI locale from the chatframe_locale cookie so the
+  // Resolve the active UI locale from the toneai_locale cookie so the
   // system prompt picks up its localized variant AND we can auto-append
   // a "Respond in <language>." instruction. Falls back to the deploy
-  // default (CHATFRAME_LOCALE env, then 'en').
-  const { localeCodes, defaultLocale } = loadChatframeConfig()
+  // default (TONEAI_LOCALE env, then 'en').
+  const { localeCodes, defaultLocale } = loadToneaiConfig()
   const activeLocale = await resolveLocale(localeCodes, defaultLocale)
   // The tone-designer prompt + schema are the product and stay server-side; the
   // client cannot override them (docs/settings.md § Inference is server-side).
@@ -328,7 +328,7 @@ export async function POST(request: NextRequest) {
         Connection:           'keep-alive',
         // The stream id lets the client reconnect to /api/chat/replay/[id]
         // with a Last-Event-ID header if the connection drops mid-flight.
-        'X-Chatframe-Stream-Id':  streamId,
+        'X-Toneai-Stream-Id':  streamId,
       },
     })
   }

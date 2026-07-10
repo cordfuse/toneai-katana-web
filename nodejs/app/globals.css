@@ -409,9 +409,9 @@ html, body {
      --assistant-bubble-bg: rgba(255,255,255,0.04);
      --composer-bg:         #0f0f1a;
 */
-.chatframe-header           { background-color: var(--header-bg,           var(--surface)); }
-.chatframe-assistant-bubble { background-color: var(--assistant-bubble-bg, var(--surface)); }
-.chatframe-composer-pill    { background-color: var(--composer-bg,         var(--surface)); }
+.toneai-header           { background-color: var(--header-bg,           var(--surface)); }
+.toneai-assistant-bubble { background-color: var(--assistant-bubble-bg, var(--surface)); }
+.toneai-composer-pill    { background-color: var(--composer-bg,         var(--surface)); }
 
 /* ─── Header fade strip ──────────────────────────────────────────────────── */
 /* The header's surface color extended downward and faded to transparent
@@ -419,8 +419,8 @@ html, body {
    at top (same color as the header itself, no visible seam) → 0% opaque
    at bottom (chat-area bg fully visible). Uses the same --header-bg
    override so the fade always matches the header's actual color. */
-.chatframe-header { position: relative; }
-.chatframe-header::after {
+.toneai-header { position: relative; }
+.toneai-header::after {
   content: '';
   position: absolute;
   left: 0;
@@ -437,8 +437,8 @@ html, body {
    scrolling up to the composer dissolves into the page bg instead of
    hitting a hard edge. (The page bg, not the composer surface — this
    fade hides scroll content, not the composer pill.) */
-.chatframe-composer { position: relative; }
-.chatframe-composer::before {
+.toneai-composer { position: relative; }
+.toneai-composer::before {
   content: '';
   position: absolute;
   left: 0;

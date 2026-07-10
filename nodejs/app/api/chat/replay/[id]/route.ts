@@ -3,7 +3,7 @@ import { getDeviceIdFromRequest } from '@/lib/server/jwt'
 import { attachReplay } from '@/lib/server/stream-buffer'
 
 // Reconnect endpoint for in-flight chat streams. The original POST returns an
-// `X-Chatframe-Stream-Id` header; the client stashes it and the last SSE event id
+// `X-Toneai-Stream-Id` header; the client stashes it and the last SSE event id
 // it received. If the reader dies mid-flight (mobile tab backgrounded,
 // proxy timeout, network blip), the client calls this with the streamId in
 // the URL and `Last-Event-ID` in headers to pick up exactly where it left off.

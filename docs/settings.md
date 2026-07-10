@@ -164,7 +164,7 @@ Consequences, in the order they'll bite:
 
 ### Drop the inherited provider stack
 
-The fork carries **nine `@ai-sdk/*` providers** from chatframe (bedrock, cohere,
+The fork carries **nine `@ai-sdk/*` providers** from the scaffold (bedrock, cohere,
 google, groq, mistral, openai, openai-compatible, perplexity, anthropic) and
 defaults to Google Gemini. Anthropic-only means: keep `@ai-sdk/anthropic`,
 delete the other eight, remove the PROVIDER row from the settings panel, and

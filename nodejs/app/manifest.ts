@@ -1,19 +1,19 @@
 import type { MetadataRoute } from 'next'
-import { loadChatframeConfig } from '@/lib/config'
+import { loadToneaiConfig } from '@/lib/config'
 import { resolveLocalizableString } from '@/lib/i18n'
 
-// PWA manifest. Read from chatframe.config.json on each request so dropping a
+// PWA manifest. Read from toneai.config.json on each request so dropping a
 // new config file picks up immediately (browser/OS will still cache the
 // installed PWA's shortcut icon — that's outside our control).
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export default function manifest(): MetadataRoute.Manifest {
-  const { config, themeColor, defaultLocale } = loadChatframeConfig()
+  const { config, themeColor, defaultLocale } = loadToneaiConfig()
   // Manifest uses the deploy-default locale (not per-request cookie):
   // the browser caches the installed PWA's manifest, so picking a per-
   // request locale here would only be visible during install. Defaulting
-  // to CHATFRAME_LOCALE keeps the installed-app description stable.
+  // to TONEAI_LOCALE keeps the installed-app description stable.
   return {
     // No `id` field — Chrome falls back to start_url ('/') as the canonical
     // PWA identifier. Previously we set `id: "/?app=<shortName>"` which (a)

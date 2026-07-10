@@ -2,10 +2,10 @@
 // Inspired by mighty-ai-qr-web's split (a Sonnet workhorse + Haiku for the
 // light QR-identify call).
 //
-//   CHATFRAME_MODEL        the DEFAULT chat model. Tone design needs real
+//   TONEAI_MODEL        the DEFAULT chat model. Tone design needs real
 //                          reasoning (web research + a constrained schema), so
 //                          this is a Sonnet-tier model, NOT Opus.
-//   CHATFRAME_MODEL_LIGHT  for processes that DON'T need deep reasoning
+//   TONEAI_MODEL_LIGHT  for processes that DON'T need deep reasoning
 //                          (classification, short titling, extraction). Haiku.
 //
 // Both must be a model id present in the active provider's `models[]` list
@@ -13,5 +13,5 @@
 // provider's `defaultModel` at registry load (ai-tools.ts), so the client
 // picker and the server agree on one env-driven default.
 
-export const DEFAULT_MODEL = process.env.CHATFRAME_MODEL?.trim() || 'claude-sonnet-5'
-export const LIGHT_MODEL = process.env.CHATFRAME_MODEL_LIGHT?.trim() || 'claude-haiku-4-5'
+export const DEFAULT_MODEL = process.env.TONEAI_MODEL?.trim() || 'claude-sonnet-5'
+export const LIGHT_MODEL = process.env.TONEAI_MODEL_LIGHT?.trim() || 'claude-haiku-4-5'

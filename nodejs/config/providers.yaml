@@ -1,7 +1,7 @@
 # ToneAI-KATANA provider + model registry.
 #
-# This app is ANTHROPIC-ONLY. The multi-provider registry inherited from
-# chatframe was removed on 2026-07-09 — see docs/settings.md § Providers and
+# This app is ANTHROPIC-ONLY. The multi-provider registry inherited from the
+# chat-framework scaffold was removed on 2026-07-09 — see docs/settings.md § Providers and
 # the free tier. Do not re-add OpenAI/Gemini/Bedrock/local entries here: the
 # system prompt and tone-intent schema are tuned for Claude, and the free
 # tier's quota accounting assumes a single upstream.
