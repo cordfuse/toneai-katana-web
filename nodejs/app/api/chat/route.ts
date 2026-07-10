@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDeviceIdFromRequest } from '@/lib/server/jwt'
-import { checkAndIncrementQuota } from '@/lib/server/quota'
+import { checkAndIncrementQuota, refundQuota } from '@/lib/server/quota'
 import {
   runChat, runChatStream, findProvider, isModelValidForProvider,
 } from '@/lib/server/ai-tools'
@@ -142,24 +142,29 @@ export async function POST(request: NextRequest) {
   }
 
   // Free mode needs the server's key. BYOK brings its own, so the server's
-  // key being absent is not an error on that path.
+  // key being absent is not an error on that path. Keep the message generic —
+  // don't leak the internal env-var name to end users; guide them to BYOK.
   if (!byokKey && providerInfo.category === 'cloud') {
     const requiredKey = providerInfo.envKey
     if (requiredKey && !process.env[requiredKey]) {
       return NextResponse.json({
-        error: `Service unavailable — ${requiredKey} not set for provider '${providerId}'.`,
+        error: "The free tier isn't available right now. Add your own Anthropic API key in Settings to continue.",
       }, { status: 503 })
     }
   }
 
   // Quota: free mode only, a single shared daily pool. BYOK bypasses it (it
-  // costs us no tokens).
+  // costs us no tokens). The slot is reserved up front (before the LLM call)
+  // so concurrent requests can't over-serve; if the request then fails without
+  // delivering output, the error paths below refund it via refundQuota().
+  let spentFreeQuota = false
   if (!byokKey) {
     const quota = checkAndIncrementQuota()
     if (!quota.allowed) {
       const error = "Today's free requests have all been used, shared across everyone. Add your own Anthropic API key in Settings to keep going, or come back tomorrow."
       return NextResponse.json({ error, remaining: quota.remaining }, { status: 429 })
     }
+    spentFreeQuota = true
   }
 
   const provider = providerId
@@ -248,6 +253,9 @@ export async function POST(request: NextRequest) {
         })
       } catch (err) {
         console.error(`[chat] stream ${streamId} error:`, err)
+        // Refund the free slot only if the run failed before delivering any
+        // output — a partial stream already spent tokens, so it stays counted.
+        if (spentFreeQuota && chars === 0) refundQuota()
         slog(deviceId, requestId, 'error', 'chat.error', friendlyError(err), {
           ms: Date.now() - startedAt, stream: true,
         })
@@ -326,6 +334,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(result)
   } catch (err) {
     console.error('[chat] error:', err)
+    // Non-stream runChat either returns a full result or throws — a throw means
+    // nothing was delivered, so refund the reserved free slot.
+    if (spentFreeQuota) refundQuota()
     slog(deviceId, requestId, 'error', 'chat.error', friendlyError(err), {
       ms: Date.now() - startedAt, stream: false,
     })

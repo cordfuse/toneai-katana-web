@@ -69,7 +69,7 @@ export interface AvailableProvider {
 
 export interface ProvidersResponse {
   providers: AvailableProvider[]
-  features: { webSearch: boolean }
+  features: { webSearch: boolean; freeTier: boolean }
 }
 
 export async function getProviders(): Promise<ProvidersResponse> {
@@ -90,7 +90,10 @@ export async function getProviders(): Promise<ProvidersResponse> {
   const data = await res.json()
   return {
     providers: data.providers ?? [],
-    features: data.features ?? { webSearch: false },
+    // Default freeTier true so a transient providers-fetch hiccup doesn't hide
+    // the quota pill on a normal deployment; the chat request still 503s
+    // gracefully if the free tier is genuinely unavailable.
+    features: data.features ?? { webSearch: false, freeTier: true },
   }
 }
 

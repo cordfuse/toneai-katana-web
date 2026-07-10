@@ -1173,6 +1173,10 @@ export default function Home({
   const [search, setSearch] = useState('')
   const [providers, setProviders] = useState<AvailableProvider[]>([])
   const [webSearchAvailable, setWebSearchAvailable] = useState(false)
+  // Whether the server can serve free-tier requests (has its own key). Default
+  // true so the quota pill shows on a normal deployment; flipped off only when
+  // the server reports no key, so we don't advertise free requests that 503.
+  const [freeTierAvailable, setFreeTierAvailable] = useState(true)
   const [webSearch, setWebSearch] = useState(true)
   const [toolRunning, setToolRunning] = useState<{ name: string; query?: string } | null>(null)
   // Generation settings: null = use server default. UI shows a placeholder
@@ -1357,6 +1361,7 @@ export default function Home({
         const { providers: list, features } = await getProviders()
         setProviders(list)
         setWebSearchAvailable(!!features.webSearch)
+        setFreeTierAvailable(features.freeTier !== false)
         // Only honor the stored toggle if the operator actually has search
         // available — otherwise it'd be on but silently broken.
         if (features.webSearch) setWebSearch(getWebSearchEnabled())
@@ -2046,7 +2051,7 @@ export default function Home({
           <div className="flex-1" />
           {/* Free-tier counter. Hidden entirely in BYOK mode — a countdown
               would imply a limit that doesn't apply to the user's own key. */}
-          {!apiKey && <QuotaPill version={quotaVersion} optimistic={optimisticSpend} />}
+          {!apiKey && freeTierAvailable && <QuotaPill version={quotaVersion} optimistic={optimisticSpend} />}
           {/* New chat + Settings — promoted out of the kebab to bare icons.
               These are the two items reached often enough to warrant a direct
               tap (the device pill in the composer also opens Settings). */}

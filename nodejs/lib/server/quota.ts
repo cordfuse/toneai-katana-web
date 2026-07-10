@@ -67,3 +67,14 @@ export function checkAndIncrementQuota(): QuotaResult {
 
   return { allowed: true, remaining: Math.max(0, FREE_DAILY_LIMIT - globalRow.count) }
 }
+
+/**
+ * Give back one consumed free-tier slot. Called when a free request fails
+ * before delivering any output — the increment in checkAndIncrementQuota()
+ * happens up front (to reserve the slot under concurrency), so a request that
+ * then errors would otherwise burn a slot for nothing. Clamped at 0 so a
+ * double-refund or a post-midnight refund can't drive the counter negative.
+ */
+export function refundQuota(): void {
+  db.prepare('UPDATE daily_quota SET count = MAX(0, count - 1) WHERE date = ?').run(today())
+}
