@@ -15,6 +15,10 @@ import { anthropic, createAnthropic } from '@ai-sdk/anthropic'
 
 import { tavilySearch, type SearchResult } from './web-search'
 import { getToolsForServers, executeMcpToolCall, isMcpToolName } from './mcp'
+import {
+  buildToneTool, buildTonePatchEvent, TONE_TOOL_NAME,
+  type ToneContext, type TonePatchEvent,
+} from './tone'
 
 // ─── Model registry ──────────────────────────────────────────────────────────
 //
@@ -317,12 +321,18 @@ export interface RunChatOptions {
    * Transient — do not persist or log it.
    */
   apiKey?: string
+  /**
+   * Tone-design context (target device + rig). When present, the
+   * design_tone_patch tool is offered and its calls become tone_patch events.
+   */
+  tone?: ToneContext
 }
 
 export type StreamEvent =
   | { type: 'delta'; content: string }
   | { type: 'tool_running'; name: string; query?: string }
   | { type: 'sources'; sources: { title: string; url: string }[] }
+  | TonePatchEvent
 
 export async function runChat(
   messages: ChatMessage[],
@@ -383,6 +393,8 @@ export async function* runChatStream(
   const sourcesCollector: SourcesCollector = { sources: [] }
   const resolvedSearch = resolveSearch(!!options.webSearch, providerId, sourcesCollector)
   const tools = await buildTools(resolvedSearch, options.mcpServers)
+  // Offer the tone-design tool when the request carries tone context.
+  if (options.tone) tools[TONE_TOOL_NAME] = buildToneTool()
 
   const result = streamText({
     model: p.createModel(model, options.apiKey),
@@ -407,6 +419,14 @@ export async function* runChatStream(
         break
 
       case 'tool-call': {
+        // The tone tool's call carries the whole patch as its input — build the
+        // .tsl and surface it as a tone_patch event (the card). Skip the generic
+        // tool_running hint for it; it's not a "searching…" affordance.
+        if (chunk.toolName === TONE_TOOL_NAME && options.tone) {
+          const event = buildTonePatchEvent(chunk.input as Record<string, unknown>, options.tone)
+          if (event) yield event
+          break
+        }
         // Surface the tool-running hint to the UI. Parse query out for nicer
         // labelling on the web_search case.
         let query: string | undefined

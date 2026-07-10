@@ -9,22 +9,24 @@ import { listServers } from '@/lib/server/mcp'
 import { createStream, attachReplay } from '@/lib/server/stream-buffer'
 import { resolveLocalizableString, languageNameForLocale } from '@/lib/i18n'
 import { resolveLocale } from '@/lib/i18n/server'
+import { katanaSystemPrompt, type ToneContext } from '@/lib/server/tone'
+import { KATANA_DEVICES, type KatanaDevice } from '@/lib/storage'
+
+const DEFAULT_DEVICE: KatanaDevice = 'katana-100-mk2'
+
+// Resolve the tone context from the request: which KATANA to write for and the
+// player's rig descriptor. Falls back to the default device on anything unknown.
+function resolveToneContext(rawDevice: unknown, rawRig: unknown): ToneContext {
+  const device = KATANA_DEVICES.find(d => d.id === rawDevice)?.id ?? DEFAULT_DEVICE
+  const deviceLabel = KATANA_DEVICES.find(d => d.id === device)?.label ?? 'KATANA'
+  const rig = typeof rawRig === 'string' && rawRig.trim() ? rawRig.trim() : undefined
+  return { device, deviceLabel, rig }
+}
 
 export const maxDuration = 300
 
 const ENV_PROVIDER = process.env.CHATFRAME_PROVIDER ?? 'anthropic'
 const ENV_MODEL = process.env.CHATFRAME_MODEL ?? 'claude-sonnet-4-6'
-
-// System prompt resolution chain: client per-request → CHATFRAME_SYSTEM_PROMPT
-// env → chatframe.config.json defaultSystemPrompt → hardcoded fallback.
-// Config is read fresh per request so drop-in JSON changes apply immediately.
-// The chatframe.config.json value may be a per-locale map — resolved to the
-// active locale's string before returning.
-function getDefaultSystemPrompt(locale: string): string {
-  if (process.env.CHATFRAME_SYSTEM_PROMPT) return process.env.CHATFRAME_SYSTEM_PROMPT
-  const cfg = loadChatframeConfig().config
-  return resolveLocalizableString(cfg.defaultSystemPrompt, locale)
-}
 
 // Auto-append a one-line language instruction so the model knows to
 // respond in the user's chosen UI language. English is the no-op default
@@ -52,13 +54,6 @@ function resolveTemperature(clientValue: unknown): number {
   if (typeof clientValue === 'number' && Number.isFinite(clientValue)) return clientValue
   return envNumber('CHATFRAME_TEMPERATURE') ?? HARDCODED_TEMPERATURE
 }
-function resolveSystemPrompt(clientValue: unknown, locale: string): string {
-  const base = (typeof clientValue === 'string' && clientValue.trim().length > 0)
-    ? clientValue
-    : getDefaultSystemPrompt(locale)
-  return applyLocaleHint(base, locale)
-}
-
 export async function POST(request: NextRequest) {
   console.log('[chat] request received')
   const deviceId = getDeviceIdFromRequest(request.headers.get('Authorization'))
@@ -73,8 +68,9 @@ export async function POST(request: NextRequest) {
     provider: clientProvider, model: clientModel,
     webSearch,
     mcpServers: clientMcpServers,
-    systemPrompt: clientSystemPrompt,
     temperature: clientTemperature,
+    device: clientDevice,
+    rig: clientRig,
   } = body
 
   // BYOK. The mode is DERIVED from the presence of a key — there is no mode
@@ -199,9 +195,12 @@ export async function POST(request: NextRequest) {
   // default (CHATFRAME_LOCALE env, then 'en').
   const { localeCodes, defaultLocale } = loadChatframeConfig()
   const activeLocale = await resolveLocale(localeCodes, defaultLocale)
-  const systemPrompt = resolveSystemPrompt(clientSystemPrompt, activeLocale)
+  // The tone-designer prompt + schema are the product and stay server-side; the
+  // client cannot override them (docs/settings.md § Inference is server-side).
+  const toneCtx = resolveToneContext(clientDevice, clientRig)
+  const systemPrompt = applyLocaleHint(katanaSystemPrompt(toneCtx), activeLocale)
   const temperature  = resolveTemperature(clientTemperature)
-  const runOpts = { webSearch: wantWebSearch, temperature, mcpServers, apiKey: byokKey }
+  const runOpts = { webSearch: wantWebSearch, temperature, mcpServers, apiKey: byokKey, tone: toneCtx }
 
   console.log(`[chat] msgs=${messages.length} provider=${provider} model=${model} stream=${!!wantStream} websearch=${wantWebSearch} mcps=${mcpServers.length ? mcpServers.join(',') : '-'} temp=${temperature} locale=${activeLocale}`)
 
