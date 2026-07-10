@@ -1,21 +1,26 @@
 // Patch pipeline — public surface.
 //
-// The tone-intent → parameter-image writer, keyed off the Katana generation.
-// See docs/tsl-format.md and docs/kat-format.md for what's verified vs assumed,
-// and docs/settings.md § Tier 1 for the confidence guard this enforces.
+// Tone intent → a downloadable patch, keyed off the Katana generation. See
+// docs/tsl-format.md and docs/kat-format.md for what's verified vs assumed, and
+// docs/settings.md § Tier 1 for the confidence guard this enforces.
 //
-// STATUS: MkI writes (verified). MkII/MkIII/GO are declared generations whose
-// writers refuse to emit until their offset tables are extracted and validated
-// (writers/mk2.ts documents the promotion steps).
+// STATUS:
+//   MkII — writes a .tsl liveset (writePatchTsl). Confidence 'derived':
+//          app-accurate structure, not yet round-tripped against a real export.
+//   MkI  — flat parameter image (writePatchImage), verified offsets.
+//   MkIII/GO — declared, refuse to emit until their tables are extracted.
 //
 // NOT YET WIRED: the model-facing tool schema (the model still streams prose,
-// not intent) and the .tsl JSON wrapper around the parameter image. Both are
-// the next phase — this module is the deterministic writer they'll sit on top of.
+// not intent). That's the next phase this writer sits under.
 
-// Importing the writer modules runs their registerWriter() side effects. Must
-// happen before writePatchImage() is called, so the barrel owns it.
+import type { KatanaDevice } from '@/lib/storage'
+import type { TonePatch } from './intent'
+import { generationForDevice, GENERATIONS } from './generations'
+import { LayoutNotExtractedError, UnvalidatedLayoutError, type WriteOptions } from './writer'
+import { writeMk2Tsl } from './writers/mk2'
+
+// MkI registers its flat-image writer as a side effect.
 import './writers/mk1'
-import './writers/mk2'
 
 export * from './enums'
 export * from './intent'
@@ -25,3 +30,36 @@ export {
   LayoutNotExtractedError, UnvalidatedLayoutError,
   writePatchImage, registerWriter,
 } from './writer'
+export { type SectionMap, toTsl, tslString, tslFilename } from './tsl'
+export { buildMk2Sections, writeMk2Tsl } from './writers/mk2'
+
+/**
+ * Write a .tsl liveset for a device, or throw if its layout can't be trusted.
+ *
+ * Enforces the confidence guard: 'verified' emits freely, 'derived' requires
+ * `allowUnvalidated` (the caller must have shown the user the "unvalidated
+ * patch" warning), 'unextracted' always throws. Only MkII has a .tsl writer
+ * today; other generations throw LayoutNotExtractedError.
+ */
+export function writePatchTsl(
+  patch: TonePatch,
+  device: KatanaDevice,
+  opts: WriteOptions = {},
+): object {
+  const generation = generationForDevice(device)
+  const profile = GENERATIONS[generation]
+
+  switch (profile.confidence) {
+    case 'verified': break
+    case 'derived':
+      if (!opts.allowUnvalidated) throw new UnvalidatedLayoutError(generation)
+      break
+    case 'unextracted':
+      throw new LayoutNotExtractedError(generation)
+  }
+
+  if (generation === 'mk2') return writeMk2Tsl(patch)
+  // MkI's deliverable path is the .kat flat image (writePatchImage); a MkI .tsl
+  // wrapper isn't built yet. MkIII/GO are guarded out above.
+  throw new LayoutNotExtractedError(generation)
+}

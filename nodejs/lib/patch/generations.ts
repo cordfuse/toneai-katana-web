@@ -54,17 +54,15 @@ export const GENERATIONS: Record<Generation, GenerationProfile> = {
     deviceString: 'KATANA MkII',
     fileExt: '.kat2',
     selectorIndex: 2,
-    // TABLE EXTRACTED 2026-07-10 (mk2/param-table.json) — 1486 params parsed
-    // from the Librarian bytecode (h.java method A(), l.b sections + f5441l
-    // offsets). MkII is SECTION-addressed (PATCH_0/PATCH_1/DELAY_1/FX_1/FX_2/…),
-    // not a flat image. Still 'unextracted' from the WRITER's view because no
-    // writer consumes the table yet AND it's never been round-tripped against a
-    // ground-truth .tsl. Flip to 'derived' when the writer emits; to 'verified'
-    // when a real export round-trips. Remaining to build the writer: section
-    // byte sizes + multi-byte encodings, the .tsl JSON wrapper (g.java), and
-    // per-gen enum stored values.
-    confidence: 'unextracted',
-    addressing: 'section f5440k (l.b) + offset f5441l — table extracted, see mk2/param-table.json',
+    // SECTION-addressed (PATCH_0/PATCH_1/DELAY_1/FX_1/FX_2/…), not a flat image.
+    // The writer (writers/mk2.ts) emits a .tsl liveset matching the Katana
+    // Librarian app's own export shape (formatRev "0002"). 'derived': structure
+    // is app-accurate but NOT yet round-tripped against a ground-truth export.
+    // Two assumptions pending validation — amp/effect STORED VALUES reuse the
+    // documented KATANA indices, and multi-byte params (delay/reverb TIME) are
+    // left at default. Promote to 'verified' when a real export round-trips.
+    confidence: 'derived',
+    addressing: 'section (l.b) + within-section offset; .tsl formatRev 0002. See mk2/sections.ts + mk2/param-table.json',
   },
   mk3: {
     id: 'mk3',
