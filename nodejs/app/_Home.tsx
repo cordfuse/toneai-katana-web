@@ -1056,6 +1056,11 @@ export default function Home({
   const recognitionRef = useRef<any>(null)
   const finalTranscriptRef = useRef('')
   const ttsEnabledRef = useRef(false)
+  // The chosen English voice. Never speak with the engine default: on Android
+  // the default can be any locale (an Assamese default was what broke this),
+  // and an utterance routed to a voice with no data installed dies with
+  // `synthesis-failed` no matter how short it is.
+  const voiceRef = useRef<SpeechSynthesisVoice | null>(null)
   // Always-current send() — refreshed on every render so the
   // SpeechRecognition onend callback (defined inside a useCallback with
   // its own stale closure on `input`) can invoke the up-to-date send.
@@ -1088,7 +1093,6 @@ export default function Home({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     setVoiceInputAvailable(!!SR)
-    setVoiceOutputAvailable(typeof window.speechSynthesis !== 'undefined')
 
     // Hydrate the persisted TTS toggle. Default off — auto-speaking on
     // every visit is invasive on shared devices (kiosks, public terminals).
@@ -1181,6 +1185,39 @@ export default function Home({
     })()
   }, [])
 
+  // Choose the voice TTS speaks with, preferring en-US. Never fall back to the
+  // engine default: a device can expose 90+ voices while its *default* is a
+  // locale with no data installed, and speaking through that default fails with
+  // `synthesis-failed` for every utterance, however short.
+  //
+  // Returns null when no English voice exists *yet* — Chrome populates
+  // getVoices() lazily, so the first call routinely returns [] and only the
+  // call itself kicks off the load. Hence both the mount call and the
+  // `voiceschanged` listener, and the re-resolve at speak time.
+  const resolveVoice = useCallback((): SpeechSynthesisVoice | null => {
+    const synth = typeof window !== 'undefined' ? window.speechSynthesis : undefined
+    if (!synth) return null
+    // Some engines report `en_US` where the spec says `en-US`. Normalise.
+    const english = synth.getVoices()
+      .filter(v => v.lang.replace(/_/g, '-').toLowerCase().startsWith('en'))
+    const picked =
+      english.find(v => /^en[-_]us$/i.test(v.lang)) ??
+      english.find(v => /^en[-_]gb$/i.test(v.lang)) ??
+      english[0] ??
+      null
+    if (picked) voiceRef.current = picked
+    return picked
+  }, [])
+
+  useEffect(() => {
+    const synth = typeof window !== 'undefined' ? window.speechSynthesis : undefined
+    if (!synth) return
+    const onVoices = () => setVoiceOutputAvailable(!!resolveVoice())
+    onVoices()
+    synth.addEventListener('voiceschanged', onVoices)
+    return () => synth.removeEventListener('voiceschanged', onVoices)
+  }, [resolveVoice])
+
   const handleWebSearch = useCallback((on: boolean) => {
     setWebSearch(on)
     setWebSearchEnabled(on)
@@ -1220,13 +1257,43 @@ export default function Home({
       .replace(/\s+/g, ' ')
       .trim()
     if (!plain) return
-    window.speechSynthesis.cancel()  // never let two utterances overlap
-    const utter = new SpeechSynthesisUtterance(plain)
-    // Tag the utterance with the active UI locale so the synthesizer
-    // picks a matching voice instead of defaulting to browser-locale.
-    utter.lang = locale || (typeof navigator !== 'undefined' ? navigator.language : 'en-US')
-    window.speechSynthesis.speak(utter)
-  }, [locale])
+    // Re-resolve if the list wasn't ready at mount (cold load, fast first reply).
+    const voice = voiceRef.current ?? resolveVoice()
+    if (!voice) {
+      setError('Voice output needs an English voice. Install one under Settings → Text-to-speech.')
+      return
+    }
+    // Speaking is a side effect of a chat turn, never a precondition of one.
+    // Anything thrown here (a rejected `voice` assignment, an engine that
+    // blows up on speak()) must not escape into the caller, which goes on to
+    // persist the conversation.
+    try {
+      const utter = new SpeechSynthesisUtterance(plain)
+      // Name the voice explicitly. Leaving this unset speaks with the engine
+      // default, which on Android is whatever locale the device picked (an
+      // Assamese default with no data installed is what broke this) and fails
+      // for every utterance. Setting only `lang` is not enough either — engines
+      // that report `en_US` never match a bare `en`.
+      utter.voice = voice
+      utter.lang = voice.lang.replace(/_/g, '-')
+      // A failed utterance is otherwise completely silent: no sound, no error.
+      // `interrupted` and `canceled` are our own cancel() calls, not faults.
+      utter.onerror = e => {
+        if (e.error === 'interrupted' || e.error === 'canceled') return
+        setTtsEnabledState(false)
+        ttsEnabledRef.current = false
+        setTtsEnabled(false)
+        setError(
+          e.error === 'not-allowed'
+            ? 'Voice output was blocked by the browser. Tap the speaker button again to enable it.'
+            : `Voice output failed (${e.error}). This browser may have no speech voices installed.`,
+        )
+      }
+      window.speechSynthesis.speak(utter)
+    } catch (err) {
+      console.warn('[tts] speak failed:', err)
+    }
+  }, [resolveVoice])
 
   // Voice input — toggle SpeechRecognition. On stop (silence or manual),
   // auto-sends the accumulated transcript so voice queries flow end-to-end
