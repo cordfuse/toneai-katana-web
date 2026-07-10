@@ -5,7 +5,6 @@ import {
   runChat, runChatStream, findProvider, isModelValidForProvider,
 } from '@/lib/server/ai-tools'
 import { loadToneaiConfig } from '@/lib/config'
-import { listServers } from '@/lib/server/mcp'
 import { createStream, attachReplay } from '@/lib/server/stream-buffer'
 import { resolveLocalizableString, languageNameForLocale } from '@/lib/i18n'
 import { resolveLocale } from '@/lib/i18n/server'
@@ -47,7 +46,7 @@ function resolveToneContext(rawDevice: unknown, rawRig: unknown): ToneContext {
 
 export const maxDuration = 300
 
-const ENV_PROVIDER = process.env.TONEAI_PROVIDER ?? 'anthropic'
+const ENV_PROVIDER = 'anthropic'
 // The default chat model — env-driven (TONEAI_MODEL), Sonnet by default.
 // Same source the provider registry uses, so client and server agree.
 const ENV_MODEL = DEFAULT_MODEL
@@ -95,7 +94,6 @@ export async function POST(request: NextRequest) {
     messages, stream: wantStream,
     provider: clientProvider, model: clientModel,
     webSearch,
-    mcpServers: clientMcpServers,
     temperature: clientTemperature,
     device: clientDevice,
     rig: clientRig,
@@ -189,25 +187,10 @@ export async function POST(request: NextRequest) {
     return raw || 'Internal server error'
   }
 
-  // Web search: when toggle is hidden, force ON if TAVILY key is set
-  // (otherwise silently off — no error, picker is hidden so user can't have
-  // asked for it). When toggle is visible, honor the client flag.
-  // Web search runs through Anthropic's native web-search tool (resolveSearch
-  // wires it for the anthropic provider) — no Tavily key required. Tavily is
-  // only an alternative backend, so its absence must not 503 a search request.
+  // Web search honors the client toggle. It runs through Anthropic's native
+  // web-search tool (resolveSearch wires it for the anthropic provider), so
+  // no extra key or backend is involved.
   const wantWebSearch = !!webSearch
-
-  // MCP: when picker is hidden, use every configured + available server.
-  // When picker is visible, honor the client's selection.
-  let mcpServers: string[]
-  if (true) {
-    mcpServers = Array.isArray(clientMcpServers)
-      ? clientMcpServers.filter((s): s is string => typeof s === 'string')
-      : []
-  } else {
-    const all = await listServers()
-    mcpServers = all.filter(s => s.available).map(s => s.id)
-  }
 
   // Resolve the active UI locale from the toneai_locale cookie so the
   // system prompt picks up its localized variant AND we can auto-append
@@ -220,9 +203,9 @@ export async function POST(request: NextRequest) {
   const toneCtx = resolveToneContext(clientDevice, clientRig)
   const systemPrompt = applyLocaleHint(katanaSystemPrompt(toneCtx), activeLocale)
   const temperature  = resolveTemperature(clientTemperature)
-  const runOpts = { webSearch: wantWebSearch, temperature, mcpServers, apiKey: byokKey, tone: toneCtx }
+  const runOpts = { webSearch: wantWebSearch, temperature, apiKey: byokKey, tone: toneCtx }
 
-  console.log(`[chat] msgs=${messages.length} provider=${provider} model=${model} stream=${!!wantStream} websearch=${wantWebSearch} mcps=${mcpServers.length ? mcpServers.join(',') : '-'} temp=${temperature} locale=${activeLocale}`)
+  console.log(`[chat] msgs=${messages.length} provider=${provider} model=${model} stream=${!!wantStream} websearch=${wantWebSearch} temp=${temperature} locale=${activeLocale}`)
 
   slog(deviceId, requestId, 'info', 'chat.request', promptSummary(messages), {
     provider, model, stream: !!wantStream, webSearch: wantWebSearch,
@@ -234,7 +217,7 @@ export async function POST(request: NextRequest) {
     // Decoupled streaming with replay buffer.
     //
     // Two concerns to separate:
-    //   1. The LLM/MCP run must keep going even if the client disconnects
+    //   1. The LLM run must keep going even if the client disconnects
     //      (so a backgrounded mobile tab can come back and finish reading).
     //   2. The HTTP response is just one consumer — there can be reconnects
     //      via /api/chat/replay/[id]?Last-Event-ID=N for the same stream.

@@ -35,7 +35,7 @@ RUN npm run build
 FROM node:24-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-# Tell loadToneaiConfig() + the MCP loader where the operator-mounted config
+# Tell loadToneaiConfig() where the operator-mounted config
 # volume lives. Compose mounts the host config dir at this path.
 ENV TONEAI_CONFIG_DIR=/app/config
 

@@ -6,7 +6,7 @@
 #   2. docker compose up --build        # build + run
 #   3. open http://localhost:3008
 #
-# The container reads its branding/themes/MCP config from a host-mounted
+# The container reads its branding/themes config from a host-mounted
 # volume (default: ../nodejs/config). Edit files in that dir on the host and
 # the next page request picks up the changes — no rebuild, no restart.
 #
@@ -32,17 +32,15 @@ services:
       - .env
 
     environment:
-      # Where the app reads toneai.config.json, toneai-mcp.json, icons/, etc.
-      # Must match the container-side mount target below.
+      # Where the app reads toneai.config.json, icons/, etc. Must match the
+      # container-side mount target below.
       TONEAI_CONFIG_DIR: /app/config
 
       # ── Defaults applied when the corresponding .env value is unset ──
       # Operator overrides any of these by uncommenting the matching line
       # in .env. Anything left at the default is just baseline behavior.
 
-      # Provider + model — default to anthropic / Sonnet. Switch to any
-      # provider for which you've supplied an API key in .env.
-      TONEAI_PROVIDER: ${TONEAI_PROVIDER:-anthropic}
+      # Tone-design model (Anthropic-only app).
       TONEAI_MODEL: ${TONEAI_MODEL:-claude-sonnet-5}
 
       # Sampling temperature — server-side default. Users can override
@@ -52,16 +50,11 @@ services:
     volumes:
       # The persistent config volume. Single mount point for ALL operator
       # customizations: toneai.config.json (branding + themes + welcome +
-      # starter prompts + icon paths), toneai-mcp.json (MCP servers),
-      # icons/ (PNGs the config references via /branding/*).
+      # starter prompts + icon paths), icons/ (PNGs the config references via
+      # /branding/*).
       #
       # The default points at the in-repo config so a forker can `docker
       # compose up` and see the canonical defaults. Replace with your own
       # path for production:
       #   - /srv/toneai-config:/app/config
       - ../nodejs/config:/app/config
-
-    # Lets the container reach services on the host machine — useful for
-    # local model providers (Ollama, LM Studio) running on the host.
-    extra_hosts:
-      - "host.docker.internal:host-gateway"

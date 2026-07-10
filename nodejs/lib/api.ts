@@ -113,35 +113,6 @@ export async function getQuota(): Promise<QuotaResult> {
   return res.json()
 }
 
-// ─── MCP servers ─────────────────────────────────────────────────────────────
-
-export interface AvailableMcpServer {
-  id: string
-  label: string
-  toolCount: number
-  available: boolean
-  error: string | null
-}
-
-export async function getMcpServers(): Promise<AvailableMcpServer[]> {
-  let token = getToken()
-  if (!token) {
-    await authenticate()
-    token = getToken()!
-  }
-  const res = await fetch(`${BASE}/mcps`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  if (res.status === 401) {
-    localStorage.removeItem('auth_token')
-    await authenticate()
-    return getMcpServers()
-  }
-  if (!res.ok) return []
-  const data = await res.json()
-  return data.servers ?? []
-}
-
 export interface ProviderModelsResult {
   models: ProviderModel[]
   source: 'live' | 'registry'
@@ -232,7 +203,6 @@ export interface ChatOpts {
   provider?: string
   model?: string
   webSearch?: boolean
-  mcpServers?: string[]
   systemPrompt?: string
   temperature?: number
   /** Target KATANA device id — which generation's patch to write. */

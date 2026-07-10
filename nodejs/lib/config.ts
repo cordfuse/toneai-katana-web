@@ -16,7 +16,7 @@ import path from 'node:path'
 import { BUILT_IN_LOCALES, type LocalizableString, type LocalizableStringArray } from './i18n'
 
 // Single source of truth for the customization directory. Used by the
-// config loader, the MCP loader, and the icon-serving route. Set
+// config loader and the icon-serving route. Set
 // TONEAI_CONFIG_DIR to mount a different volume; default `./config` keeps
 // dev simple — the repo ships a populated config/ dir.
 export function getConfigDir(): string {
@@ -241,7 +241,7 @@ export function loadToneaiConfig(): LoadedConfig {
   // i18n: merge built-in locales with any operator-supplied JSON files in
   // <configDir>/locales/. Operator JSON may override a built-in key or add
   // an entirely new locale. Same drop-file-and-refresh ergonomics as
-  // custom.css and toneai-mcp.json.
+  // custom.css.
   const locales: Record<string, Record<string, string>> = {}
   for (const [code, map] of Object.entries(BUILT_IN_LOCALES)) locales[code] = { ...map }
   const localesDir = path.join(getConfigDir(), 'locales')

@@ -28,8 +28,6 @@ services:
 
     environment:
       TONEAI_CONFIG_DIR: /app/config
-
-      TONEAI_PROVIDER: ${TONEAI_PROVIDER:-anthropic}
       TONEAI_MODEL: ${TONEAI_MODEL:-claude-sonnet-5}
       TONEAI_TEMPERATURE: ${TONEAI_TEMPERATURE:-1.0}
 

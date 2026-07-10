@@ -2365,9 +2365,8 @@ export default function Home({
                     {ttsEnabled ? <VolumeOnIcon /> : <VolumeOffIcon />}
                   </button>
                 )}
-                {/* Web search toggle — only when server has TAVILY_API_KEY
-                    AND the kiosk hasn't hidden the button. When hidden, the
-                    server forces web search ON for every message. */}
+                {/* Web search toggle — shown when the provider has native
+                    search (Anthropic always does). */}
                 {webSearchAvailable && (
                   <button
                     onClick={() => handleWebSearch(!webSearch)}
