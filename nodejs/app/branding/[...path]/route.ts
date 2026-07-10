@@ -5,7 +5,7 @@ import { getConfigDir } from '@/lib/config'
 
 // Serves files from <configDir>/icons/<path>. Lets forkers drop branded
 // PNGs into their mounted config volume and reference them from
-// chatframe.config.json as e.g. "/branding/my-logo-192.png" — no rebuild,
+// toneai.config.json as e.g. "/branding/my-logo-192.png" — no rebuild,
 // no public/ change. force-dynamic so a new file is picked up on the
 // next request without warming a build-time cache.
 export const dynamic = 'force-dynamic'

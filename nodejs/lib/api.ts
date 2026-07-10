@@ -389,7 +389,7 @@ export async function sendChatStream(
   // Stream id lets us reconnect via /api/chat/replay/[id] with Last-Event-ID
   // if the read drops mid-flight (e.g. mobile tab backgrounded). The server
   // sets this header on POST.
-  const streamId = res.headers.get('X-Chatframe-Stream-Id') ?? ''
+  const streamId = res.headers.get('X-Toneai-Stream-Id') ?? ''
 
   try {
     const result = await drainStream(res.body, streamId, 0, signal, token, onDelta, wrappedHooks)

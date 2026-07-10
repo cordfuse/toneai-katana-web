@@ -1,15 +1,15 @@
-// Branding + custom theme config. RUNTIME-loaded from chatframe.config.json so
+// Branding + custom theme config. RUNTIME-loaded from toneai.config.json so
 // dropping a new file on a hosted instance takes effect on the next request
 // — no rebuild required. Server-only (uses fs); client code receives values
 // via SSR (server components pass as props, or layout.tsx injects them into
 // the rendered HTML).
 //
 // File lookup precedence:
-//   1. $CHATFRAME_CONFIG_PATH if set (explicit file)
-//   2. $CHATFRAME_CONFIG_DIR/chatframe.config.json if set (operator-mounted volume)
-//   3. <cwd>/config/chatframe.config.json (default convention; the standalone
+//   1. $TONEAI_CONFIG_PATH if set (explicit file)
+//   2. $TONEAI_CONFIG_DIR/toneai.config.json if set (operator-mounted volume)
+//   3. <cwd>/config/toneai.config.json (default convention; the standalone
 //      server chdirs to .next/standalone/, so we also probe its ancestors)
-//   4. <cwd>/chatframe.config.json (legacy path, kept for ad-hoc setups)
+//   4. <cwd>/toneai.config.json (legacy path, kept for ad-hoc setups)
 
 import fs from 'node:fs'
 import path from 'node:path'
@@ -17,10 +17,10 @@ import { BUILT_IN_LOCALES, type LocalizableString, type LocalizableStringArray }
 
 // Single source of truth for the customization directory. Used by the
 // config loader, the MCP loader, and the icon-serving route. Set
-// CHATFRAME_CONFIG_DIR to mount a different volume; default `./config` keeps
+// TONEAI_CONFIG_DIR to mount a different volume; default `./config` keeps
 // dev simple — the repo ships a populated config/ dir.
 export function getConfigDir(): string {
-  if (process.env.CHATFRAME_CONFIG_DIR) return process.env.CHATFRAME_CONFIG_DIR
+  if (process.env.TONEAI_CONFIG_DIR) return process.env.TONEAI_CONFIG_DIR
   return path.join(process.cwd(), 'config')
 }
 
@@ -42,7 +42,7 @@ export interface CustomTheme {
   colors: Partial<Record<ThemeColorKey, string>>
 }
 
-export interface ChatframeConfig {
+export interface ToneaiConfig {
   name: string
   shortName: string
   // Localizable: plain string (used for every locale) OR per-locale map
@@ -67,14 +67,14 @@ export interface ChatframeConfig {
   icon512: string
 }
 
-const defaults: ChatframeConfig = {
+const defaults: ToneaiConfig = {
   name: 'ToneAI Kat',
   shortName: 'ToneAI Kat',
   tagline: 'AI tone patches for the BOSS KATANA',
   defaultSystemPrompt: 'You are a helpful AI assistant.',
   welcomeMessage: '',
   starterPrompts: [],
-  checkForUpdatesUrl: 'https://github.com/cordfuse/chatframe/releases',
+  checkForUpdatesUrl: 'https://github.com/cordfuse/toneai-katana-web/releases',
   defaultTheme: 'dark',
   hideBuiltInThemes: false,
   themes: [],
@@ -95,22 +95,22 @@ const BUILT_IN_THEME_IDS = [
 const BUILT_IN_BG_FALLBACK = '#202124'  // 'dark' bg, matches :root in globals.css
 
 function locateConfigFile(): string | null {
-  const explicit = process.env.CHATFRAME_CONFIG_PATH
+  const explicit = process.env.TONEAI_CONFIG_PATH
   if (explicit) {
     try { if (fs.statSync(explicit).isFile()) return explicit } catch { /* fall through */ }
     return null
   }
   const dir = getConfigDir()
   const candidates = [
-    path.join(dir, 'chatframe.config.json'),
-    // Standalone server chdirs to .next/standalone/ — when CHATFRAME_CONFIG_DIR
+    path.join(dir, 'toneai.config.json'),
+    // Standalone server chdirs to .next/standalone/ — when TONEAI_CONFIG_DIR
     // resolves to a relative ./config that doesn't exist there, walk up.
-    path.join(process.cwd(), '..', 'config', 'chatframe.config.json'),
-    path.join(process.cwd(), '..', '..', 'config', 'chatframe.config.json'),
+    path.join(process.cwd(), '..', 'config', 'toneai.config.json'),
+    path.join(process.cwd(), '..', '..', 'config', 'toneai.config.json'),
     // Legacy ad-hoc paths (file directly in CWD or a parent).
-    path.join(process.cwd(), 'chatframe.config.json'),
-    path.join(process.cwd(), '..', 'chatframe.config.json'),
-    path.join(process.cwd(), '..', '..', 'chatframe.config.json'),
+    path.join(process.cwd(), 'toneai.config.json'),
+    path.join(process.cwd(), '..', 'toneai.config.json'),
+    path.join(process.cwd(), '..', '..', 'toneai.config.json'),
   ]
   for (const p of candidates) {
     try {
@@ -122,7 +122,7 @@ function locateConfigFile(): string | null {
 
 
 interface LoadedConfig {
-  config: ChatframeConfig
+  config: ToneaiConfig
   themeCss: string
   // Raw CSS read from <configDir>/custom.css (if the file exists). Injected
   // into <head> after themeCss so it can override any built-in token. Sourced
@@ -138,7 +138,7 @@ interface LoadedConfig {
   // with English first for picker display.
   locales: Record<string, Record<string, string>>
   localeCodes: string[]
-  // Server-default locale: env CHATFRAME_LOCALE if set and valid, else 'en'.
+  // Server-default locale: env TONEAI_LOCALE if set and valid, else 'en'.
   // The actual rendered locale per-request is resolved from the cookie
   // (see resolveLocale in lib/i18n/server.ts) using this as fallback.
   defaultLocale: string
@@ -149,7 +149,7 @@ interface LoadedConfig {
 // Reads the file fresh each call. JSON is tiny (~1KB) and Node caches the
 // directory lookup; the read itself is microseconds. No memoization here is
 // intentional — we want drop-file-and-refresh behavior.
-export function loadChatframeConfig(): LoadedConfig {
+export function loadToneaiConfig(): LoadedConfig {
   const file = locateConfigFile()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let raw: any = {}
@@ -187,7 +187,7 @@ export function loadChatframeConfig(): LoadedConfig {
     return fb
   }
 
-  const config: ChatframeConfig = {
+  const config: ToneaiConfig = {
     name: typeof raw.name === 'string' ? raw.name : defaults.name,
     shortName: typeof raw.shortName === 'string' ? raw.shortName : defaults.shortName,
     tagline: parseLocalizableString(raw.tagline, defaults.tagline),
@@ -229,7 +229,7 @@ export function loadChatframeConfig(): LoadedConfig {
 
   const themeColor = config.themes.find(t => t.id === defaultTheme)?.colors.bg ?? BUILT_IN_BG_FALLBACK
 
-  // Optional operator stylesheet. Lives next to chatframe.config.json in the
+  // Optional operator stylesheet. Lives next to toneai.config.json in the
   // mounted config volume so it can be edited with full editor support
   // (syntax highlighting, etc.) rather than as an escaped JSON string.
   // Missing file is normal — most deployments don't need it.
@@ -241,7 +241,7 @@ export function loadChatframeConfig(): LoadedConfig {
   // i18n: merge built-in locales with any operator-supplied JSON files in
   // <configDir>/locales/. Operator JSON may override a built-in key or add
   // an entirely new locale. Same drop-file-and-refresh ergonomics as
-  // custom.css and chatframe-mcp.json.
+  // custom.css and toneai-mcp.json.
   const locales: Record<string, Record<string, string>> = {}
   for (const [code, map] of Object.entries(BUILT_IN_LOCALES)) locales[code] = { ...map }
   const localesDir = path.join(getConfigDir(), 'locales')
@@ -266,7 +266,7 @@ export function loadChatframeConfig(): LoadedConfig {
   const localeCodes = Object.keys(locales).sort((a, b) =>
     a === 'en' ? -1 : b === 'en' ? 1 : a.localeCompare(b)
   )
-  const envLocale = (process.env.CHATFRAME_LOCALE ?? '').trim()
+  const envLocale = (process.env.TONEAI_LOCALE ?? '').trim()
   const defaultLocale = envLocale && locales[envLocale] ? envLocale : 'en'
 
   return {

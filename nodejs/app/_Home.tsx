@@ -89,10 +89,10 @@ const BUILT_IN_THEME_GROUPS: { label: string; ids: Theme[] }[] = [
 
 const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION ?? '0.1.0'
 
-// Branding pulled from window.__CHATFRAME (injected by app/layout.tsx from
-// the runtime chatframe.config.json read). All fields fall back to "ToneAI Kat"
+// Branding pulled from window.__TONEAI (injected by app/layout.tsx from
+// the runtime toneai.config.json read). All fields fall back to "ToneAI Kat"
 // defaults when window or the global aren't available (SSR, tests).
-interface ChatframeBranding {
+interface ToneaiBranding {
   name: string
   shortName: string
   icon192: string
@@ -101,12 +101,12 @@ interface ChatframeBranding {
   customThemes: { id: string; name: string; category: 'dark' | 'light'; swatches?: [string, string, string]; colors?: Record<string, string> }[]
   hideBuiltIns: boolean
 }
-function getChatframeBranding(): ChatframeBranding {
+function getToneaiBranding(): ToneaiBranding {
   if (typeof window === 'undefined') {
     return { name: 'ToneAI Kat', shortName: 'ToneAI Kat', icon192: '/branding/icon-192.png', welcomeMessage: '', checkForUpdatesUrl: '#', customThemes: [], hideBuiltIns: false }
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const w = (window as any).__CHATFRAME ?? {}
+  const w = (window as any).__TONEAI ?? {}
   return {
     name: w.name ?? 'ToneAI Kat',
     shortName: w.shortName ?? 'ToneAI Kat',
@@ -369,10 +369,10 @@ function SettingsPanel({
     setTimeout(onClose, 240)
   }
 
-  // Merge built-in themes with any custom themes from chatframe.config.json
-  // (read at runtime via window.__CHATFRAME). Custom themes are appended to the
+  // Merge built-in themes with any custom themes from toneai.config.json
+  // (read at runtime via window.__TONEAI). Custom themes are appended to the
   // built-in groups by category; if hideBuiltIns is true, only customs show.
-  const branding = getChatframeBranding()
+  const branding = getToneaiBranding()
   // Themes are the fixed amp palette — no runtime/config-driven custom themes.
   const THEMES_LIVE: ThemeMeta[] = THEMES
   const THEME_GROUPS_LIVE: { label: string; ids: Theme[] }[] = BUILT_IN_THEME_GROUPS
@@ -1055,7 +1055,7 @@ function MessageItem({ msg, streaming, isLastAssistant, onEditAndResend, onRegen
   return (
     <div className="group flex flex-col items-start gap-0.5">
       <div className="flex items-end gap-1.5 max-w-full">
-        <div className="chatframe-assistant-bubble min-w-0 rounded-2xl rounded-bl-sm px-4 py-3 text-sm text-fg">
+        <div className="toneai-assistant-bubble min-w-0 rounded-2xl rounded-bl-sm px-4 py-3 text-sm text-fg">
           {isEmptyStreaming ? (
             <span className="inline-flex gap-1 items-end h-4">
               <span className="typing-dot h-1.5 w-1.5 rounded-full bg-fg-3" />
@@ -1241,8 +1241,8 @@ export default function Home({
     // and that hid real errors). Doesn't throw — the chat works regardless.
     if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js')
-        .then(reg => console.info('[chatframe] SW registered, scope:', reg.scope))
-        .catch(err => console.warn('[chatframe] SW registration failed:', err))
+        .then(reg => console.info('[toneai] SW registered, scope:', reg.scope))
+        .catch(err => console.warn('[toneai] SW registration failed:', err))
     }
     const t = getTheme()
     setTheme(t)
@@ -1560,7 +1560,7 @@ export default function Home({
     if (chatIsEmpty) setSuggestions(sampleTonePrompts(5))
   }, [chatIsEmpty, activeId, starterRoll])
 
-  // An operator who set starterPrompts in chatframe.config.json meant them; the
+  // An operator who set starterPrompts in toneai.config.json meant them; the
   // random pool is the fallback, not an override.
   const starterChips = starterPrompts.length > 0 ? starterPrompts : suggestions
 
@@ -2027,7 +2027,7 @@ export default function Home({
       {/* main column */}
       <div className="flex-1 flex flex-col min-w-0 bg-bg">
         {(
-        <header className="chatframe-header px-3 py-3 flex items-center gap-1 shrink-0 z-10">
+        <header className="toneai-header px-3 py-3 flex items-center gap-1 shrink-0 z-10">
           {(
             <button
               onClick={() => setSidebarOpen(true)}
@@ -2099,7 +2099,7 @@ export default function Home({
                             ? (conversations.find(c => c.id === activeId)
                                 ?? { id: activeId, title: 'Chat', messages, createdAt: Date.now(), updatedAt: Date.now() })
                             : { id: 'unsaved', title: autoTitle(messages), messages, createdAt: Date.now(), updatedAt: Date.now() }
-                          const safeTitle = conv.title.replace(/[^a-z0-9-_]+/gi, '-').replace(/^-+|-+$/g, '') || 'chatframe-chat'
+                          const safeTitle = conv.title.replace(/[^a-z0-9-_]+/gi, '-').replace(/^-+|-+$/g, '') || 'toneai-chat'
                           downloadTextFile(conversationToMarkdown(conv), `${safeTitle}.md`, 'text/markdown')
                         }}
                         className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-fg hover:bg-surface-3 transition-colors"
@@ -2140,7 +2140,7 @@ export default function Home({
                   ? (
                     <div className="group flex flex-col items-start gap-0.5">
                       <div className="flex items-end gap-1.5 max-w-full">
-                        <div className="chatframe-assistant-bubble min-w-0 rounded-2xl rounded-bl-sm px-4 py-3 text-sm text-fg">
+                        <div className="toneai-assistant-bubble min-w-0 rounded-2xl rounded-bl-sm px-4 py-3 text-sm text-fg">
                           <div className="prose prose-sm max-w-none [&>*]:my-2 [&>:first-child]:mt-0 [&>:last-child]:mb-0 [&_a]:text-primary [&_a]:underline [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:bg-surface-2 [&_pre]:bg-surface-2 [&_pre]:p-3 [&_pre]:rounded-lg [&_pre]:overflow-x-auto">
                             <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ pre: CodeBlock, table: TableBlock }}>{welcomeMessage}</ReactMarkdown>
                           </div>
@@ -2204,13 +2204,13 @@ export default function Home({
         )}
 
         {/* composer */}
-        <div className="chatframe-composer px-4 pb-4 pt-2 shrink-0">
+        <div className="toneai-composer px-4 pb-4 pt-2 shrink-0">
           {/* hidden file inputs */}
           {/* `accept` is a picker hint only — a user can still choose "all files"
               or drop something else, so onPickPatch re-checks the extension. */}
           <input ref={patchInputRef} type="file" accept=".kat,.tsl" className="hidden" onChange={onPickPatch} />
 
-          <div className="chatframe-composer-pill max-w-3xl mx-auto rounded-3xl border border-white/10 transition-colors focus-within:border-primary/40">
+          <div className="toneai-composer-pill max-w-3xl mx-auto rounded-3xl border border-white/10 transition-colors focus-within:border-primary/40">
             {/* pending attachment chips (above the textarea) */}
             {pendingAttachments.length > 0 && (
               <div className="flex flex-wrap gap-2 px-3 pt-3">

@@ -1,5 +1,5 @@
 import Home from '../../_Home'
-import { loadChatframeConfig } from '@/lib/config'
+import { loadToneaiConfig } from '@/lib/config'
 import { resolveLocale } from '@/lib/i18n/server'
 import { resolveLocalizableString, resolveLocalizableStringArray } from '@/lib/i18n'
 
@@ -10,7 +10,7 @@ import { resolveLocalizableString, resolveLocalizableStringArray } from '@/lib/i
 // sidebar state survive between conv switches.
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const { config, localeCodes, defaultLocale } = loadChatframeConfig()
+  const { config, localeCodes, defaultLocale } = loadToneaiConfig()
   const activeLocale = await resolveLocale(localeCodes, defaultLocale)
   return (
     <Home

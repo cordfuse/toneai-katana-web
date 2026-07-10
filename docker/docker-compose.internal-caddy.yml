@@ -1,9 +1,9 @@
-# Chatframe — single-host compose for deployments where the host ALREADY runs a
+# ToneAI Kat — single-host compose for deployments where the host ALREADY runs a
 # reverse proxy (Caddy / nginx / Traefik) attached to a shared docker network.
 #
 # Pattern matches a typical home-lab infra setup: a host-level Caddy container lives
 # on `proxy_net` and routes <service>.linux.internal → <container>:<port>.
-# Chatframe joins that same network and exposes nothing on the host — Caddy
+# ToneAI Kat joins that same network and exposes nothing on the host — Caddy
 # proxies by container name.
 #
 # Pre-flight:
@@ -15,31 +15,23 @@
 #   4. docker compose -f docker-compose.internal-caddy.yml up -d --build
 
 services:
-  chatframe:
+  toneai-kat:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    image: cordfuse/chatframe:dev
-    container_name: chatframe
+    image: cordfuse/toneai-katana-web:dev
+    container_name: toneai-kat
     restart: unless-stopped
 
     env_file:
       - .env
 
     environment:
-      CHATFRAME_CONFIG_DIR: /app/config
+      TONEAI_CONFIG_DIR: /app/config
 
-      CHATFRAME_PROVIDER: ${CHATFRAME_PROVIDER:-anthropic}
-      CHATFRAME_MODEL: ${CHATFRAME_MODEL:-claude-opus-4-8}
-      CHATFRAME_SYSTEM_PROMPT: ${CHATFRAME_SYSTEM_PROMPT:-You are a helpful AI assistant.}
-      CHATFRAME_TEMPERATURE: ${CHATFRAME_TEMPERATURE:-1.0}
-
-      CHATFRAME_SHOW_SETTINGS:     ${CHATFRAME_SHOW_SETTINGS:-1}
-      CHATFRAME_PERSIST_CHAT:      ${CHATFRAME_PERSIST_CHAT:-1}
-      CHATFRAME_SHOW_WEB_SEARCH:   ${CHATFRAME_SHOW_WEB_SEARCH:-1}
-      CHATFRAME_SHOW_MCP:          ${CHATFRAME_SHOW_MCP:-1}
-      CHATFRAME_SHOW_MODEL_PICKER: ${CHATFRAME_SHOW_MODEL_PICKER:-1}
-      CHATFRAME_SHOW_ATTACHMENTS:  ${CHATFRAME_SHOW_ATTACHMENTS:-1}
+      TONEAI_PROVIDER: ${TONEAI_PROVIDER:-anthropic}
+      TONEAI_MODEL: ${TONEAI_MODEL:-claude-sonnet-5}
+      TONEAI_TEMPERATURE: ${TONEAI_TEMPERATURE:-1.0}
 
     volumes:
       # Same persistent config volume convention as the other compose files.

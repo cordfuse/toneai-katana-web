@@ -1,6 +1,6 @@
 // Multi-provider chat engine on the Vercel AI SDK v6.
 //
-// Web search backend is controlled by CHATFRAME_SEARCH_BACKEND:
+// Web search backend is controlled by TONEAI_SEARCH_BACKEND:
 //   - native: use the provider's first-party search where available
 //     (Anthropic web_search, Google grounding, Perplexity built-in).
 //     Providers without native search get no search.
@@ -33,7 +33,7 @@ import {
 // Add a new provider:
 //   1. Append an entry to `config/providers.yaml`
 //   2. Add a matching factory below in `FACTORIES`
-//   3. Restart chatframe
+//   3. Restart the app
 //
 // Add a new model to an existing provider: edit YAML only.
 // Relabel / reorder models: edit YAML only.
@@ -54,8 +54,8 @@ import { loadProvidersConfig } from './providers-config'
 // The loader binds the second arg via partial application before exposing
 // the public createModel surface.
 //
-// Anthropic-only (2026-07-09). This map had nine providers when the app was
-// forked from chatframe; the other eight are gone along with their @ai-sdk/*
+// Anthropic-only (2026-07-09). This map had nine providers in the upstream
+// chat-framework scaffold; the other eight are gone along with their @ai-sdk/*
 // packages. @ai-sdk/anthropic reads ANTHROPIC_API_KEY, which is what the YAML
 // declares under `envKey`.
 const FACTORIES: Record<string, InternalModelFactory> = {
@@ -67,11 +67,11 @@ const FACTORIES: Record<string, InternalModelFactory> = {
 
 export const PROVIDERS: ProviderInfo[] = loadProvidersConfig(FACTORIES)
 
-// Make CHATFRAME_MODEL the authoritative default for the default provider, so
+// Make TONEAI_MODEL the authoritative default for the default provider, so
 // the client (which reads defaultModel via /api/providers) and the server agree
 // on one env-driven model. Ignored if the env model isn't in that provider's
 // list — YAML stays the fallback.
-const DEFAULT_PROVIDER_ID = process.env.CHATFRAME_PROVIDER ?? 'anthropic'
+const DEFAULT_PROVIDER_ID = process.env.TONEAI_PROVIDER ?? 'anthropic'
 {
   const dp = PROVIDERS.find(p => p.id === DEFAULT_PROVIDER_ID)
   if (dp && dp.models.some(m => m.id === DEFAULT_MODEL)) {
@@ -232,7 +232,7 @@ async function buildMcpTools(serverIds: string[]) {
 export type SearchBackend = 'native' | 'tavily' | 'auto'
 
 function readBackendFlag(): SearchBackend {
-  const raw = (process.env.CHATFRAME_SEARCH_BACKEND ?? 'auto').toLowerCase()
+  const raw = (process.env.TONEAI_SEARCH_BACKEND ?? 'auto').toLowerCase()
   if (raw === 'native' || raw === 'tavily') return raw
   return 'auto'
 }

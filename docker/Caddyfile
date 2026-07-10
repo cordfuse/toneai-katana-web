@@ -1,7 +1,7 @@
-# Caddy site config — reverse-proxies to the Chatframe app container.
+# Caddy site config — reverse-proxies to the ToneAI Kat app container.
 #
 # For a PUBLIC domain (Let's Encrypt auto-TLS):
-#   chatframe.example.com {
+#   toneai.example.com {
 #       reverse_proxy app:3000
 #   }
 #
@@ -12,7 +12,7 @@
 #   Root cert lives at /data/caddy/pki/authorities/local/root.crt inside
 #   the caddy container (mounted as the caddy-data volume).
 
-chatframe.linux.internal {
+toneai.linux.internal {
     tls internal
     reverse_proxy app:3000
 }

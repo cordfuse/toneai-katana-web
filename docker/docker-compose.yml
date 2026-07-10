@@ -1,4 +1,4 @@
-# Chatframe — single-host compose. Direct port exposure, no reverse proxy.
+# ToneAI Kat — single-host compose. Direct port exposure, no reverse proxy.
 # Use docker-compose.prod.yml for a Caddy-fronted TLS deployment.
 #
 # Quick start:
@@ -13,12 +13,12 @@
 # Build context is the repo root so the Dockerfile can COPY from nodejs/.
 
 services:
-  chatframe:
+  toneai-kat:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    image: cordfuse/chatframe:dev
-    container_name: chatframe
+    image: cordfuse/toneai-katana-web:dev
+    container_name: toneai-kat
     restart: unless-stopped
 
     # Host:container. Change the left side to whatever you want exposed
@@ -32,46 +32,33 @@ services:
       - .env
 
     environment:
-      # Where the app reads chatframe.config.json, chatframe-mcp.json, icons/, etc.
+      # Where the app reads toneai.config.json, toneai-mcp.json, icons/, etc.
       # Must match the container-side mount target below.
-      CHATFRAME_CONFIG_DIR: /app/config
+      TONEAI_CONFIG_DIR: /app/config
 
       # ── Defaults applied when the corresponding .env value is unset ──
       # Operator overrides any of these by uncommenting the matching line
       # in .env. Anything left at the default is just baseline behavior.
 
-      # Provider + model — default to anthropic / sonnet 4.6. Switch to
-      # any provider for which you've supplied an API key in .env.
-      CHATFRAME_PROVIDER: ${CHATFRAME_PROVIDER:-anthropic}
-      CHATFRAME_MODEL: ${CHATFRAME_MODEL:-claude-opus-4-8}
+      # Provider + model — default to anthropic / Sonnet. Switch to any
+      # provider for which you've supplied an API key in .env.
+      TONEAI_PROVIDER: ${TONEAI_PROVIDER:-anthropic}
+      TONEAI_MODEL: ${TONEAI_MODEL:-claude-sonnet-5}
 
-      # System prompt + temperature — server-side defaults. Users can
-      # override per-conversation in the Settings panel (unless kiosk
-      # mode hides it; see flags below).
-      CHATFRAME_SYSTEM_PROMPT: ${CHATFRAME_SYSTEM_PROMPT:-You are a helpful AI assistant.}
-      CHATFRAME_TEMPERATURE: ${CHATFRAME_TEMPERATURE:-1.0}
-
-      # ── Kiosk visibility flags (1 = show, 0 = hide) ──
-      # When a control is hidden, the underlying feature still runs server-
-      # side using whatever's configured (see docs/kiosk-mode.md). To make
-      # something a true no-op, don't configure the backing key/server.
-      CHATFRAME_SHOW_SETTINGS:     ${CHATFRAME_SHOW_SETTINGS:-1}
-      CHATFRAME_PERSIST_CHAT:      ${CHATFRAME_PERSIST_CHAT:-1}
-      CHATFRAME_SHOW_WEB_SEARCH:   ${CHATFRAME_SHOW_WEB_SEARCH:-1}
-      CHATFRAME_SHOW_MCP:          ${CHATFRAME_SHOW_MCP:-1}
-      CHATFRAME_SHOW_MODEL_PICKER: ${CHATFRAME_SHOW_MODEL_PICKER:-1}
-      CHATFRAME_SHOW_ATTACHMENTS:  ${CHATFRAME_SHOW_ATTACHMENTS:-1}
+      # Sampling temperature — server-side default. Users can override
+      # per-conversation in the Settings panel.
+      TONEAI_TEMPERATURE: ${TONEAI_TEMPERATURE:-1.0}
 
     volumes:
       # The persistent config volume. Single mount point for ALL operator
-      # customizations: chatframe.config.json (branding + themes + welcome +
-      # starter prompts + icon paths), chatframe-mcp.json (MCP servers),
+      # customizations: toneai.config.json (branding + themes + welcome +
+      # starter prompts + icon paths), toneai-mcp.json (MCP servers),
       # icons/ (PNGs the config references via /branding/*).
       #
       # The default points at the in-repo config so a forker can `docker
       # compose up` and see the canonical defaults. Replace with your own
       # path for production:
-      #   - /srv/chatframe-config:/app/config
+      #   - /srv/toneai-config:/app/config
       - ../nodejs/config:/app/config
 
     # Lets the container reach services on the host machine — useful for

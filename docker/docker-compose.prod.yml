@@ -1,4 +1,4 @@
-# Chatframe — production single-host compose, Caddy-fronted with auto-HTTPS.
+# ToneAI Kat — production single-host compose, Caddy-fronted with auto-HTTPS.
 #
 # Caddy terminates TLS at the edge (uses Let's Encrypt for public domains
 # automatically) and reverse-proxies to the app on a private compose network.
@@ -15,32 +15,24 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    image: cordfuse/chatframe:prod
-    container_name: chatframe
+    image: cordfuse/toneai-katana-web:prod
+    container_name: toneai-kat
     restart: unless-stopped
 
     env_file:
       - .env
 
     environment:
-      CHATFRAME_CONFIG_DIR: /app/config
+      TONEAI_CONFIG_DIR: /app/config
 
-      CHATFRAME_PROVIDER: ${CHATFRAME_PROVIDER:-anthropic}
-      CHATFRAME_MODEL: ${CHATFRAME_MODEL:-claude-opus-4-8}
-      CHATFRAME_SYSTEM_PROMPT: ${CHATFRAME_SYSTEM_PROMPT:-You are a helpful AI assistant.}
-      CHATFRAME_TEMPERATURE: ${CHATFRAME_TEMPERATURE:-1.0}
-
-      CHATFRAME_SHOW_SETTINGS:     ${CHATFRAME_SHOW_SETTINGS:-1}
-      CHATFRAME_PERSIST_CHAT:      ${CHATFRAME_PERSIST_CHAT:-1}
-      CHATFRAME_SHOW_WEB_SEARCH:   ${CHATFRAME_SHOW_WEB_SEARCH:-1}
-      CHATFRAME_SHOW_MCP:          ${CHATFRAME_SHOW_MCP:-1}
-      CHATFRAME_SHOW_MODEL_PICKER: ${CHATFRAME_SHOW_MODEL_PICKER:-1}
-      CHATFRAME_SHOW_ATTACHMENTS:  ${CHATFRAME_SHOW_ATTACHMENTS:-1}
+      TONEAI_PROVIDER: ${TONEAI_PROVIDER:-anthropic}
+      TONEAI_MODEL: ${TONEAI_MODEL:-claude-sonnet-5}
+      TONEAI_TEMPERATURE: ${TONEAI_TEMPERATURE:-1.0}
 
     volumes:
       # Persistent config volume — same convention as the dev compose.
-      # Point this at wherever the operator keeps Chatframe's config on the host
-      # (e.g. /srv/chatframe-config:/app/config).
+      # Point this at wherever the operator keeps ToneAI Kat's config on the host
+      # (e.g. /srv/toneai-config:/app/config).
       - ../nodejs/config:/app/config
 
     networks:
@@ -48,7 +40,7 @@ services:
 
   caddy:
     image: caddy:2-alpine
-    container_name: chatframe-caddy
+    container_name: toneai-caddy
     restart: unless-stopped
     ports:
       - "80:80"

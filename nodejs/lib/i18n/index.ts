@@ -1,11 +1,11 @@
-// Lightweight i18n for Chatframe. No framework dependency.
+// Lightweight i18n for ToneAI Kat. No framework dependency.
 //
 // Design notes:
 // - Strings are keyed (e.g. 'header.openChats'), with the English fallback
 //   inlined at the call site as the second arg to t(). Missing keys render
 //   the fallback, so partial translations don't break the UI and new strings
 //   can ship without coordinating translation updates.
-// - Locale resolution: per-request (server reads the chatframe_locale cookie),
+// - Locale resolution: per-request (server reads the toneai_locale cookie),
 //   pinned for the page lifecycle. Switching locale persists the cookie and
 //   forces a reload — no React context churn, no SSR hydration mismatch.
 // - Operators can drop <configDir>/locales/<code>.json to override built-in
@@ -43,7 +43,7 @@ export function makeT(translations: Translations): (key: string, fallback: strin
 }
 
 // ─── Localizable operator content ──────────────────────────────────────────
-// Operator-supplied fields in chatframe.config.json (welcomeMessage, starter
+// Operator-supplied fields in toneai.config.json (welcomeMessage, starter
 // prompts, system prompt, tagline) accept either a plain value or a
 // per-locale map. Backwards compatible: existing configs with plain
 // strings continue to work; operators that ship multi-language deployments

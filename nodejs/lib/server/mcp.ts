@@ -1,6 +1,6 @@
 // MCP (Model Context Protocol) client manager.
 //
-// Reads servers from chatframe-mcp.json (override path via MCP_CONFIG_PATH), opens
+// Reads servers from toneai-mcp.json (override path via MCP_CONFIG_PATH), opens
 // a long-lived client per server at boot, and exposes:
 //   - listServers()         — what the UI's picker shows
 //   - getToolsForServers()  — merged tool list in OpenAI function format
@@ -48,17 +48,17 @@ let initPromise: Promise<void> | null = null
 function loadConfig(): McpConfig | null {
   const explicit = process.env.MCP_CONFIG_PATH
   const dir = getConfigDir()
-  // Lookup order mirrors chatframe.config.json: CHATFRAME_CONFIG_DIR (the canonical
+  // Lookup order mirrors toneai.config.json: TONEAI_CONFIG_DIR (the canonical
   // mount), standalone-server ancestors, then legacy CWD-relative paths.
   const candidates = explicit
     ? [explicit]
     : [
-        path.join(dir, 'chatframe-mcp.json'),
-        path.join(process.cwd(), '..', 'config', 'chatframe-mcp.json'),
-        path.join(process.cwd(), '..', '..', 'config', 'chatframe-mcp.json'),
-        path.join(process.cwd(), 'chatframe-mcp.json'),
-        path.join(process.cwd(), '..', '..', 'chatframe-mcp.json'),
-        path.join(process.cwd(), '..', '..', '..', 'chatframe-mcp.json'),
+        path.join(dir, 'toneai-mcp.json'),
+        path.join(process.cwd(), '..', 'config', 'toneai-mcp.json'),
+        path.join(process.cwd(), '..', '..', 'config', 'toneai-mcp.json'),
+        path.join(process.cwd(), 'toneai-mcp.json'),
+        path.join(process.cwd(), '..', '..', 'toneai-mcp.json'),
+        path.join(process.cwd(), '..', '..', '..', 'toneai-mcp.json'),
       ]
   for (const p of candidates) {
     try {
@@ -76,7 +76,7 @@ function loadConfig(): McpConfig | null {
 async function connectServer(id: string, cfg: McpServerConfig): Promise<McpServerState> {
   const label = cfg.label ?? id
   try {
-    const client = new Client({ name: 'chatframe', version: '0.1.0' }, { capabilities: {} })
+    const client = new Client({ name: 'toneai-kat', version: '0.1.0' }, { capabilities: {} })
     if (cfg.type === 'http') {
       const transport = new StreamableHTTPClientTransport(new URL(cfg.url))
       await client.connect(transport)
@@ -114,7 +114,7 @@ export async function initMcp(): Promise<void> {
   initPromise = (async () => {
     const cfg = loadConfig()
     if (!cfg) {
-      console.log('[mcp] no chatframe-mcp.json found, MCP disabled')
+      console.log('[mcp] no toneai-mcp.json found, MCP disabled')
       return
     }
     const entries = Object.entries(cfg.servers)

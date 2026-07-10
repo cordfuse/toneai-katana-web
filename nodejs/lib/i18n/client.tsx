@@ -55,7 +55,7 @@ export function useAvailableLocales() {
 
 // Persist the chosen locale as a non-HttpOnly cookie (max age 1 year) and
 // reload so the server re-renders in the new locale. Cookie path '/' so
-// every Chatframe page resolves the same way. Adds `Secure` when on HTTPS
+// every ToneAI Kat page resolves the same way. Adds `Secure` when on HTTPS
 // (required by some browsers' modern cookie policies even with SameSite=Lax)
 // and bypasses bfcache with location.assign so the new cookie definitely
 // reaches the server on next render.
@@ -63,11 +63,11 @@ export function setLocaleAndReload(loc: string) {
   if (typeof document === 'undefined') return
   const oneYear = 60 * 60 * 24 * 365
   const secure = (typeof window !== 'undefined' && window.location.protocol === 'https:') ? ';Secure' : ''
-  document.cookie = `chatframe_locale=${encodeURIComponent(loc)};path=/;max-age=${oneYear};SameSite=Lax${secure}`
+  document.cookie = `toneai_locale=${encodeURIComponent(loc)};path=/;max-age=${oneYear};SameSite=Lax${secure}`
   // Verify the cookie actually stuck — surfaces silent rejections (some
   // browser policies refuse cookies in specific contexts).
-  if (!document.cookie.split(';').some(c => c.trim().startsWith('chatframe_locale='))) {
-    console.warn('[chatframe] locale cookie failed to set; the browser may have rejected it')
+  if (!document.cookie.split(';').some(c => c.trim().startsWith('toneai_locale='))) {
+    console.warn('[toneai] locale cookie failed to set; the browser may have rejected it')
     return
   }
   // location.assign(location.href) forces a fresh network request and

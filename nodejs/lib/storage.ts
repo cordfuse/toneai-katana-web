@@ -2,7 +2,7 @@ import type { Conversation, ChatMessage, SavedTone } from './types'
 
 // ─── Conversations ────────────────────────────────────────────────────────────
 
-const CONV_KEY = 'chatframe_conversations'
+const CONV_KEY = 'toneai_conversations'
 const MAX_CONVERSATIONS = 50
 
 export function loadConversations(): Conversation[] {
@@ -46,7 +46,7 @@ export function clearAllConversations() {
 // deleting a chat (or aging past the 50-conversation cap) never loses a saved
 // tone. Newest-first by updatedAt, same shape of helpers as conversations.
 
-const TONES_KEY = 'chatframe_tones'
+const TONES_KEY = 'toneai_tones'
 const MAX_TONES = 300
 
 export function loadTones(): SavedTone[] {
@@ -89,7 +89,7 @@ export function clearAllTones() {
 // seed would run on every load and resurrect any library tone the user deleted
 // while its source chat still exists. New tones are saved on generation, so the
 // seed is purely a migration for tones created before the library shipped.
-const TONES_BACKFILLED_KEY = 'chatframe_tones_backfilled'
+const TONES_BACKFILLED_KEY = 'toneai_tones_backfilled'
 
 export function tonesBackfilled(): boolean {
   if (typeof window === 'undefined') return true
@@ -158,8 +158,8 @@ export function relativeTime(ts: number): string {
 // ─── Theme ────────────────────────────────────────────────────────────────────
 //
 // Built-in palette = 25 popular dev themes (13 dark + 12 light). Forkers can
-// add their own via chatframe.config.json (themes[]); those IDs flow through to
-// the client via window.__CHATFRAME (set by app/layout.tsx).
+// add their own via toneai.config.json (themes[]); those IDs flow through to
+// the client via window.__TONEAI (set by app/layout.tsx).
 //
 // To add a built-in theme: append the id to BUILT_IN_THEME_IDS in
 // lib/config.ts, add a `[data-theme="<id>"]` block in app/globals.css, and
@@ -167,7 +167,7 @@ export function relativeTime(ts: number): string {
 
 // Theme is just a string — IDs come from runtime config and aren't known
 // at compile time. Validation happens at runtime via the allowed set
-// the server injects into window.__CHATFRAME.
+// the server injects into window.__TONEAI.
 // Amp-flavored palette ported from mighty-ai-qr-web: 10 voicings, each with a
 // dark and a `-lt` light variant, plus dark/oled/light. CSS lives in
 // app/globals.css under `[data-theme="<id>"]`; swatch metadata in app/_Home.tsx.
@@ -290,8 +290,8 @@ export function saveApiKey(key: string | null) {
 // Both fall back gracefully — server-side validates the selection and falls
 // back to its registry default if anything's stale or unknown.
 
-const PROVIDER_KEY = 'chatframe_provider'
-const MODELS_KEY = 'chatframe_models'  // JSON map: { providerId: modelId }
+const PROVIDER_KEY = 'toneai_provider'
+const MODELS_KEY = 'toneai_models'  // JSON map: { providerId: modelId }
 
 export function getSelectedProvider(): string | null {
   if (typeof window === 'undefined') return null
@@ -323,7 +323,7 @@ export function setSelectedModel(provider: string, model: string) {
 // applies to whatever conversation is active. Avoids the "no conv id until
 // after first send" chicken-and-egg. Per-conv override can come later.
 
-const WEB_SEARCH_KEY = 'chatframe_web_search'
+const WEB_SEARCH_KEY = 'toneai_web_search'
 
 // Default ON: web search augments answers unless the user turns it off. Only an
 // explicit '0' means off; absent key = default checked.
@@ -342,7 +342,7 @@ export function setWebSearchEnabled(enabled: boolean) {
 // spoken via the Web Speech API once the stream completes. Default off
 // (auto-speaking on every visit is invasive on shared devices).
 
-const TTS_KEY = 'chatframe_tts_enabled'
+const TTS_KEY = 'toneai_tts_enabled'
 
 export function getTtsEnabled(): boolean {
   if (typeof window === 'undefined') return false
@@ -360,7 +360,7 @@ export function setTtsEnabled(enabled: boolean) {
 // Same model as web search: sticky across sessions, applies to the active
 // conversation. Stored as a JSON array of strings.
 
-const MCP_ENABLED_KEY = 'chatframe_mcp_enabled'
+const MCP_ENABLED_KEY = 'toneai_mcp_enabled'
 
 export function getEnabledMcps(): string[] {
   if (typeof window === 'undefined') return []
@@ -379,13 +379,13 @@ export function setEnabledMcps(ids: string[]) {
 
 // ─── Generation settings (user overrides — operator defaults via env) ────────
 //
-// All three are `null` when the user hasn't set them; in that case the server
-// falls back to CHATFRAME_SYSTEM_PROMPT / CHATFRAME_TEMPERATURE / CHATFRAME_MAX_TOKENS env
-// vars, then to hardcoded defaults. Read/written as strings since localStorage
-// is string-only — callers handle conversion.
+// Both are `null` when the user hasn't set them; in that case the server uses
+// its own defaults (temperature falls back to TONEAI_TEMPERATURE, then a
+// hardcoded default; the tone designer's system prompt is fixed server-side).
+// Read/written as strings since localStorage is string-only — callers convert.
 
-const SYSTEM_PROMPT_KEY = 'chatframe_system_prompt'
-const TEMPERATURE_KEY   = 'chatframe_temperature'
+const SYSTEM_PROMPT_KEY = 'toneai_system_prompt'
+const TEMPERATURE_KEY   = 'toneai_temperature'
 
 export function getCustomSystemPrompt(): string | null {
   if (typeof window === 'undefined') return null
@@ -410,15 +410,15 @@ export function setTemperature(t: number | null) {
 
 // ─── Export / Import / Reset ─────────────────────────────────────────────────
 
-export interface ChatframeExport {
-  chatframe_export_version: 1
+export interface ToneaiExport {
+  toneai_export_version: 1
   exported_at: string
   conversations: Conversation[]
 }
 
-export function exportAll(): ChatframeExport {
+export function exportAll(): ToneaiExport {
   return {
-    chatframe_export_version: 1,
+    toneai_export_version: 1,
     exported_at: new Date().toISOString(),
     conversations: loadConversations(),
   }
@@ -429,7 +429,7 @@ export interface ImportResult { imported: number; skipped: number; total: number
 export function importConversationsJson(json: string): ImportResult {
   const parsed = JSON.parse(json)
   if (typeof parsed !== 'object' || parsed === null) throw new Error('Invalid file')
-  if (parsed.chatframe_export_version !== 1) throw new Error('Unsupported export version')
+  if (parsed.toneai_export_version !== 1) throw new Error('Unsupported export version')
   if (!Array.isArray(parsed.conversations)) throw new Error('No conversations in file')
 
   const existing = loadConversations()
@@ -448,7 +448,7 @@ export function importConversationsJson(json: string): ImportResult {
   return { imported, skipped, total: parsed.conversations.length }
 }
 
-// Wipes every chatframe_* localStorage key (conversations, theme, provider, model,
+// Wipes every toneai_* localStorage key (conversations, theme, provider, model,
 // web search, generation settings, send key). Also drops the auth token +
 // device id so the next session starts completely fresh.
 export function resetAllData() {
@@ -457,7 +457,7 @@ export function resetAllData() {
   for (let i = 0; i < localStorage.length; i++) {
     const k = localStorage.key(i)
     if (!k) continue
-    if (k.startsWith('chatframe_') || k === 'auth_token' || k === 'device_id') toRemove.push(k)
+    if (k.startsWith('toneai_') || k === 'auth_token' || k === 'device_id') toRemove.push(k)
   }
   for (const k of toRemove) localStorage.removeItem(k)
 }
