@@ -256,14 +256,16 @@ export function setSelectedModel(provider: string, model: string) {
 
 const WEB_SEARCH_KEY = 'chatframe_web_search'
 
+// Default ON: web search augments answers unless the user turns it off. Only an
+// explicit '0' means off; absent key = default checked.
 export function getWebSearchEnabled(): boolean {
-  if (typeof window === 'undefined') return false
-  return localStorage.getItem(WEB_SEARCH_KEY) === '1'
+  if (typeof window === 'undefined') return true
+  return localStorage.getItem(WEB_SEARCH_KEY) !== '0'
 }
 
 export function setWebSearchEnabled(enabled: boolean) {
-  if (enabled) localStorage.setItem(WEB_SEARCH_KEY, '1')
-  else localStorage.removeItem(WEB_SEARCH_KEY)
+  if (enabled) localStorage.removeItem(WEB_SEARCH_KEY)
+  else localStorage.setItem(WEB_SEARCH_KEY, '0')
 }
 
 // ─── TTS (text-to-speech) toggle ────────────────────────────────────────────

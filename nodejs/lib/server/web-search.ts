@@ -44,7 +44,11 @@ export const WEB_SEARCH_TOOL = {
 }
 
 export function isWebSearchAvailable(): boolean {
-  return !!process.env.TAVILY_API_KEY
+  // This app is Anthropic, which has native web search (resolveSearch wires
+  // anthropic.tools.webSearch) — available on both the free server key and
+  // BYOK, no Tavily needed. A Tavily key is an alternative backend, not a
+  // requirement, so search is always offered here.
+  return true
 }
 
 export async function tavilySearch(

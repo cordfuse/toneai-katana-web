@@ -994,7 +994,7 @@ export default function Home({
   const [search, setSearch] = useState('')
   const [providers, setProviders] = useState<AvailableProvider[]>([])
   const [webSearchAvailable, setWebSearchAvailable] = useState(false)
-  const [webSearch, setWebSearch] = useState(false)
+  const [webSearch, setWebSearch] = useState(true)
   const [toolRunning, setToolRunning] = useState<{ name: string; query?: string } | null>(null)
   // Generation settings: null = use server default. UI shows a placeholder
   // hint when unset so user knows what value will actually be used.
