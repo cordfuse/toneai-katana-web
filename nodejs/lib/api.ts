@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-import type { Message } from './types'
+import type { Message, TonePatchResult } from './types'
 
 // OpenAI-style multimodal content. Used for messages that include images.
 export type ContentBlock =
@@ -195,6 +195,10 @@ export interface ChatOpts {
   mcpServers?: string[]
   systemPrompt?: string
   temperature?: number
+  /** Target KATANA device id — which generation's patch to write. */
+  device?: string
+  /** The player's rig descriptor (e.g. "Les Paul, bridge humbucker"). */
+  rig?: string
   /**
    * BYOK. Sent as the `x-anthropic-key` request header (not in the body, so
    * it never lands in a request-body log). Its presence is what switches the
@@ -217,6 +221,7 @@ function chatHeaders(token: string, apiKey?: string | null): Record<string, stri
 export interface StreamHooks {
   onToolRunning?: (info: { name: string; query?: string }) => void
   onSources?: (sources: { title: string; url: string }[]) => void
+  onTonePatch?: (tone: TonePatchResult) => void
 }
 
 export async function sendChat(messages: Message[] | MultimodalMessage[], signal?: AbortSignal, opts: ChatOpts = {}): Promise<ChatResponse> {
@@ -369,6 +374,8 @@ async function drainStream(
         } else if (obj.type === 'sources' && Array.isArray(obj.sources)) {
           for (const s of obj.sources) accumulatedSources.push(s)
           hooks.onSources?.(obj.sources)
+        } else if (obj.type === 'tone_patch' && (obj as { patch?: unknown }).patch) {
+          hooks.onTonePatch?.(obj as unknown as TonePatchResult)
         } else if (obj.type === 'error') {
           throw new Error(obj.message ?? 'Stream error')
         }

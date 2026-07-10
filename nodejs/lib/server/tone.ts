@@ -71,6 +71,8 @@ export interface TonePatchEvent {
   artist?: string
   device: KatanaDevice
   deviceLabel: string
+  /** The player's rig at generation time, e.g. "Les Paul, bridge humbucker". */
+  rig?: string
   /** The .tsl liveset, ready to download. */
   tsl: string
   filename: string
@@ -97,6 +99,7 @@ export function buildTonePatchEvent(
       patch, song, artist,
       device: ctx.device,
       deviceLabel: ctx.deviceLabel,
+      rig: ctx.rig,
       tsl: tslString(tsl),
       filename: tslFilename(patch.name || 'patch'),
       experimental: true, // MkII is 'derived'; revisit when a generation is 'verified'

@@ -18,7 +18,8 @@ import {
   conversationToMarkdown, downloadTextFile,
   getTtsEnabled, setTtsEnabled,
 } from '@/lib/storage'
-import type { ChatMessage, Conversation, Attachment } from '@/lib/types'
+import type { ChatMessage, Conversation, Attachment, TonePatchResult } from '@/lib/types'
+import { ToneCard, ToneModal } from './_ToneCard'
 import { useT, useLocale, useAvailableLocales, setLocaleAndReload, labelForLocale } from '@/lib/i18n/client'
 import {
   type GearState, type PositionChoice,
@@ -758,7 +759,7 @@ function Sidebar({
 
 // ─── message bubble ──────────────────────────────────────────────────────────
 
-function MessageItem({ msg, streaming, isLastAssistant, onEditAndResend, onRegenerate, showActions, showSources }: {
+function MessageItem({ msg, streaming, isLastAssistant, onEditAndResend, onRegenerate, showActions, showSources, onOpenTone }: {
   msg: ChatMessage
   streaming: boolean
   isLastAssistant: boolean
@@ -766,6 +767,7 @@ function MessageItem({ msg, streaming, isLastAssistant, onEditAndResend, onRegen
   onRegenerate: () => void
   showActions: boolean
   showSources: boolean
+  onOpenTone?: (tone: TonePatchResult) => void
 }) {
   const [copied, setCopied] = useState(false)
   const [editing, setEditing] = useState(false)
@@ -902,6 +904,9 @@ function MessageItem({ msg, streaming, isLastAssistant, onEditAndResend, onRegen
         </div>
         {actions}
       </div>
+      {msg.tonePatch && (
+        <ToneCard tone={msg.tonePatch} onOpen={() => onOpenTone?.(msg.tonePatch!)} />
+      )}
       {showSources && msg.sources && msg.sources.length > 0 && (
         <div className="ml-1 mt-1 max-w-[85%] rounded-xl bg-surface px-3 py-2 border-l border-primary/30">
           <div className="text-[10px] text-fg-3 mb-1 uppercase tracking-wider">Sources</div>
@@ -969,6 +974,8 @@ export default function Home({
   // enough: hitting New chat while already on an empty new chat moves neither,
   // so the effect would skip and re-show the same five chips.
   const [starterRoll, setStarterRoll] = useState(0)
+  // The generated tone open in the detail modal, if any.
+  const [openTone, setOpenTone] = useState<TonePatchResult | null>(null)
   const [streaming, setStreaming] = useState(false)
   const [error, setError] = useState<string | null>(null)
   // Sidebar visibility: default collapsed on mobile, open on lg+ (CSS handles
@@ -1572,6 +1579,7 @@ export default function Home({
     const spendsQuota = !apiKey
     if (spendsQuota) setOptimisticSpend(n => n + 1)
 
+    let capturedTone: import('@/lib/types').TonePatchResult | undefined
     try {
       const res = await sendChatStream(
         wireMessages,
@@ -1585,6 +1593,11 @@ export default function Home({
           provider, model, webSearch, apiKey,
           systemPrompt: customSystemPrompt ?? undefined,
           temperature: customTemperature ?? undefined,
+          device,
+          rig: (() => {
+            const inst = activeInstrument(gear)
+            return inst ? describeRig(inst, position === 'auto' ? undefined : position) : undefined
+          })(),
         },
         {
           onToolRunning: info => setToolRunning(info),
@@ -1596,10 +1609,18 @@ export default function Home({
                 : m
             ))
           },
+          onTonePatch: tone => {
+            capturedTone = tone
+            setToolRunning(null)
+            setMessages(prev => prev.map(m =>
+              m.id === assistantId ? { ...m, tonePatch: tone } : m
+            ))
+          },
         },
       )
       const finalAssistant: ChatMessage = {
         id: assistantId, role: 'assistant', content: res.message, sources: res.sources,
+        tonePatch: capturedTone,
       }
       // Speak the assistant's reply once the stream completes. Gated on
       // ttsEnabledRef (not state) so this picks up the current toggle
@@ -1905,6 +1926,7 @@ export default function Home({
                 onRegenerate={regenerate}
                 showActions={true}
                 showSources={true}
+                onOpenTone={setOpenTone}
               />
             ))}
           </div>
@@ -2198,6 +2220,7 @@ export default function Home({
           onCancel={() => setConfirmDelete(null)}
         />
       )}
+      {openTone && <ToneModal tone={openTone} onClose={() => setOpenTone(null)} />}
     </div>
   )
 }
