@@ -55,14 +55,15 @@ export const GENERATIONS: Record<Generation, GenerationProfile> = {
     fileExt: '.kat2',
     selectorIndex: 2,
     // SECTION-addressed (PATCH_0/PATCH_1/DELAY_1/FX_1/FX_2/…), not a flat image.
-    // The writer (writers/mk2.ts) emits a .tsl liveset matching the Katana
-    // Librarian app's own export shape (formatRev "0002"). 'derived': structure
-    // is app-accurate but NOT yet round-tripped against a ground-truth export.
-    // Two assumptions pending validation — amp/effect STORED VALUES reuse the
-    // documented KATANA indices, and multi-byte params (delay/reverb TIME) are
-    // left at default. Promote to 'verified' when a real export round-trips.
-    confidence: 'derived',
-    addressing: 'section (l.b) + within-section offset; .tsl formatRev 0002. See mk2/sections.ts + mk2/param-table.json',
+    // The writer (writers/mk2.ts) builds from a golden template — a real MkII V2
+    // liveset (data/fixtures/tsr-katana-mk2-v2-pack.tsl) — and overlays the tone.
+    // 'verified': round-tripped against that ground-truth export — section keys/
+    // order/lengths are byte-identical, amp/effect indices decode correctly
+    // (Crunch=11, Clean-Var=29), knobs store raw 0–100, and the 2-byte delay TIME
+    // encoding reproduces exactly (391 ms → [3,7]). Residual approximation: reverb
+    // TIME uses a linear seconds→byte map (one sample per reverb type).
+    confidence: 'verified',
+    addressing: 'golden-template overlay (mk2/template.ts) + within-section offsets (mk2/sections.ts); .tsl formatRev 0002, verified vs data/fixtures/',
   },
   mk3: {
     id: 'mk3',

@@ -6,7 +6,7 @@ import { tool, jsonSchema } from 'ai'
 import type { KatanaDevice } from '@/lib/storage'
 import { TONE_PATCH_SCHEMA } from '@/lib/patch/schema'
 import {
-  writePatchTsl, tslString, tslFilename,
+  writePatchTsl, tslString, tslFilename, profileForDevice,
   AMP_NAMES, OD_DS_NAMES, FX_NAMES, DELAY_NAMES, REVERB_NAMES,
   type TonePatch,
 } from '@/lib/patch'
@@ -98,6 +98,9 @@ export function buildTonePatchEvent(
   const patch = toTonePatch(input)
   const song = typeof input.sourceSong === 'string' ? input.sourceSong : undefined
   const artist = typeof input.sourceArtist === 'string' ? input.sourceArtist : undefined
+  // A layout that isn't round-trip verified still writes (allowUnvalidated), but
+  // the card flags it. MkII is now 'verified', so this is false for the KATANA.
+  const experimental = profileForDevice(ctx.device).confidence !== 'verified'
   try {
     const tsl = writePatchTsl(patch, ctx.device, { allowUnvalidated: true })
     return {
@@ -108,7 +111,7 @@ export function buildTonePatchEvent(
       rig: ctx.rig,
       tsl: tslString(tsl),
       filename: tslFilename(patch.name || 'patch'),
-      experimental: true, // MkII is 'derived'; revisit when a generation is 'verified'
+      experimental,
     }
   } catch {
     // No writer for this generation yet (unextracted). The model still explained

@@ -17,11 +17,14 @@ export interface Mk2Section {
   length: number
 }
 
-// Declaration order preserved (matches the app's export order).
+// Real MkII V2 section layout — key, order, and length verified against a
+// ground-truth liveset (data/fixtures/tsr-katana-mk2-v2-pack.tsl). This is now
+// REFERENCE ONLY: the writer builds from the golden template (mk2/template.ts),
+// which carries these same sections plus their factory-default bytes. Keys are
+// bare here; tsl.ts adds the "UserPatch%" prefix on emit.
 export const MK2_SECTIONS: readonly Mk2Section[] = [
   { key: 'PatchName', length: 16 },
   { key: 'Patch_0', length: 72 },
-  { key: 'Eq(2)', length: 24 },
   { key: 'Fx(1)', length: 225 },
   { key: 'Fx(2)', length: 225 },
   { key: 'Delay(1)', length: 26 },
@@ -36,21 +39,12 @@ export const MK2_SECTIONS: readonly Mk2Section[] = [
   { key: 'GafcExp1AsgnMinMax', length: 78 },
   { key: 'GafcExp2Asgn', length: 34 },
   { key: 'GafcExp2AsgnMinMax', length: 78 },
-  { key: 'GafcExp3Asgn', length: 34 },
-  { key: 'GafcExp3AsgnMinMax', length: 78 },
-  { key: 'GafcExExp1Asgn', length: 34 },
-  { key: 'GafcExExp1AsgnMinMax', length: 78 },
-  { key: 'GafcExExp2Asgn', length: 34 },
-  { key: 'GafcExExp2AsgnMinMax', length: 78 },
-  { key: 'GafcExExp3Asgn', length: 34 },
-  { key: 'GafcExExp3AsgnMinMax', length: 78 },
-  { key: 'CtrlAsgn', length: 8 },
   { key: 'FsAsgn', length: 2 },
-  { key: 'Patch_Mk2V2', length: 22 },
+  { key: 'Patch_Mk2V2', length: 10 },
   { key: 'Contour(1)', length: 2 },
   { key: 'Contour(2)', length: 2 },
   { key: 'Contour(3)', length: 2 },
-  { key: 'Chain', length: 20 },
+  { key: 'Eq(2)', length: 24 },
 ] as const
 
 // Section keys the writer actually populates. The `offset` is the byte index
@@ -76,13 +70,18 @@ export const MK2_OFFSETS = {
   ampPres:  { section: 'Patch_0', offset: 23 },
   ampLevel: { section: 'Patch_0', offset: 24 },
 
-  // Delay — section Delay(1)
-  delayOn:    { section: 'Delay(1)', offset: 0 },
-  delayType:  { section: 'Delay(1)', offset: 1 },
-  delayFback: { section: 'Delay(1)', offset: 4 },
-  delayLevel: { section: 'Delay(1)', offset: 6 },
+  // Delay — section Delay(1). TIME is a 2-byte big-endian 7-bit value (ms =
+  // hi*128 + lo), verified against ground-truth: 391 ms -> [3,7], 224 ms ->
+  // [1,96], 518 ms -> [4,6].
+  delayOn:     { section: 'Delay(1)', offset: 0 },
+  delayType:   { section: 'Delay(1)', offset: 1 },
+  delayTimeHi: { section: 'Delay(1)', offset: 2 },
+  delayTimeLo: { section: 'Delay(1)', offset: 3 },
+  delayFback:  { section: 'Delay(1)', offset: 4 },
+  delayLevel:  { section: 'Delay(1)', offset: 6 },
 
-  // Reverb — section Patch_1
+  // Reverb — section Patch_1. TIME is a single byte at offset 2 (the high byte
+  // at offset 3 reads 0 across the ground-truth set).
   revOn:    { section: 'Patch_1', offset: 0 },
   revType:  { section: 'Patch_1', offset: 1 },
   revTime:  { section: 'Patch_1', offset: 2 },

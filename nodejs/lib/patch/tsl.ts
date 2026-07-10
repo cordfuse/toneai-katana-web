@@ -5,13 +5,20 @@
 // app writes byte-for-byte in structure:
 //
 //   { "formatRev": "0002", "device": "KATANA MkII", "name": "...",
-//     "data": [ [ { "paramSet": { "PatchName": ["00",..], "Patch_0": [..], .. } } ] ] }
+//     "data": [ [ { "memo": "", "paramSet": { "UserPatch%PatchName": [..], .. } } ] ] }
 //
 // A liveset is a COLLECTION of patches — `data[0]` is the patch array, each entry
-// a { paramSet } whose keys are the section names. One patch → a single-entry
+// a { memo, paramSet } whose keys are the section names. One patch → a single-entry
 // array; the shape is identical for many.
+//
+// Section keys carry a "UserPatch%" prefix in the real format (verified against a
+// ground-truth MkII liveset). Internally we key sections bare (e.g. "Patch_0");
+// toTsl() adds the prefix on emit so it lives in exactly one place.
 
-/** A patch as named sections of raw bytes (section key → byte array). */
+/** The real .tsl section-key prefix. Internal SectionMaps omit it. */
+const KEY_PREFIX = 'UserPatch%'
+
+/** A patch as named sections of raw bytes (section key → byte array), bare keys. */
 export type SectionMap = Map<string, Uint8Array>
 
 /** Uppercase two-hex-digit encoding, matching the app's `String.format("%02X")`.
@@ -30,13 +37,13 @@ export interface TslMeta {
 export function toTsl(sections: SectionMap, meta: TslMeta): object {
   const paramSet: Record<string, string[]> = {}
   for (const [key, bytes] of sections) {
-    paramSet[key] = Array.from(bytes, hex)
+    paramSet[KEY_PREFIX + key] = Array.from(bytes, hex)
   }
   return {
     formatRev: meta.formatRev,
     device: meta.device,
     name: meta.name,
-    data: [[{ paramSet }]],
+    data: [[{ memo: '', paramSet }]],
   }
 }
 
