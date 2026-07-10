@@ -94,7 +94,11 @@ export function ToneCard({ tone, onOpen }: { tone: TonePatchResult; onOpen: () =
 
 export function ToneModal({ tone, onClose }: { tone: TonePatchResult; onClose: () => void }) {
   const [settingsOpen, setSettingsOpen] = useState(true)
-  const rows = patchRows(tone.patch)
+  // Only show blocks the tone actually uses. An empty FX/delay/reverb slot as an
+  // "off" row is noise — FX1/FX2 are the Katana's two mod/FX slots, and the model
+  // left them unloaded for this patch, not a failure to name anything.
+  const rows = patchRows(tone.patch).filter(r => r.on)
+  const offBlocks = patchRows(tone.patch).filter(r => !r.on).map(r => r.block)
   const subtitle = [tone.song, tone.artist].filter(Boolean).join(' — ')
 
   return (
@@ -142,13 +146,13 @@ export function ToneModal({ tone, onClose }: { tone: TonePatchResult; onClose: (
                 <div className="divide-y divide-white/5 border-t border-white/10">
                   {rows.map((r, i) => (
                     <div key={i} className="flex items-start gap-2.5 px-3.5 py-2.5">
-                      <span className={`mt-1 h-1.5 w-1.5 shrink-0 rounded-full ${r.on ? 'bg-green-400' : 'bg-fg-4/50'}`} />
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-green-400" />
                       <div className="min-w-0 flex-1">
                         <div className="flex items-baseline justify-between gap-2">
                           <span className="text-[11px] text-fg-3">{r.block}</span>
-                          <span className={`text-[11px] ${r.on ? 'text-fg' : 'text-fg-4'}`}>{r.detail}</span>
+                          <span className="text-[11px] text-fg">{r.detail}</span>
                         </div>
-                        {r.on && r.params && (
+                        {r.params && (
                           <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5">
                             {r.params.map(([k, v]) => (
                               <span key={k} className="text-[10px] text-fg-4">{k}: {v}</span>
@@ -158,6 +162,11 @@ export function ToneModal({ tone, onClose }: { tone: TonePatchResult; onClose: (
                       </div>
                     </div>
                   ))}
+                  {offBlocks.length > 0 && (
+                    <p className="px-3.5 py-2.5 text-[10px] text-fg-4">
+                      Not used: {offBlocks.join(', ')}
+                    </p>
+                  )}
                 </div>
               )}
             </div>
