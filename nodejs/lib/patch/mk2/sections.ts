@@ -104,11 +104,14 @@ export interface FxParamSlot {
 }
 
 // Per-effect sub-parameter layout inside an FX section. Offsets are relative to
-// the FX section base and are identical for Fx(1) and Fx(2) (verified against
-// mk2/param-table.json). Only the mod/dynamics effects the designer reaches for
-// are modelled; any FX type NOT listed here is written type-only (byte 0/1),
-// which is correct for effects whose params we don't yet expose. Defaults are in
-// 0–100 knob space; the writer scales them like every other knob.
+// the FX section base and are identical for Fx(1) and Fx(2). Each offset is the
+// param's real within-section address (e.g. FX1_PHASER_RATE, FX1_ADV_COMP_LEVEL);
+// the authoritative map lives in mk2/fx-param-offsets.json and is asserted by
+// __tests__/fx-param-layout.test.ts so these can't silently drift. Only the
+// mod/dynamics effects the designer reaches for are modelled; any FX type NOT
+// listed here is written type-only (byte 0/1), which is correct for effects whose
+// params we don't yet expose. Defaults are in 0–100 knob space; the writer scales
+// them like every other knob.
 export const FX_PARAM_LAYOUT: Record<string, readonly FxParamSlot[]> = {
   Comp: [
     { knob: 'sustain', offset: 23, def: 60 },
@@ -117,36 +120,36 @@ export const FX_PARAM_LAYOUT: Record<string, readonly FxParamSlot[]> = {
     { knob: 'level', offset: 26, def: 60 },
   ],
   Phaser: [
-    { knob: 'rate', offset: 127, def: 45 },
-    { knob: 'depth', offset: 128, def: 60 },
-    { knob: 'reso', offset: 130, def: 40 },
-    { knob: 'level', offset: 132, def: 60 },
+    { knob: 'rate', offset: 132, def: 45 },
+    { knob: 'depth', offset: 133, def: 60 },
+    { knob: 'reso', offset: 135, def: 40 },
+    { knob: 'level', offset: 137, def: 60 },
   ],
   Flanger: [
-    { knob: 'rate', offset: 134, def: 35 },
-    { knob: 'depth', offset: 135, def: 55 },
-    { knob: 'reso', offset: 137, def: 45 },
-    { knob: 'level', offset: 139, def: 60 },
+    { knob: 'rate', offset: 139, def: 35 },
+    { knob: 'depth', offset: 140, def: 55 },
+    { knob: 'reso', offset: 142, def: 45 },
+    { knob: 'level', offset: 145, def: 60 },
   ],
   Tremolo: [
-    { knob: 'rate', offset: 142, def: 55 },
-    { knob: 'depth', offset: 143, def: 65 },
-    { knob: 'level', offset: 144, def: 60 },
+    { knob: 'rate', offset: 148, def: 55 },
+    { knob: 'depth', offset: 149, def: 65 },
+    { knob: 'level', offset: 150, def: 60 },
   ],
   Vibrato: [
-    { knob: 'rate', offset: 159, def: 45 },
-    { knob: 'depth', offset: 160, def: 55 },
-    { knob: 'level', offset: 163, def: 60 },
+    { knob: 'rate', offset: 166, def: 45 },
+    { knob: 'depth', offset: 167, def: 55 },
+    { knob: 'level', offset: 170, def: 60 },
   ],
   // Katana "Chorus" runs the 2x2 (dual-band) stereo-chorus engine — one rate/
-  // depth/level pair per band. We drive both bands from the same knobs so a
-  // single "chorus, subtle" intent maps sensibly.
+  // depth/level per band (LOW then HIGH). We drive both bands from the same
+  // knobs so a single "chorus, subtle" intent maps sensibly.
   Chorus: [
-    { knob: 'rate', offset: 176, def: 40 },
-    { knob: 'depth', offset: 177, def: 50 },
-    { knob: 'level', offset: 179, def: 70 },
-    { knob: 'rate', offset: 180, def: 40 },
-    { knob: 'depth', offset: 181, def: 50 },
-    { knob: 'level', offset: 183, def: 70 },
+    { knob: 'rate', offset: 184, def: 40 },
+    { knob: 'depth', offset: 185, def: 50 },
+    { knob: 'level', offset: 187, def: 70 },
+    { knob: 'rate', offset: 188, def: 40 },
+    { knob: 'depth', offset: 189, def: 50 },
+    { knob: 'level', offset: 191, def: 70 },
   ],
 }
