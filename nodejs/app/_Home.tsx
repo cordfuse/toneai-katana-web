@@ -4,11 +4,12 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { v4 as uuidv4 } from 'uuid'
-import { sendChatStream, initAuth, getProviders, getProviderModels, extractDocument, type AvailableProvider, type ProviderModel, type MultimodalMessage, type ContentBlock } from '@/lib/api'
+import { sendChatStream, getQuota, initAuth, getProviders, getProviderModels, type AvailableProvider, type ProviderModel, type MultimodalMessage, type ContentBlock } from '@/lib/api'
 import {
   loadConversations, upsertConversation, deleteConversation, renameConversation,
   clearAllConversations, autoTitle, relativeTime, getTheme, saveTheme, type Theme,
   getDefaultDevice, saveDefaultDevice, KATANA_DEVICES, type KatanaDevice,
+  getApiKey, saveApiKey,
   getSelectedProvider, setSelectedProvider, getSelectedModel, setSelectedModel,
   getWebSearchEnabled, setWebSearchEnabled,
   getCustomSystemPrompt, setCustomSystemPrompt,
@@ -73,7 +74,7 @@ const BUILT_IN_THEME_GROUPS: { label: string; ids: Theme[] }[] = [
 const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION ?? '0.1.0'
 
 // Branding pulled from window.__CHATFRAME (injected by app/layout.tsx from
-// the runtime chatframe.config.json read). All fields fall back to "ChatFrame"
+// the runtime chatframe.config.json read). All fields fall back to "ToneAI Kat"
 // defaults when window or the global aren't available (SSR, tests).
 interface ChatframeBranding {
   name: string
@@ -85,13 +86,13 @@ interface ChatframeBranding {
 }
 function getChatframeBranding(): ChatframeBranding {
   if (typeof window === 'undefined') {
-    return { name: 'ChatFrame', shortName: 'ChatFrame', welcomeMessage: '', checkForUpdatesUrl: '#', customThemes: [], hideBuiltIns: false }
+    return { name: 'ToneAI Kat', shortName: 'ToneAI Kat', welcomeMessage: '', checkForUpdatesUrl: '#', customThemes: [], hideBuiltIns: false }
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const w = (window as any).__CHATFRAME ?? {}
   return {
-    name: w.name ?? 'ChatFrame',
-    shortName: w.shortName ?? 'ChatFrame',
+    name: w.name ?? 'ToneAI Kat',
+    shortName: w.shortName ?? 'ToneAI Kat',
     welcomeMessage: typeof w.welcomeMessage === 'string' ? w.welcomeMessage : '',
     checkForUpdatesUrl: w.checkForUpdatesUrl ?? '#',
     customThemes: Array.isArray(w.customThemes) ? w.customThemes : [],
@@ -102,15 +103,15 @@ function getChatframeBranding(): ChatframeBranding {
 
 // ─── icons ───────────────────────────────────────────────────────────────────
 
-const ChatframeIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-    <rect width="512" height="512" rx="90" ry="90" fill="#0B1320"/>
-    <rect x="1.5" y="1.5" width="509" height="509" rx="89" ry="89" fill="none" stroke="#3EC1D5" strokeWidth="1.5" strokeOpacity="0.22"/>
-    <text x="256" y="256" textAnchor="middle" dominantBaseline="middle" fontFamily="'Noto Sans Mono', 'Courier New', monospace" fontSize="240" fontWeight="700" fill="#3EC1D5" letterSpacing="-4">{'{Cf}'}</text>
-  </svg>
-)
+// No in-app brand mark. The icon set (config/icons/*.png, app/favicon.ico)
+// exists only for the PWA install prompt, the home-screen shortcut, and the
+// browser tab — the header and sidebar show the wordmark alone.
+
+// Up arrow, not a paper plane — pairs with StopIcon as a submit/halt toggle.
+// Stroked rather than filled so it reads at the same visual weight as the
+// solid square it swaps with.
 const SendIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
 )
 const StopIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
@@ -156,6 +157,10 @@ const SearchIcon = () => (
 )
 const ChevronIcon = ({ open }: { open: boolean }) => (
   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`transition-transform shrink-0 ${open ? 'rotate-180' : ''}`}><polyline points="6 9 12 15 18 9"/></svg>
+)
+// Amp cabinet: outer shell, speaker cone, control knob.
+const AmpIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="14" r="4"/><line x1="6.5" y1="6.5" x2="6.5" y2="6.5"/></svg>
 )
 const CopyIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -260,39 +265,74 @@ function DeleteConfirmModal({ label, onConfirm, onCancel }: { label: string; onC
 
 // ─── settings panel (right drawer) ───────────────────────────────────────────
 
+// ─── Free-tier quota pill ───────────────────────────────────────────────────
+//
+// Shows what's left of the GLOBAL daily pool (shared across all users), so it
+// polls: another user's request moves this number without us doing anything.
+//
+// `optimistic` is the count of requests this client has submitted but not yet
+// seen reflected in a server response. The pill subtracts it so the number
+// drops the instant you hit send, rather than when the stream finishes —
+// mighty-ai-qr-web refreshes only after the response lands, which reads as a
+// frozen counter on a slow generation. The server's number always wins on the
+// next poll, so drift self-corrects.
+function QuotaPill({ version, optimistic }: { version: number; optimistic: number }) {
+  const [quota, setQuota] = useState<{ remaining: number; limit: number } | null>(null)
+
+  const fetchQuota = useCallback(() => {
+    getQuota().then(q => setQuota({ remaining: q.remaining, limit: q.limit })).catch(() => {})
+  }, [])
+
+  useEffect(() => { fetchQuota() }, [fetchQuota, version])
+  useEffect(() => {
+    const id = setInterval(fetchQuota, 30_000)
+    return () => clearInterval(id)
+  }, [fetchQuota])
+
+  if (!quota) return null
+
+  const remaining = Math.max(0, quota.remaining - optimistic)
+  const low = remaining <= Math.max(1, Math.floor(quota.limit * 0.05))
+  const empty = remaining === 0
+
+  return (
+    <div
+      title={empty
+        ? 'The shared free-request pool is empty. It refills at midnight UTC — or add your own Anthropic API key in Settings.'
+        : `${remaining} of ${quota.limit} free requests left today, shared across all users. Refills at midnight UTC.`}
+      className={`flex items-center rounded-xl border px-2.5 h-8 text-xs font-medium select-none tabular-nums transition-colors ${
+        empty || low
+          ? 'border-red-500/40 text-red-400'
+          : 'border-white/10 bg-surface-2 text-fg-4'
+      }`}
+    >
+      {remaining} left
+    </div>
+  )
+}
+
 function SettingsPanel({
   theme, onTheme,
   device, onDevice,
-  providers, selectedProvider, onProvider,
-  customSystemPrompt, onSystemPrompt,
-  customTemperature, onTemperature,
-  onExport, onImport, onResetAll,
+  apiKey, onApiKey,
   onClose,
 }: {
   theme: Theme
   onTheme: (t: Theme) => void
   device: KatanaDevice
   onDevice: (d: KatanaDevice) => void
-  providers: AvailableProvider[]
-  selectedProvider: string
-  onProvider: (p: string) => void
-  customSystemPrompt: string | null
-  onSystemPrompt: (s: string | null) => void
-  customTemperature: number | null
-  onTemperature: (t: number | null) => void
-  onExport: () => void
-  onImport: () => void
-  onResetAll: () => void
+  apiKey: string | null
+  onApiKey: (k: string | null) => void
   onClose: () => void
 }) {
   const [closing, setClosing] = useState(false)
   const [themeOpen, setThemeOpen] = useState(false)
   const [deviceOpen, setDeviceOpen] = useState(false)
-  const [providerOpen, setProviderOpen] = useState(false)
   const [localeOpen, setLocaleOpen] = useState(false)
-  // Local draft state for the system prompt textarea so the user can type
-  // without each keystroke writing to localStorage. Commits on blur.
-  const [promptDraft, setPromptDraft] = useState(customSystemPrompt ?? '')
+  // Local draft so typing doesn't write to localStorage on every keystroke.
+  // Commits on blur, same pattern the system-prompt textarea used.
+  const [keyDraft, setKeyDraft] = useState(apiKey ?? '')
+  const [keyVisible, setKeyVisible] = useState(false)
   const t = useT()
   const activeLocale = useLocale()
   const availableLocales = useAvailableLocales()
@@ -311,7 +351,6 @@ function SettingsPanel({
   const THEME_GROUPS_LIVE: { label: string; ids: Theme[] }[] = BUILT_IN_THEME_GROUPS
 
   const active = THEMES_LIVE.find(t => t.id === theme) ?? THEMES_LIVE[0]
-  const activeProvider = providers.find(p => p.id === selectedProvider) ?? providers[0]
   const activeDevice = KATANA_DEVICES.find(d => d.id === device) ?? KATANA_DEVICES[0]
   // Group the flat device list by generation for the dropdown, preserving
   // first-seen group order (MkII first — the v1 ground-truth target).
@@ -473,149 +512,47 @@ function SettingsPanel({
             </div>
           </div>
 
-          {/* Provider */}
-          {providers.length > 0 && (
-            <div>
-              <p className="text-[10px] font-semibold text-fg-3 uppercase tracking-wider mb-2">Provider</p>
-              <div className="relative">
+          {/* Anthropic API key — BYOK.
+           *  Presence of a key IS the mode toggle: absent → free tier (server
+           *  key, global daily quota); present → this key, quota untouched.
+           *  Inference stays server-side either way, so the key is sent per
+           *  request rather than used from the browser. */}
+          <div>
+            <p className="text-[10px] font-semibold text-fg-3 uppercase tracking-wider mb-2">Anthropic API Key</p>
+            <div className="relative">
+              <input
+                type={keyVisible ? 'text' : 'password'}
+                value={keyDraft}
+                onChange={e => setKeyDraft(e.target.value)}
+                onBlur={() => onApiKey(keyDraft.trim().length > 0 ? keyDraft.trim() : null)}
+                placeholder="sk-ant-…  (optional)"
+                spellCheck={false}
+                autoComplete="off"
+                className="w-full rounded-lg border border-white/10 bg-surface-2 px-3 py-2.5 pr-16 text-xs font-mono text-fg placeholder:text-fg-4 placeholder:font-sans outline-none focus:ring-1 focus:ring-primary/40"
+              />
+              {keyDraft.length > 0 && (
                 <button
-                  onClick={() => setProviderOpen(o => !o)}
-                  className="flex w-full items-center gap-2.5 rounded-lg border border-white/10 bg-surface-2 px-3 py-2.5 text-sm text-fg hover:bg-surface-3 transition-colors"
+                  onClick={() => setKeyVisible(v => !v)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 px-1.5 py-1 text-[10px] uppercase tracking-wider text-fg-4 hover:text-fg-2 transition-colors"
                 >
-                  <span className="flex-1 text-left">{activeProvider?.label ?? selectedProvider}</span>
-                  {activeProvider && !activeProvider.available && (
-                    <span className="text-[10px] text-fg-4">key missing</span>
-                  )}
-                  <ChevronIcon open={providerOpen} />
+                  {keyVisible ? 'Hide' : 'Show'}
                 </button>
-                {providerOpen && (() => {
-                  const cloud = providers.filter(p => p.category === 'cloud')
-                  const local = providers.filter(p => p.category === 'local')
-                  const renderGroup = (label: string, items: typeof providers) => items.length > 0 && (
-                    <div key={label}>
-                      <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-fg-4 bg-surface">{label}</p>
-                      {items.map(p => {
-                        const isActive = selectedProvider === p.id
-                        return (
-                          <button
-                            key={p.id}
-                            onClick={() => { onProvider(p.id); setProviderOpen(false) }}
-                            disabled={!p.available}
-                            className={`flex w-full items-center gap-2.5 px-3 py-2 text-sm transition-colors ${
-                              isActive ? 'text-primary bg-primary/10' : p.available ? 'text-fg-2 hover:bg-surface-3 hover:text-fg' : 'text-fg-4 cursor-not-allowed'
-                            }`}
-                          >
-                            <span className="flex-1 text-left">{p.label}</span>
-                            {!p.available && <span className="text-[10px] opacity-60">no key</span>}
-                            {isActive && <span className="ml-1 text-primary shrink-0">✓</span>}
-                          </button>
-                        )
-                      })}
-                    </div>
-                  )
-                  return (
-                    <>
-                      <div className="fixed inset-0 z-10" onClick={() => setProviderOpen(false)} />
-                      <div className="absolute left-0 right-0 top-full z-20 mt-1 rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden max-h-[60vh] overflow-y-auto">
-                        {renderGroup('Cloud', cloud)}
-                        {renderGroup('Local', local)}
-                      </div>
-                    </>
-                  )
-                })()}
-              </div>
-              {activeProvider && !activeProvider.available && activeProvider.category === 'cloud' && (
-                <p className="mt-1.5 text-[10px] text-fg-4">
-                  Set <code className="font-mono">{activeProvider.id.toUpperCase()}_API_KEY</code> and restart the server.
-                </p>
-              )}
-              {activeProvider && activeProvider.category === 'local' && (
-                <p className="mt-1.5 text-[10px] text-fg-4">
-                  Local server expected at the default port. Override with <code className="font-mono">{activeProvider.id.toUpperCase()}_BASE_URL</code> if needed.
-                </p>
               )}
             </div>
-          )}
-
-          {/* System prompt */}
-          {(
-          <div>
-            <p className="text-[10px] font-semibold text-fg-3 uppercase tracking-wider mb-2">{t('settings.systemPrompt', 'System prompt')}</p>
-            <textarea
-              value={promptDraft}
-              onChange={e => setPromptDraft(e.target.value)}
-              onBlur={() => {
-                const trimmed = promptDraft.trim()
-                onSystemPrompt(trimmed.length > 0 ? trimmed : null)
-              }}
-              placeholder='Server default — set CHATFRAME_SYSTEM_PROMPT, or override per-user here.'
-              rows={3}
-              className="w-full rounded-lg border border-white/10 bg-surface-2 px-3 py-2 text-xs text-fg placeholder:text-fg-4 outline-none focus:ring-1 focus:ring-primary/40 resize-y min-h-[4.5rem]"
-            />
-            {customSystemPrompt && (
+            <p className="mt-1.5 text-[10px] text-fg-4 leading-relaxed">
+              {apiKey
+                ? 'Using your key — no daily limit. Stored in this browser only.'
+                : 'Free mode — shared daily limit across all users. Add a key to lift it.'}
+            </p>
+            {apiKey && (
               <button
-                onClick={() => { setPromptDraft(''); onSystemPrompt(null) }}
+                onClick={() => { setKeyDraft(''); setKeyVisible(false); onApiKey(null) }}
                 className="mt-1 text-[10px] text-fg-4 hover:text-fg-2 transition-colors"
               >
-                Clear override → use server default
+                Remove key → use free mode
               </button>
             )}
           </div>
-          )}
-
-          {/* Temperature */}
-          {(
-          <div>
-            <div className="flex items-baseline justify-between mb-1">
-              <p className="text-[10px] font-semibold text-fg-3 uppercase tracking-wider">{t('settings.temperature', 'Temperature')}</p>
-              <span className="text-[10px] text-fg-4">
-                {customTemperature !== null ? customTemperature.toFixed(2) : 'default'}
-              </span>
-            </div>
-            <input
-              type="range"
-              min={0} max={2} step={0.05}
-              value={customTemperature ?? 1}
-              onChange={e => onTemperature(Number(e.target.value))}
-              className="w-full accent-[color:var(--primary)]"
-            />
-            {customTemperature !== null && (
-              <button
-                onClick={() => onTemperature(null)}
-                className="mt-1 text-[10px] text-fg-4 hover:text-fg-2 transition-colors"
-              >
-                {t('settings.clearOverride', 'Clear override → use server default')}
-              </button>
-            )}
-          </div>
-          )}
-
-          {/* Data: Import / Export / Reset on a single row */}
-          {(
-          <div>
-            <p className="text-[10px] font-semibold text-fg-3 uppercase tracking-wider mb-2">{t('settings.data', 'Data')}</p>
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                onClick={onImport}
-                className="rounded-lg border border-white/10 bg-surface-2 px-3 py-2 text-xs text-fg-2 hover:bg-surface-3 hover:text-fg transition-colors"
-              >
-                {t('settings.import', 'Import…')}
-              </button>
-              <button
-                onClick={onExport}
-                className="rounded-lg border border-white/10 bg-surface-2 px-3 py-2 text-xs text-fg-2 hover:bg-surface-3 hover:text-fg transition-colors"
-              >
-                {t('settings.export', 'Export…')}
-              </button>
-              <button
-                onClick={onResetAll}
-                className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-400 hover:bg-red-500/20 transition-colors"
-              >
-                {t('settings.reset', 'Reset')}
-              </button>
-            </div>
-          </div>
-          )}
         </div>
 
         <div className="px-5 py-3 flex items-center justify-end text-xs text-fg-4">
@@ -728,7 +665,6 @@ function Sidebar({
         {/* brand + close (mobile) */}
         <div className="flex items-center justify-between px-3 py-3 shrink-0 min-w-[260px]">
           <div className="flex items-center gap-2.5">
-            <ChatframeIcon />
             <span className="text-sm font-medium text-fg whitespace-nowrap">{appName}</span>
           </div>
           <button onClick={onClose} className="flex h-7 w-7 items-center justify-center rounded-lg text-fg-3 hover:bg-surface-2 hover:text-fg transition-colors lg:hidden" aria-label={t('sidebar.closeSidebar', 'Close sidebar')}>
@@ -981,7 +917,7 @@ function MessageItem({ msg, streaming, isLastAssistant, onEditAndResend, onRegen
 
 export default function Home({
   initialConvId,
-  appName = 'ChatFrame',
+  appName = 'ToneAI Kat',
   welcomeMessage = '',
   starterPrompts = [],
 }: {
@@ -1005,6 +941,13 @@ export default function Home({
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
   const [theme, setTheme] = useState<Theme>('dark')
   const [device, setDevice] = useState<KatanaDevice>('katana-100-mk2')
+  // null → free mode (server key + global quota). Hydrated client-side; stays
+  // null during SSR so the first paint never differs from the server's.
+  const [apiKey, setApiKey] = useState<string | null>(null)
+  // Quota pill: `quotaVersion` forces a re-fetch; `optimisticSpend` counts
+  // requests submitted but not yet reconciled with a server response.
+  const [quotaVersion, setQuotaVersion] = useState(0)
+  const [optimisticSpend, setOptimisticSpend] = useState(0)
   const [confirmDelete, setConfirmDelete] = useState<{ label: string; doDelete: () => void } | null>(null)
   const [search, setSearch] = useState('')
   const [providers, setProviders] = useState<AvailableProvider[]>([])
@@ -1015,8 +958,11 @@ export default function Home({
   // hint when unset so user knows what value will actually be used.
   const [customSystemPrompt, setCustomSystemPromptState] = useState<string | null>(null)
   const [customTemperature, setCustomTemperatureState] = useState<number | null>(null)
+  // Anthropic-only app: provider is fixed, and neither is user-selectable.
+  // Both are still sent on the wire so the server can validate them against
+  // config/providers.yaml rather than silently accepting anything.
   const [provider, setProviderState] = useState<string>('anthropic')
-  const [model, setModelState] = useState<string>('claude-sonnet-4-6')
+  const [model, setModelState] = useState<string>('claude-opus-4-8')
   const [modelOpen, setModelOpen] = useState(false)
   // Live model list per provider id — populated lazily when the dropdown
   // opens. For local providers this is the actual installed-models list
@@ -1076,6 +1022,7 @@ export default function Home({
     setTheme(t)
     document.documentElement.setAttribute('data-theme', t)
     setDevice(getDefaultDevice())
+    setApiKey(getApiKey())
 
     // Voice capability probes. Web Speech API: SpeechRecognition (input)
     // and SpeechSynthesis (output). Both gated separately because some
@@ -1169,7 +1116,7 @@ export default function Home({
         const chosenInfo = list.find(p => p.id === chosen)
         const storedModel = getSelectedModel(chosen)
         const storedModelValid = storedModel && chosenInfo?.models.some(m => m.id === storedModel)
-        setModelState(storedModelValid ? storedModel! : (chosenInfo?.defaultModel ?? 'claude-sonnet-4-6'))
+        setModelState(storedModelValid ? storedModel! : (chosenInfo?.defaultModel ?? 'claude-opus-4-8'))
       } catch (e) {
         console.error('providers fetch failed:', e)
       }
@@ -1362,6 +1309,11 @@ export default function Home({
     saveDefaultDevice(d)
   }, [])
 
+  const handleApiKey = useCallback((k: string | null) => {
+    setApiKey(k)
+    saveApiKey(k)
+  }, [])
+
   const handleProvider = useCallback((p: string) => {
     setProviderState(p)
     setSelectedProvider(p)
@@ -1543,6 +1495,11 @@ export default function Home({
 
     const wireMessages = buildWireMessages(newMessages)
 
+    // Count the request against the pill the moment it's submitted, not when
+    // the stream finishes. Only free-mode requests consume the shared pool.
+    const spendsQuota = !apiKey
+    if (spendsQuota) setOptimisticSpend(n => n + 1)
+
     try {
       const res = await sendChatStream(
         wireMessages,
@@ -1553,7 +1510,7 @@ export default function Home({
         },
         abort.signal,
         {
-          provider, model, webSearch,
+          provider, model, webSearch, apiKey,
           systemPrompt: customSystemPrompt ?? undefined,
           temperature: customTemperature ?? undefined,
         },
@@ -1612,8 +1569,16 @@ export default function Home({
       setStreaming(false)
       setToolRunning(null)
       abortRef.current = null
+      // Reconcile the pill against the server. Runs on success, error, and
+      // abort alike: a 429 or a cancelled stream must not leave the optimistic
+      // decrement stranded. Clearing the local count and re-fetching in the
+      // same tick means the authoritative number replaces the guess.
+      if (spendsQuota) {
+        setOptimisticSpend(n => Math.max(0, n - 1))
+        setQuotaVersion(v => v + 1)
+      }
     }
-  }, [activeId, conversations, provider, model, webSearch, customSystemPrompt, customTemperature, buildWireMessages, updateUrl])
+  }, [activeId, conversations, provider, model, webSearch, apiKey, customSystemPrompt, customTemperature, buildWireMessages, updateUrl])
 
   // One-click starter prompts: skip the input field entirely, fire the
   // prompt as a user message immediately. Mirrors the empty-state chip
@@ -1724,14 +1689,27 @@ export default function Home({
           )}
           {(
             <span className="flex items-center gap-1.5">
-              {<ChatframeIcon />}
               {<h1 className="text-sm font-medium text-fg">{appName}</h1>}
             </span>
           )}
           <div className="flex-1" />
-          {/* Single kebab menu — holds reload, new chat, download, delete,
-              settings. Reload is unconditional so the menu is always
-              rendered; the other items are state/flag-gated. */}
+          {/* Free-tier counter. Hidden entirely in BYOK mode — a countdown
+              would imply a limit that doesn't apply to the user's own key. */}
+          {!apiKey && <QuotaPill version={quotaVersion} optimistic={optimisticSpend} />}
+          {/* Settings — promoted out of the kebab to a bare icon. It's the
+              only menu item reached often enough to warrant a direct tap
+              (the device pill in the composer also opens it). */}
+          <button
+            onClick={() => setSettingsOpen(true)}
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-fg-3 hover:bg-surface hover:text-fg transition-colors"
+            title={t('header.settings', 'Settings')}
+            aria-label={t('header.settings', 'Settings')}
+          >
+            <GearIcon />
+          </button>
+          {/* Kebab menu — reload, new chat, download, delete. Reload is
+              unconditional so the menu is always rendered; the other items
+              are state-gated. */}
           <div className="relative">
               <button
                 onClick={() => setHeaderMenuOpen(v => !v)}
@@ -1795,15 +1773,6 @@ export default function Home({
                       >
                         <TrashIcon />
                         <span>{t('header.deleteChat', 'Delete chat')}</span>
-                      </button>
-                    )}
-                    {(
-                      <button
-                        onClick={() => { setHeaderMenuOpen(false); setSettingsOpen(true) }}
-                        className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-fg hover:bg-surface-3 transition-colors"
-                      >
-                        <GearIcon />
-                        <span>{t('header.settings', 'Settings')}</span>
                       </button>
                     )}
                   </div>
@@ -1925,93 +1894,25 @@ export default function Home({
               </div>
             )}
 
-            {/* Model pill — moved above the textarea so it has its own row
-                instead of competing for space with the action buttons at
-                the bottom. Hidden in kiosk mode → server uses CHATFRAME_PROVIDER
-                + CHATFRAME_MODEL env defaults regardless of any stored client
-                preference. */}
-            {providers.length > 0 && (() => {
-              const providerInfo = providers.find(p => p.id === provider)
-              if (!providerInfo) return null
-              const modelsForDropdown = liveModels[providerInfo.id] ?? providerInfo.models
-              const allKnownModels = [...providerInfo.models, ...(liveModels[providerInfo.id] ?? [])]
-              const modelInfo = allKnownModels.find(m => m.id === model)
-              const openDropdown = async () => {
-                setModelOpen(o => !o)
-                if (modelOpen) return
-                if (providerInfo.category === 'local' && !liveModels[providerInfo.id]) {
-                  setLiveModelsLoading(true)
-                  try {
-                    const res = await getProviderModels(providerInfo.id)
-                    setLiveModels(prev => ({ ...prev, [providerInfo.id]: res.models }))
-                  } catch (e) {
-                    console.warn('live models fetch failed:', e)
-                  } finally {
-                    setLiveModelsLoading(false)
-                  }
-                }
-              }
+            {/* Device pill — the amp the generated patch targets. Replaces the
+             *  provider + model pills: this app is Anthropic-only, so provider
+             *  and model are server-side decisions, not user-facing ones. The
+             *  target amp is the one choice that changes what gets written, so
+             *  it earns the composer's only pill. Clicking opens Settings,
+             *  where the full grouped picker lives — no second dropdown to
+             *  keep in sync. */}
+            {(() => {
+              const activeDevice = KATANA_DEVICES.find(d => d.id === device) ?? KATANA_DEVICES[0]
               return (
                 <div className="px-2.5 pt-2.5 flex items-center gap-1.5">
-                  {/* Provider pill — read-only attribution. Sits left of the
-                   *  model picker so the picker label (e.g. "GPT-4o", "Llama
-                   *  3.1 8B") doesn't have to carry attribution. Same pill
-                   *  shape as the model picker for visual rhythm; muted bg +
-                   *  no chevron + no hover state so it reads as informational
-                   *  rather than clickable. */}
-                  <span
-                    className="inline-flex items-center rounded-lg border border-white/10 bg-surface-3 px-2.5 py-1.5 text-xs text-fg-3"
-                    title={`Provider: ${providerInfo.label}`}
-                  >
-                    <span className="truncate max-w-[10rem]">{providerInfo.label}</span>
-                  </span>
-                  <div className="relative">
                   <button
-                    onClick={openDropdown}
+                    onClick={() => setSettingsOpen(true)}
                     className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-surface-2 px-2.5 py-1.5 text-xs text-fg-2 hover:bg-surface-3 hover:text-fg transition-colors"
-                    title={`${providerInfo.label} — change model`}
+                    title={`Target amp: ${activeDevice.label} — change in settings`}
                   >
-                    <span className="truncate max-w-[10rem]">{modelInfo?.label ?? model}</span>
-                    <ChevronIcon open={modelOpen} />
+                    <AmpIcon />
+                    <span className="truncate max-w-[12rem]">{activeDevice.label}</span>
                   </button>
-                  {modelOpen && (
-                    <>
-                      <div className="fixed inset-0 z-30" onClick={() => setModelOpen(false)} />
-                      {/* Opens upward (bottom-full mb-1) — the composer
-                          lives at the bottom of the viewport on mobile,
-                          so dropping DOWN runs the menu off the fold.
-                          Floating UP into the chat area is the only
-                          direction that keeps the full list visible. */}
-                      <div className="absolute left-0 bottom-full z-40 mb-1 min-w-[14rem] rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden max-h-[50vh] overflow-y-auto">
-                        <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-fg-4 bg-surface flex items-center justify-between">
-                          <span>{providerInfo.label}</span>
-                          {providerInfo.category === 'local' && liveModelsLoading && <span className="text-fg-4">…</span>}
-                        </p>
-                        {modelsForDropdown.length === 0 ? (
-                          <p className="px-3 py-3 text-[11px] text-fg-4">
-                            {providerInfo.category === 'local'
-                              ? 'No models installed. Pull or load one on the server.'
-                              : 'No models available.'}
-                          </p>
-                        ) : modelsForDropdown.map(m => {
-                          const isActive = model === m.id
-                          return (
-                            <button
-                              key={m.id}
-                              onClick={() => { handleModel(m.id); setModelOpen(false) }}
-                              className={`flex w-full items-center gap-2 px-3 py-2 text-xs transition-colors ${
-                                isActive ? 'text-primary bg-primary/10' : 'text-fg-2 hover:bg-surface-3 hover:text-fg'
-                              }`}
-                            >
-                              <span className="flex-1 text-left">{m.label}</span>
-                              {isActive && <span className="text-primary shrink-0">✓</span>}
-                            </button>
-                          )
-                        })}
-                      </div>
-                    </>
-                  )}
-                  </div>{/* /relative model-picker wrapper */}
                 </div>
               )
             })()}
@@ -2162,31 +2063,8 @@ export default function Home({
           onTheme={handleTheme}
           device={device}
           onDevice={handleDevice}
-          providers={providers}
-          selectedProvider={provider}
-          onProvider={handleProvider}
-          customSystemPrompt={customSystemPrompt}
-          onSystemPrompt={handleSystemPrompt}
-          customTemperature={customTemperature}
-          onTemperature={handleTemperature}
-          onExport={() => {
-            const data = exportAll()
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
-            const url = URL.createObjectURL(blob)
-            const a = document.createElement('a')
-            a.href = url
-            a.download = `chatframe-export-${new Date().toISOString().slice(0, 10)}.json`
-            a.click()
-            URL.revokeObjectURL(url)
-          }}
-          onImport={() => importJsonRef.current?.click()}
-          onResetAll={() => setConfirmDelete({
-            label: 'all data (every conversation, theme, provider, model preference, generation settings, and session token)',
-            doDelete: () => {
-              resetAllData()
-              window.location.replace('/')
-            },
-          })}
+          apiKey={apiKey}
+          onApiKey={handleApiKey}
           onClose={() => setSettingsOpen(false)}
         />
       )}
