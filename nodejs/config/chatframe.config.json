@@ -1,0 +1,8 @@
+{
+  "name": "ToneAI Kat",
+  "shortName": "ToneAI Kat",
+  "tagline": "AI tone patches for the BOSS KATANA",
+  "defaultTheme": "dark",
+  "icon192": "/branding/icon-192.png",
+  "icon512": "/branding/icon-512.png"
+}

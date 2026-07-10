@@ -68,9 +68,9 @@ export interface ChatframeConfig {
 }
 
 const defaults: ChatframeConfig = {
-  name: 'ChatFrame',
-  shortName: 'ChatFrame',
-  tagline: 'Embeddable AI chatbot framework',
+  name: 'ToneAI Kat',
+  shortName: 'ToneAI Kat',
+  tagline: 'AI tone patches for the BOSS KATANA',
   defaultSystemPrompt: 'You are a helpful AI assistant.',
   welcomeMessage: '',
   starterPrompts: [],
