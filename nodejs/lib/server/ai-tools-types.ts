@@ -12,17 +12,21 @@ export interface ModelInfo {
 
 export type ProviderCategory = 'cloud' | 'local'
 
-// Public factory shape — what callers of provider.createModel see. Pure
-// (modelId) -> LanguageModel because by the time it's called the
-// provider config (envKey, baseURL bits) is already resolved.
-export type ModelFactory = (modelId: string) => LanguageModel
+// Public factory shape — what callers of provider.createModel see. The
+// provider config (envKey) is already resolved by the time it's called.
+//
+// `apiKey` is the BYOK path: when present it is a caller-supplied key that
+// arrived on this request and must be used instead of the server's env key.
+// It is a TRANSIENT credential — never persist it, never log it, and scrub
+// it from provider error objects before surfacing them.
+export type ModelFactory = (modelId: string, apiKey?: string) => LanguageModel
 
 // Internal factory shape — what the FACTORIES map in ai-tools.ts uses.
 // Receives the resolved ProviderInfo so any per-provider runtime wiring
-// (env-var name, baseURL, etc.) reads from the YAML-loaded config instead
-// of being hard-coded in a closure at module load. The loader binds this
-// to the public ModelFactory shape by partial application.
-export type InternalModelFactory = (modelId: string, providerInfo: ProviderInfo) => LanguageModel
+// (env-var name, etc.) reads from the YAML-loaded config instead of being
+// hard-coded in a closure at module load. The loader binds this to the
+// public ModelFactory shape by partial application.
+export type InternalModelFactory = (modelId: string, providerInfo: ProviderInfo, apiKey?: string) => LanguageModel
 
 export interface ProviderInfo {
   id: string

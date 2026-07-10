@@ -1,149 +1,43 @@
-# Chatframe provider + model registry.
+# ToneAI-KATANA provider + model registry.
 #
-# This file is the operator-visible source of truth for which providers
-# and models chatframe exposes in the UI / accepts via /api/chat. Edit here
-# instead of touching `lib/server/ai-tools.ts` when:
-#   - a provider ships a new model and you want it in the picker
-#   - a model has been deprecated and you want it removed
-#   - you want to relabel an entry (e.g. clearer naming for non-technical users)
+# This app is ANTHROPIC-ONLY. The multi-provider registry inherited from
+# chatframe was removed on 2026-07-09 — see docs/settings.md § Providers and
+# the free tier. Do not re-add OpenAI/Gemini/Bedrock/local entries here: the
+# system prompt and tone-intent schema are tuned for Claude, and the free
+# tier's quota accounting assumes a single upstream.
 #
-# Each provider's `id` is mapped to a constructor factory in
-# `lib/server/ai-tools.ts` (the factory captures any per-provider runtime
-# wiring — env-var precedence, baseURL detection, etc.) so behavior
-# stays in code while the data lives here.
+# Two modes, both server-side (the browser never calls Anthropic):
+#   free  → the server's ANTHROPIC_API_KEY, subject to the global daily quota
+#   byok  → a key supplied per-request by the user, quota untouched
 #
-# Schema per provider:
+# Edit this file (not lib/server/ai-tools.ts) when:
+#   - Anthropic ships a new model and you want it in the picker
+#   - a model is deprecated and you want it removed
+#   - you want to relabel an entry
+#
+# The `anthropic` id maps to a constructor factory in
+# `lib/server/ai-tools.ts`, so behavior stays in code while data lives here.
+#
+# Schema:
 #   id              required, must match a factory key in ai-tools.ts
 #   label           required, UI display name
 #   category        required, "cloud" or "local"
 #   envKey          cloud only — env var that must be set for `available: true`
-#   baseURLEnv      local only — env var that overrides baseURL
-#   defaultBaseURL  local only — fallback baseURL
 #   defaultModel    required, must appear in `models[].id`
 #   models          required, array of { id, label }
 #
-# Tip: agent SDKs often accept aliases (e.g. anthropic's `sonnet` auto-tracks
-# the latest sonnet). Prefer aliases over pinned full names when the SDK
-# supports them — the YAML stops aging on each release.
+# Model IDs are complete as written — never append a date suffix
+# (`claude-opus-4-8`, never `claude-opus-4-8-20260101`). A dated variant of a
+# non-dated alias 404s.
 
 providers:
-
-  # ── Cloud ──
 
   anthropic:
     label: Anthropic
     category: cloud
     envKey: ANTHROPIC_API_KEY
-    defaultModel: claude-sonnet-4-6
+    defaultModel: claude-opus-4-8
     models:
-      - { id: claude-opus-4-7,           label: Claude Opus 4.7 }
-      - { id: claude-sonnet-4-6,         label: Claude Sonnet 4.6 }
-      - { id: claude-haiku-4-5-20251001, label: Claude Haiku 4.5 }
-
-  openai:
-    label: OpenAI
-    category: cloud
-    envKey: OPENAI_API_KEY
-    defaultModel: gpt-4o
-    models:
-      - { id: gpt-4o,      label: GPT-4o }
-      - { id: gpt-4o-mini, label: GPT-4o mini }
-      - { id: gpt-4-turbo, label: GPT-4 Turbo }
-      - { id: o1-preview,  label: o1 preview }
-      - { id: o1-mini,     label: o1 mini }
-
-  gemini:
-    label: Google Gemini
-    category: cloud
-    envKey: GEMINI_API_KEY
-    defaultModel: gemini-2.5-flash
-    models:
-      - { id: gemini-2.5-pro,        label: Gemini 2.5 Pro }
-      - { id: gemini-2.5-flash,      label: Gemini 2.5 Flash }
-      - { id: gemini-2.5-flash-lite, label: Gemini 2.5 Flash-Lite }
-
-  groq:
-    label: Groq
-    category: cloud
-    envKey: GROQ_API_KEY
-    defaultModel: llama-3.3-70b-versatile
-    models:
-      - { id: llama-3.3-70b-versatile, label: Llama 3.3 70B Versatile }
-      - { id: llama-3.1-8b-instant,    label: Llama 3.1 8B Instant }
-      - { id: mixtral-8x7b-32768,      label: Mixtral 8x7B }
-
-  mistral:
-    label: Mistral
-    category: cloud
-    envKey: MISTRAL_API_KEY
-    defaultModel: mistral-large-latest
-    models:
-      - { id: mistral-large-latest, label: Mistral Large }
-      - { id: mistral-small-latest, label: Mistral Small }
-      - { id: codestral-latest,     label: Codestral }
-
-  cohere:
-    label: Cohere
-    category: cloud
-    envKey: COHERE_API_KEY
-    defaultModel: command-r-plus
-    models:
-      - { id: command-r-plus, label: Command R+ }
-      - { id: command-r,      label: Command R }
-      - { id: command,        label: Command }
-
-  perplexity:
-    label: Perplexity
-    category: cloud
-    envKey: PERPLEXITY_API_KEY
-    defaultModel: sonar
-    models:
-      - { id: sonar,     label: Sonar }
-      - { id: sonar-pro, label: Sonar Pro }
-
-  bedrock:
-    label: AWS Bedrock
-    category: cloud
-    envKey: AWS_ACCESS_KEY_ID
-    defaultModel: anthropic.claude-3-5-sonnet-20241022-v2:0
-    models:
-      - { id: anthropic.claude-3-5-sonnet-20241022-v2:0, label: Bedrock Claude 3.5 Sonnet }
-      - { id: meta.llama3-1-70b-instruct-v1:0,           label: Bedrock Llama 3.1 70B }
-
-  # ── Local (OpenAI-compatible HTTP) ──
-
-  ollama:
-    label: Ollama
-    category: local
-    baseURLEnv: OLLAMA_BASE_URL
-    defaultBaseURL: http://localhost:11434/v1
-    defaultModel: llama3.1:8b
-    models:
-      - { id: llama3.1:8b, label: Llama 3.1 8B }
-      - { id: llama3.2:3b, label: Llama 3.2 3B }
-      - { id: qwen2.5:7b,  label: Qwen 2.5 7B }
-      - { id: qwen2.5:14b, label: Qwen 2.5 14B }
-      - { id: mistral:7b,  label: Mistral 7B }
-      - { id: gemma2:9b,   label: Gemma 2 9B }
-      - { id: phi3:14b,    label: Phi 3 14B }
-
-  llamacpp:
-    label: llama.cpp
-    category: local
-    baseURLEnv: LLAMACPP_BASE_URL
-    defaultBaseURL: http://localhost:8080/v1
-    defaultModel: loaded-model
-    models:
-      - { id: loaded-model, label: Currently loaded model }
-
-  lmstudio:
-    label: LM Studio
-    category: local
-    baseURLEnv: LMSTUDIO_BASE_URL
-    defaultBaseURL: http://localhost:1234/v1
-    defaultModel: local-model
-    models:
-      - { id: local-model,              label: Currently loaded model }
-      - { id: llama-3.2-3b-instruct,    label: Llama 3.2 3B Instruct }
-      - { id: qwen2.5-7b-instruct,      label: Qwen 2.5 7B Instruct }
-      - { id: mistral-7b-instruct-v0.3, label: Mistral 7B Instruct v0.3 }
+      - { id: claude-opus-4-8,  label: Claude Opus 4.8 }
+      - { id: claude-sonnet-5,  label: Claude Sonnet 5 }
+      - { id: claude-haiku-4-5, label: Claude Haiku 4.5 }

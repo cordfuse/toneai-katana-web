@@ -11,15 +11,7 @@
 
 import { streamText, generateText, tool, jsonSchema, stepCountIs } from 'ai'
 import type { ModelMessage, LanguageModel } from 'ai'
-import { anthropic } from '@ai-sdk/anthropic'
-import { openai } from '@ai-sdk/openai'
-import { google as googleDefault, createGoogleGenerativeAI } from '@ai-sdk/google'
-import { groq } from '@ai-sdk/groq'
-import { mistral } from '@ai-sdk/mistral'
-import { cohere } from '@ai-sdk/cohere'
-import { perplexity } from '@ai-sdk/perplexity'
-import { bedrock } from '@ai-sdk/amazon-bedrock'
-import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
+import { anthropic, createAnthropic } from '@ai-sdk/anthropic'
 
 import { tavilySearch, type SearchResult } from './web-search'
 import { getToolsForServers, executeMcpToolCall, isMcpToolName } from './mcp'
@@ -52,48 +44,20 @@ import { loadProvidersConfig } from './providers-config'
 
 // Factory map keyed by provider id. Matches the provider keys in
 // config/providers.yaml. Each factory receives the YAML-resolved
-// ProviderInfo as its second arg — so any per-provider config (envKey,
-// baseURLEnv, defaultBaseURL) reads from YAML at call time instead of
-// being duplicated in a closure. The loader binds the second arg via
-// partial application before exposing the public createModel surface.
+// ProviderInfo as its second arg — so any per-provider config (envKey)
+// reads from YAML at call time instead of being duplicated in a closure.
+// The loader binds the second arg via partial application before exposing
+// the public createModel surface.
+//
+// Anthropic-only (2026-07-09). This map had nine providers when the app was
+// forked from chatframe; the other eight are gone along with their @ai-sdk/*
+// packages. @ai-sdk/anthropic reads ANTHROPIC_API_KEY, which is what the YAML
+// declares under `envKey`.
 const FACTORIES: Record<string, InternalModelFactory> = {
-  // ── Cloud — most are one-liner pass-throughs to the SDK provider.
-  // The SDK reads its provider-conventional env var (ANTHROPIC_API_KEY
-  // for @ai-sdk/anthropic, OPENAI_API_KEY for @ai-sdk/openai, etc.),
-  // which matches what the YAML declares under `envKey` for these.
-  anthropic:  (m, _p) => anthropic(m),
-  openai:     (m, _p) => openai(m),
-  groq:       (m, _p) => groq(m),
-  mistral:    (m, _p) => mistral(m),
-  cohere:     (m, _p) => cohere(m),
-  perplexity: (m, _p) => perplexity(m),
-  bedrock:    (m, _p) => bedrock(m),
-
-  // Gemini needs custom env-var handling: @ai-sdk/google's default
-  // singleton reads GOOGLE_GENERATIVE_AI_API_KEY, but the Chatframe env
-  // convention (and most users' existing setups) uses whatever the YAML
-  // declares as `envKey` — typically GEMINI_API_KEY. Build the provider
-  // explicitly with the YAML-named key so an env change between requests
-  // gets picked up. Fall back to the default singleton if the named key
-  // isn't set.
-  gemini: (m, p) => {
-    const key = p.envKey ? process.env[p.envKey] : undefined
-    if (!key) return googleDefault(m)
-    return createGoogleGenerativeAI({ apiKey: key })(m)
-  },
-
-  // ── Local — all three share the same OpenAI-compatible shape: read
-  // baseURLEnv from the env (falling back to defaultBaseURL), construct
-  // a fresh OpenAI-compatible provider. Doing this per-call (not once
-  // at module load) means env changes between requests are picked up.
-  ollama:   (m, p) => localOpenAICompatible(m, p),
-  llamacpp: (m, p) => localOpenAICompatible(m, p),
-  lmstudio: (m, p) => localOpenAICompatible(m, p),
-}
-
-function localOpenAICompatible(modelId: string, p: ProviderInfo) {
-  const baseURL = (p.baseURLEnv && process.env[p.baseURLEnv]) || p.defaultBaseURL!
-  return createOpenAICompatible({ name: p.id, baseURL, apiKey: 'local' })(modelId)
+  // apiKey present → BYOK: build a request-scoped provider around the
+  // caller's key. Absent → free tier: the default singleton reads
+  // ANTHROPIC_API_KEY from the env. The BYOK key is never stored.
+  anthropic: (m, _p, apiKey) => (apiKey ? createAnthropic({ apiKey })(m) : anthropic(m)),
 }
 
 export const PROVIDERS: ProviderInfo[] = loadProvidersConfig(FACTORIES)
@@ -257,10 +221,9 @@ function readBackendFlag(): SearchBackend {
 }
 
 // Provider-native search: returns the tool entries to register on the
-// request, or null if the provider has no native search. Some providers
-// (Perplexity) search on every request without needing a tool slot —
-// they return an empty tools object so the source-chunk collection path
-// still gets activated.
+// request, or null if the provider has no native search. Anthropic-only
+// since 2026-07-09 — the gemini (grounding) and perplexity (always-on
+// Sonar search) branches went with their packages.
 interface NativeSearch {
   tools: Record<string, unknown>
 }
@@ -277,16 +240,6 @@ function getNativeSearch(providerId: string): NativeSearch | null {
       // separate search calls the model can issue per assistant turn;
       // 5 mirrors our MAX_TOOL_ROUNDS for parity.
       return { tools: { web_search: anthropic.tools.webSearch_20250305({ maxUses: 5 }) } }
-    case 'gemini':
-      // Google grounding via the Search tool. The provider routes this
-      // through Gemini's built-in search grounding pipeline. Tool factories
-      // aren't bound to a specific API key, so the default singleton is
-      // fine here even though we use createGoogleGenerativeAI() for models.
-      return { tools: { google_search: googleDefault.tools.googleSearch({}) } }
-    case 'perplexity':
-      // Sonar models search the web on every request — no tool slot needed.
-      // The source-chunk path still picks up citations from the response.
-      return { tools: {} }
     default:
       return null
   }
@@ -358,6 +311,12 @@ export interface RunChatOptions {
   webSearch?: boolean
   temperature?: number
   mcpServers?: string[]
+  /**
+   * BYOK: a caller-supplied Anthropic key for this request only. When set,
+   * the free-tier quota is not consumed and the server's own key is unused.
+   * Transient — do not persist or log it.
+   */
+  apiKey?: string
 }
 
 export type StreamEvent =
@@ -368,7 +327,7 @@ export type StreamEvent =
 export async function runChat(
   messages: ChatMessage[],
   providerId: string = 'anthropic',
-  model: string = 'claude-sonnet-4-6',
+  model: string = 'claude-opus-4-8',
   systemPrompt: string = 'You are a helpful AI assistant.',
   options: RunChatOptions = {},
 ): Promise<ChatResult> {
@@ -380,7 +339,7 @@ export async function runChat(
   const tools = await buildTools(resolvedSearch, options.mcpServers)
 
   const result = await generateText({
-    model: p.createModel(model),
+    model: p.createModel(model, options.apiKey),
     messages: toModelMessages(systemPrompt, messages, providerId),
     // The system prompt lives in the messages array (not as `system:`) so
     // we can attach Anthropic's cacheControl providerOption to it. Our
@@ -411,7 +370,7 @@ export async function runChat(
 export async function* runChatStream(
   messages: ChatMessage[],
   providerId: string = 'anthropic',
-  model: string = 'claude-sonnet-4-6',
+  model: string = 'claude-opus-4-8',
   systemPrompt: string = 'You are a helpful AI assistant.',
   options: RunChatOptions = {},
 ): AsyncGenerator<StreamEvent, void, unknown> {
@@ -426,7 +385,7 @@ export async function* runChatStream(
   const tools = await buildTools(resolvedSearch, options.mcpServers)
 
   const result = streamText({
-    model: p.createModel(model),
+    model: p.createModel(model, options.apiKey),
     messages: toModelMessages(systemPrompt, messages, providerId),
     // See runChat above — operator-controlled system prompt, so the
     // prompt-injection advisory doesn't apply.

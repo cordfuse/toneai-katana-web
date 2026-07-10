@@ -43,7 +43,7 @@ services:
       # Provider + model — default to anthropic / sonnet 4.6. Switch to
       # any provider for which you've supplied an API key in .env.
       CHATFRAME_PROVIDER: ${CHATFRAME_PROVIDER:-anthropic}
-      CHATFRAME_MODEL: ${CHATFRAME_MODEL:-claude-sonnet-4-6}
+      CHATFRAME_MODEL: ${CHATFRAME_MODEL:-claude-opus-4-8}
 
       # System prompt + temperature — server-side defaults. Users can
       # override per-conversation in the Settings panel (unless kiosk

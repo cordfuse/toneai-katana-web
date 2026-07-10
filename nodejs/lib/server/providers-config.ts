@@ -144,7 +144,7 @@ export function loadProvidersConfig(
       info.baseURLEnv = entry.baseURLEnv
       info.defaultBaseURL = entry.defaultBaseURL
     }
-    info.createModel = (modelId: string) => factory(modelId, info)
+    info.createModel = (modelId: string, apiKey?: string) => factory(modelId, info, apiKey)
     out.push(info)
   }
   return out
