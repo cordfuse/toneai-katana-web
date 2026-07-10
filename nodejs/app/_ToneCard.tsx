@@ -106,7 +106,7 @@ export function ToneCard({ tone, onOpen }: { tone: TonePatchResult; onOpen: () =
 
 // ─── detail modal ────────────────────────────────────────────────────────────
 
-export function ToneModal({ tone, onClose }: { tone: TonePatchResult; onClose: () => void }) {
+export function ToneModal({ tone, onClose, onGoToChat }: { tone: TonePatchResult; onClose: () => void; onGoToChat?: () => void }) {
   const [settingsOpen, setSettingsOpen] = useState(true)
   // Only show blocks the tone actually uses. An empty FX/delay/reverb slot as an
   // "off" row is noise — FX1/FX2 are the Katana's two mod/FX slots, and the model
@@ -187,21 +187,33 @@ export function ToneModal({ tone, onClose }: { tone: TonePatchResult; onClose: (
           </div>
 
           {/* actions */}
-          <div className="grid grid-cols-2 gap-2 border-t border-white/10 p-4 shrink-0">
-            <button
-              onClick={() => downloadTsl(tone)}
-              className="flex items-center justify-center gap-2 rounded-xl bg-primary px-3 py-2.5 text-sm font-medium text-black hover:opacity-90 transition-opacity"
-            >
-              <DownloadIcon /> Download .tsl
-            </button>
-            <a
-              href={youtubeUrl(tone)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 rounded-xl border border-white/10 px-3 py-2.5 text-sm text-fg-2 hover:text-fg hover:border-white/20 transition-colors"
-            >
-              <YoutubeIcon /> YouTube
-            </a>
+          <div className="flex flex-col gap-2 border-t border-white/10 p-4 shrink-0">
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={() => downloadTsl(tone)}
+                className="flex items-center justify-center gap-2 rounded-xl bg-primary px-3 py-2.5 text-sm font-medium text-black hover:opacity-90 transition-opacity"
+              >
+                <DownloadIcon /> Download .tsl
+              </button>
+              <a
+                href={youtubeUrl(tone)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 rounded-xl border border-white/10 px-3 py-2.5 text-sm text-fg-2 hover:text-fg hover:border-white/20 transition-colors"
+              >
+                <YoutubeIcon /> YouTube
+              </a>
+            </div>
+            {/* Present only when opened from the tone library and its source
+                conversation isn't already active. */}
+            {onGoToChat && (
+              <button
+                onClick={onGoToChat}
+                className="flex items-center justify-center gap-2 rounded-xl border border-white/10 px-3 py-2 text-xs text-fg-3 hover:text-fg hover:border-white/20 transition-colors"
+              >
+                Go to chat →
+              </button>
+            )}
           </div>
         </div>
       </div>

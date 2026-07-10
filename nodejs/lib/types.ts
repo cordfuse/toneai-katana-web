@@ -43,3 +43,17 @@ export interface Conversation {
   createdAt: number
   updatedAt: number
 }
+
+// A tone saved to the client-side library ("My Tones"). Independent of the
+// conversation it came from, so it survives chat deletion / the 50-conversation
+// cap. `tone` carries the full result including the ready-to-download `tsl`, so
+// re-download works offline with no server round-trip.
+export interface SavedTone {
+  id: string
+  name: string                     // editable (rename); defaults to the patch name
+  createdAt: number
+  updatedAt: number
+  conversationId: string | null    // source chat, for "go to chat"
+  prompt?: string                  // the request that produced it
+  tone: TonePatchResult
+}

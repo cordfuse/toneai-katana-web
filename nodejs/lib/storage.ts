@@ -1,4 +1,4 @@
-import type { Conversation, ChatMessage } from './types'
+import type { Conversation, ChatMessage, SavedTone } from './types'
 
 // ─── Conversations ────────────────────────────────────────────────────────────
 
@@ -38,6 +38,66 @@ export function renameConversation(id: string, title: string) {
 
 export function clearAllConversations() {
   localStorage.removeItem(CONV_KEY)
+}
+
+// ─── Tone library ─────────────────────────────────────────────────────────────
+//
+// A dedicated store so the "My Tones" gallery is independent of conversations —
+// deleting a chat (or aging past the 50-conversation cap) never loses a saved
+// tone. Newest-first by updatedAt, same shape of helpers as conversations.
+
+const TONES_KEY = 'chatframe_tones'
+const MAX_TONES = 300
+
+export function loadTones(): SavedTone[] {
+  if (typeof window === 'undefined') return []
+  try { return JSON.parse(localStorage.getItem(TONES_KEY) ?? '[]') } catch { return [] }
+}
+
+function saveTones(tones: SavedTone[]) {
+  localStorage.setItem(TONES_KEY, JSON.stringify(tones.slice(0, MAX_TONES)))
+}
+
+export function addTone(tone: SavedTone) {
+  const all = loadTones()
+  const idx = all.findIndex(t => t.id === tone.id)
+  if (idx >= 0) all[idx] = tone
+  else all.unshift(tone)
+  all.sort((a, b) => b.updatedAt - a.updatedAt)
+  saveTones(all)
+}
+
+export function deleteTone(id: string) {
+  saveTones(loadTones().filter(t => t.id !== id))
+}
+
+export function renameTone(id: string, name: string) {
+  const all = loadTones()
+  const idx = all.findIndex(t => t.id === id)
+  if (idx < 0) return
+  all[idx] = { ...all[idx], name, updatedAt: Date.now() }
+  all.sort((a, b) => b.updatedAt - a.updatedAt)
+  saveTones(all)
+}
+
+export function clearAllTones() {
+  localStorage.removeItem(TONES_KEY)
+}
+
+// One-time backfill guard. The tone library seeds itself from tones already
+// present in existing chats — but only ONCE per browser. Without this flag the
+// seed would run on every load and resurrect any library tone the user deleted
+// while its source chat still exists. New tones are saved on generation, so the
+// seed is purely a migration for tones created before the library shipped.
+const TONES_BACKFILLED_KEY = 'chatframe_tones_backfilled'
+
+export function tonesBackfilled(): boolean {
+  if (typeof window === 'undefined') return true
+  return localStorage.getItem(TONES_BACKFILLED_KEY) === '1'
+}
+
+export function markTonesBackfilled() {
+  localStorage.setItem(TONES_BACKFILLED_KEY, '1')
 }
 
 // Serialize one conversation to a markdown transcript suitable for download.
