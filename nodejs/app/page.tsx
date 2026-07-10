@@ -15,6 +15,7 @@ export default async function Page() {
   return (
     <Home
       appName={config.name}
+      iconUrl={config.icon192}
       welcomeMessage={resolveLocalizableString(config.welcomeMessage, activeLocale)}
       starterPrompts={resolveLocalizableStringArray(config.starterPrompts, activeLocale)}
     />

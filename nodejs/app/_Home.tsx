@@ -20,6 +20,12 @@ import {
 } from '@/lib/storage'
 import type { ChatMessage, Conversation, Attachment } from '@/lib/types'
 import { useT, useLocale, useAvailableLocales, setLocaleAndReload, labelForLocale } from '@/lib/i18n/client'
+import {
+  type GearState, type PositionChoice,
+  loadGear, saveGear, activeInstrument, describeRig, positionsFor, positionLabel, equippedPickups,
+} from '@/lib/gear'
+import { sampleTonePrompts } from '@/lib/prompts'
+import { GearSection, GearModal } from './_Gear'
 
 // ─── theme palette ───────────────────────────────────────────────────────────
 //
@@ -79,6 +85,7 @@ const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION ?? '0.1.0'
 interface ChatframeBranding {
   name: string
   shortName: string
+  icon192: string
   welcomeMessage: string
   checkForUpdatesUrl: string
   customThemes: { id: string; name: string; category: 'dark' | 'light'; swatches?: [string, string, string]; colors?: Record<string, string> }[]
@@ -86,13 +93,14 @@ interface ChatframeBranding {
 }
 function getChatframeBranding(): ChatframeBranding {
   if (typeof window === 'undefined') {
-    return { name: 'ToneAI Kat', shortName: 'ToneAI Kat', welcomeMessage: '', checkForUpdatesUrl: '#', customThemes: [], hideBuiltIns: false }
+    return { name: 'ToneAI Kat', shortName: 'ToneAI Kat', icon192: '/branding/icon-192.png', welcomeMessage: '', checkForUpdatesUrl: '#', customThemes: [], hideBuiltIns: false }
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const w = (window as any).__CHATFRAME ?? {}
   return {
     name: w.name ?? 'ToneAI Kat',
     shortName: w.shortName ?? 'ToneAI Kat',
+    icon192: typeof w.icon192 === 'string' ? w.icon192 : '/branding/icon-192.png',
     welcomeMessage: typeof w.welcomeMessage === 'string' ? w.welcomeMessage : '',
     checkForUpdatesUrl: w.checkForUpdatesUrl ?? '#',
     customThemes: Array.isArray(w.customThemes) ? w.customThemes : [],
@@ -103,9 +111,9 @@ function getChatframeBranding(): ChatframeBranding {
 
 // ─── icons ───────────────────────────────────────────────────────────────────
 
-// No in-app brand mark. The icon set (config/icons/*.png, app/favicon.ico)
-// exists only for the PWA install prompt, the home-screen shortcut, and the
-// browser tab — the header and sidebar show the wordmark alone.
+// The header shows the icon (config/icons/icon-192.png via /branding) next to
+// the wordmark; the same icon set also drives the PWA install prompt, the
+// home-screen shortcut, and the browser tab.
 
 // Up arrow, not a paper plane — pairs with StopIcon as a submit/halt toggle.
 // Stroked rather than filled so it reads at the same visual weight as the
@@ -161,6 +169,10 @@ const ChevronIcon = ({ open }: { open: boolean }) => (
 // Amp cabinet: outer shell, speaker cone, control knob.
 const AmpIcon = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="14" r="4"/><line x1="6.5" y1="6.5" x2="6.5" y2="6.5"/></svg>
+)
+// Guitar: body outline, soundhole/pickup, neck. Reads at 13px.
+const GuitarIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0"><path d="M11.5 12.5 20 4"/><path d="M18 2.5 21.5 6"/><circle cx="8" cy="16" r="5.5"/><circle cx="8" cy="16" r="1.6"/></svg>
 )
 const CopyIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -315,6 +327,7 @@ function SettingsPanel({
   theme, onTheme,
   device, onDevice,
   apiKey, onApiKey,
+  gear, onGear,
   onClose,
 }: {
   theme: Theme
@@ -323,12 +336,15 @@ function SettingsPanel({
   onDevice: (d: KatanaDevice) => void
   apiKey: string | null
   onApiKey: (k: string | null) => void
+  gear: GearState
+  onGear: (g: GearState) => void
   onClose: () => void
 }) {
   const [closing, setClosing] = useState(false)
   const [themeOpen, setThemeOpen] = useState(false)
   const [deviceOpen, setDeviceOpen] = useState(false)
   const [localeOpen, setLocaleOpen] = useState(false)
+  const [gearModalOpen, setGearModalOpen] = useState(false)
   // Local draft so typing doesn't write to localStorage on every keystroke.
   // Commits on blur, same pattern the system-prompt textarea used.
   const [keyDraft, setKeyDraft] = useState(apiKey ?? '')
@@ -373,6 +389,61 @@ function SettingsPanel({
         </div>
 
         <div className="flex-1 overflow-y-auto p-5 space-y-6">
+          {/* Theme */}
+          <div>
+            <p className="text-[10px] font-semibold text-fg-3 uppercase tracking-wider mb-2">{t('settings.theme', 'Theme')}</p>
+            <div className="relative">
+              <button
+                onClick={() => setThemeOpen(o => !o)}
+                className="flex w-full items-center gap-2.5 rounded-lg border border-white/10 bg-surface-2 px-3 py-2.5 text-sm text-fg hover:bg-surface-3 transition-colors"
+              >
+                <div className="flex gap-1 shrink-0">
+                  <div style={{ background: active.bg }} className="h-3 w-3 rounded-sm border border-white/10" />
+                  <div style={{ background: active.primary }} className="h-3 w-3 rounded-sm" />
+                  <div style={{ background: active.fg, opacity: 0.7 }} className="h-3 w-3 rounded-sm" />
+                </div>
+                <span className="flex-1 text-left">{active.label}</span>
+                <span className="text-[10px] text-fg-4 truncate max-w-[8rem]">{active.desc}</span>
+                <ChevronIcon open={themeOpen} />
+              </button>
+              {themeOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setThemeOpen(false)} />
+                  <div className="absolute left-0 right-0 top-full z-20 mt-1 rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden max-h-[60vh] overflow-y-auto">
+                    {THEME_GROUPS_LIVE.map(group => (
+                      <div key={group.label}>
+                        <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-fg-4 bg-surface">{group.label}</p>
+                        {group.ids.map(id => {
+                          const t = THEMES_LIVE.find(x => x.id === id)
+                          if (!t) return null
+                          const isActive = theme === t.id
+                          return (
+                            <button
+                              key={t.id}
+                              onClick={() => { onTheme(t.id); setThemeOpen(false) }}
+                              className={`flex w-full items-center gap-2.5 px-3 py-2 text-sm transition-colors ${
+                                isActive ? 'text-primary bg-primary/10' : 'text-fg-2 hover:bg-surface-3 hover:text-fg'
+                              }`}
+                            >
+                              <div className="flex gap-1 shrink-0">
+                                <div style={{ background: t.bg }} className="h-3 w-3 rounded-sm border border-white/10" />
+                                <div style={{ background: t.primary }} className="h-3 w-3 rounded-sm" />
+                                <div style={{ background: t.fg, opacity: 0.7 }} className="h-3 w-3 rounded-sm" />
+                              </div>
+                              <span className="flex-1 text-left">{t.label}</span>
+                              <span className="text-[10px] opacity-50 truncate max-w-[6rem]">{t.desc}</span>
+                              {isActive && <span className="ml-1 text-primary shrink-0">✓</span>}
+                            </button>
+                          )
+                        })}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
           {/* Katana device — the amp the generated patch targets */}
           <div>
             <p className="text-[10px] font-semibold text-fg-3 uppercase tracking-wider mb-2">Amp Model</p>
@@ -457,60 +528,14 @@ function SettingsPanel({
             </div>
           )}
 
-          {/* Theme */}
-          <div>
-            <p className="text-[10px] font-semibold text-fg-3 uppercase tracking-wider mb-2">{t('settings.theme', 'Theme')}</p>
-            <div className="relative">
-              <button
-                onClick={() => setThemeOpen(o => !o)}
-                className="flex w-full items-center gap-2.5 rounded-lg border border-white/10 bg-surface-2 px-3 py-2.5 text-sm text-fg hover:bg-surface-3 transition-colors"
-              >
-                <div className="flex gap-1 shrink-0">
-                  <div style={{ background: active.bg }} className="h-3 w-3 rounded-sm border border-white/10" />
-                  <div style={{ background: active.primary }} className="h-3 w-3 rounded-sm" />
-                  <div style={{ background: active.fg, opacity: 0.7 }} className="h-3 w-3 rounded-sm" />
-                </div>
-                <span className="flex-1 text-left">{active.label}</span>
-                <span className="text-[10px] text-fg-4 truncate max-w-[8rem]">{active.desc}</span>
-                <ChevronIcon open={themeOpen} />
-              </button>
-              {themeOpen && (
-                <>
-                  <div className="fixed inset-0 z-10" onClick={() => setThemeOpen(false)} />
-                  <div className="absolute left-0 right-0 top-full z-20 mt-1 rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden max-h-[60vh] overflow-y-auto">
-                    {THEME_GROUPS_LIVE.map(group => (
-                      <div key={group.label}>
-                        <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-fg-4 bg-surface">{group.label}</p>
-                        {group.ids.map(id => {
-                          const t = THEMES_LIVE.find(x => x.id === id)
-                          if (!t) return null
-                          const isActive = theme === t.id
-                          return (
-                            <button
-                              key={t.id}
-                              onClick={() => { onTheme(t.id); setThemeOpen(false) }}
-                              className={`flex w-full items-center gap-2.5 px-3 py-2 text-sm transition-colors ${
-                                isActive ? 'text-primary bg-primary/10' : 'text-fg-2 hover:bg-surface-3 hover:text-fg'
-                              }`}
-                            >
-                              <div className="flex gap-1 shrink-0">
-                                <div style={{ background: t.bg }} className="h-3 w-3 rounded-sm border border-white/10" />
-                                <div style={{ background: t.primary }} className="h-3 w-3 rounded-sm" />
-                                <div style={{ background: t.fg, opacity: 0.7 }} className="h-3 w-3 rounded-sm" />
-                              </div>
-                              <span className="flex-1 text-left">{t.label}</span>
-                              <span className="text-[10px] opacity-50 truncate max-w-[6rem]">{t.desc}</span>
-                              {isActive && <span className="ml-1 text-primary shrink-0">✓</span>}
-                            </button>
-                          )
-                        })}
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
+          {/* My gear — Tier 2. Model bias only; never reaches the writer.
+           *  The instrument is persistent; pickup POSITION is per-request and
+           *  lives in the composer, not here (docs/settings.md § Tier 2). */}
+          <GearSection
+            gear={gear}
+            onSelect={id => onGear({ ...gear, activeInstrumentId: id })}
+            onManage={() => setGearModalOpen(true)}
+          />
 
           {/* Anthropic API key — BYOK.
            *  Presence of a key IS the mode toggle: absent → free tier (server
@@ -559,6 +584,9 @@ function SettingsPanel({
           <span>{branding.name} v{APP_VERSION}</span>
         </div>
       </aside>
+      {gearModalOpen && (
+        <GearModal gear={gear} onSave={onGear} onClose={() => setGearModalOpen(false)} />
+      )}
     </>
   )
 }
@@ -918,11 +946,13 @@ function MessageItem({ msg, streaming, isLastAssistant, onEditAndResend, onRegen
 export default function Home({
   initialConvId,
   appName = 'ToneAI Kat',
+  iconUrl = '/branding/icon-192.png',
   welcomeMessage = '',
   starterPrompts = [],
 }: {
   initialConvId?: string
   appName?: string
+  iconUrl?: string
   welcomeMessage?: string
   starterPrompts?: string[]
 } = {}) {
@@ -932,6 +962,13 @@ export default function Home({
   const [activeId, setActiveId] = useState<string | null>(null)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
+  // Five random tone prompts for the empty state. Starts empty so the server
+  // and the first client render agree; the mount effect below fills it.
+  const [suggestions, setSuggestions] = useState<string[]>([])
+  // Bumped on every "New chat". Relying on activeId/messages to change is not
+  // enough: hitting New chat while already on an empty new chat moves neither,
+  // so the effect would skip and re-show the same five chips.
+  const [starterRoll, setStarterRoll] = useState(0)
   const [streaming, setStreaming] = useState(false)
   const [error, setError] = useState<string | null>(null)
   // Sidebar visibility: default collapsed on mobile, open on lg+ (CSS handles
@@ -944,6 +981,11 @@ export default function Home({
   // null → free mode (server key + global quota). Hydrated client-side; stays
   // null during SSR so the first paint never differs from the server's.
   const [apiKey, setApiKey] = useState<string | null>(null)
+  // Tier 2 gear. Hydrated client-side (localStorage) like theme/apiKey.
+  const [gear, setGear] = useState<GearState>({ instruments: [], activeInstrumentId: null })
+  // Pickup position is per-request and deliberately NOT persisted. 'auto' lets
+  // the model choose from the positions the active instrument actually has.
+  const [position, setPosition] = useState<PositionChoice>('auto')
   // Quota pill: `quotaVersion` forces a re-fetch; `optimisticSpend` counts
   // requests submitted but not yet reconciled with a server response.
   const [quotaVersion, setQuotaVersion] = useState(0)
@@ -1023,6 +1065,7 @@ export default function Home({
     document.documentElement.setAttribute('data-theme', t)
     setDevice(getDefaultDevice())
     setApiKey(getApiKey())
+    setGear(loadGear())
 
     // Voice capability probes. Web Speech API: SpeechRecognition (input)
     // and SpeechSynthesis (output). Both gated separately because some
@@ -1297,6 +1340,19 @@ export default function Home({
     el.style.height = Math.min(el.scrollHeight, 160) + 'px'
   }, [input])
 
+  // ── starter prompt sample ──
+  // Client-only: sampling on the server would render one set of chips into the
+  // HTML and a different set on hydration. Re-rolls per empty conversation, so
+  // "New chat" deals a fresh five rather than the same five all session.
+  const chatIsEmpty = messages.length === 0
+  useEffect(() => {
+    if (chatIsEmpty) setSuggestions(sampleTonePrompts(5))
+  }, [chatIsEmpty, activeId, starterRoll])
+
+  // An operator who set starterPrompts in chatframe.config.json meant them; the
+  // random pool is the fallback, not an override.
+  const starterChips = starterPrompts.length > 0 ? starterPrompts : suggestions
+
   // ── handlers ──
   const handleTheme = useCallback((t: Theme) => {
     setTheme(t)
@@ -1313,6 +1369,21 @@ export default function Home({
     setApiKey(k)
     saveApiKey(k)
   }, [])
+
+  const handleGear = useCallback((next: GearState) => {
+    setGear(next)
+    saveGear(next)
+  }, [])
+
+  // A position selected on one guitar is meaningless on another — "middle" does
+  // not exist on a Les Paul. Whenever the active instrument changes (or its
+  // pickups are edited such that the choice no longer exists), fall back to
+  // Auto rather than silently sending a position the instrument doesn't have.
+  useEffect(() => {
+    const rig = activeInstrument(gear)
+    if (!rig) { setPosition('auto'); return }
+    setPosition(prev => (prev === 'auto' || positionsFor(rig).includes(prev) ? prev : 'auto'))
+  }, [gear])
 
   const handleProvider = useCallback((p: string) => {
     setProviderState(p)
@@ -1345,6 +1416,7 @@ export default function Home({
     setMessages([])
     setError(null)
     setInput('')
+    setStarterRoll(n => n + 1)
     updateUrl(null)
   }, [updateUrl])
 
@@ -1688,17 +1760,29 @@ export default function Home({
             </button>
           )}
           {(
-            <span className="flex items-center gap-1.5">
-              {<h1 className="text-sm font-medium text-fg">{appName}</h1>}
+            // Hidden at lg+, where the sidebar is persistent (lg:relative) and
+            // already shows the app name — the header copy would be a duplicate.
+            <span className="flex items-center gap-2 lg:hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={iconUrl} alt="" width={24} height={24} className="h-6 w-6 rounded shrink-0" />
+              <h1 className="text-sm font-medium text-fg">{appName}</h1>
             </span>
           )}
           <div className="flex-1" />
           {/* Free-tier counter. Hidden entirely in BYOK mode — a countdown
               would imply a limit that doesn't apply to the user's own key. */}
           {!apiKey && <QuotaPill version={quotaVersion} optimistic={optimisticSpend} />}
-          {/* Settings — promoted out of the kebab to a bare icon. It's the
-              only menu item reached often enough to warrant a direct tap
-              (the device pill in the composer also opens it). */}
+          {/* New chat + Settings — promoted out of the kebab to bare icons.
+              These are the two items reached often enough to warrant a direct
+              tap (the device pill in the composer also opens Settings). */}
+          <button
+            onClick={() => newConversation()}
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-fg-3 hover:bg-surface hover:text-fg transition-colors"
+            title={t('header.newChat', 'New chat')}
+            aria-label={t('header.newChat', 'New chat')}
+          >
+            <NewChatIcon />
+          </button>
           <button
             onClick={() => setSettingsOpen(true)}
             className="flex h-9 w-9 items-center justify-center rounded-lg text-fg-3 hover:bg-surface hover:text-fg transition-colors"
@@ -1732,15 +1816,6 @@ export default function Home({
                       <RefreshIcon />
                       <span>{t('header.refresh', 'Reload')}</span>
                     </button>
-                    {(
-                      <button
-                        onClick={() => { setHeaderMenuOpen(false); newConversation() }}
-                        className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-fg hover:bg-surface-3 transition-colors"
-                      >
-                        <NewChatIcon />
-                        <span>{t('header.newChat', 'New chat')}</span>
-                      </button>
-                    )}
                     {messages.length > 0 && (
                       <button
                         onClick={() => {
@@ -1798,17 +1873,17 @@ export default function Home({
                       </div>
                     </div>
                   )
-                  : starterPrompts.length === 0 && (
+                  : starterChips.length === 0 && (
                     <div className="text-center py-16 text-fg-4 text-sm">
                       Start a conversation.
                     </div>
                   )
                 }
-                {starterPrompts.length > 0 && (
+                {starterChips.length > 0 && (
                   <div className="flex flex-wrap gap-2 pt-1">
-                    {starterPrompts.map((prompt, i) => (
+                    {starterChips.map(prompt => (
                       <button
-                        key={i}
+                        key={prompt}
                         onClick={() => sendStarterPrompt(prompt)}
                         disabled={streaming}
                         className="rounded-full border border-primary/30 bg-surface px-3.5 py-1.5 text-xs text-fg-2 hover:border-primary hover:text-fg hover:bg-surface-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-left"
@@ -1903,16 +1978,62 @@ export default function Home({
              *  keep in sync. */}
             {(() => {
               const activeDevice = KATANA_DEVICES.find(d => d.id === device) ?? KATANA_DEVICES[0]
+              const rig = activeInstrument(gear)
+              // flex-wrap: three pills overflow a phone-width composer. Wrapping
+              // beats clipping — every pill stays reachable. Each is min-w-0 so
+              // its label truncates instead of shoving siblings off-screen.
               return (
-                <div className="px-2.5 pt-2.5 flex items-center gap-1.5">
+                <div className="px-2.5 pt-2.5 flex flex-wrap items-center gap-1.5">
                   <button
                     onClick={() => setSettingsOpen(true)}
-                    className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-surface-2 px-2.5 py-1.5 text-xs text-fg-2 hover:bg-surface-3 hover:text-fg transition-colors"
+                    className="flex min-w-0 items-center gap-1.5 rounded-lg border border-white/10 bg-surface-2 px-2.5 py-1.5 text-xs text-fg-2 hover:bg-surface-3 hover:text-fg transition-colors"
                     title={`Target amp: ${activeDevice.label} — change in settings`}
                   >
                     <AmpIcon />
-                    <span className="truncate max-w-[12rem]">{activeDevice.label}</span>
+                    <span className="truncate max-w-[9rem]">{activeDevice.label}</span>
                   </button>
+                  {/* Gear pill. Shows the active instrument, or invites adding one.
+                   *  Same destination as the amp pill — Settings owns both pickers,
+                   *  so there's no second dropdown to keep in sync. */}
+                  <button
+                    onClick={() => setSettingsOpen(true)}
+                    className={`flex min-w-0 items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs transition-colors ${
+                      rig
+                        ? 'border-white/10 bg-surface-2 text-fg-2 hover:bg-surface-3 hover:text-fg'
+                        : 'border-dashed border-white/15 bg-transparent text-fg-4 hover:text-fg-2'
+                    }`}
+                    title={rig
+                      ? `${rig.name} — ${describeRig(rig, positionsFor(rig).at(-1))} — change in settings`
+                      : 'No instrument set — add one in settings'}
+                  >
+                    <GuitarIcon />
+                    <span className="truncate max-w-[8rem]">{rig ? rig.name : 'Add gear'}</span>
+                  </button>
+
+                  {/* Pickup position — per-request, never stored on the instrument.
+                   *  Defaults to Auto: the model picks from the positions this
+                   *  guitar actually has, because the position is a property of
+                   *  the tone, not of the guitar. Only shown when there is a
+                   *  choice to make (2+ pickups fitted). */}
+                  {rig && positionsFor(rig).length > 1 && (
+                    <label className="flex shrink-0 items-center gap-1 rounded-lg border border-white/10 bg-surface-2 px-2 py-1.5 text-xs text-fg-2 hover:bg-surface-3 transition-colors">
+                      <span className="sr-only">Pickup position</span>
+                      <select
+                        value={position}
+                        onChange={e => setPosition(e.target.value as PositionChoice)}
+                        aria-label="Pickup position"
+                        title="Pickup position — Auto lets the model choose to suit the tone"
+                        className="bg-transparent text-xs text-fg-2 focus:outline-none cursor-pointer"
+                      >
+                        <option value="auto">Auto</option>
+                        {positionsFor(rig).map(p => (
+                          <option key={p} value={p}>
+                            {positionLabel(p, equippedPickups(rig).length)}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
                 </div>
               )
             })()}
@@ -2065,6 +2186,8 @@ export default function Home({
           onDevice={handleDevice}
           apiKey={apiKey}
           onApiKey={handleApiKey}
+          gear={gear}
+          onGear={handleGear}
           onClose={() => setSettingsOpen(false)}
         />
       )}

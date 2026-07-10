@@ -65,6 +65,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const configBootstrap = `window.__CHATFRAME=${JSON.stringify({
     name: config.name,
     shortName: config.shortName,
+    icon192: config.icon192,
     tagline: resolvedTagline,
     welcomeMessage: resolvedWelcome,
     starterPrompts: resolvedStarters,
