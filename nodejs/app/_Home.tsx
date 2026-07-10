@@ -904,9 +904,8 @@ function MessageItem({ msg, streaming, isLastAssistant, onEditAndResend, onRegen
         </div>
         {actions}
       </div>
-      {msg.tonePatch && (
-        <ToneCard tone={msg.tonePatch} onOpen={() => onOpenTone?.(msg.tonePatch!)} />
-      )}
+      {/* Web search sources first, then the tone card — the .tsl is the payoff
+          and should sit closest to the composer, under its supporting sources. */}
       {showSources && msg.sources && msg.sources.length > 0 && (
         <div className="ml-1 mt-1 max-w-[85%] rounded-xl bg-surface px-3 py-2 border-l border-primary/30">
           <div className="text-[10px] text-fg-3 mb-1 uppercase tracking-wider">Sources</div>
@@ -941,6 +940,9 @@ function MessageItem({ msg, streaming, isLastAssistant, onEditAndResend, onRegen
             })}
           </ul>
         </div>
+      )}
+      {msg.tonePatch && (
+        <ToneCard tone={msg.tonePatch} onOpen={() => onOpenTone?.(msg.tonePatch!)} />
       )}
     </div>
   )
