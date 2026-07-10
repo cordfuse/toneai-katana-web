@@ -478,6 +478,20 @@ function SettingsPanel({
                           const d = KATANA_DEVICES.find(x => x.id === id)
                           if (!d) return null
                           const isActive = device === d.id
+                          // Non-MkII generations are listed but not yet selectable
+                          // — their writers aren't proven against real exports.
+                          if (!d.supported) {
+                            return (
+                              <div
+                                key={d.id}
+                                className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-fg-4 cursor-not-allowed select-none"
+                                title="Not yet supported — only KATANA MkII is available today"
+                              >
+                                <span className="flex-1 text-left">{d.label}</span>
+                                <span className="ml-1 shrink-0 rounded bg-white/5 px-1.5 py-0.5 text-[9px] uppercase tracking-wide text-fg-4">Soon</span>
+                              </div>
+                            )
+                          }
                           return (
                             <button
                               key={d.id}
@@ -497,6 +511,10 @@ function SettingsPanel({
                 </>
               )}
             </div>
+            <p className="mt-2 text-[11px] leading-snug text-fg-4">
+              Only KATANA MkII is supported right now. Other models are listed but
+              not yet selectable — support lands as each is verified.
+            </p>
           </div>
 
           {/* Language */}
