@@ -35,12 +35,9 @@ services:
       # Same persistent config volume convention as the other compose files.
       - ../nodejs/config:/app/config
 
-    # Local-only host port binding so tailscale serve (localhost:3008) can
-    # reach the container while Caddy still fronts it via proxy_net. Safe
-    # to remove for pure proxy-only setups.
-    ports:
-      - "3008:3000"
-
+    # No host port binding — the host reverse proxy reaches the app over
+    # proxy_net by container name (see docker/Caddyfile). Add a `ports:` entry
+    # only if you also want to hit it directly on a host port.
     networks:
       - proxy_net
 
