@@ -4,7 +4,8 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { v4 as uuidv4 } from 'uuid'
-import { sendChatStream, getQuota, initAuth, getProviders, getProviderModels, type AvailableProvider, type ProviderModel, type MultimodalMessage, type ContentBlock } from '@/lib/api'
+import { sendChatStream, getQuota, initAuth, getProviders, getProviderModels, downloadDiagnostics, type AvailableProvider, type ProviderModel, type MultimodalMessage, type ContentBlock } from '@/lib/api'
+import { installClientLogCapture } from '@/lib/log/client'
 import {
   loadConversations, upsertConversation, deleteConversation, renameConversation,
   clearAllConversations, autoTitle, relativeTime, getTheme, saveTheme, type Theme,
@@ -27,6 +28,12 @@ import {
 } from '@/lib/gear'
 import { sampleTonePrompts } from '@/lib/prompts'
 import { GearSection, GearModal } from './_Gear'
+
+// Patch attachment is hidden until every KATANA generation is supported — the
+// importer parses .kat/.tsl for any device, but we only round-trip MkII, so
+// accepting other patches would set a false expectation. Flip to true to bring
+// the composer paperclip back once the other writers are verified.
+const ATTACH_ENABLED = false
 
 // ─── theme palette ───────────────────────────────────────────────────────────
 //
@@ -350,6 +357,7 @@ function SettingsPanel({
   // Commits on blur, same pattern the system-prompt textarea used.
   const [keyDraft, setKeyDraft] = useState(apiKey ?? '')
   const [keyVisible, setKeyVisible] = useState(false)
+  const [loggingBusy, setLoggingBusy] = useState(false)
   const t = useT()
   const activeLocale = useLocale()
   const availableLocales = useAvailableLocales()
@@ -578,6 +586,30 @@ function SettingsPanel({
                 Remove key → use free mode
               </button>
             )}
+          </div>
+
+          {/* Diagnostics — download a single JSONL of client + server events for
+              this browser, for reporting issues. Contains your prompts and the
+              tones generated; secrets are scrubbed out before it is written. */}
+          <div>
+            <p className="text-[10px] font-semibold text-fg-3 uppercase tracking-wider mb-2">
+              {t('settings.diagnostics', 'Diagnostics')}
+            </p>
+            <button
+              onClick={async () => {
+                setLoggingBusy(true)
+                try { await downloadDiagnostics() } finally { setLoggingBusy(false) }
+              }}
+              disabled={loggingBusy}
+              className="flex w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-surface-2 px-3 py-2.5 text-sm text-fg-2 hover:text-fg hover:bg-surface-3 transition-colors disabled:opacity-50"
+            >
+              {loggingBusy
+                ? t('settings.logDownloading', 'Preparing…')
+                : t('settings.downloadLog', 'Download log')}
+            </button>
+            <p className="mt-1.5 text-[10px] text-fg-4 leading-relaxed">
+              {t('settings.logHint', 'Includes your prompts and generated tones. Send it with a bug report. No API keys are included.')}
+            </p>
           </div>
         </div>
 
@@ -1056,6 +1088,9 @@ export default function Home({
   useEffect(() => {
     if (initialized.current) return
     initialized.current = true
+    // Start diagnostic capture as early as possible so errors during init are
+    // recorded too (console.error tap + global error/rejection listeners).
+    installClientLogCapture()
     // Register the service worker so Chrome considers the app installable.
     // /sw.js is a minimal SW (fetch handler, no caching) — its presence is
     // what unlocks the "Install app" prompt; without it, "Add to home
@@ -2073,15 +2108,18 @@ export default function Home({
                 {/* Attach a patch file. No source menu (camera/photos/documents):
                     the only thing this app ingests is a KATANA patch, so the
                     paperclip opens the file picker directly, filtered to the two
-                    patch extensions. */}
-                <button
-                  onClick={() => patchInputRef.current?.click()}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg text-fg-3 hover:bg-surface-2 hover:text-fg transition-colors"
-                  title={t('composer.attach', 'Attach a patch (.kat or .tsl)')}
-                  aria-label={t('composer.attachFile', 'Attach a patch file')}
-                >
-                  <AttachIcon />
-                </button>
+                    patch extensions. Hidden until all generations are supported
+                    (see ATTACH_ENABLED). */}
+                {ATTACH_ENABLED && (
+                  <button
+                    onClick={() => patchInputRef.current?.click()}
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-fg-3 hover:bg-surface-2 hover:text-fg transition-colors"
+                    title={t('composer.attach', 'Attach a patch (.kat or .tsl)')}
+                    aria-label={t('composer.attachFile', 'Attach a patch file')}
+                  >
+                    <AttachIcon />
+                  </button>
+                )}
                 {/* TTS toggle — speak assistant replies via Web Speech API
                     once the stream completes. Hidden when the browser
                     doesn't expose speechSynthesis (rare).

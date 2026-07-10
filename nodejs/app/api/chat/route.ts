@@ -11,8 +11,29 @@ import { resolveLocalizableString, languageNameForLocale } from '@/lib/i18n'
 import { resolveLocale } from '@/lib/i18n/server'
 import { katanaSystemPrompt, type ToneContext } from '@/lib/server/tone'
 import { KATANA_DEVICES, type KatanaDevice } from '@/lib/storage'
+import { slog } from '@/lib/server/log'
 
 const DEFAULT_DEVICE: KatanaDevice = 'katana-100-mk2'
+
+// A short, safe summary of the user's prompt for the diagnostic log — the last
+// user turn's text only (image blocks stripped), truncated. Never the raw
+// message array (which can carry base64 image data).
+function promptSummary(messages: unknown): string | undefined {
+  if (!Array.isArray(messages)) return undefined
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const m = messages[i]
+    if (m?.role !== 'user') continue
+    const c = m.content
+    if (typeof c === 'string') return c.slice(0, 500)
+    if (Array.isArray(c)) {
+      const text = c.filter((b: unknown) => (b as { type?: string })?.type === 'text')
+        .map((b: unknown) => (b as { text?: string }).text ?? '').join(' ').trim()
+      return text.slice(0, 500)
+    }
+    return undefined
+  }
+  return undefined
+}
 
 // Resolve the tone context from the request: which KATANA to write for and the
 // player's rig descriptor. Falls back to the default device on anything unknown.
@@ -61,6 +82,10 @@ export async function POST(request: NextRequest) {
     console.log('[chat] unauthorized')
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
+  // Correlation id from the client ties this server handling to the client-side
+  // log entries for the same request. startedAt drives request latency.
+  const requestId = request.headers.get('x-request-id') ?? undefined
+  const startedAt = Date.now()
 
   const body = await request.json()
   const {
@@ -196,6 +221,12 @@ export async function POST(request: NextRequest) {
 
   console.log(`[chat] msgs=${messages.length} provider=${provider} model=${model} stream=${!!wantStream} websearch=${wantWebSearch} mcps=${mcpServers.length ? mcpServers.join(',') : '-'} temp=${temperature} locale=${activeLocale}`)
 
+  slog(deviceId, requestId, 'info', 'chat.request', promptSummary(messages), {
+    provider, model, stream: !!wantStream, webSearch: wantWebSearch,
+    device: toneCtx.device, rig: toneCtx.rig, byok: !!byokKey,
+    msgCount: messages.length, locale: activeLocale,
+  })
+
   if (wantStream) {
     // Decoupled streaming with replay buffer.
     //
@@ -215,14 +246,25 @@ export async function POST(request: NextRequest) {
     // Background run — keeps producing events even if the client is gone.
     // The buffer absorbs them; replay clients catch up via Last-Event-ID.
     void (async () => {
+      let tone: string | undefined
+      let chars = 0
       try {
         for await (const event of runChatStream(messages, provider, model, systemPrompt, runOpts)) {
+          const e = event as { type?: string; content?: string; patch?: { name?: string }; name?: string }
+          if (e?.type === 'delta' && typeof e.content === 'string') chars += e.content.length
+          if (e?.type === 'tone_patch') tone = e.patch?.name ?? e.name ?? tone
           push(`data: ${JSON.stringify(event)}\n\n`)
         }
         push(`data: ${JSON.stringify({ type: 'done' })}\n\n`)
         console.log(`[chat] stream ${streamId} done`)
+        slog(deviceId, requestId, 'info', 'chat.response', tone ? `tone: ${tone}` : undefined, {
+          ms: Date.now() - startedAt, chars, tone, stream: true,
+        })
       } catch (err) {
         console.error(`[chat] stream ${streamId} error:`, err)
+        slog(deviceId, requestId, 'error', 'chat.error', friendlyError(err), {
+          ms: Date.now() - startedAt, stream: true,
+        })
         push(`data: ${JSON.stringify({ type: 'error', message: friendlyError(err) })}\n\n`)
       } finally {
         finish()
@@ -291,9 +333,16 @@ export async function POST(request: NextRequest) {
   try {
     const result = await runChat(messages, provider, model, systemPrompt, runOpts)
     console.log('[chat] done')
+    const r = result as { message?: string; patch?: { name?: string } }
+    slog(deviceId, requestId, 'info', 'chat.response', undefined, {
+      ms: Date.now() - startedAt, chars: r.message?.length ?? 0, tone: r.patch?.name, stream: false,
+    })
     return NextResponse.json(result)
   } catch (err) {
     console.error('[chat] error:', err)
+    slog(deviceId, requestId, 'error', 'chat.error', friendlyError(err), {
+      ms: Date.now() - startedAt, stream: false,
+    })
     return NextResponse.json({ error: friendlyError(err) }, { status: 500 })
   }
 }

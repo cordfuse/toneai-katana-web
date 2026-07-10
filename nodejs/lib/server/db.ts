@@ -32,6 +32,21 @@ if (process.env.NEXT_PHASE !== 'phase-production-build') {
       date  TEXT PRIMARY KEY,
       count INTEGER NOT NULL DEFAULT 0
     );
+
+    -- Server-side diagnostic log. Rows are scoped to a device so a user can
+    -- download only their own server events (see lib/server/log.ts +
+    -- app/api/logs). Retention is bounded by age on every write — no cron.
+    CREATE TABLE IF NOT EXISTS logs (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      ts         INTEGER NOT NULL,
+      device_id  TEXT NOT NULL,
+      request_id TEXT,
+      level      TEXT NOT NULL,
+      event      TEXT NOT NULL,
+      msg        TEXT,
+      ctx        TEXT
+    );
+    CREATE INDEX IF NOT EXISTS idx_logs_device_ts ON logs (device_id, ts);
   `)
 } else {
   db = null as unknown as DatabaseSync

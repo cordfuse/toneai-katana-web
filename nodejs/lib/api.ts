@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import type { Message, TonePatchResult } from './types'
+import { clog, getClientLog } from './log/client'
+import type { LogEntry } from './log/types'
 
 // OpenAI-style multimodal content. Used for messages that include images.
 export type ContentBlock =
@@ -188,6 +190,43 @@ export async function getProviderModels(providerId: string): Promise<ProviderMod
   return { models: data.models ?? [], source: data.source ?? 'registry' }
 }
 
+// ─── Diagnostic log ──────────────────────────────────────────────────────────
+
+/** Fetch this device's server-side log entries (JWT-scoped). Never throws. */
+export async function fetchServerLog(): Promise<LogEntry[]> {
+  try {
+    let token = getToken()
+    if (!token) { await authenticate(); token = getToken()! }
+    const res = await fetch(`${BASE}/logs`, { headers: { Authorization: `Bearer ${token}` } })
+    if (!res.ok) return []
+    const data = await res.json()
+    return Array.isArray(data.entries) ? (data.entries as LogEntry[]) : []
+  } catch {
+    return []
+  }
+}
+
+/**
+ * Build the merged client+server diagnostic log and trigger a browser download.
+ * Client and server entries are unioned and sorted by timestamp into one JSONL
+ * file — the single artifact a user sends when reporting an issue.
+ */
+export async function downloadDiagnostics(): Promise<void> {
+  const [server, client] = [await fetchServerLog(), getClientLog()]
+  const merged = [...client, ...server].sort((a, b) => a.ts - b.ts)
+  const jsonl = merged.map((e) => JSON.stringify(e)).join('\n') + '\n'
+  const blob = new Blob([jsonl], { type: 'application/x-ndjson' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  const stamp = new Date().toISOString().replace(/[:.]/g, '-')
+  a.href = url
+  a.download = `toneai-log-${stamp}.jsonl`
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  URL.revokeObjectURL(url)
+}
+
 export interface ChatOpts {
   provider?: string
   model?: string
@@ -207,14 +246,32 @@ export interface ChatOpts {
   apiKey?: string | null
 }
 
-/** Header map for a /chat call: auth + JSON + the BYOK key when present. */
-function chatHeaders(token: string, apiKey?: string | null): Record<string, string> {
+/** Header map for a /chat call: auth + JSON + correlation id + BYOK key. */
+function chatHeaders(token: string, apiKey?: string | null, requestId?: string): Record<string, string> {
   const h: Record<string, string> = {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${token}`,
   }
+  if (requestId) h['x-request-id'] = requestId
   if (apiKey) h['x-anthropic-key'] = apiKey
   return h
+}
+
+/** Last user turn's text, for the client-side request log. Image blocks dropped. */
+function lastPrompt(messages: Message[] | MultimodalMessage[]): string | undefined {
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const m = messages[i] as { role?: string; content?: unknown }
+    if (m?.role !== 'user') continue
+    if (typeof m.content === 'string') return m.content.slice(0, 500)
+    if (Array.isArray(m.content)) {
+      return (m.content as ContentBlock[])
+        .filter((b) => b.type === 'text')
+        .map((b) => (b as { text?: string }).text ?? '')
+        .join(' ').trim().slice(0, 500)
+    }
+    return undefined
+  }
+  return undefined
 }
 
 // Events the streaming chat endpoint can emit (beyond plain text deltas).
@@ -233,10 +290,16 @@ export async function sendChat(messages: Message[] | MultimodalMessage[], signal
 
   // apiKey travels as a header, never in the body — keep it out of the spread.
   const { apiKey, ...bodyOpts } = opts
+  const requestId = uuidv4()
+  const startedAt = Date.now()
+  clog('info', 'chat.request', lastPrompt(messages), {
+    device: opts.device, model: opts.model, webSearch: opts.webSearch, byok: !!apiKey, stream: false,
+  }, requestId)
+
   const res = await fetch(`${BASE}/chat`, {
     method: 'POST',
     signal,
-    headers: chatHeaders(token, apiKey),
+    headers: chatHeaders(token, apiKey, requestId),
     body: JSON.stringify({ messages, ...bodyOpts }),
   })
 
@@ -252,10 +315,14 @@ export async function sendChat(messages: Message[] | MultimodalMessage[], signal
       const body = await res.json()
       if (body?.error && typeof body.error === 'string') message = body.error
     } catch { /* ignore parse errors */ }
+    clog('error', 'chat.error', message, { status: res.status, ms: Date.now() - startedAt }, requestId)
     throw new Error(message)
   }
 
   const data = await res.json()
+  clog('info', 'chat.response', undefined, {
+    chars: (data.message ?? '').length, sources: data.sources?.length ?? 0, ms: Date.now() - startedAt,
+  }, requestId)
   return {
     message: data.message ?? '',
     sources: data.sources,
@@ -277,10 +344,28 @@ export async function sendChatStream(
 
   // apiKey travels as a header, never in the body — keep it out of the spread.
   const { apiKey, ...bodyOpts } = opts
+  const requestId = uuidv4()
+  const startedAt = Date.now()
+  clog('info', 'chat.request', lastPrompt(messages), {
+    device: opts.device, model: opts.model, webSearch: opts.webSearch, byok: !!apiKey, stream: true,
+  }, requestId)
+
+  // Capture the generated tone's name for the response log without disturbing
+  // the caller's hook.
+  let toneName: string | undefined
+  const wrappedHooks: StreamHooks = {
+    ...hooks,
+    onTonePatch: (tone) => {
+      toneName = (tone as { patch?: { name?: string }; name?: string }).patch?.name
+        ?? (tone as { name?: string }).name ?? toneName
+      hooks.onTonePatch?.(tone)
+    },
+  }
+
   const res = await fetch(`${BASE}/chat`, {
     method: 'POST',
     signal,
-    headers: chatHeaders(token, apiKey),
+    headers: chatHeaders(token, apiKey, requestId),
     body: JSON.stringify({ messages, stream: true, ...bodyOpts }),
   })
 
@@ -296,6 +381,7 @@ export async function sendChatStream(
       const body = await res.json()
       if (body?.error && typeof body.error === 'string') message = body.error
     } catch { /* ignore parse errors */ }
+    clog('error', 'chat.error', message, { status: res.status, ms: Date.now() - startedAt }, requestId)
     throw new Error(message)
   }
 
@@ -304,7 +390,19 @@ export async function sendChatStream(
   // sets this header on POST.
   const streamId = res.headers.get('X-Chatframe-Stream-Id') ?? ''
 
-  return drainStream(res.body, streamId, 0, signal, token, onDelta, hooks)
+  try {
+    const result = await drainStream(res.body, streamId, 0, signal, token, onDelta, wrappedHooks)
+    clog('info', 'chat.response', toneName ? `tone: ${toneName}` : undefined, {
+      chars: result.message.length, sources: result.sources?.length ?? 0, tone: toneName, ms: Date.now() - startedAt,
+    }, requestId)
+    return result
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    // A user-initiated abort is not a failure worth flagging as an error.
+    const level = err instanceof Error && err.name === 'AbortError' ? 'info' : 'error'
+    clog(level, level === 'error' ? 'chat.error' : 'chat.aborted', message, { ms: Date.now() - startedAt }, requestId)
+    throw err
+  }
 }
 
 // Reads SSE events from a ReadableStream, returns the assembled message + any
