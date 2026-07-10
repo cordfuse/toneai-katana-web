@@ -178,12 +178,6 @@ const GlobeIcon = () => (
 const AttachIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
 )
-const CameraSmIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-)
-const PhotoIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-)
 const DocumentIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
 )
@@ -1030,7 +1024,6 @@ export default function Home({
   const [liveModels, setLiveModels] = useState<Record<string, ProviderModel[]>>({})
   const [liveModelsLoading, setLiveModelsLoading] = useState(false)
   const [pendingAttachments, setPendingAttachments] = useState<Attachment[]>([])
-  const [attachMenuOpen, setAttachMenuOpen] = useState(false)
   // Voice — STT (mic capture → textarea) and TTS (speak assistant
   // replies). Capability is browser-determined; the UI hides each control
   // if the underlying API isn't available, so we don't fire blank buttons.
@@ -1038,9 +1031,7 @@ export default function Home({
   const [voiceOutputAvailable, setVoiceOutputAvailable] = useState(false)
   const [isListening, setIsListening] = useState(false)
   const [ttsEnabled, setTtsEnabledState] = useState(false)
-  const cameraInputRef = useRef<HTMLInputElement>(null)
-  const photosInputRef = useRef<HTMLInputElement>(null)
-  const documentInputRef = useRef<HTMLInputElement>(null)
+  const patchInputRef = useRef<HTMLInputElement>(null)
   const importJsonRef = useRef<HTMLInputElement>(null)
 
   const abortRef = useRef<AbortController | null>(null)
@@ -1476,41 +1467,28 @@ export default function Home({
   }, [])
 
   // ── attachment handlers ──
-  // MIME types we can extract text from purely client-side via FileReader.
-  // Anything outside this list (currently just PDF in practice) goes to the
-  // /api/extract-document endpoint for server-side handling.
-  const isClientTextType = (mime: string, name: string) => {
-    if (mime.startsWith('text/')) return true
-    if (['application/json', 'application/xml', 'application/x-yaml'].includes(mime)) return true
-    return /\.(txt|md|json|csv|xml|html?|rtf|yaml|yml|log)$/i.test(name)
-  }
+  // The only files this app ingests are KATANA patches:
+  //   .tsl  BOSS Tone Studio liveset — JSON, readable as text
+  //   .kat  single patch — flat binary, one layout per amp generation
+  const PATCH_EXT = /\.(kat|tsl)$/i
 
-  const onPickFile = useCallback((kind: Attachment['kind']) => async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onPickPatch = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0]
     e.target.value = ''  // allow re-selecting the same file later
     if (!f) return
-    // Cap to ~5MB per file to keep base64 payloads sane.
+
+    // `accept` on the input is advisory. Enforce the real constraint here.
+    if (!PATCH_EXT.test(f.name)) {
+      setError(`"${f.name}" isn't a patch file. Only .kat and .tsl are accepted.`)
+      return
+    }
+    // Cap to ~5MB per file to keep base64 payloads sane. A real liveset is
+    // ~30 KB, so anything near this ceiling is not a patch.
     if (f.size > 5 * 1024 * 1024) {
       setError(`Attachment "${f.name}" is too large (max 5 MB).`)
       return
     }
 
-    if (kind === 'image') {
-      const dataUrl = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onload = () => resolve(reader.result as string)
-        reader.onerror = () => reject(reader.error)
-        reader.readAsDataURL(f)
-      }).catch(() => undefined)
-      setPendingAttachments(prev => [...prev, {
-        kind: 'image', name: f.name, mimeType: f.type || 'application/octet-stream', size: f.size, dataUrl,
-      }])
-      return
-    }
-
-    // Document: insert a placeholder chip immediately (so the user sees
-    // something happen), then extract in the background and patch the
-    // attachment in place when done.
     const mimeType = f.type || 'application/octet-stream'
     const placeholder: Attachment = {
       kind: 'document', name: f.name, mimeType, size: f.size, extracting: true,
@@ -1525,26 +1503,22 @@ export default function Home({
     }
 
     try {
-      let text: string
-      if (isClientTextType(mimeType, f.name)) {
-        text = await f.text()
-      } else {
-        // Need server extraction (PDF, etc). Read as base64 data URL, strip
-        // the prefix, ship to /api/extract-document.
-        const dataUrl = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader()
-          reader.onload = () => resolve(reader.result as string)
-          reader.onerror = () => reject(reader.error)
-          reader.readAsDataURL(f)
-        })
-        const dataBase64 = dataUrl.split(',', 2)[1] ?? ''
-        text = await extractDocument(f.name, mimeType, dataBase64)
+      if (!/\.tsl$/i.test(f.name)) {
+        // .kat is a flat binary whose layout differs per amp generation, and
+        // this repo has no decoder for it yet (docs/kat-format.md is research,
+        // not an implementation). Reading it as text would hand the model
+        // mojibake that looks like data. Refuse rather than corrupt.
+        throw new Error('.kat import is not implemented yet — export a .tsl liveset from BOSS Tone Studio instead')
       }
+      const text = await f.text()
+      // Fail here rather than let the model reason over a truncated or
+      // non-liveset JSON file that merely happens to end in .tsl.
+      JSON.parse(text)
       patch({ extractedText: text })
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Extraction failed'
+      const msg = err instanceof Error ? err.message : 'Could not read patch'
       patch({ extractError: msg })
-      setError(`Couldn't extract "${f.name}": ${msg}`)
+      setError(`Couldn't read "${f.name}": ${msg}`)
     }
   }, [])
 
@@ -1912,9 +1886,9 @@ export default function Home({
         {/* composer */}
         <div className="chatframe-composer px-4 pb-4 pt-2 shrink-0">
           {/* hidden file inputs */}
-          <input ref={cameraInputRef}   type="file" accept="image/*" capture="environment" className="hidden" onChange={onPickFile('image')} />
-          <input ref={photosInputRef}   type="file" accept="image/*"                         className="hidden" onChange={onPickFile('image')} />
-          <input ref={documentInputRef} type="file" accept=".pdf,.docx,.xlsx,.xls,.txt,.md,.json,.csv,.xml,.html,.htm,.rtf,.yaml,.yml,.log" className="hidden" onChange={onPickFile('document')} />
+          {/* `accept` is a picker hint only — a user can still choose "all files"
+              or drop something else, so onPickPatch re-checks the extension. */}
+          <input ref={patchInputRef} type="file" accept=".kat,.tsl" className="hidden" onChange={onPickPatch} />
 
           <div className="chatframe-composer-pill max-w-3xl mx-auto rounded-3xl border border-white/10 transition-colors focus-within:border-primary/40">
             {/* pending attachment chips (above the textarea) */}
@@ -2056,44 +2030,18 @@ export default function Home({
             <div className="flex items-center justify-between gap-2 px-2.5 pb-2.5">
               {/* attach button + model pill on the left */}
               <div className="flex items-center gap-1.5">
-                {/* attach button — hidden in kiosk when attachments are off */}
-                {(
-                  <div className="relative">
-                    <button
-                      onClick={() => setAttachMenuOpen(o => !o)}
-                      className="flex h-8 w-8 items-center justify-center rounded-lg text-fg-3 hover:bg-surface-2 hover:text-fg transition-colors"
-                      title={t('composer.attach', 'Attach')}
-                      aria-label={t('composer.attachFile', 'Attach a file')}
-                    >
-                      <AttachIcon />
-                    </button>
-                    {attachMenuOpen && (
-                      <>
-                        <div className="fixed inset-0 z-30" onClick={() => setAttachMenuOpen(false)} />
-                        <div className="absolute left-0 bottom-full z-40 mb-1 min-w-[10rem] rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden">
-                          <button
-                            onClick={() => { setAttachMenuOpen(false); cameraInputRef.current?.click() }}
-                            className="flex w-full items-center gap-2 px-3 py-2 text-xs text-fg-2 hover:bg-surface-3 hover:text-fg transition-colors"
-                          >
-                            <CameraSmIcon /> {t('composer.camera', 'Camera')}
-                          </button>
-                          <button
-                            onClick={() => { setAttachMenuOpen(false); photosInputRef.current?.click() }}
-                            className="flex w-full items-center gap-2 px-3 py-2 text-xs text-fg-2 hover:bg-surface-3 hover:text-fg transition-colors"
-                          >
-                            <PhotoIcon /> {t('composer.photos', 'Photos')}
-                          </button>
-                          <button
-                            onClick={() => { setAttachMenuOpen(false); documentInputRef.current?.click() }}
-                            className="flex w-full items-center gap-2 px-3 py-2 text-xs text-fg-2 hover:bg-surface-3 hover:text-fg transition-colors"
-                          >
-                            <DocumentIcon /> {t('composer.documents', 'Documents')}
-                          </button>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
+                {/* Attach a patch file. No source menu (camera/photos/documents):
+                    the only thing this app ingests is a KATANA patch, so the
+                    paperclip opens the file picker directly, filtered to the two
+                    patch extensions. */}
+                <button
+                  onClick={() => patchInputRef.current?.click()}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-fg-3 hover:bg-surface-2 hover:text-fg transition-colors"
+                  title={t('composer.attach', 'Attach a patch (.kat or .tsl)')}
+                  aria-label={t('composer.attachFile', 'Attach a patch file')}
+                >
+                  <AttachIcon />
+                </button>
                 {/* TTS toggle — speak assistant replies via Web Speech API
                     once the stream completes. Hidden when the browser
                     doesn't expose speechSynthesis (rare).
