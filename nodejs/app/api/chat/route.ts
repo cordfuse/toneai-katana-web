@@ -126,15 +126,12 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // Quota: free mode only. BYOK bypasses the quota (it costs us no tokens)
-  // but NOT the per-device rate limit — otherwise BYOK is an unmetered proxy
-  // to Anthropic that anyone can point a script at.
+  // Quota: free mode only, a single shared daily pool. BYOK bypasses it (it
+  // costs us no tokens).
   if (!byokKey) {
-    const quota = checkAndIncrementQuota(deviceId)
+    const quota = checkAndIncrementQuota()
     if (!quota.allowed) {
-      const error = quota.reason === 'device_exhausted'
-        ? "You've used your free requests for today. Add your own Anthropic API key in Settings to keep going, or come back tomorrow."
-        : "Today's free requests have all been used, shared across everyone. Add your own Anthropic API key in Settings to keep going, or come back tomorrow."
+      const error = "Today's free requests have all been used, shared across everyone. Add your own Anthropic API key in Settings to keep going, or come back tomorrow."
       return NextResponse.json({ error, remaining: quota.remaining }, { status: 429 })
     }
   }
