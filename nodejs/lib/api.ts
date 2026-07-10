@@ -92,6 +92,25 @@ export async function getProviders(): Promise<ProvidersResponse> {
   }
 }
 
+// ─── Free-tier quota ─────────────────────────────────────────────────────────
+
+export interface QuotaResult {
+  remaining: number
+  limit: number
+  /** ISO timestamp of the next UTC midnight, when the pool refills. */
+  resetsAt: string
+}
+
+/**
+ * Global free-tier counter. Unauthenticated by design — it exposes only an
+ * aggregate count, and the pill needs it before the first chat request.
+ */
+export async function getQuota(): Promise<QuotaResult> {
+  const res = await fetch(`${BASE}/quota`)
+  if (!res.ok) throw new Error(`Quota fetch failed: ${res.status}`)
+  return res.json()
+}
+
 // ─── MCP servers ─────────────────────────────────────────────────────────────
 
 export interface AvailableMcpServer {
@@ -176,6 +195,22 @@ export interface ChatOpts {
   mcpServers?: string[]
   systemPrompt?: string
   temperature?: number
+  /**
+   * BYOK. Sent as the `x-anthropic-key` request header (not in the body, so
+   * it never lands in a request-body log). Its presence is what switches the
+   * server off the free-tier quota — there is no separate mode flag.
+   */
+  apiKey?: string | null
+}
+
+/** Header map for a /chat call: auth + JSON + the BYOK key when present. */
+function chatHeaders(token: string, apiKey?: string | null): Record<string, string> {
+  const h: Record<string, string> = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  }
+  if (apiKey) h['x-anthropic-key'] = apiKey
+  return h
 }
 
 // Events the streaming chat endpoint can emit (beyond plain text deltas).
@@ -191,14 +226,13 @@ export async function sendChat(messages: Message[] | MultimodalMessage[], signal
     token = getToken()!
   }
 
+  // apiKey travels as a header, never in the body — keep it out of the spread.
+  const { apiKey, ...bodyOpts } = opts
   const res = await fetch(`${BASE}/chat`, {
     method: 'POST',
     signal,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ messages, ...opts }),
+    headers: chatHeaders(token, apiKey),
+    body: JSON.stringify({ messages, ...bodyOpts }),
   })
 
   if (res.status === 401) {
@@ -236,14 +270,13 @@ export async function sendChatStream(
     token = getToken()!
   }
 
+  // apiKey travels as a header, never in the body — keep it out of the spread.
+  const { apiKey, ...bodyOpts } = opts
   const res = await fetch(`${BASE}/chat`, {
     method: 'POST',
     signal,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ messages, stream: true, ...opts }),
+    headers: chatHeaders(token, apiKey),
+    body: JSON.stringify({ messages, stream: true, ...bodyOpts }),
   })
 
   if (res.status === 401) {

@@ -187,6 +187,33 @@ export function saveDefaultDevice(device: KatanaDevice) {
   localStorage.setItem(DEVICE_KEY, device)
 }
 
+// ─── Anthropic API key (BYOK) ────────────────────────────────────────────────
+//
+// This app is Anthropic-only. Two modes, and the mode is DERIVED from the
+// presence of a key — there is no stored mode flag to drift out of sync:
+//
+//   key absent  → "free"  — server's key, subject to the global daily quota
+//   key present → "byok"  — this key, sent per-request, quota untouched
+//
+// The key lives here in localStorage and is sent on each request over TLS.
+// Inference is server-side (the system prompt and tone-intent schema never
+// reach the browser), so the server must treat it as a transient credential:
+// never logged, never persisted, scrubbed from provider error objects.
+
+const API_KEY_KEY = 'katana_anthropic_key'
+
+export function getApiKey(): string | null {
+  if (typeof window === 'undefined') return null
+  const stored = localStorage.getItem(API_KEY_KEY)
+  return stored && stored.length > 0 ? stored : null
+}
+
+export function saveApiKey(key: string | null) {
+  const trimmed = key?.trim() ?? ''
+  if (trimmed.length > 0) localStorage.setItem(API_KEY_KEY, trimmed)
+  else localStorage.removeItem(API_KEY_KEY)
+}
+
 // ─── Provider + model preferences ────────────────────────────────────────────
 //
 // Provider selection is a single string; model selection is per-provider

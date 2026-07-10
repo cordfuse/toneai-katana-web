@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDeviceIdFromRequest } from '@/lib/server/jwt'
+import { checkAndIncrementQuota } from '@/lib/server/quota'
 import {
   runChat, runChatStream, findProvider, isModelValidForProvider,
 } from '@/lib/server/ai-tools'
@@ -76,6 +77,13 @@ export async function POST(request: NextRequest) {
     temperature: clientTemperature,
   } = body
 
+  // BYOK. The mode is DERIVED from the presence of a key — there is no mode
+  // flag to drift out of sync. This value is a transient credential: it is
+  // passed to the SDK and dropped. Never log it, never persist it, and never
+  // let it reach an error response (see the catch blocks below).
+  const rawKey = request.headers.get('x-anthropic-key')
+  const byokKey = typeof rawKey === 'string' && rawKey.trim().length > 0 ? rawKey.trim() : undefined
+
   if (!Array.isArray(messages) || messages.length === 0) {
     return NextResponse.json({ error: 'Invalid messages' }, { status: 400 })
   }
@@ -111,14 +119,27 @@ export async function POST(request: NextRequest) {
     model = providerInfo.defaultModel
   }
 
-  // Cloud providers need an API key in the env. Local providers don't
-  // (they hit a local OpenAI-compatible server with a sentinel apiKey).
-  if (providerInfo.category === 'cloud') {
+  // Free mode needs the server's key. BYOK brings its own, so the server's
+  // key being absent is not an error on that path.
+  if (!byokKey && providerInfo.category === 'cloud') {
     const requiredKey = providerInfo.envKey
     if (requiredKey && !process.env[requiredKey]) {
       return NextResponse.json({
         error: `Service unavailable — ${requiredKey} not set for provider '${providerId}'.`,
       }, { status: 503 })
+    }
+  }
+
+  // Quota: free mode only. BYOK bypasses the quota (it costs us no tokens)
+  // but NOT the per-device rate limit — otherwise BYOK is an unmetered proxy
+  // to Anthropic that anyone can point a script at.
+  if (!byokKey) {
+    const quota = checkAndIncrementQuota(deviceId)
+    if (!quota.allowed) {
+      const error = quota.reason === 'device_exhausted'
+        ? "You've used your free requests for today. Add your own Anthropic API key in Settings to keep going, or come back tomorrow."
+        : "Today's free requests have all been used, shared across everyone. Add your own Anthropic API key in Settings to keep going, or come back tomorrow."
+      return NextResponse.json({ error, remaining: quota.remaining }, { status: 429 })
     }
   }
 
@@ -180,7 +201,7 @@ export async function POST(request: NextRequest) {
   const activeLocale = await resolveLocale(localeCodes, defaultLocale)
   const systemPrompt = resolveSystemPrompt(clientSystemPrompt, activeLocale)
   const temperature  = resolveTemperature(clientTemperature)
-  const runOpts = { webSearch: wantWebSearch, temperature, mcpServers }
+  const runOpts = { webSearch: wantWebSearch, temperature, mcpServers, apiKey: byokKey }
 
   console.log(`[chat] msgs=${messages.length} provider=${provider} model=${model} stream=${!!wantStream} websearch=${wantWebSearch} mcps=${mcpServers.length ? mcpServers.join(',') : '-'} temp=${temperature} locale=${activeLocale}`)
 
