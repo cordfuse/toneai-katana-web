@@ -13,17 +13,18 @@
 //   the built-in maps at request time (no rebuild).
 
 import en from './locales/en'
-import es from './locales/es'
-import fr from './locales/fr'
-import de from './locales/de'
 
 export type LocaleCode = string  // 'en', 'es', 'fr-CA', etc.
 export type Translations = Record<string, string>
 
-// Built-in locales. Operators add more via JSON files in <configDir>/locales/.
-export const BUILT_IN_LOCALES: Record<LocaleCode, Translations> = {
-  en, es, fr, de,
-}
+// ToneAI Kat ships ENGLISH ONLY. The es/fr/de locale maps were deleted and the
+// language picker removed from Settings. The t(key, 'English fallback') plumbing
+// stays: every call site already carries its English string inline, so this is
+// where the rendered text actually comes from — ripping t() out would touch 70+
+// sites and change nothing on screen.
+//
+// Operators can still drop <configDir>/locales/<code>.json to add a locale.
+export const BUILT_IN_LOCALES: Record<LocaleCode, Translations> = { en }
 
 export interface LocaleInfo {
   code: LocaleCode
@@ -32,9 +33,6 @@ export interface LocaleInfo {
 
 export const BUILT_IN_LOCALE_INFO: LocaleInfo[] = [
   { code: 'en', label: 'English' },
-  { code: 'es', label: 'Español' },
-  { code: 'fr', label: 'Français' },
-  { code: 'de', label: 'Deutsch' },
 ]
 
 // Make a t() function bound to a specific translation map. Each component
