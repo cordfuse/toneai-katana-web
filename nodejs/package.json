@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build && rm -rf .next/standalone/.next/static .next/standalone/public .next/standalone/config && cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/public && cp -r config .next/standalone/config",
     "start": "node --env-file-if-exists=.env.local --env-file-if-exists=config/.env .next/standalone/server.js",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "node --import tsx --test 'lib/**/__tests__/*.test.mjs' 'lib/**/__tests__/*.test.ts'"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.86",
@@ -36,6 +37,7 @@
     "eslint-config-next": "^15.1.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
+    "tsx": "^4.23.0",
     "typescript": "^5"
   }
 }

@@ -14,10 +14,26 @@ export interface Message {
   content: string
 }
 
+// A generated tone, as it arrives from the tone_patch stream event. Mirrors
+// TonePatchEvent in lib/server/tone.ts (kept here so client code doesn't import
+// the server module). `tsl` is the ready-to-download liveset string.
+export interface TonePatchResult {
+  patch: import('@/lib/patch/intent').TonePatch
+  song?: string
+  artist?: string
+  device: string
+  deviceLabel: string
+  rig?: string
+  tsl: string
+  filename: string
+  experimental: boolean
+}
+
 export interface ChatMessage extends Message {
   id: string
   sources?: { title: string; url: string }[]
   attachments?: Attachment[]
+  tonePatch?: TonePatchResult
 }
 
 export interface Conversation {
@@ -26,4 +42,18 @@ export interface Conversation {
   messages: ChatMessage[]
   createdAt: number
   updatedAt: number
+}
+
+// A tone saved to the client-side library ("My Tones"). Independent of the
+// conversation it came from, so it survives chat deletion / the 50-conversation
+// cap. `tone` carries the full result including the ready-to-download `tsl`, so
+// re-download works offline with no server round-trip.
+export interface SavedTone {
+  id: string
+  name: string                     // editable (rename); defaults to the patch name
+  createdAt: number
+  updatedAt: number
+  conversationId: string | null    // source chat, for "go to chat"
+  prompt?: string                  // the request that produced it
+  tone: TonePatchResult
 }

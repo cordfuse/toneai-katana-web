@@ -1,4 +1,4 @@
-import type { Conversation, ChatMessage } from './types'
+import type { Conversation, ChatMessage, SavedTone } from './types'
 
 // ─── Conversations ────────────────────────────────────────────────────────────
 
@@ -38,6 +38,66 @@ export function renameConversation(id: string, title: string) {
 
 export function clearAllConversations() {
   localStorage.removeItem(CONV_KEY)
+}
+
+// ─── Tone library ─────────────────────────────────────────────────────────────
+//
+// A dedicated store so the "My Tones" gallery is independent of conversations —
+// deleting a chat (or aging past the 50-conversation cap) never loses a saved
+// tone. Newest-first by updatedAt, same shape of helpers as conversations.
+
+const TONES_KEY = 'chatframe_tones'
+const MAX_TONES = 300
+
+export function loadTones(): SavedTone[] {
+  if (typeof window === 'undefined') return []
+  try { return JSON.parse(localStorage.getItem(TONES_KEY) ?? '[]') } catch { return [] }
+}
+
+function saveTones(tones: SavedTone[]) {
+  localStorage.setItem(TONES_KEY, JSON.stringify(tones.slice(0, MAX_TONES)))
+}
+
+export function addTone(tone: SavedTone) {
+  const all = loadTones()
+  const idx = all.findIndex(t => t.id === tone.id)
+  if (idx >= 0) all[idx] = tone
+  else all.unshift(tone)
+  all.sort((a, b) => b.updatedAt - a.updatedAt)
+  saveTones(all)
+}
+
+export function deleteTone(id: string) {
+  saveTones(loadTones().filter(t => t.id !== id))
+}
+
+export function renameTone(id: string, name: string) {
+  const all = loadTones()
+  const idx = all.findIndex(t => t.id === id)
+  if (idx < 0) return
+  all[idx] = { ...all[idx], name, updatedAt: Date.now() }
+  all.sort((a, b) => b.updatedAt - a.updatedAt)
+  saveTones(all)
+}
+
+export function clearAllTones() {
+  localStorage.removeItem(TONES_KEY)
+}
+
+// One-time backfill guard. The tone library seeds itself from tones already
+// present in existing chats — but only ONCE per browser. Without this flag the
+// seed would run on every load and resurrect any library tone the user deleted
+// while its source chat still exists. New tones are saved on generation, so the
+// seed is purely a migration for tones created before the library shipped.
+const TONES_BACKFILLED_KEY = 'chatframe_tones_backfilled'
+
+export function tonesBackfilled(): boolean {
+  if (typeof window === 'undefined') return true
+  return localStorage.getItem(TONES_BACKFILLED_KEY) === '1'
+}
+
+export function markTonesBackfilled() {
+  localStorage.setItem(TONES_BACKFILLED_KEY, '1')
 }
 
 // Serialize one conversation to a markdown transcript suitable for download.
@@ -155,32 +215,41 @@ export type KatanaDevice =
   | 'katana-50-mk3' | 'katana-100-mk3' | 'katana-head-mk3' | 'katana-artist-mk3'
   | 'katana-go' | 'katana-go-bass'
 
-export const KATANA_DEVICES: { id: KatanaDevice; label: string; group: string }[] = [
-  { id: 'katana-50-mk2',     label: 'KATANA-50 MkII',       group: 'MkII' },
-  { id: 'katana-100-mk2',    label: 'KATANA-100 MkII',      group: 'MkII' },
-  { id: 'katana-head-mk2',   label: 'KATANA-Head MkII',     group: 'MkII' },
-  { id: 'katana-artist-mk2', label: 'KATANA-Artist MkII',   group: 'MkII' },
-  { id: 'katana-50-mk3',     label: 'KATANA-50 Gen 3',      group: 'Gen 3' },
-  { id: 'katana-100-mk3',    label: 'KATANA-100 Gen 3',     group: 'Gen 3' },
-  { id: 'katana-head-mk3',   label: 'KATANA-Head Gen 3',    group: 'Gen 3' },
-  { id: 'katana-artist-mk3', label: 'KATANA-Artist Gen 3',  group: 'Gen 3' },
-  { id: 'katana-50-mk1',     label: 'KATANA-50 (MkI)',      group: 'MkI' },
-  { id: 'katana-100-mk1',    label: 'KATANA-100 (MkI)',     group: 'MkI' },
-  { id: 'katana-head-mk1',   label: 'KATANA-Head (MkI)',    group: 'MkI' },
-  { id: 'katana-artist-mk1', label: 'KATANA-Artist (MkI)',  group: 'MkI' },
-  { id: 'katana-go',         label: 'KATANA:GO',            group: 'Portable' },
-  { id: 'katana-go-bass',    label: 'KATANA:GO Bass',       group: 'Portable' },
+// `supported` gates what the user can actually select. Only MkII is proven
+// against real exports today; the other generations stay LISTED (so players see
+// their amp is on the roadmap) but are not selectable, and the picker shows a
+// note to that effect. Flip a row to true as each generation's writer is proven.
+export const KATANA_DEVICES: { id: KatanaDevice; label: string; group: string; supported: boolean }[] = [
+  { id: 'katana-50-mk2',     label: 'KATANA-50 MkII',       group: 'MkII',     supported: true  },
+  { id: 'katana-100-mk2',    label: 'KATANA-100 MkII',      group: 'MkII',     supported: true  },
+  { id: 'katana-head-mk2',   label: 'KATANA-Head MkII',     group: 'MkII',     supported: true  },
+  { id: 'katana-artist-mk2', label: 'KATANA-Artist MkII',   group: 'MkII',     supported: true  },
+  { id: 'katana-50-mk3',     label: 'KATANA-50 Gen 3',      group: 'Gen 3',    supported: false },
+  { id: 'katana-100-mk3',    label: 'KATANA-100 Gen 3',     group: 'Gen 3',    supported: false },
+  { id: 'katana-head-mk3',   label: 'KATANA-Head Gen 3',    group: 'Gen 3',    supported: false },
+  { id: 'katana-artist-mk3', label: 'KATANA-Artist Gen 3',  group: 'Gen 3',    supported: false },
+  { id: 'katana-50-mk1',     label: 'KATANA-50 (MkI)',      group: 'MkI',      supported: false },
+  { id: 'katana-100-mk1',    label: 'KATANA-100 (MkI)',     group: 'MkI',      supported: false },
+  { id: 'katana-head-mk1',   label: 'KATANA-Head (MkI)',    group: 'MkI',      supported: false },
+  { id: 'katana-artist-mk1', label: 'KATANA-Artist (MkI)',  group: 'MkI',      supported: false },
+  { id: 'katana-go',         label: 'KATANA:GO',            group: 'Portable', supported: false },
+  { id: 'katana-go-bass',    label: 'KATANA:GO Bass',       group: 'Portable', supported: false },
 ]
 
 const DEVICE_KEY = 'katana_device'
 const DEFAULT_DEVICE: KatanaDevice = 'katana-100-mk2'
 
-const VALID_DEVICES = new Set<KatanaDevice>(KATANA_DEVICES.map(d => d.id))
+// Only supported devices are honoured — a stale non-MkII selection (or a hand-
+// edited value) falls back to the MkII default, so the UI never sits on a device
+// the writer can't build for.
+const SUPPORTED_DEVICES = new Set<KatanaDevice>(
+  KATANA_DEVICES.filter(d => d.supported).map(d => d.id),
+)
 
 export function getDefaultDevice(): KatanaDevice {
   if (typeof window === 'undefined') return DEFAULT_DEVICE
   const stored = localStorage.getItem(DEVICE_KEY) as KatanaDevice | null
-  return stored && VALID_DEVICES.has(stored) ? stored : DEFAULT_DEVICE
+  return stored && SUPPORTED_DEVICES.has(stored) ? stored : DEFAULT_DEVICE
 }
 
 export function saveDefaultDevice(device: KatanaDevice) {
@@ -256,14 +325,16 @@ export function setSelectedModel(provider: string, model: string) {
 
 const WEB_SEARCH_KEY = 'chatframe_web_search'
 
+// Default ON: web search augments answers unless the user turns it off. Only an
+// explicit '0' means off; absent key = default checked.
 export function getWebSearchEnabled(): boolean {
-  if (typeof window === 'undefined') return false
-  return localStorage.getItem(WEB_SEARCH_KEY) === '1'
+  if (typeof window === 'undefined') return true
+  return localStorage.getItem(WEB_SEARCH_KEY) !== '0'
 }
 
 export function setWebSearchEnabled(enabled: boolean) {
-  if (enabled) localStorage.setItem(WEB_SEARCH_KEY, '1')
-  else localStorage.removeItem(WEB_SEARCH_KEY)
+  if (enabled) localStorage.removeItem(WEB_SEARCH_KEY)
+  else localStorage.setItem(WEB_SEARCH_KEY, '0')
 }
 
 // ─── TTS (text-to-speech) toggle ────────────────────────────────────────────

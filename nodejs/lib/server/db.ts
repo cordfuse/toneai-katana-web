@@ -26,21 +26,27 @@ if (process.env.NEXT_PHASE !== 'phase-production-build') {
   db = new DatabaseSync(DB_PATH)
   db.exec(`
     -- Global free-tier counter. One row per UTC date; the date rolls the
-    -- quota over implicitly, so there is no cron job to reset anything.
+    -- quota over implicitly, so there is no cron job to reset anything. This is
+    -- the ONLY quota — no per-device sub-cap; users track one number.
     CREATE TABLE IF NOT EXISTS daily_quota (
       date  TEXT PRIMARY KEY,
       count INTEGER NOT NULL DEFAULT 0
     );
 
-    -- Per-device counter, same UTC-date rollover. Without this the global
-    -- cap is a denial-of-service switch: one script drains the day's budget
-    -- for every other user.
-    CREATE TABLE IF NOT EXISTS device_quota (
-      date      TEXT NOT NULL,
-      device_id TEXT NOT NULL,
-      count     INTEGER NOT NULL DEFAULT 0,
-      PRIMARY KEY (date, device_id)
+    -- Server-side diagnostic log. Rows are scoped to a device so a user can
+    -- download only their own server events (see lib/server/log.ts +
+    -- app/api/logs). Retention is bounded by age on every write — no cron.
+    CREATE TABLE IF NOT EXISTS logs (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      ts         INTEGER NOT NULL,
+      device_id  TEXT NOT NULL,
+      request_id TEXT,
+      level      TEXT NOT NULL,
+      event      TEXT NOT NULL,
+      msg        TEXT,
+      ctx        TEXT
     );
+    CREATE INDEX IF NOT EXISTS idx_logs_device_ts ON logs (device_id, ts);
   `)
 } else {
   db = null as unknown as DatabaseSync

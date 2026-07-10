@@ -4,7 +4,8 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { v4 as uuidv4 } from 'uuid'
-import { sendChatStream, getQuota, initAuth, getProviders, getProviderModels, type AvailableProvider, type ProviderModel, type MultimodalMessage, type ContentBlock } from '@/lib/api'
+import { sendChatStream, getQuota, initAuth, getProviders, getProviderModels, downloadDiagnostics, type AvailableProvider, type ProviderModel, type MultimodalMessage, type ContentBlock } from '@/lib/api'
+import { installClientLogCapture } from '@/lib/log/client'
 import {
   loadConversations, upsertConversation, deleteConversation, renameConversation,
   clearAllConversations, autoTitle, relativeTime, getTheme, saveTheme, type Theme,
@@ -17,8 +18,11 @@ import {
   exportAll, importConversationsJson, resetAllData,
   conversationToMarkdown, downloadTextFile,
   getTtsEnabled, setTtsEnabled,
+  loadTones, addTone, deleteTone, renameTone, clearAllTones,
+  tonesBackfilled, markTonesBackfilled,
 } from '@/lib/storage'
-import type { ChatMessage, Conversation, Attachment } from '@/lib/types'
+import type { ChatMessage, Conversation, Attachment, TonePatchResult, SavedTone } from '@/lib/types'
+import { ToneCard, ToneModal } from './_ToneCard'
 import { useT, useLocale, useAvailableLocales, setLocaleAndReload, labelForLocale } from '@/lib/i18n/client'
 import {
   type GearState, type PositionChoice,
@@ -26,6 +30,12 @@ import {
 } from '@/lib/gear'
 import { sampleTonePrompts } from '@/lib/prompts'
 import { GearSection, GearModal } from './_Gear'
+
+// Patch attachment is hidden until every KATANA generation is supported — the
+// importer parses .kat/.tsl for any device, but we only round-trip MkII, so
+// accepting other patches would set a false expectation. Flip to true to bring
+// the composer paperclip back once the other writers are verified.
+const ATTACH_ENABLED = false
 
 // ─── theme palette ───────────────────────────────────────────────────────────
 //
@@ -111,9 +121,9 @@ function getChatframeBranding(): ChatframeBranding {
 
 // ─── icons ───────────────────────────────────────────────────────────────────
 
-// The header shows the icon (config/icons/icon-192.png via /branding) next to
-// the wordmark; the same icon set also drives the PWA install prompt, the
-// home-screen shortcut, and the browser tab.
+// The UI shows no app icon — just the wordmark. The icon set (config/icons via
+// /branding) still drives the PWA install prompt, home-screen shortcut, and
+// browser tab; it's simply not rendered in-page.
 
 // Up arrow, not a paper plane — pairs with StopIcon as a submit/halt toggle.
 // Stroked rather than filled so it reads at the same visual weight as the
@@ -349,6 +359,7 @@ function SettingsPanel({
   // Commits on blur, same pattern the system-prompt textarea used.
   const [keyDraft, setKeyDraft] = useState(apiKey ?? '')
   const [keyVisible, setKeyVisible] = useState(false)
+  const [loggingBusy, setLoggingBusy] = useState(false)
   const t = useT()
   const activeLocale = useLocale()
   const availableLocales = useAvailableLocales()
@@ -467,6 +478,20 @@ function SettingsPanel({
                           const d = KATANA_DEVICES.find(x => x.id === id)
                           if (!d) return null
                           const isActive = device === d.id
+                          // Non-MkII generations are listed but not yet selectable
+                          // — their writers aren't proven against real exports.
+                          if (!d.supported) {
+                            return (
+                              <div
+                                key={d.id}
+                                className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-fg-4 cursor-not-allowed select-none"
+                                title="Not yet supported — only KATANA MkII is available today"
+                              >
+                                <span className="flex-1 text-left">{d.label}</span>
+                                <span className="ml-1 shrink-0 rounded bg-white/5 px-1.5 py-0.5 text-[9px] uppercase tracking-wide text-fg-4">Soon</span>
+                              </div>
+                            )
+                          }
                           return (
                             <button
                               key={d.id}
@@ -486,6 +511,10 @@ function SettingsPanel({
                 </>
               )}
             </div>
+            <p className="mt-2 text-[11px] leading-snug text-fg-4">
+              Only KATANA MkII is supported right now. Other models are listed but
+              not yet selectable — support lands as each is verified.
+            </p>
           </div>
 
           {/* Language */}
@@ -578,6 +607,30 @@ function SettingsPanel({
               </button>
             )}
           </div>
+
+          {/* Diagnostics — download a single .txt of client + server events for
+              this browser, for reporting issues. Contains your prompts and the
+              tones generated; secrets are scrubbed out before it is written. */}
+          <div>
+            <p className="text-[10px] font-semibold text-fg-3 uppercase tracking-wider mb-2">
+              {t('settings.diagnostics', 'Diagnostics')}
+            </p>
+            <button
+              onClick={async () => {
+                setLoggingBusy(true)
+                try { await downloadDiagnostics() } finally { setLoggingBusy(false) }
+              }}
+              disabled={loggingBusy}
+              className="flex w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-surface-2 px-3 py-2.5 text-sm text-fg-2 hover:text-fg hover:bg-surface-3 transition-colors disabled:opacity-50"
+            >
+              {loggingBusy
+                ? t('settings.logDownloading', 'Preparing…')
+                : t('settings.downloadLog', 'Download log')}
+            </button>
+            <p className="mt-1.5 text-[10px] text-fg-4 leading-relaxed">
+              {t('settings.logHint', 'Includes your prompts and generated tones. Send it with a bug report. No API keys are included.')}
+            </p>
+          </div>
         </div>
 
         <div className="px-5 py-3 flex items-center justify-end text-xs text-fg-4">
@@ -654,11 +707,77 @@ function ConvItem({ conv, active, onSelect, onDeleteRequest, onRename }: {
   )
 }
 
+// ─── tone library list item ─────────────────────────────────────────────────
+
+// Mirrors ConvItem: inline rename, delete, click-to-open. The row opens the
+// tone's detail modal (download + go-to-chat live there).
+function ToneItem({ tone, onOpen, onDeleteRequest, onRename }: {
+  tone: SavedTone
+  onOpen: () => void
+  onDeleteRequest: () => void
+  onRename: (name: string) => void
+}) {
+  const [editing, setEditing] = useState(false)
+  const [name, setName] = useState(tone.name)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const commit = () => {
+    const trimmed = name.trim()
+    if (trimmed && trimmed !== tone.name) onRename(trimmed)
+    setEditing(false)
+  }
+
+  const amp = tone.tone.patch.ampA?.type
+  const subtitle = [amp, tone.tone.deviceLabel].filter(Boolean).join(' · ')
+
+  if (editing) {
+    return (
+      <div className="relative flex items-center px-3 py-2">
+        <input
+          ref={inputRef}
+          value={name}
+          onChange={e => setName(e.target.value)}
+          onBlur={commit}
+          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); commit() } if (e.key === 'Escape') setEditing(false) }}
+          className="flex-1 min-w-0 bg-transparent text-xs text-fg outline-none border-b border-primary py-0.5"
+        />
+      </div>
+    )
+  }
+
+  return (
+    <div
+      className="group relative flex items-center px-3 py-2.5 cursor-pointer transition-colors hover:bg-surface-2"
+      onClick={onOpen}
+    >
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-xs text-fg">{tone.name}</p>
+        <p className="truncate text-[10px] text-fg-4">{subtitle || relativeTime(tone.updatedAt)}</p>
+      </div>
+      <button
+        onClick={e => { e.stopPropagation(); setName(tone.name); setEditing(true); requestAnimationFrame(() => inputRef.current?.focus()) }}
+        className="ml-1 flex h-7 w-7 shrink-0 items-center justify-center text-fg-4 hover:text-fg-2 transition-colors"
+        title="Rename"
+      >
+        <PencilIcon />
+      </button>
+      <button
+        onClick={e => { e.stopPropagation(); onDeleteRequest() }}
+        className="ml-1 flex h-7 w-7 shrink-0 items-center justify-center text-fg-4 hover:text-fg-2 transition-colors"
+        title="Delete"
+      >
+        <TrashIcon />
+      </button>
+    </div>
+  )
+}
+
 // ─── sidebar (left drawer) ───────────────────────────────────────────────────
 
 function Sidebar({
   visible, onClose, conversations, activeId, query, setQuery,
   onSelectConv, onDeleteConv, onRenameConv, onClearAll,
+  tab, onTab, tones, onOpenTone, onDeleteTone, onRenameTone, onClearAllTones,
   appName, showClearAll,
 }: {
   visible: boolean
@@ -671,6 +790,13 @@ function Sidebar({
   onDeleteConv: (id: string, title: string) => void
   onRenameConv: (id: string, title: string) => void
   onClearAll: () => void
+  tab: 'chats' | 'tones'
+  onTab: (t: 'chats' | 'tones') => void
+  tones: SavedTone[]
+  onOpenTone: (tone: SavedTone) => void
+  onDeleteTone: (id: string, name: string) => void
+  onRenameTone: (id: string, name: string) => void
+  onClearAllTones: () => void
   showClearAll: boolean
   appName: string
 }) {
@@ -680,6 +806,11 @@ function Sidebar({
     ? conversations.filter(c => c.title.toLowerCase().includes(q) ||
         c.messages.some(m => m.content.toLowerCase().includes(q)))
     : conversations
+  const filteredTones = q
+    ? tones.filter(t2 => t2.name.toLowerCase().includes(q) ||
+        (t2.prompt?.toLowerCase().includes(q) ?? false) ||
+        (t2.tone.patch.ampA?.type?.toLowerCase().includes(q) ?? false))
+    : tones
 
   return (
     <>
@@ -700,15 +831,38 @@ function Sidebar({
           </button>
         </div>
 
-        {/* tabs-row equivalent — mighty puts Delete-all-chats here, right-aligned, under a thin divider. Chatframe has no tabs, so the row is just label + clear-all */}
+        {/* Chats | Tones toggle. Clear-all on the right acts on the active tab. */}
         <div className="flex items-center border-b border-white/10 ml-3 mr-[17px] h-9">
-          <span className="text-xs font-medium text-fg-3">{t('sidebar.chats', 'Chats')}</span>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => onTab('chats')}
+              className={`text-xs font-medium transition-colors ${tab === 'chats' ? 'text-fg' : 'text-fg-4 hover:text-fg-2'}`}
+            >
+              {t('sidebar.chats', 'Chats')}
+            </button>
+            <button
+              onClick={() => onTab('tones')}
+              className={`text-xs font-medium transition-colors ${tab === 'tones' ? 'text-fg' : 'text-fg-4 hover:text-fg-2'}`}
+            >
+              {t('sidebar.tones', 'Tones')}
+            </button>
+          </div>
           <div className="flex-1" />
-          {showClearAll && conversations.length > 0 && (
+          {showClearAll && tab === 'chats' && conversations.length > 0 && (
             <button
               onClick={onClearAll}
               title="Clear all conversations"
               aria-label="Clear all conversations"
+              className="flex h-7 w-7 items-center justify-center text-fg-4 hover:text-red-400 transition-colors"
+            >
+              <TrashIcon />
+            </button>
+          )}
+          {showClearAll && tab === 'tones' && tones.length > 0 && (
+            <button
+              onClick={onClearAllTones}
+              title="Clear all tones"
+              aria-label="Clear all tones"
               className="flex h-7 w-7 items-center justify-center text-fg-4 hover:text-red-400 transition-colors"
             >
               <TrashIcon />
@@ -723,7 +877,7 @@ function Sidebar({
             <input
               value={query}
               onChange={e => setQuery(e.target.value)}
-              placeholder={t('sidebar.searchPlaceholder', 'Search chats…')}
+              placeholder={tab === 'tones' ? t('sidebar.searchTones', 'Search tones…') : t('sidebar.searchPlaceholder', 'Search chats…')}
               className="w-full rounded-lg bg-surface-2 py-1.5 pl-7 pr-7 text-xs text-fg placeholder:text-fg-4 outline-none focus:ring-1 focus:ring-primary/40"
             />
             {query && (
@@ -734,21 +888,34 @@ function Sidebar({
           </div>
         </div>
 
-        {/* conv list */}
+        {/* list — chats or tones */}
         <div className="flex-1 overflow-y-auto py-1 [scrollbar-gutter:stable]">
-          {filtered.length === 0
-            ? <p className="px-4 py-6 text-center text-[11px] text-fg-4">{q ? t('sidebar.noMatches', 'No matches') : t('sidebar.noConversations', 'No conversations yet')}</p>
-            : filtered.map(conv => (
-              <ConvItem
-                key={conv.id}
-                conv={conv}
-                active={conv.id === activeId}
-                onSelect={() => { onSelectConv(conv.id); onClose() }}
-                onDeleteRequest={() => onDeleteConv(conv.id, conv.title)}
-                onRename={name => onRenameConv(conv.id, name)}
-              />
-            ))
-          }
+          {tab === 'chats' ? (
+            filtered.length === 0
+              ? <p className="px-4 py-6 text-center text-[11px] text-fg-4">{q ? t('sidebar.noMatches', 'No matches') : t('sidebar.noConversations', 'No conversations yet')}</p>
+              : filtered.map(conv => (
+                <ConvItem
+                  key={conv.id}
+                  conv={conv}
+                  active={conv.id === activeId}
+                  onSelect={() => { onSelectConv(conv.id); onClose() }}
+                  onDeleteRequest={() => onDeleteConv(conv.id, conv.title)}
+                  onRename={name => onRenameConv(conv.id, name)}
+                />
+              ))
+          ) : (
+            filteredTones.length === 0
+              ? <p className="px-4 py-6 text-center text-[11px] text-fg-4">{q ? t('sidebar.noMatches', 'No matches') : t('sidebar.noTones', 'No tones yet — generate one and it lands here')}</p>
+              : filteredTones.map(tn => (
+                <ToneItem
+                  key={tn.id}
+                  tone={tn}
+                  onOpen={() => onOpenTone(tn)}
+                  onDeleteRequest={() => onDeleteTone(tn.id, tn.name)}
+                  onRename={name => onRenameTone(tn.id, name)}
+                />
+              ))
+          )}
         </div>
 
       </aside>
@@ -758,7 +925,7 @@ function Sidebar({
 
 // ─── message bubble ──────────────────────────────────────────────────────────
 
-function MessageItem({ msg, streaming, isLastAssistant, onEditAndResend, onRegenerate, showActions, showSources }: {
+function MessageItem({ msg, streaming, isLastAssistant, onEditAndResend, onRegenerate, showActions, showSources, onOpenTone }: {
   msg: ChatMessage
   streaming: boolean
   isLastAssistant: boolean
@@ -766,6 +933,7 @@ function MessageItem({ msg, streaming, isLastAssistant, onEditAndResend, onRegen
   onRegenerate: () => void
   showActions: boolean
   showSources: boolean
+  onOpenTone?: (tone: TonePatchResult) => void
 }) {
   const [copied, setCopied] = useState(false)
   const [editing, setEditing] = useState(false)
@@ -902,6 +1070,8 @@ function MessageItem({ msg, streaming, isLastAssistant, onEditAndResend, onRegen
         </div>
         {actions}
       </div>
+      {/* Web search sources first, then the tone card — the .tsl is the payoff
+          and should sit closest to the composer, under its supporting sources. */}
       {showSources && msg.sources && msg.sources.length > 0 && (
         <div className="ml-1 mt-1 max-w-[85%] rounded-xl bg-surface px-3 py-2 border-l border-primary/30">
           <div className="text-[10px] text-fg-3 mb-1 uppercase tracking-wider">Sources</div>
@@ -937,6 +1107,9 @@ function MessageItem({ msg, streaming, isLastAssistant, onEditAndResend, onRegen
           </ul>
         </div>
       )}
+      {msg.tonePatch && (
+        <ToneCard tone={msg.tonePatch} onOpen={() => onOpenTone?.(msg.tonePatch!)} />
+      )}
     </div>
   )
 }
@@ -946,13 +1119,11 @@ function MessageItem({ msg, streaming, isLastAssistant, onEditAndResend, onRegen
 export default function Home({
   initialConvId,
   appName = 'ToneAI Kat',
-  iconUrl = '/branding/icon-192.png',
   welcomeMessage = '',
   starterPrompts = [],
 }: {
   initialConvId?: string
   appName?: string
-  iconUrl?: string
   welcomeMessage?: string
   starterPrompts?: string[]
 } = {}) {
@@ -969,6 +1140,14 @@ export default function Home({
   // enough: hitting New chat while already on an empty new chat moves neither,
   // so the effect would skip and re-show the same five chips.
   const [starterRoll, setStarterRoll] = useState(0)
+  // The generated tone open in the detail modal, if any. Carries the source
+  // conversation id so the modal can offer "Go to chat" when opened from the
+  // tone library.
+  const [openTone, setOpenTone] = useState<{ tone: TonePatchResult; conversationId: string | null } | null>(null)
+  // My Tones library — a client-side store independent of conversations.
+  const [tones, setTones] = useState<SavedTone[]>([])
+  // Which list the left drawer shows.
+  const [sidebarTab, setSidebarTab] = useState<'chats' | 'tones'>('chats')
   const [streaming, setStreaming] = useState(false)
   const [error, setError] = useState<string | null>(null)
   // Sidebar visibility: default collapsed on mobile, open on lg+ (CSS handles
@@ -994,7 +1173,7 @@ export default function Home({
   const [search, setSearch] = useState('')
   const [providers, setProviders] = useState<AvailableProvider[]>([])
   const [webSearchAvailable, setWebSearchAvailable] = useState(false)
-  const [webSearch, setWebSearch] = useState(false)
+  const [webSearch, setWebSearch] = useState(true)
   const [toolRunning, setToolRunning] = useState<{ name: string; query?: string } | null>(null)
   // Generation settings: null = use server default. UI shows a placeholder
   // hint when unset so user knows what value will actually be used.
@@ -1004,7 +1183,9 @@ export default function Home({
   // Both are still sent on the wire so the server can validate them against
   // config/providers.yaml rather than silently accepting anything.
   const [provider, setProviderState] = useState<string>('anthropic')
-  const [model, setModelState] = useState<string>('claude-opus-4-8')
+  // Pre-hydration placeholder only; replaced by the provider's real defaultModel
+  // (env-driven, Sonnet) once /api/providers resolves.
+  const [model, setModelState] = useState<string>('claude-sonnet-5')
   const [modelOpen, setModelOpen] = useState(false)
   // Live model list per provider id — populated lazily when the dropdown
   // opens. For local providers this is the actual installed-models list
@@ -1049,6 +1230,9 @@ export default function Home({
   useEffect(() => {
     if (initialized.current) return
     initialized.current = true
+    // Start diagnostic capture as early as possible so errors during init are
+    // recorded too (console.error tap + global error/rejection listeners).
+    installClientLogCapture()
     // Register the service worker so Chrome considers the app installable.
     // /sw.js is a minimal SW (fetch handler, no caching) — its presence is
     // what unlocks the "Install app" prompt; without it, "Add to home
@@ -1086,6 +1270,33 @@ export default function Home({
     if (true) {
       const loaded = loadConversations()
       setConversations(loaded)
+      // One-time seed of the tone library from tones already in existing chats,
+      // so tones created before the library shipped still appear. Guarded so it
+      // runs ONCE per browser — otherwise it would resurrect any library tone the
+      // user deleted whose source chat still exists. New tones save on generation.
+      if (!tonesBackfilled()) {
+        const known = new Set(loadTones().map(t => t.id))
+        for (const c of loaded) {
+          let lastUser: string | undefined
+          for (const m of c.messages) {
+            if (m.role === 'user') lastUser = m.content
+            if (m.role === 'assistant' && m.tonePatch && !known.has(m.id)) {
+              addTone({
+                id: m.id,
+                name: m.tonePatch.patch.name,
+                createdAt: c.updatedAt,
+                updatedAt: c.updatedAt,
+                conversationId: c.id,
+                prompt: lastUser,
+                tone: m.tonePatch,
+              })
+              known.add(m.id)
+            }
+          }
+        }
+        markTonesBackfilled()
+      }
+      setTones(loadTones())
       // Hydrate the active conversation from the URL (e.g. /c/<id> hard load).
       // If the id doesn't exist anymore (deleted on another tab, stale link),
       // silently fall back to / so the user sees the empty state.
@@ -1159,7 +1370,7 @@ export default function Home({
         const chosenInfo = list.find(p => p.id === chosen)
         const storedModel = getSelectedModel(chosen)
         const storedModelValid = storedModel && chosenInfo?.models.some(m => m.id === storedModel)
-        setModelState(storedModelValid ? storedModel! : (chosenInfo?.defaultModel ?? 'claude-opus-4-8'))
+        setModelState(storedModelValid ? storedModel! : (chosenInfo?.defaultModel ?? 'claude-sonnet-5'))
       } catch (e) {
         console.error('providers fetch failed:', e)
       }
@@ -1444,6 +1655,30 @@ export default function Home({
     setConversations(loadConversations())
   }, [])
 
+  // ── tone library handlers ──
+  const removeTone = useCallback((id: string) => {
+    deleteTone(id)
+    setTones(loadTones())
+  }, [])
+
+  const handleRenameTone = useCallback((id: string, name: string) => {
+    renameTone(id, name)
+    setTones(loadTones())
+  }, [])
+
+  const clearAllTonesHandler = useCallback(() => {
+    clearAllTones()
+    setTones([])
+  }, [])
+
+  // Open a saved tone's source conversation (from the tone detail modal).
+  // No-op if that chat was since deleted — the tone still stands on its own.
+  const goToChatFromTone = useCallback((conversationId: string | null) => {
+    setOpenTone(null)
+    setSidebarOpen(false)
+    if (conversationId) loadConversation(conversationId)
+  }, [loadConversation])
+
   // Build the wire-format messages array (multimodal content where needed)
   // from the in-memory ChatMessage[]. Shared by send/edit/regenerate.
   const buildWireMessages = useCallback((msgs: ChatMessage[]): MultimodalMessage[] =>
@@ -1572,6 +1807,7 @@ export default function Home({
     const spendsQuota = !apiKey
     if (spendsQuota) setOptimisticSpend(n => n + 1)
 
+    let capturedTone: import('@/lib/types').TonePatchResult | undefined
     try {
       const res = await sendChatStream(
         wireMessages,
@@ -1585,6 +1821,11 @@ export default function Home({
           provider, model, webSearch, apiKey,
           systemPrompt: customSystemPrompt ?? undefined,
           temperature: customTemperature ?? undefined,
+          device,
+          rig: (() => {
+            const inst = activeInstrument(gear)
+            return inst ? describeRig(inst, position === 'auto' ? undefined : position) : undefined
+          })(),
         },
         {
           onToolRunning: info => setToolRunning(info),
@@ -1596,10 +1837,18 @@ export default function Home({
                 : m
             ))
           },
+          onTonePatch: tone => {
+            capturedTone = tone
+            setToolRunning(null)
+            setMessages(prev => prev.map(m =>
+              m.id === assistantId ? { ...m, tonePatch: tone } : m
+            ))
+          },
         },
       )
       const finalAssistant: ChatMessage = {
         id: assistantId, role: 'assistant', content: res.message, sources: res.sources,
+        tonePatch: capturedTone,
       }
       // Speak the assistant's reply once the stream completes. Gated on
       // ttsEnabledRef (not state) so this picks up the current toggle
@@ -1624,6 +1873,26 @@ export default function Home({
         }
         upsertConversation(conv)
         setConversations(loadConversations())
+
+        // Save the generated tone to the library, keyed to this conversation
+        // so "Go to chat" can navigate back. Independent store — survives chat
+        // deletion. Uses the assistant message id so a regenerate replaces
+        // rather than duplicates.
+        if (capturedTone) {
+          const lastUser = [...finalMessages].reverse().find(m => m.role === 'user')
+          const now2 = Date.now()
+          addTone({
+            id: assistantId,
+            name: capturedTone.patch.name,
+            createdAt: now2,
+            updatedAt: now2,
+            conversationId: convId,
+            prompt: lastUser?.content,
+            tone: capturedTone,
+          })
+          setTones(loadTones())
+        }
+
         if (!activeId) {
           setActiveId(convId)
           updateUrl(convId)
@@ -1650,7 +1919,7 @@ export default function Home({
         setQuotaVersion(v => v + 1)
       }
     }
-  }, [activeId, conversations, provider, model, webSearch, apiKey, customSystemPrompt, customTemperature, buildWireMessages, updateUrl])
+  }, [activeId, conversations, provider, model, webSearch, apiKey, customSystemPrompt, customTemperature, device, gear, position, buildWireMessages, updateUrl])
 
   // One-click starter prompts: skip the input field entirely, fire the
   // prompt as a user message immediately. Mirrors the empty-state chip
@@ -1740,6 +2009,16 @@ export default function Home({
             label: `all ${conversations.length} conversation${conversations.length === 1 ? '' : 's'}`,
             doDelete: clearAll,
           })}
+          tab={sidebarTab}
+          onTab={setSidebarTab}
+          tones={tones}
+          onOpenTone={tn => { setOpenTone({ tone: tn.tone, conversationId: tn.conversationId }); setSidebarOpen(false) }}
+          onDeleteTone={(id, name) => setConfirmDelete({ label: `the tone "${name}"`, doDelete: () => removeTone(id) })}
+          onRenameTone={handleRenameTone}
+          onClearAllTones={() => setConfirmDelete({
+            label: `all ${tones.length} saved tone${tones.length === 1 ? '' : 's'}`,
+            doDelete: clearAllTonesHandler,
+          })}
           appName={appName}
           showClearAll={true}
         />
@@ -1762,11 +2041,7 @@ export default function Home({
           {(
             // Hidden at lg+, where the sidebar is persistent (lg:relative) and
             // already shows the app name — the header copy would be a duplicate.
-            <span className="flex items-center gap-2 lg:hidden">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={iconUrl} alt="" width={24} height={24} className="h-6 w-6 rounded shrink-0" />
-              <h1 className="text-sm font-medium text-fg">{appName}</h1>
-            </span>
+            <h1 className="text-sm font-medium text-fg lg:hidden">{appName}</h1>
           )}
           <div className="flex-1" />
           {/* Free-tier counter. Hidden entirely in BYOK mode — a countdown
@@ -1905,6 +2180,7 @@ export default function Home({
                 onRegenerate={regenerate}
                 showActions={true}
                 showSources={true}
+                onOpenTone={tone => setOpenTone({ tone, conversationId: activeId })}
               />
             ))}
           </div>
@@ -2055,15 +2331,18 @@ export default function Home({
                 {/* Attach a patch file. No source menu (camera/photos/documents):
                     the only thing this app ingests is a KATANA patch, so the
                     paperclip opens the file picker directly, filtered to the two
-                    patch extensions. */}
-                <button
-                  onClick={() => patchInputRef.current?.click()}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg text-fg-3 hover:bg-surface-2 hover:text-fg transition-colors"
-                  title={t('composer.attach', 'Attach a patch (.kat or .tsl)')}
-                  aria-label={t('composer.attachFile', 'Attach a patch file')}
-                >
-                  <AttachIcon />
-                </button>
+                    patch extensions. Hidden until all generations are supported
+                    (see ATTACH_ENABLED). */}
+                {ATTACH_ENABLED && (
+                  <button
+                    onClick={() => patchInputRef.current?.click()}
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-fg-3 hover:bg-surface-2 hover:text-fg transition-colors"
+                    title={t('composer.attach', 'Attach a patch (.kat or .tsl)')}
+                    aria-label={t('composer.attachFile', 'Attach a patch file')}
+                  >
+                    <AttachIcon />
+                  </button>
+                )}
                 {/* TTS toggle — speak assistant replies via Web Speech API
                     once the stream completes. Hidden when the browser
                     doesn't expose speechSynthesis (rare).
@@ -2196,6 +2475,18 @@ export default function Home({
           label={confirmDelete.label}
           onConfirm={() => { confirmDelete.doDelete(); setConfirmDelete(null) }}
           onCancel={() => setConfirmDelete(null)}
+        />
+      )}
+      {openTone && (
+        <ToneModal
+          tone={openTone.tone}
+          onClose={() => setOpenTone(null)}
+          onGoToChat={
+            openTone.conversationId && openTone.conversationId !== activeId &&
+            conversations.some(c => c.id === openTone.conversationId)
+              ? () => goToChatFromTone(openTone.conversationId)
+              : undefined
+          }
         />
       )}
     </div>

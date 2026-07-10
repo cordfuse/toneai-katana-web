@@ -9,22 +9,48 @@ import { listServers } from '@/lib/server/mcp'
 import { createStream, attachReplay } from '@/lib/server/stream-buffer'
 import { resolveLocalizableString, languageNameForLocale } from '@/lib/i18n'
 import { resolveLocale } from '@/lib/i18n/server'
+import { katanaSystemPrompt, type ToneContext } from '@/lib/server/tone'
+import { KATANA_DEVICES, type KatanaDevice } from '@/lib/storage'
+import { slog } from '@/lib/server/log'
+import { DEFAULT_MODEL } from '@/lib/server/models'
+
+const DEFAULT_DEVICE: KatanaDevice = 'katana-100-mk2'
+
+// A short, safe summary of the user's prompt for the diagnostic log — the last
+// user turn's text only (image blocks stripped), truncated. Never the raw
+// message array (which can carry base64 image data).
+function promptSummary(messages: unknown): string | undefined {
+  if (!Array.isArray(messages)) return undefined
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const m = messages[i]
+    if (m?.role !== 'user') continue
+    const c = m.content
+    if (typeof c === 'string') return c.slice(0, 500)
+    if (Array.isArray(c)) {
+      const text = c.filter((b: unknown) => (b as { type?: string })?.type === 'text')
+        .map((b: unknown) => (b as { text?: string }).text ?? '').join(' ').trim()
+      return text.slice(0, 500)
+    }
+    return undefined
+  }
+  return undefined
+}
+
+// Resolve the tone context from the request: which KATANA to write for and the
+// player's rig descriptor. Falls back to the default device on anything unknown.
+function resolveToneContext(rawDevice: unknown, rawRig: unknown): ToneContext {
+  const device = KATANA_DEVICES.find(d => d.id === rawDevice)?.id ?? DEFAULT_DEVICE
+  const deviceLabel = KATANA_DEVICES.find(d => d.id === device)?.label ?? 'KATANA'
+  const rig = typeof rawRig === 'string' && rawRig.trim() ? rawRig.trim() : undefined
+  return { device, deviceLabel, rig }
+}
 
 export const maxDuration = 300
 
 const ENV_PROVIDER = process.env.CHATFRAME_PROVIDER ?? 'anthropic'
-const ENV_MODEL = process.env.CHATFRAME_MODEL ?? 'claude-sonnet-4-6'
-
-// System prompt resolution chain: client per-request → CHATFRAME_SYSTEM_PROMPT
-// env → chatframe.config.json defaultSystemPrompt → hardcoded fallback.
-// Config is read fresh per request so drop-in JSON changes apply immediately.
-// The chatframe.config.json value may be a per-locale map — resolved to the
-// active locale's string before returning.
-function getDefaultSystemPrompt(locale: string): string {
-  if (process.env.CHATFRAME_SYSTEM_PROMPT) return process.env.CHATFRAME_SYSTEM_PROMPT
-  const cfg = loadChatframeConfig().config
-  return resolveLocalizableString(cfg.defaultSystemPrompt, locale)
-}
+// The default chat model — env-driven (CHATFRAME_MODEL), Sonnet by default.
+// Same source the provider registry uses, so client and server agree.
+const ENV_MODEL = DEFAULT_MODEL
 
 // Auto-append a one-line language instruction so the model knows to
 // respond in the user's chosen UI language. English is the no-op default
@@ -52,13 +78,6 @@ function resolveTemperature(clientValue: unknown): number {
   if (typeof clientValue === 'number' && Number.isFinite(clientValue)) return clientValue
   return envNumber('CHATFRAME_TEMPERATURE') ?? HARDCODED_TEMPERATURE
 }
-function resolveSystemPrompt(clientValue: unknown, locale: string): string {
-  const base = (typeof clientValue === 'string' && clientValue.trim().length > 0)
-    ? clientValue
-    : getDefaultSystemPrompt(locale)
-  return applyLocaleHint(base, locale)
-}
-
 export async function POST(request: NextRequest) {
   console.log('[chat] request received')
   const deviceId = getDeviceIdFromRequest(request.headers.get('Authorization'))
@@ -66,6 +85,10 @@ export async function POST(request: NextRequest) {
     console.log('[chat] unauthorized')
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
+  // Correlation id from the client ties this server handling to the client-side
+  // log entries for the same request. startedAt drives request latency.
+  const requestId = request.headers.get('x-request-id') ?? undefined
+  const startedAt = Date.now()
 
   const body = await request.json()
   const {
@@ -73,8 +96,9 @@ export async function POST(request: NextRequest) {
     provider: clientProvider, model: clientModel,
     webSearch,
     mcpServers: clientMcpServers,
-    systemPrompt: clientSystemPrompt,
     temperature: clientTemperature,
+    device: clientDevice,
+    rig: clientRig,
   } = body
 
   // BYOK. The mode is DERIVED from the presence of a key — there is no mode
@@ -130,15 +154,12 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // Quota: free mode only. BYOK bypasses the quota (it costs us no tokens)
-  // but NOT the per-device rate limit — otherwise BYOK is an unmetered proxy
-  // to Anthropic that anyone can point a script at.
+  // Quota: free mode only, a single shared daily pool. BYOK bypasses it (it
+  // costs us no tokens).
   if (!byokKey) {
-    const quota = checkAndIncrementQuota(deviceId)
+    const quota = checkAndIncrementQuota()
     if (!quota.allowed) {
-      const error = quota.reason === 'device_exhausted'
-        ? "You've used your free requests for today. Add your own Anthropic API key in Settings to keep going, or come back tomorrow."
-        : "Today's free requests have all been used, shared across everyone. Add your own Anthropic API key in Settings to keep going, or come back tomorrow."
+      const error = "Today's free requests have all been used, shared across everyone. Add your own Anthropic API key in Settings to keep going, or come back tomorrow."
       return NextResponse.json({ error, remaining: quota.remaining }, { status: 429 })
     }
   }
@@ -171,15 +192,10 @@ export async function POST(request: NextRequest) {
   // Web search: when toggle is hidden, force ON if TAVILY key is set
   // (otherwise silently off — no error, picker is hidden so user can't have
   // asked for it). When toggle is visible, honor the client flag.
-  const hasTavily = !!process.env.TAVILY_API_KEY
-  const wantWebSearch = true
-    ? !!webSearch
-    : hasTavily
-  if (true && wantWebSearch && !hasTavily) {
-    return NextResponse.json({
-      error: 'Web search is on but TAVILY_API_KEY isn\'t set on the server.',
-    }, { status: 503 })
-  }
+  // Web search runs through Anthropic's native web-search tool (resolveSearch
+  // wires it for the anthropic provider) — no Tavily key required. Tavily is
+  // only an alternative backend, so its absence must not 503 a search request.
+  const wantWebSearch = !!webSearch
 
   // MCP: when picker is hidden, use every configured + available server.
   // When picker is visible, honor the client's selection.
@@ -199,11 +215,20 @@ export async function POST(request: NextRequest) {
   // default (CHATFRAME_LOCALE env, then 'en').
   const { localeCodes, defaultLocale } = loadChatframeConfig()
   const activeLocale = await resolveLocale(localeCodes, defaultLocale)
-  const systemPrompt = resolveSystemPrompt(clientSystemPrompt, activeLocale)
+  // The tone-designer prompt + schema are the product and stay server-side; the
+  // client cannot override them (docs/settings.md § Inference is server-side).
+  const toneCtx = resolveToneContext(clientDevice, clientRig)
+  const systemPrompt = applyLocaleHint(katanaSystemPrompt(toneCtx), activeLocale)
   const temperature  = resolveTemperature(clientTemperature)
-  const runOpts = { webSearch: wantWebSearch, temperature, mcpServers, apiKey: byokKey }
+  const runOpts = { webSearch: wantWebSearch, temperature, mcpServers, apiKey: byokKey, tone: toneCtx }
 
   console.log(`[chat] msgs=${messages.length} provider=${provider} model=${model} stream=${!!wantStream} websearch=${wantWebSearch} mcps=${mcpServers.length ? mcpServers.join(',') : '-'} temp=${temperature} locale=${activeLocale}`)
+
+  slog(deviceId, requestId, 'info', 'chat.request', promptSummary(messages), {
+    provider, model, stream: !!wantStream, webSearch: wantWebSearch,
+    device: toneCtx.device, rig: toneCtx.rig, byok: !!byokKey,
+    msgCount: messages.length, locale: activeLocale,
+  })
 
   if (wantStream) {
     // Decoupled streaming with replay buffer.
@@ -224,14 +249,25 @@ export async function POST(request: NextRequest) {
     // Background run — keeps producing events even if the client is gone.
     // The buffer absorbs them; replay clients catch up via Last-Event-ID.
     void (async () => {
+      let tone: string | undefined
+      let chars = 0
       try {
         for await (const event of runChatStream(messages, provider, model, systemPrompt, runOpts)) {
+          const e = event as { type?: string; content?: string; patch?: { name?: string }; name?: string }
+          if (e?.type === 'delta' && typeof e.content === 'string') chars += e.content.length
+          if (e?.type === 'tone_patch') tone = e.patch?.name ?? e.name ?? tone
           push(`data: ${JSON.stringify(event)}\n\n`)
         }
         push(`data: ${JSON.stringify({ type: 'done' })}\n\n`)
         console.log(`[chat] stream ${streamId} done`)
+        slog(deviceId, requestId, 'info', 'chat.response', tone ? `tone: ${tone}` : undefined, {
+          ms: Date.now() - startedAt, chars, tone, stream: true,
+        })
       } catch (err) {
         console.error(`[chat] stream ${streamId} error:`, err)
+        slog(deviceId, requestId, 'error', 'chat.error', friendlyError(err), {
+          ms: Date.now() - startedAt, stream: true,
+        })
         push(`data: ${JSON.stringify({ type: 'error', message: friendlyError(err) })}\n\n`)
       } finally {
         finish()
@@ -300,9 +336,16 @@ export async function POST(request: NextRequest) {
   try {
     const result = await runChat(messages, provider, model, systemPrompt, runOpts)
     console.log('[chat] done')
+    const r = result as { message?: string; patch?: { name?: string } }
+    slog(deviceId, requestId, 'info', 'chat.response', undefined, {
+      ms: Date.now() - startedAt, chars: r.message?.length ?? 0, tone: r.patch?.name, stream: false,
+    })
     return NextResponse.json(result)
   } catch (err) {
     console.error('[chat] error:', err)
+    slog(deviceId, requestId, 'error', 'chat.error', friendlyError(err), {
+      ms: Date.now() - startedAt, stream: false,
+    })
     return NextResponse.json({ error: friendlyError(err) }, { status: 500 })
   }
 }

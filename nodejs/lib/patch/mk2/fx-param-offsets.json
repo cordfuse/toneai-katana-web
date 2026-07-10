@@ -1,0 +1,39 @@
+{
+  "_source": "Extracted from Katana Librarian param descriptor tables; Fx(2) mirrors Fx(1).",
+  "Comp": {
+    "sustain": 23,
+    "attack": 24,
+    "tone": 25,
+    "level": 26
+  },
+  "Phaser": {
+    "rate": 132,
+    "depth": 133,
+    "reso": 135,
+    "level": 137
+  },
+  "Flanger": {
+    "rate": 139,
+    "depth": 140,
+    "reso": 142,
+    "level": 145
+  },
+  "Tremolo": {
+    "rate": 148,
+    "depth": 149,
+    "level": 150
+  },
+  "Vibrato": {
+    "rate": 166,
+    "depth": 167,
+    "level": 170
+  },
+  "Chorus": {
+    "low_rate": 184,
+    "low_depth": 185,
+    "low_level": 187,
+    "high_rate": 188,
+    "high_depth": 189,
+    "high_level": 191
+  }
+}

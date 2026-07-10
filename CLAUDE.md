@@ -35,13 +35,25 @@ from what is assumed. In particular: the only published BOSS LiveSet JSON Schema
 was derived from **SY-300** presets, not KATANA. Do not treat it as authoritative
 for this device.
 
-**Blocked on:** a ground-truth `.tsl` exported from BOSS Tone Studio for the
-target KATANA. Until one lands in `data/fixtures/`, the patch writer is guesswork.
+**MkII: verified.** A ground-truth MkII V2 liveset was round-tripped against the
+writer (the `.tsl` itself is kept locally under `data/fixtures/`, which is
+gitignored — third-party community pack, not redistributed). The derived, checked-in
+artifact is the golden template `lib/patch/mk2/template.ts` (+ `template.json`),
+cloned from that liveset. The MkII writer builds from it and round-trips
+byte-clean: section keys/order/lengths match, amp/effect indices decode correctly
+(Crunch=11, Clean-Var=29), knobs store raw 0–100, and the 2-byte delay TIME
+reproduces exactly (391 ms → [3,7]). Reverb TIME is still a linear approximation
+(one sample per reverb type).
+
+**Still blocked:** MkI (`.kat` samples exist, verified separately), Gen 3, and
+GO have no ground-truth `.tsl` — their writers stay unextracted/guesswork until
+a real export for each lands in `data/fixtures/`.
 
 ## KATANA generations
 
-`device: "KATANA MkII"` appears in the format. Do not assume MkI / MkII / Gen 3 /
-Artist share a schema until proven against real exports from each.
+`device: "KATANA MkII"` appears in the format. MkII is now proven against a real
+export; do not assume MkI / Gen 3 / Artist share its schema until each is proven
+against its own real export.
 
 ## Sibling projects
 

@@ -16,7 +16,6 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     <Home
       initialConvId={id}
       appName={config.name}
-      iconUrl={config.icon192}
       welcomeMessage={resolveLocalizableString(config.welcomeMessage, activeLocale)}
       starterPrompts={resolveLocalizableStringArray(config.starterPrompts, activeLocale)}
     />
