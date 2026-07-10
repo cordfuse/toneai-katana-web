@@ -92,11 +92,12 @@ interface Instrument {
   archetype?: string           // "Les Paul", "Stratocaster", "Telecaster", "SG"
 
   pickups: PickupType[]        // position order: neck → bridge
-  strings: number              // 6, 7, 8; bass 4, 5
-  tuning: string               // "E standard", "Drop C", "DADGAD"
-  scaleLength?: number         // inches; affects low-end tightness
-  stringGauge?: string         // ".010–.046"
 }
+
+// Dropped 2026-07-10: strings, tuning, scaleLength, stringGauge. They describe
+// what you play, not how the amp is voiced — the amp does not know your tuning.
+// Keeping them meant maintaining fields that never earned their place in the
+// prompt.
 
 interface GearState {
   instruments: Instrument[]
@@ -113,16 +114,16 @@ The instrument plus the per-request pickup position compose into one descriptor,
 which is the *only* thing gear contributes to the prompt:
 
 ```ts
-// Instrument { archetype: 'Les Paul', pickups: ['humbucker','humbucker'],
-//              tuning: 'E standard' } + position 'bridge'
-//   → "Les Paul, bridge humbucker, E standard"
+// Instrument { archetype: 'Les Paul', pickups: ['humbucker','humbucker'] }
+//   + position 'bridge'
+//   → "Les Paul, bridge humbucker"
 function describeRig(i: Instrument, position: PickupPosition): string
 ```
 
 `archetype` is a free-text field with suggestions, not a closed enum — the model
 resolves "Jazzmaster" or "Danelectro" fine, and a fixed list would be a
 maintenance treadmill that still excludes someone's guitar. If it's empty, fall
-back to the electrical description ("bridge humbucker, E standard").
+back to the electrical description ("bridge humbucker").
 
 ### Bass is not a checkbox
 
