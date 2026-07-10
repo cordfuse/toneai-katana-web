@@ -2,6 +2,7 @@
   "name": "ToneAI Kat",
   "shortName": "ToneAI Kat",
   "tagline": "AI tone patches for the BOSS KATANA",
+  "welcomeMessage": "**Tell me a sound and I'll dial it in** — a song, an artist, or just how you want it to feel. Check your amp and guitar in the pills below, or tap a suggestion to start.",
   "defaultTheme": "dark",
   "icon192": "/branding/icon-192.png",
   "icon512": "/branding/icon-512.png"
