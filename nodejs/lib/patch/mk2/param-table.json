@@ -1,0 +1,6021 @@
+{
+ "_meta": {
+  "what": "KATANA MkII parameter → section + offset table",
+  "source": "BOSS Katana Librarian APK, jadx-decompiled; parsed from h.java method A() (l.b sections, fields f5440k/f5441l)",
+  "apk_sha256": "de81aa06c537d17b8ab27e7b12d2e6c361782f28d8f1198af6e376c00d1ff089",
+  "extracted": "2026-07-10",
+  "confidence": "derived — recovered from bytecode, NOT yet round-tripped against a ground-truth .tsl export",
+  "param_count": 1486,
+  "note": "Offsets are WITHIN each named section (MkII is section-addressed, not a flat image like MkI). Multi-byte params occupy >1 byte; section byte sizes + value encodings are not captured here yet."
+ },
+ "sections": {
+  "CHAIN_DATA": [
+   {
+    "offset": 0,
+    "name": "FX_CHAIN_POSITION1"
+   },
+   {
+    "offset": 1,
+    "name": "FX_CHAIN_POSITION2"
+   },
+   {
+    "offset": 2,
+    "name": "FX_CHAIN_POSITION3"
+   },
+   {
+    "offset": 3,
+    "name": "FX_CHAIN_POSITION4"
+   },
+   {
+    "offset": 4,
+    "name": "FX_CHAIN_POSITION5"
+   },
+   {
+    "offset": 5,
+    "name": "FX_CHAIN_POSITION6"
+   },
+   {
+    "offset": 6,
+    "name": "FX_CHAIN_POSITION7"
+   },
+   {
+    "offset": 7,
+    "name": "FX_CHAIN_POSITION8"
+   },
+   {
+    "offset": 8,
+    "name": "FX_CHAIN_POSITION9"
+   },
+   {
+    "offset": 9,
+    "name": "FX_CHAIN_POSITION10"
+   },
+   {
+    "offset": 10,
+    "name": "FX_CHAIN_POSITION11"
+   },
+   {
+    "offset": 11,
+    "name": "FX_CHAIN_POSITION12"
+   },
+   {
+    "offset": 12,
+    "name": "FX_CHAIN_POSITION13"
+   },
+   {
+    "offset": 13,
+    "name": "FX_CHAIN_POSITION14"
+   },
+   {
+    "offset": 14,
+    "name": "FX_CHAIN_POSITION15"
+   },
+   {
+    "offset": 15,
+    "name": "FX_CHAIN_POSITION16"
+   },
+   {
+    "offset": 16,
+    "name": "FX_CHAIN_POSITION17"
+   },
+   {
+    "offset": 17,
+    "name": "FX_CHAIN_POSITION18"
+   },
+   {
+    "offset": 18,
+    "name": "FX_CHAIN_POSITION19"
+   },
+   {
+    "offset": 19,
+    "name": "FX_CHAIN_POSITION20"
+   }
+  ],
+  "CONTOUR_1": [
+   {
+    "offset": 0,
+    "name": "PRM_CONTOUR1_TYPE"
+   },
+   {
+    "offset": 1,
+    "name": "PRM_CONTOUR1_FREQ_SHIFT"
+   }
+  ],
+  "CONTOUR_2": [
+   {
+    "offset": 0,
+    "name": "PRM_CONTOUR2_TYPE"
+   },
+   {
+    "offset": 1,
+    "name": "PRM_CONTOUR2_FREQ_SHIFT"
+   }
+  ],
+  "CONTOUR_3": [
+   {
+    "offset": 0,
+    "name": "PRM_CONTOUR3_TYPE"
+   },
+   {
+    "offset": 1,
+    "name": "PRM_CONTOUR3_FREQ_SHIFT"
+   }
+  ],
+  "CTRLASGN": [
+   {
+    "offset": 0,
+    "name": "PRM_PEDAL_FUNCTION_GAFC_EXP3"
+   },
+   {
+    "offset": 1,
+    "name": "PRM_PEDAL_FUNCTION_GAFC_EX_EXP1"
+   },
+   {
+    "offset": 2,
+    "name": "PRM_PEDAL_FUNCTION_GAFC_EX_EXP2"
+   },
+   {
+    "offset": 3,
+    "name": "PRM_PEDAL_FUNCTION_GAFC_EX_EXP3"
+   },
+   {
+    "offset": 4,
+    "name": "PRM_FS_FUNCTION_GAFC_FS3"
+   },
+   {
+    "offset": 5,
+    "name": "PRM_FS_FUNCTION_GAFC_EX_FS1"
+   },
+   {
+    "offset": 6,
+    "name": "PRM_FS_FUNCTION_GAFC_EX_FS2"
+   },
+   {
+    "offset": 7,
+    "name": "PRM_FS_FUNCTION_GAFC_EX_FS3"
+   }
+  ],
+  "DELAY_1": [
+   {
+    "offset": 0,
+    "name": "DELAY_ON_OFF"
+   },
+   {
+    "offset": 1,
+    "name": "DELAY_TYPE"
+   },
+   {
+    "offset": 2,
+    "name": "xa"
+   },
+   {
+    "offset": 4,
+    "name": "DELAY_F_BACK"
+   },
+   {
+    "offset": 5,
+    "name": "DELAY_HIGH_CUT"
+   },
+   {
+    "offset": 6,
+    "name": "DELAY_EFFECT_LEVEL"
+   },
+   {
+    "offset": 7,
+    "name": "DELAY_DIRECT_MIX"
+   },
+   {
+    "offset": 8,
+    "name": "DELAY_TAP_TIME"
+   },
+   {
+    "offset": 9,
+    "name": "uq"
+   },
+   {
+    "offset": 11,
+    "name": "PRM_DLY_D1FEEDBACK"
+   },
+   {
+    "offset": 12,
+    "name": "PRM_DLY_D1HICUT"
+   },
+   {
+    "offset": 13,
+    "name": "PRM_DLY_D1LEVEL"
+   },
+   {
+    "offset": 14,
+    "name": "yq"
+   },
+   {
+    "offset": 16,
+    "name": "PRM_DLY_D2FEEDBACK"
+   },
+   {
+    "offset": 17,
+    "name": "PRM_DLY_D2HICUT"
+   },
+   {
+    "offset": 18,
+    "name": "PRM_DLY_D2LEVEL"
+   },
+   {
+    "offset": 19,
+    "name": "DELAY_MOD_RATE"
+   },
+   {
+    "offset": 20,
+    "name": "DELAY_MOD_DEPTH"
+   },
+   {
+    "offset": 21,
+    "name": "DELAY_VTG_LPF"
+   },
+   {
+    "offset": 22,
+    "name": "DELAY_VTG_FILTER"
+   },
+   {
+    "offset": 23,
+    "name": "DELAY_VTG_FEEDBACK_PHASE"
+   },
+   {
+    "offset": 24,
+    "name": "DELAY_VTG_EFFECT_PHASE"
+   },
+   {
+    "offset": 25,
+    "name": "DELAY_VTG_MOD_SW"
+   }
+  ],
+  "DELAY_2": [
+   {
+    "offset": 0,
+    "name": "DELAY2_ON_OFF"
+   },
+   {
+    "offset": 1,
+    "name": "DELAY2_TYPE"
+   },
+   {
+    "offset": 2,
+    "name": "Ua"
+   },
+   {
+    "offset": 4,
+    "name": "DELAY2_F_BACK"
+   },
+   {
+    "offset": 5,
+    "name": "DELAY2_HIGH_CUT"
+   },
+   {
+    "offset": 6,
+    "name": "DELAY2_EFFECT_LEVEL"
+   },
+   {
+    "offset": 7,
+    "name": "DELAY2_DIRECT_MIX"
+   },
+   {
+    "offset": 8,
+    "name": "DELAY2_TAP_TIME"
+   },
+   {
+    "offset": 9,
+    "name": "Cq"
+   },
+   {
+    "offset": 11,
+    "name": "PRM_DLY2_D1FEEDBACK"
+   },
+   {
+    "offset": 12,
+    "name": "PRM_DLY2_D1HICUT"
+   },
+   {
+    "offset": 13,
+    "name": "PRM_DLY2_D1LEVEL"
+   },
+   {
+    "offset": 14,
+    "name": "Gq"
+   },
+   {
+    "offset": 16,
+    "name": "PRM_DLY2_D2FEEDBACK"
+   },
+   {
+    "offset": 17,
+    "name": "PRM_DLY2_D2HICUT"
+   },
+   {
+    "offset": 18,
+    "name": "PRM_DLY2_D2LEVEL"
+   },
+   {
+    "offset": 19,
+    "name": "DELAY2_MOD_RATE"
+   },
+   {
+    "offset": 20,
+    "name": "DELAY2_MOD_DEPTH"
+   },
+   {
+    "offset": 21,
+    "name": "DELAY2_VTG_LPF"
+   },
+   {
+    "offset": 22,
+    "name": "DELAY2_VTG_FILTER"
+   },
+   {
+    "offset": 23,
+    "name": "DELAY2_VTG_FEEDBACK_PHASE"
+   },
+   {
+    "offset": 24,
+    "name": "DELAY2_VTG_EFFECT_PHASE"
+   },
+   {
+    "offset": 25,
+    "name": "DELAY2_VTG_MOD_SW"
+   }
+  ],
+  "EQ_2": [
+   {
+    "offset": 0,
+    "name": "PRM_EQ2_SW"
+   },
+   {
+    "offset": 1,
+    "name": "PRM_EQ2_TYPE"
+   },
+   {
+    "offset": 2,
+    "name": "PRM_EQ2_LOW_CUT"
+   },
+   {
+    "offset": 3,
+    "name": "PRM_EQ2_LOW_GAIN"
+   },
+   {
+    "offset": 4,
+    "name": "PRM_EQ2_LOWMID_FREQ"
+   },
+   {
+    "offset": 5,
+    "name": "PRM_EQ2_LOWMID_Q"
+   },
+   {
+    "offset": 6,
+    "name": "PRM_EQ2_LOWMID_GAIN"
+   },
+   {
+    "offset": 7,
+    "name": "PRM_EQ2_HIGHMID_FREQ"
+   },
+   {
+    "offset": 8,
+    "name": "PRM_EQ2_HIGHMID_Q"
+   },
+   {
+    "offset": 9,
+    "name": "PRM_EQ2_HIGHMID_GAIN"
+   },
+   {
+    "offset": 10,
+    "name": "PRM_EQ2_HIGH_GAIN"
+   },
+   {
+    "offset": 11,
+    "name": "PRM_EQ2_HIGH_CUT"
+   },
+   {
+    "offset": 12,
+    "name": "PRM_EQ2_LEVEL"
+   },
+   {
+    "offset": 13,
+    "name": "PRM_EQ2_GEQ_BAND1"
+   },
+   {
+    "offset": 14,
+    "name": "PRM_EQ2_GEQ_BAND2"
+   },
+   {
+    "offset": 15,
+    "name": "PRM_EQ2_GEQ_BAND3"
+   },
+   {
+    "offset": 16,
+    "name": "PRM_EQ2_GEQ_BAND4"
+   },
+   {
+    "offset": 17,
+    "name": "PRM_EQ2_GEQ_BAND5"
+   },
+   {
+    "offset": 18,
+    "name": "PRM_EQ2_GEQ_BAND6"
+   },
+   {
+    "offset": 19,
+    "name": "PRM_EQ2_GEQ_BAND7"
+   },
+   {
+    "offset": 20,
+    "name": "PRM_EQ2_GEQ_BAND8"
+   },
+   {
+    "offset": 21,
+    "name": "PRM_EQ2_GEQ_BAND9"
+   },
+   {
+    "offset": 22,
+    "name": "PRM_EQ2_GEQ_BAND10"
+   },
+   {
+    "offset": 23,
+    "name": "PRM_EQ2_GEQ_LEVEL"
+   }
+  ],
+  "EXPPEDALASGN": [
+   {
+    "offset": 0,
+    "name": "EXP_PEDAL_ASSIGN_BOOSTER"
+   },
+   {
+    "offset": 1,
+    "name": "EXP_PEDAL_ASSIGN_DELAY"
+   },
+   {
+    "offset": 2,
+    "name": "EXP_PEDAL_ASSIGN_REVERB"
+   },
+   {
+    "offset": 3,
+    "name": "EXP_PEDAL_ASSIGN_CHORUS"
+   },
+   {
+    "offset": 4,
+    "name": "EXP_PEDAL_ASSIGN_FLANGER"
+   },
+   {
+    "offset": 5,
+    "name": "EXP_PEDAL_ASSIGN_PHASER"
+   },
+   {
+    "offset": 6,
+    "name": "EXP_PEDAL_ASSIGN_UNI_V"
+   },
+   {
+    "offset": 7,
+    "name": "EXP_PEDAL_ASSIGN_TREMOLO"
+   },
+   {
+    "offset": 8,
+    "name": "EXP_PEDAL_ASSIGN_VIBRATO"
+   },
+   {
+    "offset": 9,
+    "name": "EXP_PEDAL_ASSIGN_ROTARY"
+   },
+   {
+    "offset": 10,
+    "name": "EXP_PEDAL_ASSIGN_RING_MOD"
+   },
+   {
+    "offset": 11,
+    "name": "EXP_PEDAL_ASSIGN_SLOW_GEAR"
+   },
+   {
+    "offset": 12,
+    "name": "EXP_PEDAL_ASSIGN_SLICER"
+   },
+   {
+    "offset": 13,
+    "name": "EXP_PEDAL_ASSIGN_COMP"
+   },
+   {
+    "offset": 14,
+    "name": "EXP_PEDAL_ASSIGN_LIMITER"
+   },
+   {
+    "offset": 15,
+    "name": "EXP_PEDAL_ASSIGN_T_WAH"
+   },
+   {
+    "offset": 16,
+    "name": "EXP_PEDAL_ASSIGN_AUTO_WAH"
+   },
+   {
+    "offset": 17,
+    "name": "EXP_PEDAL_ASSIGN_PEDAL_WAH"
+   },
+   {
+    "offset": 18,
+    "name": "EXP_PEDAL_ASSIGN_GEQ"
+   },
+   {
+    "offset": 19,
+    "name": "EXP_PEDAL_ASSIGN_PEQ"
+   },
+   {
+    "offset": 20,
+    "name": "EXP_PEDAL_ASSIGN_GUITAR_SIM"
+   },
+   {
+    "offset": 21,
+    "name": "EXP_PEDAL_ASSIGN_AC_GUITAR_SIM"
+   },
+   {
+    "offset": 22,
+    "name": "EXP_PEDAL_ASSIGN_AC_PROCESSOR"
+   },
+   {
+    "offset": 23,
+    "name": "EXP_PEDAL_ASSIGN_WAVE_SYNTH"
+   },
+   {
+    "offset": 24,
+    "name": "EXP_PEDAL_ASSIGN_OCTAVE"
+   },
+   {
+    "offset": 25,
+    "name": "EXP_PEDAL_ASSIGN_PITCH_SHIFTER"
+   },
+   {
+    "offset": 26,
+    "name": "EXP_PEDAL_ASSIGN_HARMONIST"
+   },
+   {
+    "offset": 27,
+    "name": "EXP_PEDAL_ASSIGN_HUMANIZER"
+   },
+   {
+    "offset": 28,
+    "name": "EXP_PEDAL_ASSIGN_EVH_PHASER"
+   },
+   {
+    "offset": 29,
+    "name": "EXP_PEDAL_ASSIGN_EVH_FLANGER"
+   },
+   {
+    "offset": 30,
+    "name": "EXP_PEDAL_ASSIGN_EVH_WAH"
+   },
+   {
+    "offset": 31,
+    "name": "EXP_PEDAL_ASSIGN_DC30"
+   },
+   {
+    "offset": 32,
+    "name": "EXP_PEDAL_ASSIGN_HEAVY_OCT"
+   },
+   {
+    "offset": 33,
+    "name": "EXP_PEDAL_ASSIGN_PEDAL_BEND"
+   }
+  ],
+  "EXPPEDALASGNMINMAX": [
+   {
+    "offset": 0,
+    "name": "EXP_PEDAL_ASSIGN_BOOSTER_MIN"
+   },
+   {
+    "offset": 1,
+    "name": "EXP_PEDAL_ASSIGN_BOOSTER_MAX"
+   },
+   {
+    "offset": 2,
+    "name": "fk"
+   },
+   {
+    "offset": 4,
+    "name": "gk"
+   },
+   {
+    "offset": 6,
+    "name": "hk"
+   },
+   {
+    "offset": 8,
+    "name": "ik"
+   },
+   {
+    "offset": 10,
+    "name": "EXP_PEDAL_ASSIGN_CHORUS_MIN"
+   },
+   {
+    "offset": 11,
+    "name": "EXP_PEDAL_ASSIGN_CHORUS_MAX"
+   },
+   {
+    "offset": 12,
+    "name": "EXP_PEDAL_ASSIGN_FLANGER_MIN"
+   },
+   {
+    "offset": 13,
+    "name": "EXP_PEDAL_ASSIGN_FLANGER_MAX"
+   },
+   {
+    "offset": 14,
+    "name": "EXP_PEDAL_ASSIGN_PHASER_MIN"
+   },
+   {
+    "offset": 15,
+    "name": "EXP_PEDAL_ASSIGN_PHASER_MAX"
+   },
+   {
+    "offset": 16,
+    "name": "EXP_PEDAL_ASSIGN_UNI_V_MIN"
+   },
+   {
+    "offset": 17,
+    "name": "EXP_PEDAL_ASSIGN_UNI_V_MAX"
+   },
+   {
+    "offset": 18,
+    "name": "EXP_PEDAL_ASSIGN_TREMOLO_MIN"
+   },
+   {
+    "offset": 19,
+    "name": "EXP_PEDAL_ASSIGN_TREMOLO_MAX"
+   },
+   {
+    "offset": 20,
+    "name": "EXP_PEDAL_ASSIGN_VIBRATO_MIN"
+   },
+   {
+    "offset": 21,
+    "name": "EXP_PEDAL_ASSIGN_VIBRATO_MAX"
+   },
+   {
+    "offset": 22,
+    "name": "EXP_PEDAL_ASSIGN_ROTARY_MIN"
+   },
+   {
+    "offset": 23,
+    "name": "EXP_PEDAL_ASSIGN_ROTARY_MAX"
+   },
+   {
+    "offset": 24,
+    "name": "EXP_PEDAL_ASSIGN_RING_MOD_MIN"
+   },
+   {
+    "offset": 25,
+    "name": "EXP_PEDAL_ASSIGN_RING_MOD_MAX"
+   },
+   {
+    "offset": 26,
+    "name": "EXP_PEDAL_ASSIGN_SLOW_GEAR_MIN"
+   },
+   {
+    "offset": 27,
+    "name": "EXP_PEDAL_ASSIGN_SLOW_GEAR_MAX"
+   },
+   {
+    "offset": 28,
+    "name": "EXP_PEDAL_ASSIGN_SLICER_MIN"
+   },
+   {
+    "offset": 29,
+    "name": "EXP_PEDAL_ASSIGN_SLICER_MAX"
+   },
+   {
+    "offset": 30,
+    "name": "EXP_PEDAL_ASSIGN_COMP_MIN"
+   },
+   {
+    "offset": 31,
+    "name": "EXP_PEDAL_ASSIGN_COMP_MAX"
+   },
+   {
+    "offset": 32,
+    "name": "EXP_PEDAL_ASSIGN_LIMITER_MIN"
+   },
+   {
+    "offset": 33,
+    "name": "EXP_PEDAL_ASSIGN_LIMITER_MAX"
+   },
+   {
+    "offset": 34,
+    "name": "EXP_PEDAL_ASSIGN_T_WAH_MIN"
+   },
+   {
+    "offset": 35,
+    "name": "EXP_PEDAL_ASSIGN_T_WAH_MAX"
+   },
+   {
+    "offset": 36,
+    "name": "EXP_PEDAL_ASSIGN_AUTO_WAH_MIN"
+   },
+   {
+    "offset": 37,
+    "name": "EXP_PEDAL_ASSIGN_AUTO_WAH_MAX"
+   },
+   {
+    "offset": 38,
+    "name": "EXP_PEDAL_ASSIGN_PEDAL_WAH_MIN"
+   },
+   {
+    "offset": 39,
+    "name": "EXP_PEDAL_ASSIGN_PEDAL_WAH_MAX"
+   },
+   {
+    "offset": 40,
+    "name": "EXP_PEDAL_ASSIGN_GEQ_MIN"
+   },
+   {
+    "offset": 41,
+    "name": "EXP_PEDAL_ASSIGN_GEQ_MAX"
+   },
+   {
+    "offset": 42,
+    "name": "EXP_PEDAL_ASSIGN_PEQ_MIN"
+   },
+   {
+    "offset": 43,
+    "name": "EXP_PEDAL_ASSIGN_PEQ_MAX"
+   },
+   {
+    "offset": 44,
+    "name": "EXP_PEDAL_ASSIGN_GUITAR_SIM_MIN"
+   },
+   {
+    "offset": 45,
+    "name": "EXP_PEDAL_ASSIGN_GUITAR_SIM_MAX"
+   },
+   {
+    "offset": 46,
+    "name": "EXP_PEDAL_ASSIGN_AC_GUITAR_SIM_MIN"
+   },
+   {
+    "offset": 47,
+    "name": "EXP_PEDAL_ASSIGN_AC_GUITAR_SIM_MAX"
+   },
+   {
+    "offset": 48,
+    "name": "EXP_PEDAL_ASSIGN_AC_PROCESSOR_MIN"
+   },
+   {
+    "offset": 49,
+    "name": "EXP_PEDAL_ASSIGN_AC_PROCESSOR_MAX"
+   },
+   {
+    "offset": 50,
+    "name": "EXP_PEDAL_ASSIGN_WAVE_SYNTH_MIN"
+   },
+   {
+    "offset": 51,
+    "name": "EXP_PEDAL_ASSIGN_WAVE_SYNTH_MAX"
+   },
+   {
+    "offset": 52,
+    "name": "EXP_PEDAL_ASSIGN_OCTAVE_MIN"
+   },
+   {
+    "offset": 53,
+    "name": "EXP_PEDAL_ASSIGN_OCTAVE_MAX"
+   },
+   {
+    "offset": 54,
+    "name": "bl"
+   },
+   {
+    "offset": 56,
+    "name": "cl"
+   },
+   {
+    "offset": 58,
+    "name": "dl"
+   },
+   {
+    "offset": 60,
+    "name": "el"
+   },
+   {
+    "offset": 62,
+    "name": "EXP_PEDAL_ASSIGN_HUMANIZER_MIN"
+   },
+   {
+    "offset": 63,
+    "name": "EXP_PEDAL_ASSIGN_HUMANIZER_MAX"
+   },
+   {
+    "offset": 64,
+    "name": "EXP_PEDAL_ASSIGN_EVH_PHASER_MIN"
+   },
+   {
+    "offset": 65,
+    "name": "EXP_PEDAL_ASSIGN_EVH_PHASER_MAX"
+   },
+   {
+    "offset": 66,
+    "name": "EXP_PEDAL_ASSIGN_EVH_FLANGER_MIN"
+   },
+   {
+    "offset": 67,
+    "name": "EXP_PEDAL_ASSIGN_EVH_FLANGER_MAX"
+   },
+   {
+    "offset": 68,
+    "name": "EXP_PEDAL_ASSIGN_EVH_WAH_MIN"
+   },
+   {
+    "offset": 69,
+    "name": "EXP_PEDAL_ASSIGN_EVH_WAH_MAX"
+   },
+   {
+    "offset": 70,
+    "name": "nl"
+   },
+   {
+    "offset": 72,
+    "name": "ol"
+   },
+   {
+    "offset": 74,
+    "name": "EXP_PEDAL_ASSIGN_HEAVY_OCT_MIN"
+   },
+   {
+    "offset": 75,
+    "name": "EXP_PEDAL_ASSIGN_HEAVY_OCT_MAX"
+   },
+   {
+    "offset": 76,
+    "name": "EXP_PEDAL_ASSIGN_PEDAL_BEND_MIN"
+   },
+   {
+    "offset": 77,
+    "name": "EXP_PEDAL_ASSIGN_PEDAL_BEND_MAX"
+   }
+  ],
+  "FSASGN": [
+   {
+    "offset": 0,
+    "name": "PRM_FS_FUNCTION_FS1_TIP"
+   },
+   {
+    "offset": 1,
+    "name": "PRM_FS_FUNCTION_FS1_RING"
+   }
+  ],
+  "FX_1": [
+   {
+    "offset": 0,
+    "name": "FX1_ON_OFF"
+   },
+   {
+    "offset": 1,
+    "name": "FX1_FX_TYPE"
+   },
+   {
+    "offset": 2,
+    "name": "FX1_T_WAH_MODE"
+   },
+   {
+    "offset": 3,
+    "name": "FX1_T_WAH_POLAR"
+   },
+   {
+    "offset": 4,
+    "name": "FX1_T_WAH_SENS"
+   },
+   {
+    "offset": 5,
+    "name": "FX1_T_WAH_FREQ"
+   },
+   {
+    "offset": 6,
+    "name": "FX1_T_WAH_PEAK"
+   },
+   {
+    "offset": 7,
+    "name": "FX1_T_WAH_DIRECT_MIX"
+   },
+   {
+    "offset": 8,
+    "name": "FX1_T_WAH_EFFECT_LEVEL"
+   },
+   {
+    "offset": 9,
+    "name": "FX1_AUTO_WAH_MODE"
+   },
+   {
+    "offset": 10,
+    "name": "FX1_AUTO_WAH_FREQ"
+   },
+   {
+    "offset": 11,
+    "name": "FX1_AUTO_WAH_PEAK"
+   },
+   {
+    "offset": 12,
+    "name": "FX1_AUTO_WAH_RATE"
+   },
+   {
+    "offset": 13,
+    "name": "FX1_AUTO_WAH_DEPTH"
+   },
+   {
+    "offset": 14,
+    "name": "FX1_AUTO_WAH_DIRECT_MIX"
+   },
+   {
+    "offset": 15,
+    "name": "FX1_AUTO_WAH_EFFECT_LEVEL"
+   },
+   {
+    "offset": 16,
+    "name": "FX1_SUB_WAH_TYPE"
+   },
+   {
+    "offset": 17,
+    "name": "FX1_SUB_WAH_PEDAL_POS"
+   },
+   {
+    "offset": 18,
+    "name": "FX1_SUB_WAH_PEDAL_MIN"
+   },
+   {
+    "offset": 19,
+    "name": "FX1_SUB_WAH_PEDAL_MAX"
+   },
+   {
+    "offset": 20,
+    "name": "FX1_SUB_WAH_EFFECT_LEVEL"
+   },
+   {
+    "offset": 21,
+    "name": "FX1_SUB_WAH_DIRECT_MIX"
+   },
+   {
+    "offset": 22,
+    "name": "FX1_ADV_COMP_TYPE"
+   },
+   {
+    "offset": 23,
+    "name": "FX1_ADV_COMP_SUSTAIN"
+   },
+   {
+    "offset": 24,
+    "name": "FX1_ADV_COMP_ATTACK"
+   },
+   {
+    "offset": 25,
+    "name": "FX1_ADV_COMP_TONE"
+   },
+   {
+    "offset": 26,
+    "name": "FX1_ADV_COMP_LEVEL"
+   },
+   {
+    "offset": 27,
+    "name": "FX1_LIMITER_TYPE"
+   },
+   {
+    "offset": 28,
+    "name": "FX1_LIMITER_ATTACK"
+   },
+   {
+    "offset": 29,
+    "name": "FX1_LIMITER_THRESH"
+   },
+   {
+    "offset": 30,
+    "name": "FX1_LIMITER_RATIO"
+   },
+   {
+    "offset": 31,
+    "name": "FX1_LIMITER_RELEASE"
+   },
+   {
+    "offset": 32,
+    "name": "FX1_LIMITER_LEVEL"
+   },
+   {
+    "offset": 33,
+    "name": "FX1_GRAPHIC_EQ_31HZ"
+   },
+   {
+    "offset": 34,
+    "name": "FX1_GRAPHIC_EQ_62HZ"
+   },
+   {
+    "offset": 35,
+    "name": "FX1_GRAPHIC_EQ_125HZ"
+   },
+   {
+    "offset": 36,
+    "name": "FX1_GRAPHIC_EQ_250HZ"
+   },
+   {
+    "offset": 37,
+    "name": "FX1_GRAPHIC_EQ_500HZ"
+   },
+   {
+    "offset": 38,
+    "name": "FX1_GRAPHIC_EQ_1KHZ"
+   },
+   {
+    "offset": 39,
+    "name": "FX1_GRAPHIC_EQ_2KHZ"
+   },
+   {
+    "offset": 40,
+    "name": "FX1_GRAPHIC_EQ_4KHZ"
+   },
+   {
+    "offset": 41,
+    "name": "FX1_GRAPHIC_EQ_8KHZ"
+   },
+   {
+    "offset": 42,
+    "name": "FX1_GRAPHIC_EQ_16KHZ"
+   },
+   {
+    "offset": 43,
+    "name": "FX1_GRAPHIC_EQ_LEVEL"
+   },
+   {
+    "offset": 44,
+    "name": "FX1_PARAMETRIC_EQ_LOW_CUT"
+   },
+   {
+    "offset": 45,
+    "name": "FX1_PARAMETRIC_EQ_LOW_GAIN"
+   },
+   {
+    "offset": 46,
+    "name": "FX1_PARAMETRIC_EQ_LOW_MID_FREQ"
+   },
+   {
+    "offset": 47,
+    "name": "FX1_PARAMETRIC_EQ_LOW_MID_Q"
+   },
+   {
+    "offset": 48,
+    "name": "FX1_PARAMETRIC_EQ_LOW_MID_GAIN"
+   },
+   {
+    "offset": 49,
+    "name": "FX1_PARAMETRIC_EQ_HIGH_MID_FREQ"
+   },
+   {
+    "offset": 50,
+    "name": "FX1_PARAMETRIC_EQ_HIGH_MID_Q"
+   },
+   {
+    "offset": 51,
+    "name": "FX1_PARAMETRIC_EQ_HIGH_MID_GAIN"
+   },
+   {
+    "offset": 52,
+    "name": "FX1_PARAMETRIC_EQ_HIGH_GAIN"
+   },
+   {
+    "offset": 53,
+    "name": "FX1_PARAMETRIC_EQ_HIGH_CUT"
+   },
+   {
+    "offset": 54,
+    "name": "FX1_PARAMETRIC_EQ_LEVEL"
+   },
+   {
+    "offset": 55,
+    "name": "FX1_GUITAR_SIM_TYPE"
+   },
+   {
+    "offset": 56,
+    "name": "FX1_GUITAR_SIM_LOW"
+   },
+   {
+    "offset": 57,
+    "name": "FX1_GUITAR_SIM_HIGH"
+   },
+   {
+    "offset": 58,
+    "name": "FX1_GUITAR_SIM_LEVEL"
+   },
+   {
+    "offset": 59,
+    "name": "FX1_GUITAR_SIM_BODY"
+   },
+   {
+    "offset": 60,
+    "name": "FX1_SLOW_GEAR_SENS"
+   },
+   {
+    "offset": 61,
+    "name": "FX1_SLOW_GEAR_RISE_TIME"
+   },
+   {
+    "offset": 62,
+    "name": "FX1_SLOW_GEAR_LEVEL"
+   },
+   {
+    "offset": 63,
+    "name": "FX1_WAVE_SYNTH_WAVE"
+   },
+   {
+    "offset": 64,
+    "name": "FX1_WAVE_SYNTH_CUTOFF"
+   },
+   {
+    "offset": 65,
+    "name": "FX1_WAVE_SYNTH_RESO"
+   },
+   {
+    "offset": 66,
+    "name": "FX1_WAVE_SYNTH_FILTER_SENS"
+   },
+   {
+    "offset": 67,
+    "name": "FX1_WAVE_SYNTH_FILTER_DECAY"
+   },
+   {
+    "offset": 68,
+    "name": "FX1_WAVE_SYNTH_FILTER_DEPTH"
+   },
+   {
+    "offset": 69,
+    "name": "FX1_WAVE_SYNTH_SYNTH_LEVEL"
+   },
+   {
+    "offset": 70,
+    "name": "FX1_WAVE_SYNTH_DIRECT_MIX"
+   },
+   {
+    "offset": 71,
+    "name": "FX1_OCTAVE_RANGE"
+   },
+   {
+    "offset": 72,
+    "name": "FX1_OCTAVE_LEVEL"
+   },
+   {
+    "offset": 73,
+    "name": "FX1_OCTAVE_DIRECT_MIX"
+   },
+   {
+    "offset": 74,
+    "name": "FX1_PITCH_SHIFTER_VOICE"
+   },
+   {
+    "offset": 75,
+    "name": "FX1_PITCH_SHIFTER_PS1MODE"
+   },
+   {
+    "offset": 76,
+    "name": "FX1_PITCH_SHIFTER_PS1PITCH"
+   },
+   {
+    "offset": 77,
+    "name": "FX1_PITCH_SHIFTER_PS1FINE"
+   },
+   {
+    "offset": 78,
+    "name": "A3"
+   },
+   {
+    "offset": 80,
+    "name": "FX1_PITCH_SHIFTER_PS1LEVEL"
+   },
+   {
+    "offset": 81,
+    "name": "FX1_PITCH_SHIFTER_PS2MODE"
+   },
+   {
+    "offset": 82,
+    "name": "FX1_PITCH_SHIFTER_PS2PITCH"
+   },
+   {
+    "offset": 83,
+    "name": "FX1_PITCH_SHIFTER_PS2FINE"
+   },
+   {
+    "offset": 84,
+    "name": "F3"
+   },
+   {
+    "offset": 86,
+    "name": "FX1_PITCH_SHIFTER_PS2LEVEL"
+   },
+   {
+    "offset": 87,
+    "name": "FX1_PITCH_SHIFTER_PS1F_BACK"
+   },
+   {
+    "offset": 88,
+    "name": "FX1_PITCH_SHIFTER_DIRECT_MIX"
+   },
+   {
+    "offset": 89,
+    "name": "FX1_HARMONIST_VOICE"
+   },
+   {
+    "offset": 90,
+    "name": "FX1_HARMONIST_HR1HARM"
+   },
+   {
+    "offset": 91,
+    "name": "L3"
+   },
+   {
+    "offset": 93,
+    "name": "FX1_HARMONIST_HR1LEVEL"
+   },
+   {
+    "offset": 94,
+    "name": "FX1_HARMONIST_HR2HARM"
+   },
+   {
+    "offset": 95,
+    "name": "O3"
+   },
+   {
+    "offset": 97,
+    "name": "FX1_HARMONIST_HR2LEVEL"
+   },
+   {
+    "offset": 98,
+    "name": "FX1_HARMONIST_HR1F_BACK"
+   },
+   {
+    "offset": 99,
+    "name": "FX1_HARMONIST_DIRECT_MIX"
+   },
+   {
+    "offset": 100,
+    "name": "FX1_HARMONIST_HR1C"
+   },
+   {
+    "offset": 101,
+    "name": "FX1_HARMONIST_HR1DB"
+   },
+   {
+    "offset": 102,
+    "name": "FX1_HARMONIST_HR1D"
+   },
+   {
+    "offset": 103,
+    "name": "FX1_HARMONIST_HR1EB"
+   },
+   {
+    "offset": 104,
+    "name": "FX1_HARMONIST_HR1E"
+   },
+   {
+    "offset": 105,
+    "name": "FX1_HARMONIST_HR1F"
+   },
+   {
+    "offset": 106,
+    "name": "FX1_HARMONIST_HR1F_S"
+   },
+   {
+    "offset": 107,
+    "name": "FX1_HARMONIST_HR1G"
+   },
+   {
+    "offset": 108,
+    "name": "FX1_HARMONIST_HR1AB"
+   },
+   {
+    "offset": 109,
+    "name": "FX1_HARMONIST_HR1A"
+   },
+   {
+    "offset": 110,
+    "name": "FX1_HARMONIST_HR1BB"
+   },
+   {
+    "offset": 111,
+    "name": "FX1_HARMONIST_HR1B"
+   },
+   {
+    "offset": 112,
+    "name": "FX1_HARMONIST_HR2C"
+   },
+   {
+    "offset": 113,
+    "name": "FX1_HARMONIST_HR2DB"
+   },
+   {
+    "offset": 114,
+    "name": "FX1_HARMONIST_HR2D"
+   },
+   {
+    "offset": 115,
+    "name": "FX1_HARMONIST_HR2EB"
+   },
+   {
+    "offset": 116,
+    "name": "FX1_HARMONIST_HR2E"
+   },
+   {
+    "offset": 117,
+    "name": "FX1_HARMONIST_HR2F"
+   },
+   {
+    "offset": 118,
+    "name": "FX1_HARMONIST_HR2F_S"
+   },
+   {
+    "offset": 119,
+    "name": "FX1_HARMONIST_HR2G"
+   },
+   {
+    "offset": 120,
+    "name": "FX1_HARMONIST_HR2AB"
+   },
+   {
+    "offset": 121,
+    "name": "FX1_HARMONIST_HR2A"
+   },
+   {
+    "offset": 122,
+    "name": "FX1_HARMONIST_HR2BB"
+   },
+   {
+    "offset": 123,
+    "name": "FX1_HARMONIST_HR2B"
+   },
+   {
+    "offset": 124,
+    "name": "FX1_AC_PROCESSOR_TYPE"
+   },
+   {
+    "offset": 125,
+    "name": "FX1_AC_PROCESSOR_BASS"
+   },
+   {
+    "offset": 126,
+    "name": "FX1_AC_PROCESSOR_MIDDLE"
+   },
+   {
+    "offset": 127,
+    "name": "FX1_AC_PROCESSOR_MIDDLE_FREQ"
+   },
+   {
+    "offset": 129,
+    "name": "FX1_AC_PROCESSOR_PRESENCE"
+   },
+   {
+    "offset": 130,
+    "name": "FX1_AC_PROCESSOR_LEVEL"
+   },
+   {
+    "offset": 131,
+    "name": "FX1_PHASER_TYPE"
+   },
+   {
+    "offset": 132,
+    "name": "FX1_PHASER_RATE"
+   },
+   {
+    "offset": 133,
+    "name": "FX1_PHASER_DEPTH"
+   },
+   {
+    "offset": 134,
+    "name": "FX1_PHASER_MANUAL"
+   },
+   {
+    "offset": 135,
+    "name": "FX1_PHASER_RESO"
+   },
+   {
+    "offset": 136,
+    "name": "FX1_PHASER_STEP_RATE"
+   },
+   {
+    "offset": 137,
+    "name": "FX1_PHASER_EFFECT_LEVEL"
+   },
+   {
+    "offset": 138,
+    "name": "FX1_PHASER_DIRECT_MIX"
+   },
+   {
+    "offset": 139,
+    "name": "FX1_FLANGER_RATE"
+   },
+   {
+    "offset": 140,
+    "name": "FX1_FLANGER_DEPTH"
+   },
+   {
+    "offset": 141,
+    "name": "FX1_FLANGER_MANUAL"
+   },
+   {
+    "offset": 142,
+    "name": "FX1_FLANGER_RESO"
+   },
+   {
+    "offset": 143,
+    "name": "FX1_FLANGER_SEPARATION"
+   },
+   {
+    "offset": 145,
+    "name": "FX1_FLANGER_EFFECT_LEVEL"
+   },
+   {
+    "offset": 146,
+    "name": "FX1_FLANGER_DIRECT_MIX"
+   },
+   {
+    "offset": 147,
+    "name": "FX1_TREMOLO_WAVE_SHAPE"
+   },
+   {
+    "offset": 148,
+    "name": "FX1_TREMOLO_RATE"
+   },
+   {
+    "offset": 149,
+    "name": "FX1_TREMOLO_DEPTH"
+   },
+   {
+    "offset": 150,
+    "name": "FX1_TREMOLO_LEVEL"
+   },
+   {
+    "offset": 151,
+    "name": "FX1_ROTARY_SPEED_SEL"
+   },
+   {
+    "offset": 152,
+    "name": "FX1_ROTARY_RATE_SLOW"
+   },
+   {
+    "offset": 153,
+    "name": "FX1_ROTARY_RATE_FAST"
+   },
+   {
+    "offset": 154,
+    "name": "FX1_ROTARY_RISETIME"
+   },
+   {
+    "offset": 155,
+    "name": "FX1_ROTARY_FALLTIME"
+   },
+   {
+    "offset": 156,
+    "name": "FX1_ROTARY_DEPTH"
+   },
+   {
+    "offset": 157,
+    "name": "FX1_ROTARY_LEVEL"
+   },
+   {
+    "offset": 158,
+    "name": "FX1_UNI_V_RATE"
+   },
+   {
+    "offset": 159,
+    "name": "FX1_UNI_V_DEPTH"
+   },
+   {
+    "offset": 161,
+    "name": "FX1_SLICER_PATTERN"
+   },
+   {
+    "offset": 162,
+    "name": "FX1_SLICER_RATE"
+   },
+   {
+    "offset": 163,
+    "name": "FX1_SLICER_TRIGGER_SENS"
+   },
+   {
+    "offset": 164,
+    "name": "FX1_SLICER_EFFECT_LEVEL"
+   },
+   {
+    "offset": 165,
+    "name": "FX1_SLICER_DIRECT_MIX"
+   },
+   {
+    "offset": 166,
+    "name": "FX1_VIBRATO_RATE"
+   },
+   {
+    "offset": 167,
+    "name": "FX1_VIBRATO_DEPTH"
+   },
+   {
+    "offset": 168,
+    "name": "FX1_VIBRATO_TRIGGER"
+   },
+   {
+    "offset": 169,
+    "name": "FX1_VIBRATO_RISETIME"
+   },
+   {
+    "offset": 170,
+    "name": "FX1_VIBRATO_LEVEL"
+   },
+   {
+    "offset": 171,
+    "name": "FX1_RING_MOD_MODE"
+   },
+   {
+    "offset": 172,
+    "name": "FX1_RING_MOD_FREQ"
+   },
+   {
+    "offset": 173,
+    "name": "FX1_RING_MOD_EFFECT_LEVEL"
+   },
+   {
+    "offset": 174,
+    "name": "FX1_RING_MOD_DIRECT_MIX"
+   },
+   {
+    "offset": 175,
+    "name": "FX1_HUMANIZER_MODE"
+   },
+   {
+    "offset": 177,
+    "name": "FX1_HUMANIZER_VOWEL2"
+   },
+   {
+    "offset": 178,
+    "name": "FX1_HUMANIZER_SENS"
+   },
+   {
+    "offset": 179,
+    "name": "FX1_HUMANIZER_RATE"
+   },
+   {
+    "offset": 180,
+    "name": "FX1_HUMANIZER_DEPTH"
+   },
+   {
+    "offset": 181,
+    "name": "FX1_HUMANIZER_MANUAL"
+   },
+   {
+    "offset": 182,
+    "name": "FX1_HUMANIZER_LEVEL"
+   },
+   {
+    "offset": 183,
+    "name": "FX1_2X2_CHORUS_XOVER_FREQ"
+   },
+   {
+    "offset": 184,
+    "name": "FX1_2X2_CHORUS_LOW_RATE"
+   },
+   {
+    "offset": 185,
+    "name": "FX1_2X2_CHORUS_LOW_DEPTH"
+   },
+   {
+    "offset": 186,
+    "name": "FX1_2X2_CHORUS_LOW_PRE_DELAY"
+   },
+   {
+    "offset": 187,
+    "name": "FX1_2X2_CHORUS_LOW_LEVEL"
+   },
+   {
+    "offset": 188,
+    "name": "FX1_2X2_CHORUS_HIGH_RATE"
+   },
+   {
+    "offset": 189,
+    "name": "FX1_2X2_CHORUS_HIGH_DEPTH"
+   },
+   {
+    "offset": 190,
+    "name": "FX1_2X2_CHORUS_HIGH_PRE_DELAY"
+   },
+   {
+    "offset": 191,
+    "name": "FX1_2X2_CHORUS_HIGH_LEVEL"
+   },
+   {
+    "offset": 193,
+    "name": "FX1_ACSIM_HIGH"
+   },
+   {
+    "offset": 194,
+    "name": "FX1_ACSIM_BODY"
+   },
+   {
+    "offset": 195,
+    "name": "FX1_ACSIM_LOW"
+   },
+   {
+    "offset": 196,
+    "name": "FX1_ACSIM_HIGH_MK2"
+   },
+   {
+    "offset": 197,
+    "name": "FX1_ACSIM_LEVEL"
+   },
+   {
+    "offset": 198,
+    "name": "FX1_PHASER90E_SCRIPT"
+   },
+   {
+    "offset": 199,
+    "name": "FX1_PHASER90E_SPEED"
+   },
+   {
+    "offset": 200,
+    "name": "FX1_FLANGER117E_MANUAL"
+   },
+   {
+    "offset": 201,
+    "name": "FX1_FLANGER117E_WIDTH"
+   },
+   {
+    "offset": 202,
+    "name": "FX1_FLANGER117E_SPEED"
+   },
+   {
+    "offset": 203,
+    "name": "FX1_FLANGER117E_REGEN"
+   },
+   {
+    "offset": 204,
+    "name": "FX1_WAH95E_PEDAL_POS"
+   },
+   {
+    "offset": 205,
+    "name": "FX1_WAH95E_PEDAL_MIN"
+   },
+   {
+    "offset": 206,
+    "name": "FX1_WAH95E_PEDAL_MAX"
+   },
+   {
+    "offset": 207,
+    "name": "FX1_WAH95E_EFFECT_LEVEL"
+   },
+   {
+    "offset": 209,
+    "name": "FX1_DC30_SELECTOR"
+   },
+   {
+    "offset": 210,
+    "name": "FX1_DC30_INPUT_VOLUME"
+   },
+   {
+    "offset": 211,
+    "name": "FX1_DC30_CHORUS_INTENSITY"
+   },
+   {
+    "offset": 212,
+    "name": "th"
+   },
+   {
+    "offset": 214,
+    "name": "FX1_DC30_ECHO_INTENSITY"
+   },
+   {
+    "offset": 215,
+    "name": "FX1_DC30_ECHO_VOLUME"
+   },
+   {
+    "offset": 216,
+    "name": "FX1_DC30_TONE"
+   },
+   {
+    "offset": 217,
+    "name": "FX1_DC30_OUTPUT"
+   },
+   {
+    "offset": 218,
+    "name": "FX1_HEAVY_OCT_1OCT_LEVEL"
+   },
+   {
+    "offset": 219,
+    "name": "FX1_HEAVY_OCT_2OCT_LEVEL"
+   },
+   {
+    "offset": 220,
+    "name": "FX1_HEAVY_OCT_DIRECT_MIX"
+   },
+   {
+    "offset": 221,
+    "name": "FX1_PEDAL_BEND_PITCH_MAX"
+   },
+   {
+    "offset": 222,
+    "name": "FX1_PEDAL_BEND_PEDAL_POSITION"
+   },
+   {
+    "offset": 223,
+    "name": "FX1_PEDAL_BEND_EFFECT_LEVEL"
+   }
+  ],
+  "FX_2": [
+   {
+    "offset": 0,
+    "name": "FX2_ON_OFF"
+   },
+   {
+    "offset": 1,
+    "name": "FX2_FX_TYPE"
+   },
+   {
+    "offset": 2,
+    "name": "FX2_T_WAH_MODE"
+   },
+   {
+    "offset": 3,
+    "name": "FX2_T_WAH_POLAR"
+   },
+   {
+    "offset": 4,
+    "name": "FX2_T_WAH_SENS"
+   },
+   {
+    "offset": 5,
+    "name": "FX2_T_WAH_FREQ"
+   },
+   {
+    "offset": 6,
+    "name": "FX2_T_WAH_PEAK"
+   },
+   {
+    "offset": 7,
+    "name": "FX2_T_WAH_DIRECT_MIX"
+   },
+   {
+    "offset": 8,
+    "name": "FX2_T_WAH_EFFECT_LEVEL"
+   },
+   {
+    "offset": 9,
+    "name": "FX2_AUTO_WAH_MODE"
+   },
+   {
+    "offset": 10,
+    "name": "FX2_AUTO_WAH_FREQ"
+   },
+   {
+    "offset": 11,
+    "name": "FX2_AUTO_WAH_PEAK"
+   },
+   {
+    "offset": 12,
+    "name": "FX2_AUTO_WAH_RATE"
+   },
+   {
+    "offset": 13,
+    "name": "FX2_AUTO_WAH_DEPTH"
+   },
+   {
+    "offset": 14,
+    "name": "FX2_AUTO_WAH_DIRECT_MIX"
+   },
+   {
+    "offset": 15,
+    "name": "FX2_AUTO_WAH_EFFECT_LEVEL"
+   },
+   {
+    "offset": 16,
+    "name": "FX2_SUB_WAH_TYPE"
+   },
+   {
+    "offset": 17,
+    "name": "FX2_SUB_WAH_PEDAL_POS"
+   },
+   {
+    "offset": 18,
+    "name": "FX2_SUB_WAH_PEDAL_MIN"
+   },
+   {
+    "offset": 19,
+    "name": "FX2_SUB_WAH_PEDAL_MAX"
+   },
+   {
+    "offset": 20,
+    "name": "FX2_SUB_WAH_EFFECT_LEVEL"
+   },
+   {
+    "offset": 21,
+    "name": "FX2_SUB_WAH_DIRECT_MIX"
+   },
+   {
+    "offset": 22,
+    "name": "FX2_ADV_COMP_TYPE"
+   },
+   {
+    "offset": 23,
+    "name": "FX2_ADV_COMP_SUSTAIN"
+   },
+   {
+    "offset": 24,
+    "name": "FX2_ADV_COMP_ATTACK"
+   },
+   {
+    "offset": 25,
+    "name": "FX2_ADV_COMP_TONE"
+   },
+   {
+    "offset": 26,
+    "name": "FX2_ADV_COMP_LEVEL"
+   },
+   {
+    "offset": 27,
+    "name": "FX2_LIMITER_TYPE"
+   },
+   {
+    "offset": 28,
+    "name": "FX2_LIMITER_ATTACK"
+   },
+   {
+    "offset": 29,
+    "name": "FX2_LIMITER_THRESH"
+   },
+   {
+    "offset": 30,
+    "name": "FX2_LIMITER_RATIO"
+   },
+   {
+    "offset": 31,
+    "name": "FX2_LIMITER_RELEASE"
+   },
+   {
+    "offset": 32,
+    "name": "FX2_LIMITER_LEVEL"
+   },
+   {
+    "offset": 33,
+    "name": "FX2_GRAPHIC_EQ_31HZ"
+   },
+   {
+    "offset": 34,
+    "name": "FX2_GRAPHIC_EQ_62HZ"
+   },
+   {
+    "offset": 35,
+    "name": "FX2_GRAPHIC_EQ_125HZ"
+   },
+   {
+    "offset": 36,
+    "name": "FX2_GRAPHIC_EQ_250HZ"
+   },
+   {
+    "offset": 37,
+    "name": "FX2_GRAPHIC_EQ_500HZ"
+   },
+   {
+    "offset": 38,
+    "name": "FX2_GRAPHIC_EQ_1KHZ"
+   },
+   {
+    "offset": 39,
+    "name": "FX2_GRAPHIC_EQ_2KHZ"
+   },
+   {
+    "offset": 40,
+    "name": "FX2_GRAPHIC_EQ_4KHZ"
+   },
+   {
+    "offset": 41,
+    "name": "FX2_GRAPHIC_EQ_8KHZ"
+   },
+   {
+    "offset": 42,
+    "name": "FX2_GRAPHIC_EQ_16KHZ"
+   },
+   {
+    "offset": 43,
+    "name": "FX2_GRAPHIC_EQ_LEVEL"
+   },
+   {
+    "offset": 44,
+    "name": "FX2_PARAMETRIC_EQ_LOW_CUT"
+   },
+   {
+    "offset": 45,
+    "name": "FX2_PARAMETRIC_EQ_LOW_GAIN"
+   },
+   {
+    "offset": 46,
+    "name": "FX2_PARAMETRIC_EQ_LOW_MID_FREQ"
+   },
+   {
+    "offset": 47,
+    "name": "FX2_PARAMETRIC_EQ_LOW_MID_Q"
+   },
+   {
+    "offset": 48,
+    "name": "FX2_PARAMETRIC_EQ_LOW_MID_GAIN"
+   },
+   {
+    "offset": 49,
+    "name": "FX2_PARAMETRIC_EQ_HIGH_MID_FREQ"
+   },
+   {
+    "offset": 50,
+    "name": "FX2_PARAMETRIC_EQ_HIGH_MID_Q"
+   },
+   {
+    "offset": 51,
+    "name": "FX2_PARAMETRIC_EQ_HIGH_MID_GAIN"
+   },
+   {
+    "offset": 52,
+    "name": "FX2_PARAMETRIC_EQ_HIGH_GAIN"
+   },
+   {
+    "offset": 53,
+    "name": "FX2_PARAMETRIC_EQ_HIGH_CUT"
+   },
+   {
+    "offset": 54,
+    "name": "FX2_PARAMETRIC_EQ_LEVEL"
+   },
+   {
+    "offset": 55,
+    "name": "FX2_GUITAR_SIM_TYPE"
+   },
+   {
+    "offset": 56,
+    "name": "FX2_GUITAR_SIM_LOW"
+   },
+   {
+    "offset": 57,
+    "name": "FX2_GUITAR_SIM_HIGH"
+   },
+   {
+    "offset": 58,
+    "name": "FX2_GUITAR_SIM_LEVEL"
+   },
+   {
+    "offset": 59,
+    "name": "FX2_GUITAR_SIM_BODY"
+   },
+   {
+    "offset": 60,
+    "name": "FX2_SLOW_GEAR_SENS"
+   },
+   {
+    "offset": 61,
+    "name": "FX2_SLOW_GEAR_RISE_TIME"
+   },
+   {
+    "offset": 62,
+    "name": "FX2_SLOW_GEAR_LEVEL"
+   },
+   {
+    "offset": 63,
+    "name": "FX2_WAVE_SYNTH_WAVE"
+   },
+   {
+    "offset": 64,
+    "name": "FX2_WAVE_SYNTH_CUTOFF"
+   },
+   {
+    "offset": 65,
+    "name": "FX2_WAVE_SYNTH_RESO"
+   },
+   {
+    "offset": 66,
+    "name": "FX2_WAVE_SYNTH_FILTER_SENS"
+   },
+   {
+    "offset": 67,
+    "name": "FX2_WAVE_SYNTH_FILTER_DECAY"
+   },
+   {
+    "offset": 68,
+    "name": "FX2_WAVE_SYNTH_FILTER_DEPTH"
+   },
+   {
+    "offset": 69,
+    "name": "FX2_WAVE_SYNTH_SYNTH_LEVEL"
+   },
+   {
+    "offset": 70,
+    "name": "FX2_WAVE_SYNTH_DIRECT_MIX"
+   },
+   {
+    "offset": 71,
+    "name": "FX2_OCTAVE_RANGE"
+   },
+   {
+    "offset": 72,
+    "name": "FX2_OCTAVE_LEVEL"
+   },
+   {
+    "offset": 73,
+    "name": "FX2_OCTAVE_DIRECT_MIX"
+   },
+   {
+    "offset": 74,
+    "name": "FX2_PITCH_SHIFTER_VOICE"
+   },
+   {
+    "offset": 75,
+    "name": "FX2_PITCH_SHIFTER_PS1MODE"
+   },
+   {
+    "offset": 76,
+    "name": "FX2_PITCH_SHIFTER_PS1PITCH"
+   },
+   {
+    "offset": 77,
+    "name": "FX2_PITCH_SHIFTER_PS1FINE"
+   },
+   {
+    "offset": 78,
+    "name": "Y7"
+   },
+   {
+    "offset": 80,
+    "name": "FX2_PITCH_SHIFTER_PS1LEVEL"
+   },
+   {
+    "offset": 81,
+    "name": "FX2_PITCH_SHIFTER_PS2MODE"
+   },
+   {
+    "offset": 82,
+    "name": "FX2_PITCH_SHIFTER_PS2PITCH"
+   },
+   {
+    "offset": 83,
+    "name": "FX2_PITCH_SHIFTER_PS2FINE"
+   },
+   {
+    "offset": 84,
+    "name": "d8"
+   },
+   {
+    "offset": 86,
+    "name": "FX2_PITCH_SHIFTER_PS2LEVEL"
+   },
+   {
+    "offset": 87,
+    "name": "FX2_PITCH_SHIFTER_PS1F_BACK"
+   },
+   {
+    "offset": 88,
+    "name": "FX2_PITCH_SHIFTER_DIRECT_MIX"
+   },
+   {
+    "offset": 89,
+    "name": "FX2_HARMONIST_VOICE"
+   },
+   {
+    "offset": 90,
+    "name": "FX2_HARMONIST_HR1HARM"
+   },
+   {
+    "offset": 91,
+    "name": "j8"
+   },
+   {
+    "offset": 93,
+    "name": "FX2_HARMONIST_HR1LEVEL"
+   },
+   {
+    "offset": 94,
+    "name": "FX2_HARMONIST_HR2HARM"
+   },
+   {
+    "offset": 95,
+    "name": "m8"
+   },
+   {
+    "offset": 97,
+    "name": "FX2_HARMONIST_HR2LEVEL"
+   },
+   {
+    "offset": 98,
+    "name": "FX2_HARMONIST_HR1F_BACK"
+   },
+   {
+    "offset": 99,
+    "name": "FX2_HARMONIST_DIRECT_MIX"
+   },
+   {
+    "offset": 100,
+    "name": "FX2_HARMONIST_HR1C"
+   },
+   {
+    "offset": 101,
+    "name": "FX2_HARMONIST_HR1DB"
+   },
+   {
+    "offset": 102,
+    "name": "FX2_HARMONIST_HR1D"
+   },
+   {
+    "offset": 103,
+    "name": "FX2_HARMONIST_HR1EB"
+   },
+   {
+    "offset": 104,
+    "name": "FX2_HARMONIST_HR1E"
+   },
+   {
+    "offset": 105,
+    "name": "FX2_HARMONIST_HR1F"
+   },
+   {
+    "offset": 106,
+    "name": "FX2_HARMONIST_HR1F_S"
+   },
+   {
+    "offset": 107,
+    "name": "FX2_HARMONIST_HR1G"
+   },
+   {
+    "offset": 108,
+    "name": "FX2_HARMONIST_HR1AB"
+   },
+   {
+    "offset": 109,
+    "name": "FX2_HARMONIST_HR1A"
+   },
+   {
+    "offset": 110,
+    "name": "FX2_HARMONIST_HR1BB"
+   },
+   {
+    "offset": 111,
+    "name": "FX2_HARMONIST_HR1B"
+   },
+   {
+    "offset": 112,
+    "name": "FX2_HARMONIST_HR2C"
+   },
+   {
+    "offset": 113,
+    "name": "FX2_HARMONIST_HR2DB"
+   },
+   {
+    "offset": 114,
+    "name": "FX2_HARMONIST_HR2D"
+   },
+   {
+    "offset": 115,
+    "name": "FX2_HARMONIST_HR2EB"
+   },
+   {
+    "offset": 116,
+    "name": "FX2_HARMONIST_HR2E"
+   },
+   {
+    "offset": 117,
+    "name": "FX2_HARMONIST_HR2F"
+   },
+   {
+    "offset": 118,
+    "name": "FX2_HARMONIST_HR2F_S"
+   },
+   {
+    "offset": 119,
+    "name": "FX2_HARMONIST_HR2G"
+   },
+   {
+    "offset": 120,
+    "name": "FX2_HARMONIST_HR2AB"
+   },
+   {
+    "offset": 121,
+    "name": "FX2_HARMONIST_HR2A"
+   },
+   {
+    "offset": 122,
+    "name": "FX2_HARMONIST_HR2BB"
+   },
+   {
+    "offset": 123,
+    "name": "FX2_HARMONIST_HR2B"
+   },
+   {
+    "offset": 124,
+    "name": "FX2_AC_PROCESSOR_TYPE"
+   },
+   {
+    "offset": 125,
+    "name": "FX2_AC_PROCESSOR_BASS"
+   },
+   {
+    "offset": 126,
+    "name": "FX2_AC_PROCESSOR_MIDDLE"
+   },
+   {
+    "offset": 127,
+    "name": "FX2_AC_PROCESSOR_MIDDLE_FREQ"
+   },
+   {
+    "offset": 129,
+    "name": "FX2_AC_PROCESSOR_PRESENCE"
+   },
+   {
+    "offset": 130,
+    "name": "FX2_AC_PROCESSOR_LEVEL"
+   },
+   {
+    "offset": 131,
+    "name": "FX2_PHASER_TYPE"
+   },
+   {
+    "offset": 132,
+    "name": "FX2_PHASER_RATE"
+   },
+   {
+    "offset": 133,
+    "name": "FX2_PHASER_DEPTH"
+   },
+   {
+    "offset": 134,
+    "name": "FX2_PHASER_MANUAL"
+   },
+   {
+    "offset": 135,
+    "name": "FX2_PHASER_RESO"
+   },
+   {
+    "offset": 136,
+    "name": "FX2_PHASER_STEP_RATE"
+   },
+   {
+    "offset": 137,
+    "name": "FX2_PHASER_EFFECT_LEVEL"
+   },
+   {
+    "offset": 138,
+    "name": "FX2_PHASER_DIRECT_MIX"
+   },
+   {
+    "offset": 139,
+    "name": "FX2_FLANGER_RATE"
+   },
+   {
+    "offset": 140,
+    "name": "FX2_FLANGER_DEPTH"
+   },
+   {
+    "offset": 141,
+    "name": "FX2_FLANGER_MANUAL"
+   },
+   {
+    "offset": 142,
+    "name": "FX2_FLANGER_RESO"
+   },
+   {
+    "offset": 143,
+    "name": "FX2_FLANGER_SEPARATION"
+   },
+   {
+    "offset": 145,
+    "name": "FX2_FLANGER_EFFECT_LEVEL"
+   },
+   {
+    "offset": 146,
+    "name": "FX2_FLANGER_DIRECT_MIX"
+   },
+   {
+    "offset": 147,
+    "name": "FX2_TREMOLO_WAVE_SHAPE"
+   },
+   {
+    "offset": 148,
+    "name": "FX2_TREMOLO_RATE"
+   },
+   {
+    "offset": 149,
+    "name": "FX2_TREMOLO_DEPTH"
+   },
+   {
+    "offset": 150,
+    "name": "FX2_TREMOLO_LEVEL"
+   },
+   {
+    "offset": 151,
+    "name": "FX2_ROTARY_SPEED_SEL"
+   },
+   {
+    "offset": 152,
+    "name": "FX2_ROTARY_RATE_SLOW"
+   },
+   {
+    "offset": 153,
+    "name": "FX2_ROTARY_RATE_FAST"
+   },
+   {
+    "offset": 154,
+    "name": "FX2_ROTARY_RISETIME"
+   },
+   {
+    "offset": 155,
+    "name": "FX2_ROTARY_FALLTIME"
+   },
+   {
+    "offset": 156,
+    "name": "FX2_ROTARY_DEPTH"
+   },
+   {
+    "offset": 157,
+    "name": "FX2_ROTARY_LEVEL"
+   },
+   {
+    "offset": 158,
+    "name": "FX2_UNI_V_RATE"
+   },
+   {
+    "offset": 159,
+    "name": "FX2_UNI_V_DEPTH"
+   },
+   {
+    "offset": 161,
+    "name": "FX2_SLICER_PATTERN"
+   },
+   {
+    "offset": 162,
+    "name": "FX2_SLICER_RATE"
+   },
+   {
+    "offset": 163,
+    "name": "FX2_SLICER_TRIGGER_SENS"
+   },
+   {
+    "offset": 164,
+    "name": "FX2_SLICER_EFFECT_LEVEL"
+   },
+   {
+    "offset": 165,
+    "name": "FX2_SLICER_DIRECT_MIX"
+   },
+   {
+    "offset": 166,
+    "name": "FX2_VIBRATO_RATE"
+   },
+   {
+    "offset": 167,
+    "name": "FX2_VIBRATO_DEPTH"
+   },
+   {
+    "offset": 168,
+    "name": "FX2_VIBRATO_TRIGGER"
+   },
+   {
+    "offset": 169,
+    "name": "FX2_VIBRATO_RISETIME"
+   },
+   {
+    "offset": 170,
+    "name": "FX2_VIBRATO_LEVEL"
+   },
+   {
+    "offset": 171,
+    "name": "FX2_RING_MOD_MODE"
+   },
+   {
+    "offset": 172,
+    "name": "FX2_RING_MOD_FREQ"
+   },
+   {
+    "offset": 173,
+    "name": "FX2_RING_MOD_EFFECT_LEVEL"
+   },
+   {
+    "offset": 174,
+    "name": "FX2_RING_MOD_DIRECT_MIX"
+   },
+   {
+    "offset": 175,
+    "name": "FX2_HUMANIZER_MODE"
+   },
+   {
+    "offset": 177,
+    "name": "FX2_HUMANIZER_VOWEL2"
+   },
+   {
+    "offset": 178,
+    "name": "FX2_HUMANIZER_SENS"
+   },
+   {
+    "offset": 179,
+    "name": "FX2_HUMANIZER_RATE"
+   },
+   {
+    "offset": 180,
+    "name": "FX2_HUMANIZER_DEPTH"
+   },
+   {
+    "offset": 181,
+    "name": "FX2_HUMANIZER_MANUAL"
+   },
+   {
+    "offset": 182,
+    "name": "FX2_HUMANIZER_LEVEL"
+   },
+   {
+    "offset": 183,
+    "name": "FX2_2X2_CHORUS_XOVER_FREQ"
+   },
+   {
+    "offset": 184,
+    "name": "FX2_2X2_CHORUS_LOW_RATE"
+   },
+   {
+    "offset": 185,
+    "name": "FX2_2X2_CHORUS_LOW_DEPTH"
+   },
+   {
+    "offset": 186,
+    "name": "FX2_2X2_CHORUS_LOW_PRE_DELAY"
+   },
+   {
+    "offset": 187,
+    "name": "FX2_2X2_CHORUS_LOW_LEVEL"
+   },
+   {
+    "offset": 188,
+    "name": "FX2_2X2_CHORUS_HIGH_RATE"
+   },
+   {
+    "offset": 189,
+    "name": "FX2_2X2_CHORUS_HIGH_DEPTH"
+   },
+   {
+    "offset": 190,
+    "name": "FX2_2X2_CHORUS_HIGH_PRE_DELAY"
+   },
+   {
+    "offset": 191,
+    "name": "FX2_2X2_CHORUS_HIGH_LEVEL"
+   },
+   {
+    "offset": 193,
+    "name": "FX2_ACSIM_HIGH"
+   },
+   {
+    "offset": 194,
+    "name": "FX2_ACSIM_BODY"
+   },
+   {
+    "offset": 195,
+    "name": "FX2_ACSIM_LOW"
+   },
+   {
+    "offset": 196,
+    "name": "FX2_ACSIM_HIGH_MK2"
+   },
+   {
+    "offset": 197,
+    "name": "FX2_ACSIM_LEVEL"
+   },
+   {
+    "offset": 198,
+    "name": "FX2_PHASER90E_SCRIPT"
+   },
+   {
+    "offset": 199,
+    "name": "FX2_PHASER90E_SPEED"
+   },
+   {
+    "offset": 200,
+    "name": "FX2_FLANGER117E_MANUAL"
+   },
+   {
+    "offset": 201,
+    "name": "FX2_FLANGER117E_WIDTH"
+   },
+   {
+    "offset": 202,
+    "name": "FX2_FLANGER117E_SPEED"
+   },
+   {
+    "offset": 203,
+    "name": "FX2_FLANGER117E_REGEN"
+   },
+   {
+    "offset": 204,
+    "name": "FX2_WAH95E_PEDAL_POS"
+   },
+   {
+    "offset": 205,
+    "name": "FX2_WAH95E_PEDAL_MIN"
+   },
+   {
+    "offset": 206,
+    "name": "FX2_WAH95E_PEDAL_MAX"
+   },
+   {
+    "offset": 207,
+    "name": "FX2_WAH95E_EFFECT_LEVEL"
+   },
+   {
+    "offset": 209,
+    "name": "FX2_DC30_SELECTOR"
+   },
+   {
+    "offset": 210,
+    "name": "FX2_DC30_INPUT_VOLUME"
+   },
+   {
+    "offset": 211,
+    "name": "FX2_DC30_CHORUS_INTENSITY"
+   },
+   {
+    "offset": 212,
+    "name": "Gh"
+   },
+   {
+    "offset": 214,
+    "name": "FX2_DC30_ECHO_INTENSITY"
+   },
+   {
+    "offset": 215,
+    "name": "FX2_DC30_ECHO_VOLUME"
+   },
+   {
+    "offset": 216,
+    "name": "FX2_DC30_TONE"
+   },
+   {
+    "offset": 217,
+    "name": "FX2_DC30_OUTPUT"
+   },
+   {
+    "offset": 218,
+    "name": "FX2_HEAVY_OCT_1OCT_LEVEL"
+   },
+   {
+    "offset": 219,
+    "name": "FX2_HEAVY_OCT_2OCT_LEVEL"
+   },
+   {
+    "offset": 220,
+    "name": "FX2_HEAVY_OCT_DIRECT_MIX"
+   },
+   {
+    "offset": 221,
+    "name": "FX2_PEDAL_BEND_PITCH_MAX"
+   },
+   {
+    "offset": 222,
+    "name": "FX2_PEDAL_BEND_PEDAL_POSITION"
+   },
+   {
+    "offset": 223,
+    "name": "FX2_PEDAL_BEND_EFFECT_LEVEL"
+   }
+  ],
+  "GAFCEXEXP1ASGN": [
+   {
+    "offset": 0,
+    "name": "GAFC_EX_EXP1_ASSIGN_BOOSTER"
+   },
+   {
+    "offset": 1,
+    "name": "GAFC_EX_EXP1_ASSIGN_DELAY"
+   },
+   {
+    "offset": 2,
+    "name": "GAFC_EX_EXP1_ASSIGN_REVERB"
+   },
+   {
+    "offset": 3,
+    "name": "GAFC_EX_EXP1_ASSIGN_CHORUS"
+   },
+   {
+    "offset": 4,
+    "name": "GAFC_EX_EXP1_ASSIGN_FLANGER"
+   },
+   {
+    "offset": 5,
+    "name": "GAFC_EX_EXP1_ASSIGN_PHASER"
+   },
+   {
+    "offset": 6,
+    "name": "GAFC_EX_EXP1_ASSIGN_UNI_V"
+   },
+   {
+    "offset": 7,
+    "name": "GAFC_EX_EXP1_ASSIGN_TREMOLO"
+   },
+   {
+    "offset": 8,
+    "name": "GAFC_EX_EXP1_ASSIGN_VIBRATO"
+   },
+   {
+    "offset": 9,
+    "name": "GAFC_EX_EXP1_ASSIGN_ROTARY"
+   },
+   {
+    "offset": 10,
+    "name": "GAFC_EX_EXP1_ASSIGN_RING_MOD"
+   },
+   {
+    "offset": 11,
+    "name": "GAFC_EX_EXP1_ASSIGN_SLOW_GEAR"
+   },
+   {
+    "offset": 12,
+    "name": "GAFC_EX_EXP1_ASSIGN_SLICER"
+   },
+   {
+    "offset": 13,
+    "name": "GAFC_EX_EXP1_ASSIGN_COMP"
+   },
+   {
+    "offset": 14,
+    "name": "GAFC_EX_EXP1_ASSIGN_LIMITER"
+   },
+   {
+    "offset": 15,
+    "name": "GAFC_EX_EXP1_ASSIGN_T_WAH"
+   },
+   {
+    "offset": 16,
+    "name": "GAFC_EX_EXP1_ASSIGN_AUTO_WAH"
+   },
+   {
+    "offset": 17,
+    "name": "GAFC_EX_EXP1_ASSIGN_PEDAL_WAH"
+   },
+   {
+    "offset": 18,
+    "name": "GAFC_EX_EXP1_ASSIGN_GEQ"
+   },
+   {
+    "offset": 19,
+    "name": "GAFC_EX_EXP1_ASSIGN_PEQ"
+   },
+   {
+    "offset": 20,
+    "name": "GAFC_EX_EXP1_ASSIGN_GUITAR_SIM"
+   },
+   {
+    "offset": 21,
+    "name": "GAFC_EX_EXP1_ASSIGN_AC_GUITAR_SIM"
+   },
+   {
+    "offset": 22,
+    "name": "GAFC_EX_EXP1_ASSIGN_AC_PROCESSOR"
+   },
+   {
+    "offset": 23,
+    "name": "GAFC_EX_EXP1_ASSIGN_WAVE_SYNTH"
+   },
+   {
+    "offset": 24,
+    "name": "GAFC_EX_EXP1_ASSIGN_OCTAVE"
+   },
+   {
+    "offset": 25,
+    "name": "GAFC_EX_EXP1_ASSIGN_PITCH_SHIFTER"
+   },
+   {
+    "offset": 26,
+    "name": "GAFC_EX_EXP1_ASSIGN_HARMONIST"
+   },
+   {
+    "offset": 27,
+    "name": "GAFC_EX_EXP1_ASSIGN_HUMANIZER"
+   },
+   {
+    "offset": 28,
+    "name": "GAFC_EX_EXP1_ASSIGN_EVH_PHASER"
+   },
+   {
+    "offset": 29,
+    "name": "GAFC_EX_EXP1_ASSIGN_EVH_FLANGER"
+   },
+   {
+    "offset": 30,
+    "name": "GAFC_EX_EXP1_ASSIGN_EVH_WAH"
+   },
+   {
+    "offset": 31,
+    "name": "GAFC_EX_EXP1_ASSIGN_DC30"
+   },
+   {
+    "offset": 32,
+    "name": "GAFC_EX_EXP1_ASSIGN_HEAVY_OCT"
+   },
+   {
+    "offset": 33,
+    "name": "GAFC_EX_EXP1_ASSIGN_PEDAL_BEND"
+   }
+  ],
+  "GAFCEXEXP1ASGNMINMAX": [
+   {
+    "offset": 0,
+    "name": "GAFC_EX_EXP1_ASSIGN_BOOSTER_MIN"
+   },
+   {
+    "offset": 1,
+    "name": "GAFC_EX_EXP1_ASSIGN_BOOSTER_MAX"
+   },
+   {
+    "offset": 2,
+    "name": "iu"
+   },
+   {
+    "offset": 4,
+    "name": "ju"
+   },
+   {
+    "offset": 6,
+    "name": "ku"
+   },
+   {
+    "offset": 8,
+    "name": "lu"
+   },
+   {
+    "offset": 10,
+    "name": "GAFC_EX_EXP1_ASSIGN_CHORUS_MIN"
+   },
+   {
+    "offset": 11,
+    "name": "GAFC_EX_EXP1_ASSIGN_CHORUS_MAX"
+   },
+   {
+    "offset": 12,
+    "name": "GAFC_EX_EXP1_ASSIGN_FLANGER_MIN"
+   },
+   {
+    "offset": 13,
+    "name": "GAFC_EX_EXP1_ASSIGN_FLANGER_MAX"
+   },
+   {
+    "offset": 14,
+    "name": "GAFC_EX_EXP1_ASSIGN_PHASER_MIN"
+   },
+   {
+    "offset": 15,
+    "name": "GAFC_EX_EXP1_ASSIGN_PHASER_MAX"
+   },
+   {
+    "offset": 16,
+    "name": "GAFC_EX_EXP1_ASSIGN_UNI_V_MIN"
+   },
+   {
+    "offset": 17,
+    "name": "GAFC_EX_EXP1_ASSIGN_UNI_V_MAX"
+   },
+   {
+    "offset": 18,
+    "name": "GAFC_EX_EXP1_ASSIGN_TREMOLO_MIN"
+   },
+   {
+    "offset": 19,
+    "name": "GAFC_EX_EXP1_ASSIGN_TREMOLO_MAX"
+   },
+   {
+    "offset": 20,
+    "name": "GAFC_EX_EXP1_ASSIGN_VIBRATO_MIN"
+   },
+   {
+    "offset": 21,
+    "name": "GAFC_EX_EXP1_ASSIGN_VIBRATO_MAX"
+   },
+   {
+    "offset": 22,
+    "name": "GAFC_EX_EXP1_ASSIGN_ROTARY_MIN"
+   },
+   {
+    "offset": 23,
+    "name": "GAFC_EX_EXP1_ASSIGN_ROTARY_MAX"
+   },
+   {
+    "offset": 24,
+    "name": "GAFC_EX_EXP1_ASSIGN_RING_MOD_MIN"
+   },
+   {
+    "offset": 25,
+    "name": "GAFC_EX_EXP1_ASSIGN_RING_MOD_MAX"
+   },
+   {
+    "offset": 26,
+    "name": "GAFC_EX_EXP1_ASSIGN_SLOW_GEAR_MIN"
+   },
+   {
+    "offset": 27,
+    "name": "GAFC_EX_EXP1_ASSIGN_SLOW_GEAR_MAX"
+   },
+   {
+    "offset": 28,
+    "name": "GAFC_EX_EXP1_ASSIGN_SLICER_MIN"
+   },
+   {
+    "offset": 29,
+    "name": "GAFC_EX_EXP1_ASSIGN_SLICER_MAX"
+   },
+   {
+    "offset": 30,
+    "name": "GAFC_EX_EXP1_ASSIGN_COMP_MIN"
+   },
+   {
+    "offset": 31,
+    "name": "GAFC_EX_EXP1_ASSIGN_COMP_MAX"
+   },
+   {
+    "offset": 32,
+    "name": "GAFC_EX_EXP1_ASSIGN_LIMITER_MIN"
+   },
+   {
+    "offset": 33,
+    "name": "GAFC_EX_EXP1_ASSIGN_LIMITER_MAX"
+   },
+   {
+    "offset": 34,
+    "name": "GAFC_EX_EXP1_ASSIGN_T_WAH_MIN"
+   },
+   {
+    "offset": 35,
+    "name": "GAFC_EX_EXP1_ASSIGN_T_WAH_MAX"
+   },
+   {
+    "offset": 36,
+    "name": "GAFC_EX_EXP1_ASSIGN_AUTO_WAH_MIN"
+   },
+   {
+    "offset": 37,
+    "name": "GAFC_EX_EXP1_ASSIGN_AUTO_WAH_MAX"
+   },
+   {
+    "offset": 38,
+    "name": "GAFC_EX_EXP1_ASSIGN_PEDAL_WAH_MIN"
+   },
+   {
+    "offset": 39,
+    "name": "GAFC_EX_EXP1_ASSIGN_PEDAL_WAH_MAX"
+   },
+   {
+    "offset": 40,
+    "name": "GAFC_EX_EXP1_ASSIGN_GEQ_MIN"
+   },
+   {
+    "offset": 41,
+    "name": "GAFC_EX_EXP1_ASSIGN_GEQ_MAX"
+   },
+   {
+    "offset": 42,
+    "name": "GAFC_EX_EXP1_ASSIGN_PEQ_MIN"
+   },
+   {
+    "offset": 43,
+    "name": "GAFC_EX_EXP1_ASSIGN_PEQ_MAX"
+   },
+   {
+    "offset": 44,
+    "name": "GAFC_EX_EXP1_ASSIGN_GUITAR_SIM_MIN"
+   },
+   {
+    "offset": 45,
+    "name": "GAFC_EX_EXP1_ASSIGN_GUITAR_SIM_MAX"
+   },
+   {
+    "offset": 46,
+    "name": "GAFC_EX_EXP1_ASSIGN_AC_GUITAR_SIM_MIN"
+   },
+   {
+    "offset": 47,
+    "name": "GAFC_EX_EXP1_ASSIGN_AC_GUITAR_SIM_MAX"
+   },
+   {
+    "offset": 48,
+    "name": "GAFC_EX_EXP1_ASSIGN_AC_PROCESSOR_MIN"
+   },
+   {
+    "offset": 49,
+    "name": "GAFC_EX_EXP1_ASSIGN_AC_PROCESSOR_MAX"
+   },
+   {
+    "offset": 50,
+    "name": "GAFC_EX_EXP1_ASSIGN_WAVE_SYNTH_MIN"
+   },
+   {
+    "offset": 51,
+    "name": "GAFC_EX_EXP1_ASSIGN_WAVE_SYNTH_MAX"
+   },
+   {
+    "offset": 52,
+    "name": "GAFC_EX_EXP1_ASSIGN_OCTAVE_MIN"
+   },
+   {
+    "offset": 53,
+    "name": "GAFC_EX_EXP1_ASSIGN_OCTAVE_MAX"
+   },
+   {
+    "offset": 54,
+    "name": "ev"
+   },
+   {
+    "offset": 56,
+    "name": "fv"
+   },
+   {
+    "offset": 58,
+    "name": "gv"
+   },
+   {
+    "offset": 60,
+    "name": "hv"
+   },
+   {
+    "offset": 62,
+    "name": "GAFC_EX_EXP1_ASSIGN_HUMANIZER_MIN"
+   },
+   {
+    "offset": 63,
+    "name": "GAFC_EX_EXP1_ASSIGN_HUMANIZER_MAX"
+   },
+   {
+    "offset": 64,
+    "name": "GAFC_EX_EXP1_ASSIGN_EVH_PHASER_MIN"
+   },
+   {
+    "offset": 65,
+    "name": "GAFC_EX_EXP1_ASSIGN_EVH_PHASER_MAX"
+   },
+   {
+    "offset": 66,
+    "name": "GAFC_EX_EXP1_ASSIGN_EVH_FLANGER_MIN"
+   },
+   {
+    "offset": 67,
+    "name": "GAFC_EX_EXP1_ASSIGN_EVH_FLANGER_MAX"
+   },
+   {
+    "offset": 68,
+    "name": "GAFC_EX_EXP1_ASSIGN_EVH_WAH_MIN"
+   },
+   {
+    "offset": 69,
+    "name": "GAFC_EX_EXP1_ASSIGN_EVH_WAH_MAX"
+   },
+   {
+    "offset": 70,
+    "name": "qv"
+   },
+   {
+    "offset": 72,
+    "name": "rv"
+   },
+   {
+    "offset": 74,
+    "name": "GAFC_EX_EXP1_ASSIGN_HEAVY_OCT_MIN"
+   },
+   {
+    "offset": 75,
+    "name": "GAFC_EX_EXP1_ASSIGN_HEAVY_OCT_MAX"
+   },
+   {
+    "offset": 76,
+    "name": "GAFC_EX_EXP1_ASSIGN_PEDAL_BEND_MIN"
+   },
+   {
+    "offset": 77,
+    "name": "GAFC_EX_EXP1_ASSIGN_PEDAL_BEND_MAX"
+   }
+  ],
+  "GAFCEXEXP2ASGN": [
+   {
+    "offset": 0,
+    "name": "GAFC_EX_EXP2_ASSIGN_BOOSTER"
+   },
+   {
+    "offset": 1,
+    "name": "GAFC_EX_EXP2_ASSIGN_DELAY"
+   },
+   {
+    "offset": 2,
+    "name": "GAFC_EX_EXP2_ASSIGN_REVERB"
+   },
+   {
+    "offset": 3,
+    "name": "GAFC_EX_EXP2_ASSIGN_CHORUS"
+   },
+   {
+    "offset": 4,
+    "name": "GAFC_EX_EXP2_ASSIGN_FLANGER"
+   },
+   {
+    "offset": 5,
+    "name": "GAFC_EX_EXP2_ASSIGN_PHASER"
+   },
+   {
+    "offset": 6,
+    "name": "GAFC_EX_EXP2_ASSIGN_UNI_V"
+   },
+   {
+    "offset": 7,
+    "name": "GAFC_EX_EXP2_ASSIGN_TREMOLO"
+   },
+   {
+    "offset": 8,
+    "name": "GAFC_EX_EXP2_ASSIGN_VIBRATO"
+   },
+   {
+    "offset": 9,
+    "name": "GAFC_EX_EXP2_ASSIGN_ROTARY"
+   },
+   {
+    "offset": 10,
+    "name": "GAFC_EX_EXP2_ASSIGN_RING_MOD"
+   },
+   {
+    "offset": 11,
+    "name": "GAFC_EX_EXP2_ASSIGN_SLOW_GEAR"
+   },
+   {
+    "offset": 12,
+    "name": "GAFC_EX_EXP2_ASSIGN_SLICER"
+   },
+   {
+    "offset": 13,
+    "name": "GAFC_EX_EXP2_ASSIGN_COMP"
+   },
+   {
+    "offset": 14,
+    "name": "GAFC_EX_EXP2_ASSIGN_LIMITER"
+   },
+   {
+    "offset": 15,
+    "name": "GAFC_EX_EXP2_ASSIGN_T_WAH"
+   },
+   {
+    "offset": 16,
+    "name": "GAFC_EX_EXP2_ASSIGN_AUTO_WAH"
+   },
+   {
+    "offset": 17,
+    "name": "GAFC_EX_EXP2_ASSIGN_PEDAL_WAH"
+   },
+   {
+    "offset": 18,
+    "name": "GAFC_EX_EXP2_ASSIGN_GEQ"
+   },
+   {
+    "offset": 19,
+    "name": "GAFC_EX_EXP2_ASSIGN_PEQ"
+   },
+   {
+    "offset": 20,
+    "name": "GAFC_EX_EXP2_ASSIGN_GUITAR_SIM"
+   },
+   {
+    "offset": 21,
+    "name": "GAFC_EX_EXP2_ASSIGN_AC_GUITAR_SIM"
+   },
+   {
+    "offset": 22,
+    "name": "GAFC_EX_EXP2_ASSIGN_AC_PROCESSOR"
+   },
+   {
+    "offset": 23,
+    "name": "GAFC_EX_EXP2_ASSIGN_WAVE_SYNTH"
+   },
+   {
+    "offset": 24,
+    "name": "GAFC_EX_EXP2_ASSIGN_OCTAVE"
+   },
+   {
+    "offset": 25,
+    "name": "GAFC_EX_EXP2_ASSIGN_PITCH_SHIFTER"
+   },
+   {
+    "offset": 26,
+    "name": "GAFC_EX_EXP2_ASSIGN_HARMONIST"
+   },
+   {
+    "offset": 27,
+    "name": "GAFC_EX_EXP2_ASSIGN_HUMANIZER"
+   },
+   {
+    "offset": 28,
+    "name": "GAFC_EX_EXP2_ASSIGN_EVH_PHASER"
+   },
+   {
+    "offset": 29,
+    "name": "GAFC_EX_EXP2_ASSIGN_EVH_FLANGER"
+   },
+   {
+    "offset": 30,
+    "name": "GAFC_EX_EXP2_ASSIGN_EVH_WAH"
+   },
+   {
+    "offset": 31,
+    "name": "GAFC_EX_EXP2_ASSIGN_DC30"
+   },
+   {
+    "offset": 32,
+    "name": "GAFC_EX_EXP2_ASSIGN_HEAVY_OCT"
+   },
+   {
+    "offset": 33,
+    "name": "GAFC_EX_EXP2_ASSIGN_PEDAL_BEND"
+   }
+  ],
+  "GAFCEXEXP2ASGNMINMAX": [
+   {
+    "offset": 0,
+    "name": "GAFC_EX_EXP2_ASSIGN_BOOSTER_MIN"
+   },
+   {
+    "offset": 1,
+    "name": "GAFC_EX_EXP2_ASSIGN_BOOSTER_MAX"
+   },
+   {
+    "offset": 2,
+    "name": "gw"
+   },
+   {
+    "offset": 4,
+    "name": "hw"
+   },
+   {
+    "offset": 6,
+    "name": "iw"
+   },
+   {
+    "offset": 8,
+    "name": "jw"
+   },
+   {
+    "offset": 10,
+    "name": "GAFC_EX_EXP2_ASSIGN_CHORUS_MIN"
+   },
+   {
+    "offset": 11,
+    "name": "GAFC_EX_EXP2_ASSIGN_CHORUS_MAX"
+   },
+   {
+    "offset": 12,
+    "name": "GAFC_EX_EXP2_ASSIGN_FLANGER_MIN"
+   },
+   {
+    "offset": 13,
+    "name": "GAFC_EX_EXP2_ASSIGN_FLANGER_MAX"
+   },
+   {
+    "offset": 14,
+    "name": "GAFC_EX_EXP2_ASSIGN_PHASER_MIN"
+   },
+   {
+    "offset": 15,
+    "name": "GAFC_EX_EXP2_ASSIGN_PHASER_MAX"
+   },
+   {
+    "offset": 16,
+    "name": "GAFC_EX_EXP2_ASSIGN_UNI_V_MIN"
+   },
+   {
+    "offset": 17,
+    "name": "GAFC_EX_EXP2_ASSIGN_UNI_V_MAX"
+   },
+   {
+    "offset": 18,
+    "name": "GAFC_EX_EXP2_ASSIGN_TREMOLO_MIN"
+   },
+   {
+    "offset": 19,
+    "name": "GAFC_EX_EXP2_ASSIGN_TREMOLO_MAX"
+   },
+   {
+    "offset": 20,
+    "name": "GAFC_EX_EXP2_ASSIGN_VIBRATO_MIN"
+   },
+   {
+    "offset": 21,
+    "name": "GAFC_EX_EXP2_ASSIGN_VIBRATO_MAX"
+   },
+   {
+    "offset": 22,
+    "name": "GAFC_EX_EXP2_ASSIGN_ROTARY_MIN"
+   },
+   {
+    "offset": 23,
+    "name": "GAFC_EX_EXP2_ASSIGN_ROTARY_MAX"
+   },
+   {
+    "offset": 24,
+    "name": "GAFC_EX_EXP2_ASSIGN_RING_MOD_MIN"
+   },
+   {
+    "offset": 25,
+    "name": "GAFC_EX_EXP2_ASSIGN_RING_MOD_MAX"
+   },
+   {
+    "offset": 26,
+    "name": "GAFC_EX_EXP2_ASSIGN_SLOW_GEAR_MIN"
+   },
+   {
+    "offset": 27,
+    "name": "GAFC_EX_EXP2_ASSIGN_SLOW_GEAR_MAX"
+   },
+   {
+    "offset": 28,
+    "name": "GAFC_EX_EXP2_ASSIGN_SLICER_MIN"
+   },
+   {
+    "offset": 29,
+    "name": "GAFC_EX_EXP2_ASSIGN_SLICER_MAX"
+   },
+   {
+    "offset": 30,
+    "name": "GAFC_EX_EXP2_ASSIGN_COMP_MIN"
+   },
+   {
+    "offset": 31,
+    "name": "GAFC_EX_EXP2_ASSIGN_COMP_MAX"
+   },
+   {
+    "offset": 32,
+    "name": "GAFC_EX_EXP2_ASSIGN_LIMITER_MIN"
+   },
+   {
+    "offset": 33,
+    "name": "GAFC_EX_EXP2_ASSIGN_LIMITER_MAX"
+   },
+   {
+    "offset": 34,
+    "name": "GAFC_EX_EXP2_ASSIGN_T_WAH_MIN"
+   },
+   {
+    "offset": 35,
+    "name": "GAFC_EX_EXP2_ASSIGN_T_WAH_MAX"
+   },
+   {
+    "offset": 36,
+    "name": "GAFC_EX_EXP2_ASSIGN_AUTO_WAH_MIN"
+   },
+   {
+    "offset": 37,
+    "name": "GAFC_EX_EXP2_ASSIGN_AUTO_WAH_MAX"
+   },
+   {
+    "offset": 38,
+    "name": "GAFC_EX_EXP2_ASSIGN_PEDAL_WAH_MIN"
+   },
+   {
+    "offset": 39,
+    "name": "GAFC_EX_EXP2_ASSIGN_PEDAL_WAH_MAX"
+   },
+   {
+    "offset": 40,
+    "name": "GAFC_EX_EXP2_ASSIGN_GEQ_MIN"
+   },
+   {
+    "offset": 41,
+    "name": "GAFC_EX_EXP2_ASSIGN_GEQ_MAX"
+   },
+   {
+    "offset": 42,
+    "name": "GAFC_EX_EXP2_ASSIGN_PEQ_MIN"
+   },
+   {
+    "offset": 43,
+    "name": "GAFC_EX_EXP2_ASSIGN_PEQ_MAX"
+   },
+   {
+    "offset": 44,
+    "name": "GAFC_EX_EXP2_ASSIGN_GUITAR_SIM_MIN"
+   },
+   {
+    "offset": 45,
+    "name": "GAFC_EX_EXP2_ASSIGN_GUITAR_SIM_MAX"
+   },
+   {
+    "offset": 46,
+    "name": "GAFC_EX_EXP2_ASSIGN_AC_GUITAR_SIM_MIN"
+   },
+   {
+    "offset": 47,
+    "name": "GAFC_EX_EXP2_ASSIGN_AC_GUITAR_SIM_MAX"
+   },
+   {
+    "offset": 48,
+    "name": "GAFC_EX_EXP2_ASSIGN_AC_PROCESSOR_MIN"
+   },
+   {
+    "offset": 49,
+    "name": "GAFC_EX_EXP2_ASSIGN_AC_PROCESSOR_MAX"
+   },
+   {
+    "offset": 50,
+    "name": "GAFC_EX_EXP2_ASSIGN_WAVE_SYNTH_MIN"
+   },
+   {
+    "offset": 51,
+    "name": "GAFC_EX_EXP2_ASSIGN_WAVE_SYNTH_MAX"
+   },
+   {
+    "offset": 52,
+    "name": "GAFC_EX_EXP2_ASSIGN_OCTAVE_MIN"
+   },
+   {
+    "offset": 53,
+    "name": "GAFC_EX_EXP2_ASSIGN_OCTAVE_MAX"
+   },
+   {
+    "offset": 54,
+    "name": "cx"
+   },
+   {
+    "offset": 56,
+    "name": "dx"
+   },
+   {
+    "offset": 58,
+    "name": "ex"
+   },
+   {
+    "offset": 60,
+    "name": "fx"
+   },
+   {
+    "offset": 62,
+    "name": "GAFC_EX_EXP2_ASSIGN_HUMANIZER_MIN"
+   },
+   {
+    "offset": 63,
+    "name": "GAFC_EX_EXP2_ASSIGN_HUMANIZER_MAX"
+   },
+   {
+    "offset": 64,
+    "name": "GAFC_EX_EXP2_ASSIGN_EVH_PHASER_MIN"
+   },
+   {
+    "offset": 65,
+    "name": "GAFC_EX_EXP2_ASSIGN_EVH_PHASER_MAX"
+   },
+   {
+    "offset": 66,
+    "name": "GAFC_EX_EXP2_ASSIGN_EVH_FLANGER_MIN"
+   },
+   {
+    "offset": 67,
+    "name": "GAFC_EX_EXP2_ASSIGN_EVH_FLANGER_MAX"
+   },
+   {
+    "offset": 68,
+    "name": "GAFC_EX_EXP2_ASSIGN_EVH_WAH_MIN"
+   },
+   {
+    "offset": 69,
+    "name": "GAFC_EX_EXP2_ASSIGN_EVH_WAH_MAX"
+   },
+   {
+    "offset": 70,
+    "name": "ox"
+   },
+   {
+    "offset": 72,
+    "name": "px"
+   },
+   {
+    "offset": 74,
+    "name": "GAFC_EX_EXP2_ASSIGN_HEAVY_OCT_MIN"
+   },
+   {
+    "offset": 75,
+    "name": "GAFC_EX_EXP2_ASSIGN_HEAVY_OCT_MAX"
+   },
+   {
+    "offset": 76,
+    "name": "GAFC_EX_EXP2_ASSIGN_PEDAL_BEND_MIN"
+   },
+   {
+    "offset": 77,
+    "name": "GAFC_EX_EXP2_ASSIGN_PEDAL_BEND_MAX"
+   }
+  ],
+  "GAFCEXEXP3ASGN": [
+   {
+    "offset": 0,
+    "name": "GAFC_EX_EXP3_ASSIGN_BOOSTER"
+   },
+   {
+    "offset": 1,
+    "name": "GAFC_EX_EXP3_ASSIGN_DELAY"
+   },
+   {
+    "offset": 2,
+    "name": "GAFC_EX_EXP3_ASSIGN_REVERB"
+   },
+   {
+    "offset": 3,
+    "name": "GAFC_EX_EXP3_ASSIGN_CHORUS"
+   },
+   {
+    "offset": 4,
+    "name": "GAFC_EX_EXP3_ASSIGN_FLANGER"
+   },
+   {
+    "offset": 5,
+    "name": "GAFC_EX_EXP3_ASSIGN_PHASER"
+   },
+   {
+    "offset": 6,
+    "name": "GAFC_EX_EXP3_ASSIGN_UNI_V"
+   },
+   {
+    "offset": 7,
+    "name": "GAFC_EX_EXP3_ASSIGN_TREMOLO"
+   },
+   {
+    "offset": 8,
+    "name": "GAFC_EX_EXP3_ASSIGN_VIBRATO"
+   },
+   {
+    "offset": 9,
+    "name": "GAFC_EX_EXP3_ASSIGN_ROTARY"
+   },
+   {
+    "offset": 10,
+    "name": "GAFC_EX_EXP3_ASSIGN_RING_MOD"
+   },
+   {
+    "offset": 11,
+    "name": "GAFC_EX_EXP3_ASSIGN_SLOW_GEAR"
+   },
+   {
+    "offset": 12,
+    "name": "GAFC_EX_EXP3_ASSIGN_SLICER"
+   },
+   {
+    "offset": 13,
+    "name": "GAFC_EX_EXP3_ASSIGN_COMP"
+   },
+   {
+    "offset": 14,
+    "name": "GAFC_EX_EXP3_ASSIGN_LIMITER"
+   },
+   {
+    "offset": 15,
+    "name": "GAFC_EX_EXP3_ASSIGN_T_WAH"
+   },
+   {
+    "offset": 16,
+    "name": "GAFC_EX_EXP3_ASSIGN_AUTO_WAH"
+   },
+   {
+    "offset": 17,
+    "name": "GAFC_EX_EXP3_ASSIGN_PEDAL_WAH"
+   },
+   {
+    "offset": 18,
+    "name": "GAFC_EX_EXP3_ASSIGN_GEQ"
+   },
+   {
+    "offset": 19,
+    "name": "GAFC_EX_EXP3_ASSIGN_PEQ"
+   },
+   {
+    "offset": 20,
+    "name": "GAFC_EX_EXP3_ASSIGN_GUITAR_SIM"
+   },
+   {
+    "offset": 21,
+    "name": "GAFC_EX_EXP3_ASSIGN_AC_GUITAR_SIM"
+   },
+   {
+    "offset": 22,
+    "name": "GAFC_EX_EXP3_ASSIGN_AC_PROCESSOR"
+   },
+   {
+    "offset": 23,
+    "name": "GAFC_EX_EXP3_ASSIGN_WAVE_SYNTH"
+   },
+   {
+    "offset": 24,
+    "name": "GAFC_EX_EXP3_ASSIGN_OCTAVE"
+   },
+   {
+    "offset": 25,
+    "name": "GAFC_EX_EXP3_ASSIGN_PITCH_SHIFTER"
+   },
+   {
+    "offset": 26,
+    "name": "GAFC_EX_EXP3_ASSIGN_HARMONIST"
+   },
+   {
+    "offset": 27,
+    "name": "GAFC_EX_EXP3_ASSIGN_HUMANIZER"
+   },
+   {
+    "offset": 28,
+    "name": "GAFC_EX_EXP3_ASSIGN_EVH_PHASER"
+   },
+   {
+    "offset": 29,
+    "name": "GAFC_EX_EXP3_ASSIGN_EVH_FLANGER"
+   },
+   {
+    "offset": 30,
+    "name": "GAFC_EX_EXP3_ASSIGN_EVH_WAH"
+   },
+   {
+    "offset": 31,
+    "name": "GAFC_EX_EXP3_ASSIGN_DC30"
+   },
+   {
+    "offset": 32,
+    "name": "GAFC_EX_EXP3_ASSIGN_HEAVY_OCT"
+   },
+   {
+    "offset": 33,
+    "name": "GAFC_EX_EXP3_ASSIGN_PEDAL_BEND"
+   }
+  ],
+  "GAFCEXEXP3ASGNMINMAX": [
+   {
+    "offset": 0,
+    "name": "GAFC_EX_EXP3_ASSIGN_BOOSTER_MIN"
+   },
+   {
+    "offset": 1,
+    "name": "GAFC_EX_EXP3_ASSIGN_BOOSTER_MAX"
+   },
+   {
+    "offset": 2,
+    "name": "fy"
+   },
+   {
+    "offset": 4,
+    "name": "gy"
+   },
+   {
+    "offset": 6,
+    "name": "hy"
+   },
+   {
+    "offset": 8,
+    "name": "iy"
+   },
+   {
+    "offset": 10,
+    "name": "GAFC_EX_EXP3_ASSIGN_CHORUS_MIN"
+   },
+   {
+    "offset": 11,
+    "name": "GAFC_EX_EXP3_ASSIGN_CHORUS_MAX"
+   },
+   {
+    "offset": 12,
+    "name": "GAFC_EX_EXP3_ASSIGN_FLANGER_MIN"
+   },
+   {
+    "offset": 13,
+    "name": "GAFC_EX_EXP3_ASSIGN_FLANGER_MAX"
+   },
+   {
+    "offset": 14,
+    "name": "GAFC_EX_EXP3_ASSIGN_PHASER_MIN"
+   },
+   {
+    "offset": 15,
+    "name": "GAFC_EX_EXP3_ASSIGN_PHASER_MAX"
+   },
+   {
+    "offset": 16,
+    "name": "GAFC_EX_EXP3_ASSIGN_UNI_V_MIN"
+   },
+   {
+    "offset": 17,
+    "name": "GAFC_EX_EXP3_ASSIGN_UNI_V_MAX"
+   },
+   {
+    "offset": 18,
+    "name": "GAFC_EX_EXP3_ASSIGN_TREMOLO_MIN"
+   },
+   {
+    "offset": 19,
+    "name": "GAFC_EX_EXP3_ASSIGN_TREMOLO_MAX"
+   },
+   {
+    "offset": 20,
+    "name": "GAFC_EX_EXP3_ASSIGN_VIBRATO_MIN"
+   },
+   {
+    "offset": 21,
+    "name": "GAFC_EX_EXP3_ASSIGN_VIBRATO_MAX"
+   },
+   {
+    "offset": 22,
+    "name": "GAFC_EX_EXP3_ASSIGN_ROTARY_MIN"
+   },
+   {
+    "offset": 23,
+    "name": "GAFC_EX_EXP3_ASSIGN_ROTARY_MAX"
+   },
+   {
+    "offset": 24,
+    "name": "GAFC_EX_EXP3_ASSIGN_RING_MOD_MIN"
+   },
+   {
+    "offset": 25,
+    "name": "GAFC_EX_EXP3_ASSIGN_RING_MOD_MAX"
+   },
+   {
+    "offset": 26,
+    "name": "GAFC_EX_EXP3_ASSIGN_SLOW_GEAR_MIN"
+   },
+   {
+    "offset": 27,
+    "name": "GAFC_EX_EXP3_ASSIGN_SLOW_GEAR_MAX"
+   },
+   {
+    "offset": 28,
+    "name": "GAFC_EX_EXP3_ASSIGN_SLICER_MIN"
+   },
+   {
+    "offset": 29,
+    "name": "GAFC_EX_EXP3_ASSIGN_SLICER_MAX"
+   },
+   {
+    "offset": 30,
+    "name": "GAFC_EX_EXP3_ASSIGN_COMP_MIN"
+   },
+   {
+    "offset": 31,
+    "name": "GAFC_EX_EXP3_ASSIGN_COMP_MAX"
+   },
+   {
+    "offset": 32,
+    "name": "GAFC_EX_EXP3_ASSIGN_LIMITER_MIN"
+   },
+   {
+    "offset": 33,
+    "name": "GAFC_EX_EXP3_ASSIGN_LIMITER_MAX"
+   },
+   {
+    "offset": 34,
+    "name": "GAFC_EX_EXP3_ASSIGN_T_WAH_MIN"
+   },
+   {
+    "offset": 35,
+    "name": "GAFC_EX_EXP3_ASSIGN_T_WAH_MAX"
+   },
+   {
+    "offset": 36,
+    "name": "GAFC_EX_EXP3_ASSIGN_AUTO_WAH_MIN"
+   },
+   {
+    "offset": 37,
+    "name": "GAFC_EX_EXP3_ASSIGN_AUTO_WAH_MAX"
+   },
+   {
+    "offset": 38,
+    "name": "GAFC_EX_EXP3_ASSIGN_PEDAL_WAH_MIN"
+   },
+   {
+    "offset": 39,
+    "name": "GAFC_EX_EXP3_ASSIGN_PEDAL_WAH_MAX"
+   },
+   {
+    "offset": 40,
+    "name": "GAFC_EX_EXP3_ASSIGN_GEQ_MIN"
+   },
+   {
+    "offset": 41,
+    "name": "GAFC_EX_EXP3_ASSIGN_GEQ_MAX"
+   },
+   {
+    "offset": 42,
+    "name": "GAFC_EX_EXP3_ASSIGN_PEQ_MIN"
+   },
+   {
+    "offset": 43,
+    "name": "GAFC_EX_EXP3_ASSIGN_PEQ_MAX"
+   },
+   {
+    "offset": 44,
+    "name": "GAFC_EX_EXP3_ASSIGN_GUITAR_SIM_MIN"
+   },
+   {
+    "offset": 45,
+    "name": "GAFC_EX_EXP3_ASSIGN_GUITAR_SIM_MAX"
+   },
+   {
+    "offset": 46,
+    "name": "GAFC_EX_EXP3_ASSIGN_AC_GUITAR_SIM_MIN"
+   },
+   {
+    "offset": 47,
+    "name": "GAFC_EX_EXP3_ASSIGN_AC_GUITAR_SIM_MAX"
+   },
+   {
+    "offset": 48,
+    "name": "GAFC_EX_EXP3_ASSIGN_AC_PROCESSOR_MIN"
+   },
+   {
+    "offset": 49,
+    "name": "GAFC_EX_EXP3_ASSIGN_AC_PROCESSOR_MAX"
+   },
+   {
+    "offset": 50,
+    "name": "GAFC_EX_EXP3_ASSIGN_WAVE_SYNTH_MIN"
+   },
+   {
+    "offset": 51,
+    "name": "GAFC_EX_EXP3_ASSIGN_WAVE_SYNTH_MAX"
+   },
+   {
+    "offset": 52,
+    "name": "GAFC_EX_EXP3_ASSIGN_OCTAVE_MIN"
+   },
+   {
+    "offset": 53,
+    "name": "GAFC_EX_EXP3_ASSIGN_OCTAVE_MAX"
+   },
+   {
+    "offset": 54,
+    "name": "bz"
+   },
+   {
+    "offset": 56,
+    "name": "cz"
+   },
+   {
+    "offset": 58,
+    "name": "dz"
+   },
+   {
+    "offset": 60,
+    "name": "ez"
+   },
+   {
+    "offset": 62,
+    "name": "GAFC_EX_EXP3_ASSIGN_HUMANIZER_MIN"
+   },
+   {
+    "offset": 63,
+    "name": "GAFC_EX_EXP3_ASSIGN_HUMANIZER_MAX"
+   },
+   {
+    "offset": 64,
+    "name": "GAFC_EX_EXP3_ASSIGN_EVH_PHASER_MIN"
+   },
+   {
+    "offset": 65,
+    "name": "GAFC_EX_EXP3_ASSIGN_EVH_PHASER_MAX"
+   },
+   {
+    "offset": 66,
+    "name": "GAFC_EX_EXP3_ASSIGN_EVH_FLANGER_MIN"
+   },
+   {
+    "offset": 67,
+    "name": "GAFC_EX_EXP3_ASSIGN_EVH_FLANGER_MAX"
+   },
+   {
+    "offset": 68,
+    "name": "GAFC_EX_EXP3_ASSIGN_EVH_WAH_MIN"
+   },
+   {
+    "offset": 69,
+    "name": "GAFC_EX_EXP3_ASSIGN_EVH_WAH_MAX"
+   },
+   {
+    "offset": 70,
+    "name": "nz"
+   },
+   {
+    "offset": 72,
+    "name": "oz"
+   },
+   {
+    "offset": 74,
+    "name": "GAFC_EX_EXP3_ASSIGN_HEAVY_OCT_MIN"
+   },
+   {
+    "offset": 75,
+    "name": "GAFC_EX_EXP3_ASSIGN_HEAVY_OCT_MAX"
+   },
+   {
+    "offset": 76,
+    "name": "GAFC_EX_EXP3_ASSIGN_PEDAL_BEND_MIN"
+   },
+   {
+    "offset": 77,
+    "name": "GAFC_EX_EXP3_ASSIGN_PEDAL_BEND_MAX"
+   }
+  ],
+  "GAFCEXP1ASGN": [
+   {
+    "offset": 0,
+    "name": "GAFC_EXP1_ASSIGN_BOOSTER"
+   },
+   {
+    "offset": 1,
+    "name": "GAFC_EXP1_ASSIGN_DELAY"
+   },
+   {
+    "offset": 2,
+    "name": "GAFC_EXP1_ASSIGN_REVERB"
+   },
+   {
+    "offset": 3,
+    "name": "GAFC_EXP1_ASSIGN_CHORUS"
+   },
+   {
+    "offset": 4,
+    "name": "GAFC_EXP1_ASSIGN_FLANGER"
+   },
+   {
+    "offset": 5,
+    "name": "GAFC_EXP1_ASSIGN_PHASER"
+   },
+   {
+    "offset": 6,
+    "name": "GAFC_EXP1_ASSIGN_UNI_V"
+   },
+   {
+    "offset": 7,
+    "name": "GAFC_EXP1_ASSIGN_TREMOLO"
+   },
+   {
+    "offset": 8,
+    "name": "GAFC_EXP1_ASSIGN_VIBRATO"
+   },
+   {
+    "offset": 9,
+    "name": "GAFC_EXP1_ASSIGN_ROTARY"
+   },
+   {
+    "offset": 10,
+    "name": "GAFC_EXP1_ASSIGN_RING_MOD"
+   },
+   {
+    "offset": 11,
+    "name": "GAFC_EXP1_ASSIGN_SLOW_GEAR"
+   },
+   {
+    "offset": 12,
+    "name": "GAFC_EXP1_ASSIGN_SLICER"
+   },
+   {
+    "offset": 13,
+    "name": "GAFC_EXP1_ASSIGN_COMP"
+   },
+   {
+    "offset": 14,
+    "name": "GAFC_EXP1_ASSIGN_LIMITER"
+   },
+   {
+    "offset": 15,
+    "name": "GAFC_EXP1_ASSIGN_T_WAH"
+   },
+   {
+    "offset": 16,
+    "name": "GAFC_EXP1_ASSIGN_AUTO_WAH"
+   },
+   {
+    "offset": 17,
+    "name": "GAFC_EXP1_ASSIGN_PEDAL_WAH"
+   },
+   {
+    "offset": 18,
+    "name": "GAFC_EXP1_ASSIGN_GEQ"
+   },
+   {
+    "offset": 19,
+    "name": "GAFC_EXP1_ASSIGN_PEQ"
+   },
+   {
+    "offset": 20,
+    "name": "GAFC_EXP1_ASSIGN_GUITAR_SIM"
+   },
+   {
+    "offset": 21,
+    "name": "GAFC_EXP1_ASSIGN_AC_GUITAR_SIM"
+   },
+   {
+    "offset": 22,
+    "name": "GAFC_EXP1_ASSIGN_AC_PROCESSOR"
+   },
+   {
+    "offset": 23,
+    "name": "GAFC_EXP1_ASSIGN_WAVE_SYNTH"
+   },
+   {
+    "offset": 24,
+    "name": "GAFC_EXP1_ASSIGN_OCTAVE"
+   },
+   {
+    "offset": 25,
+    "name": "GAFC_EXP1_ASSIGN_PITCH_SHIFTER"
+   },
+   {
+    "offset": 26,
+    "name": "GAFC_EXP1_ASSIGN_HARMONIST"
+   },
+   {
+    "offset": 27,
+    "name": "GAFC_EXP1_ASSIGN_HUMANIZER"
+   },
+   {
+    "offset": 28,
+    "name": "GAFC_EXP1_ASSIGN_EVH_PHASER"
+   },
+   {
+    "offset": 29,
+    "name": "GAFC_EXP1_ASSIGN_EVH_FLANGER"
+   },
+   {
+    "offset": 30,
+    "name": "GAFC_EXP1_ASSIGN_EVH_WAH"
+   },
+   {
+    "offset": 31,
+    "name": "GAFC_EXP1_ASSIGN_DC30"
+   },
+   {
+    "offset": 32,
+    "name": "GAFC_EXP1_ASSIGN_HEAVY_OCT"
+   },
+   {
+    "offset": 33,
+    "name": "GAFC_EXP1_ASSIGN_PEDAL_BEND"
+   }
+  ],
+  "GAFCEXP1ASGNMINMAX": [
+   {
+    "offset": 0,
+    "name": "GAFC_EXP1_ASSIGN_BOOSTER_MIN"
+   },
+   {
+    "offset": 1,
+    "name": "GAFC_EXP1_ASSIGN_BOOSTER_MAX"
+   },
+   {
+    "offset": 2,
+    "name": "am"
+   },
+   {
+    "offset": 4,
+    "name": "bm"
+   },
+   {
+    "offset": 6,
+    "name": "cm"
+   },
+   {
+    "offset": 8,
+    "name": "dm"
+   },
+   {
+    "offset": 10,
+    "name": "GAFC_EXP1_ASSIGN_CHORUS_MIN"
+   },
+   {
+    "offset": 11,
+    "name": "GAFC_EXP1_ASSIGN_CHORUS_MAX"
+   },
+   {
+    "offset": 12,
+    "name": "GAFC_EXP1_ASSIGN_FLANGER_MIN"
+   },
+   {
+    "offset": 13,
+    "name": "GAFC_EXP1_ASSIGN_FLANGER_MAX"
+   },
+   {
+    "offset": 14,
+    "name": "GAFC_EXP1_ASSIGN_PHASER_MIN"
+   },
+   {
+    "offset": 15,
+    "name": "GAFC_EXP1_ASSIGN_PHASER_MAX"
+   },
+   {
+    "offset": 16,
+    "name": "GAFC_EXP1_ASSIGN_UNI_V_MIN"
+   },
+   {
+    "offset": 17,
+    "name": "GAFC_EXP1_ASSIGN_UNI_V_MAX"
+   },
+   {
+    "offset": 18,
+    "name": "GAFC_EXP1_ASSIGN_TREMOLO_MIN"
+   },
+   {
+    "offset": 19,
+    "name": "GAFC_EXP1_ASSIGN_TREMOLO_MAX"
+   },
+   {
+    "offset": 20,
+    "name": "GAFC_EXP1_ASSIGN_VIBRATO_MIN"
+   },
+   {
+    "offset": 21,
+    "name": "GAFC_EXP1_ASSIGN_VIBRATO_MAX"
+   },
+   {
+    "offset": 22,
+    "name": "GAFC_EXP1_ASSIGN_ROTARY_MIN"
+   },
+   {
+    "offset": 23,
+    "name": "GAFC_EXP1_ASSIGN_ROTARY_MAX"
+   },
+   {
+    "offset": 24,
+    "name": "GAFC_EXP1_ASSIGN_RING_MOD_MIN"
+   },
+   {
+    "offset": 25,
+    "name": "GAFC_EXP1_ASSIGN_RING_MOD_MAX"
+   },
+   {
+    "offset": 26,
+    "name": "GAFC_EXP1_ASSIGN_SLOW_GEAR_MIN"
+   },
+   {
+    "offset": 27,
+    "name": "GAFC_EXP1_ASSIGN_SLOW_GEAR_MAX"
+   },
+   {
+    "offset": 28,
+    "name": "GAFC_EXP1_ASSIGN_SLICER_MIN"
+   },
+   {
+    "offset": 29,
+    "name": "GAFC_EXP1_ASSIGN_SLICER_MAX"
+   },
+   {
+    "offset": 30,
+    "name": "GAFC_EXP1_ASSIGN_COMP_MIN"
+   },
+   {
+    "offset": 31,
+    "name": "GAFC_EXP1_ASSIGN_COMP_MAX"
+   },
+   {
+    "offset": 32,
+    "name": "GAFC_EXP1_ASSIGN_LIMITER_MIN"
+   },
+   {
+    "offset": 33,
+    "name": "GAFC_EXP1_ASSIGN_LIMITER_MAX"
+   },
+   {
+    "offset": 34,
+    "name": "GAFC_EXP1_ASSIGN_T_WAH_MIN"
+   },
+   {
+    "offset": 35,
+    "name": "GAFC_EXP1_ASSIGN_T_WAH_MAX"
+   },
+   {
+    "offset": 36,
+    "name": "GAFC_EXP1_ASSIGN_AUTO_WAH_MIN"
+   },
+   {
+    "offset": 37,
+    "name": "GAFC_EXP1_ASSIGN_AUTO_WAH_MAX"
+   },
+   {
+    "offset": 38,
+    "name": "GAFC_EXP1_ASSIGN_PEDAL_WAH_MIN"
+   },
+   {
+    "offset": 39,
+    "name": "GAFC_EXP1_ASSIGN_PEDAL_WAH_MAX"
+   },
+   {
+    "offset": 40,
+    "name": "GAFC_EXP1_ASSIGN_GEQ_MIN"
+   },
+   {
+    "offset": 41,
+    "name": "GAFC_EXP1_ASSIGN_GEQ_MAX"
+   },
+   {
+    "offset": 42,
+    "name": "GAFC_EXP1_ASSIGN_PEQ_MIN"
+   },
+   {
+    "offset": 43,
+    "name": "GAFC_EXP1_ASSIGN_PEQ_MAX"
+   },
+   {
+    "offset": 44,
+    "name": "GAFC_EXP1_ASSIGN_GUITAR_SIM_MIN"
+   },
+   {
+    "offset": 45,
+    "name": "GAFC_EXP1_ASSIGN_GUITAR_SIM_MAX"
+   },
+   {
+    "offset": 46,
+    "name": "GAFC_EXP1_ASSIGN_AC_GUITAR_SIM_MIN"
+   },
+   {
+    "offset": 47,
+    "name": "GAFC_EXP1_ASSIGN_AC_GUITAR_SIM_MAX"
+   },
+   {
+    "offset": 48,
+    "name": "GAFC_EXP1_ASSIGN_AC_PROCESSOR_MIN"
+   },
+   {
+    "offset": 49,
+    "name": "GAFC_EXP1_ASSIGN_AC_PROCESSOR_MAX"
+   },
+   {
+    "offset": 50,
+    "name": "GAFC_EXP1_ASSIGN_WAVE_SYNTH_MIN"
+   },
+   {
+    "offset": 51,
+    "name": "GAFC_EXP1_ASSIGN_WAVE_SYNTH_MAX"
+   },
+   {
+    "offset": 52,
+    "name": "GAFC_EXP1_ASSIGN_OCTAVE_MIN"
+   },
+   {
+    "offset": 53,
+    "name": "GAFC_EXP1_ASSIGN_OCTAVE_MAX"
+   },
+   {
+    "offset": 54,
+    "name": "Wm"
+   },
+   {
+    "offset": 56,
+    "name": "Xm"
+   },
+   {
+    "offset": 58,
+    "name": "Ym"
+   },
+   {
+    "offset": 60,
+    "name": "Zm"
+   },
+   {
+    "offset": 62,
+    "name": "GAFC_EXP1_ASSIGN_HUMANIZER_MIN"
+   },
+   {
+    "offset": 63,
+    "name": "GAFC_EXP1_ASSIGN_HUMANIZER_MAX"
+   },
+   {
+    "offset": 64,
+    "name": "GAFC_EXP1_ASSIGN_EVH_PHASER_MIN"
+   },
+   {
+    "offset": 65,
+    "name": "GAFC_EXP1_ASSIGN_EVH_PHASER_MAX"
+   },
+   {
+    "offset": 66,
+    "name": "GAFC_EXP1_ASSIGN_EVH_FLANGER_MIN"
+   },
+   {
+    "offset": 67,
+    "name": "GAFC_EXP1_ASSIGN_EVH_FLANGER_MAX"
+   },
+   {
+    "offset": 68,
+    "name": "GAFC_EXP1_ASSIGN_EVH_WAH_MIN"
+   },
+   {
+    "offset": 69,
+    "name": "GAFC_EXP1_ASSIGN_EVH_WAH_MAX"
+   },
+   {
+    "offset": 70,
+    "name": "in"
+   },
+   {
+    "offset": 72,
+    "name": "jn"
+   },
+   {
+    "offset": 74,
+    "name": "GAFC_EXP1_ASSIGN_HEAVY_OCT_MIN"
+   },
+   {
+    "offset": 75,
+    "name": "GAFC_EXP1_ASSIGN_HEAVY_OCT_MAX"
+   },
+   {
+    "offset": 76,
+    "name": "GAFC_EXP1_ASSIGN_PEDAL_BEND_MIN"
+   },
+   {
+    "offset": 77,
+    "name": "GAFC_EXP1_ASSIGN_PEDAL_BEND_MAX"
+   }
+  ],
+  "GAFCEXP2ASGN": [
+   {
+    "offset": 0,
+    "name": "GAFC_EXP2_ASSIGN_BOOSTER"
+   },
+   {
+    "offset": 1,
+    "name": "GAFC_EXP2_ASSIGN_DELAY"
+   },
+   {
+    "offset": 2,
+    "name": "GAFC_EXP2_ASSIGN_REVERB"
+   },
+   {
+    "offset": 3,
+    "name": "GAFC_EXP2_ASSIGN_CHORUS"
+   },
+   {
+    "offset": 4,
+    "name": "GAFC_EXP2_ASSIGN_FLANGER"
+   },
+   {
+    "offset": 5,
+    "name": "GAFC_EXP2_ASSIGN_PHASER"
+   },
+   {
+    "offset": 6,
+    "name": "GAFC_EXP2_ASSIGN_UNI_V"
+   },
+   {
+    "offset": 7,
+    "name": "GAFC_EXP2_ASSIGN_TREMOLO"
+   },
+   {
+    "offset": 8,
+    "name": "GAFC_EXP2_ASSIGN_VIBRATO"
+   },
+   {
+    "offset": 9,
+    "name": "GAFC_EXP2_ASSIGN_ROTARY"
+   },
+   {
+    "offset": 10,
+    "name": "GAFC_EXP2_ASSIGN_RING_MOD"
+   },
+   {
+    "offset": 11,
+    "name": "GAFC_EXP2_ASSIGN_SLOW_GEAR"
+   },
+   {
+    "offset": 12,
+    "name": "GAFC_EXP2_ASSIGN_SLICER"
+   },
+   {
+    "offset": 13,
+    "name": "GAFC_EXP2_ASSIGN_COMP"
+   },
+   {
+    "offset": 14,
+    "name": "GAFC_EXP2_ASSIGN_LIMITER"
+   },
+   {
+    "offset": 15,
+    "name": "GAFC_EXP2_ASSIGN_T_WAH"
+   },
+   {
+    "offset": 16,
+    "name": "GAFC_EXP2_ASSIGN_AUTO_WAH"
+   },
+   {
+    "offset": 17,
+    "name": "GAFC_EXP2_ASSIGN_PEDAL_WAH"
+   },
+   {
+    "offset": 18,
+    "name": "GAFC_EXP2_ASSIGN_GEQ"
+   },
+   {
+    "offset": 19,
+    "name": "GAFC_EXP2_ASSIGN_PEQ"
+   },
+   {
+    "offset": 20,
+    "name": "GAFC_EXP2_ASSIGN_GUITAR_SIM"
+   },
+   {
+    "offset": 21,
+    "name": "GAFC_EXP2_ASSIGN_AC_GUITAR_SIM"
+   },
+   {
+    "offset": 22,
+    "name": "GAFC_EXP2_ASSIGN_AC_PROCESSOR"
+   },
+   {
+    "offset": 23,
+    "name": "GAFC_EXP2_ASSIGN_WAVE_SYNTH"
+   },
+   {
+    "offset": 24,
+    "name": "GAFC_EXP2_ASSIGN_OCTAVE"
+   },
+   {
+    "offset": 25,
+    "name": "GAFC_EXP2_ASSIGN_PITCH_SHIFTER"
+   },
+   {
+    "offset": 26,
+    "name": "GAFC_EXP2_ASSIGN_HARMONIST"
+   },
+   {
+    "offset": 27,
+    "name": "GAFC_EXP2_ASSIGN_HUMANIZER"
+   },
+   {
+    "offset": 28,
+    "name": "GAFC_EXP2_ASSIGN_EVH_PHASER"
+   },
+   {
+    "offset": 29,
+    "name": "GAFC_EXP2_ASSIGN_EVH_FLANGER"
+   },
+   {
+    "offset": 30,
+    "name": "GAFC_EXP2_ASSIGN_EVH_WAH"
+   },
+   {
+    "offset": 31,
+    "name": "GAFC_EXP2_ASSIGN_DC30"
+   },
+   {
+    "offset": 32,
+    "name": "GAFC_EXP2_ASSIGN_HEAVY_OCT"
+   },
+   {
+    "offset": 33,
+    "name": "GAFC_EXP2_ASSIGN_PEDAL_BEND"
+   }
+  ],
+  "GAFCEXP2ASGNMINMAX": [
+   {
+    "offset": 0,
+    "name": "GAFC_EXP2_ASSIGN_BOOSTER_MIN"
+   },
+   {
+    "offset": 1,
+    "name": "GAFC_EXP2_ASSIGN_BOOSTER_MAX"
+   },
+   {
+    "offset": 2,
+    "name": "Vn"
+   },
+   {
+    "offset": 4,
+    "name": "Wn"
+   },
+   {
+    "offset": 6,
+    "name": "Xn"
+   },
+   {
+    "offset": 8,
+    "name": "Yn"
+   },
+   {
+    "offset": 10,
+    "name": "GAFC_EXP2_ASSIGN_CHORUS_MIN"
+   },
+   {
+    "offset": 11,
+    "name": "GAFC_EXP2_ASSIGN_CHORUS_MAX"
+   },
+   {
+    "offset": 12,
+    "name": "GAFC_EXP2_ASSIGN_FLANGER_MIN"
+   },
+   {
+    "offset": 13,
+    "name": "GAFC_EXP2_ASSIGN_FLANGER_MAX"
+   },
+   {
+    "offset": 14,
+    "name": "GAFC_EXP2_ASSIGN_PHASER_MIN"
+   },
+   {
+    "offset": 15,
+    "name": "GAFC_EXP2_ASSIGN_PHASER_MAX"
+   },
+   {
+    "offset": 16,
+    "name": "GAFC_EXP2_ASSIGN_UNI_V_MIN"
+   },
+   {
+    "offset": 17,
+    "name": "GAFC_EXP2_ASSIGN_UNI_V_MAX"
+   },
+   {
+    "offset": 18,
+    "name": "GAFC_EXP2_ASSIGN_TREMOLO_MIN"
+   },
+   {
+    "offset": 19,
+    "name": "GAFC_EXP2_ASSIGN_TREMOLO_MAX"
+   },
+   {
+    "offset": 20,
+    "name": "GAFC_EXP2_ASSIGN_VIBRATO_MIN"
+   },
+   {
+    "offset": 21,
+    "name": "GAFC_EXP2_ASSIGN_VIBRATO_MAX"
+   },
+   {
+    "offset": 22,
+    "name": "GAFC_EXP2_ASSIGN_ROTARY_MIN"
+   },
+   {
+    "offset": 23,
+    "name": "GAFC_EXP2_ASSIGN_ROTARY_MAX"
+   },
+   {
+    "offset": 24,
+    "name": "GAFC_EXP2_ASSIGN_RING_MOD_MIN"
+   },
+   {
+    "offset": 25,
+    "name": "GAFC_EXP2_ASSIGN_RING_MOD_MAX"
+   },
+   {
+    "offset": 26,
+    "name": "GAFC_EXP2_ASSIGN_SLOW_GEAR_MIN"
+   },
+   {
+    "offset": 27,
+    "name": "GAFC_EXP2_ASSIGN_SLOW_GEAR_MAX"
+   },
+   {
+    "offset": 28,
+    "name": "GAFC_EXP2_ASSIGN_SLICER_MIN"
+   },
+   {
+    "offset": 29,
+    "name": "GAFC_EXP2_ASSIGN_SLICER_MAX"
+   },
+   {
+    "offset": 30,
+    "name": "GAFC_EXP2_ASSIGN_COMP_MIN"
+   },
+   {
+    "offset": 31,
+    "name": "GAFC_EXP2_ASSIGN_COMP_MAX"
+   },
+   {
+    "offset": 32,
+    "name": "GAFC_EXP2_ASSIGN_LIMITER_MIN"
+   },
+   {
+    "offset": 33,
+    "name": "GAFC_EXP2_ASSIGN_LIMITER_MAX"
+   },
+   {
+    "offset": 34,
+    "name": "GAFC_EXP2_ASSIGN_T_WAH_MIN"
+   },
+   {
+    "offset": 35,
+    "name": "GAFC_EXP2_ASSIGN_T_WAH_MAX"
+   },
+   {
+    "offset": 36,
+    "name": "GAFC_EXP2_ASSIGN_AUTO_WAH_MIN"
+   },
+   {
+    "offset": 37,
+    "name": "GAFC_EXP2_ASSIGN_AUTO_WAH_MAX"
+   },
+   {
+    "offset": 38,
+    "name": "GAFC_EXP2_ASSIGN_PEDAL_WAH_MIN"
+   },
+   {
+    "offset": 39,
+    "name": "GAFC_EXP2_ASSIGN_PEDAL_WAH_MAX"
+   },
+   {
+    "offset": 40,
+    "name": "GAFC_EXP2_ASSIGN_GEQ_MIN"
+   },
+   {
+    "offset": 41,
+    "name": "GAFC_EXP2_ASSIGN_GEQ_MAX"
+   },
+   {
+    "offset": 42,
+    "name": "GAFC_EXP2_ASSIGN_PEQ_MIN"
+   },
+   {
+    "offset": 43,
+    "name": "GAFC_EXP2_ASSIGN_PEQ_MAX"
+   },
+   {
+    "offset": 44,
+    "name": "GAFC_EXP2_ASSIGN_GUITAR_SIM_MIN"
+   },
+   {
+    "offset": 45,
+    "name": "GAFC_EXP2_ASSIGN_GUITAR_SIM_MAX"
+   },
+   {
+    "offset": 46,
+    "name": "GAFC_EXP2_ASSIGN_AC_GUITAR_SIM_MIN"
+   },
+   {
+    "offset": 47,
+    "name": "GAFC_EXP2_ASSIGN_AC_GUITAR_SIM_MAX"
+   },
+   {
+    "offset": 48,
+    "name": "GAFC_EXP2_ASSIGN_AC_PROCESSOR_MIN"
+   },
+   {
+    "offset": 49,
+    "name": "GAFC_EXP2_ASSIGN_AC_PROCESSOR_MAX"
+   },
+   {
+    "offset": 50,
+    "name": "GAFC_EXP2_ASSIGN_WAVE_SYNTH_MIN"
+   },
+   {
+    "offset": 51,
+    "name": "GAFC_EXP2_ASSIGN_WAVE_SYNTH_MAX"
+   },
+   {
+    "offset": 52,
+    "name": "GAFC_EXP2_ASSIGN_OCTAVE_MIN"
+   },
+   {
+    "offset": 53,
+    "name": "GAFC_EXP2_ASSIGN_OCTAVE_MAX"
+   },
+   {
+    "offset": 54,
+    "name": "So"
+   },
+   {
+    "offset": 56,
+    "name": "To"
+   },
+   {
+    "offset": 58,
+    "name": "Uo"
+   },
+   {
+    "offset": 60,
+    "name": "Vo"
+   },
+   {
+    "offset": 62,
+    "name": "GAFC_EXP2_ASSIGN_HUMANIZER_MIN"
+   },
+   {
+    "offset": 63,
+    "name": "GAFC_EXP2_ASSIGN_HUMANIZER_MAX"
+   },
+   {
+    "offset": 64,
+    "name": "GAFC_EXP2_ASSIGN_EVH_PHASER_MIN"
+   },
+   {
+    "offset": 65,
+    "name": "GAFC_EXP2_ASSIGN_EVH_PHASER_MAX"
+   },
+   {
+    "offset": 66,
+    "name": "GAFC_EXP2_ASSIGN_EVH_FLANGER_MIN"
+   },
+   {
+    "offset": 67,
+    "name": "GAFC_EXP2_ASSIGN_EVH_FLANGER_MAX"
+   },
+   {
+    "offset": 68,
+    "name": "GAFC_EXP2_ASSIGN_EVH_WAH_MIN"
+   },
+   {
+    "offset": 69,
+    "name": "GAFC_EXP2_ASSIGN_EVH_WAH_MAX"
+   },
+   {
+    "offset": 70,
+    "name": "ep"
+   },
+   {
+    "offset": 72,
+    "name": "fp"
+   },
+   {
+    "offset": 74,
+    "name": "GAFC_EXP2_ASSIGN_HEAVY_OCT_MIN"
+   },
+   {
+    "offset": 75,
+    "name": "GAFC_EXP2_ASSIGN_HEAVY_OCT_MAX"
+   },
+   {
+    "offset": 76,
+    "name": "GAFC_EXP2_ASSIGN_PEDAL_BEND_MIN"
+   },
+   {
+    "offset": 77,
+    "name": "GAFC_EXP2_ASSIGN_PEDAL_BEND_MAX"
+   }
+  ],
+  "GAFCEXP3ASGN": [
+   {
+    "offset": 0,
+    "name": "GAFC_EXP3_ASSIGN_BOOSTER"
+   },
+   {
+    "offset": 1,
+    "name": "GAFC_EXP3_ASSIGN_DELAY"
+   },
+   {
+    "offset": 2,
+    "name": "GAFC_EXP3_ASSIGN_REVERB"
+   },
+   {
+    "offset": 3,
+    "name": "GAFC_EXP3_ASSIGN_CHORUS"
+   },
+   {
+    "offset": 4,
+    "name": "GAFC_EXP3_ASSIGN_FLANGER"
+   },
+   {
+    "offset": 5,
+    "name": "GAFC_EXP3_ASSIGN_PHASER"
+   },
+   {
+    "offset": 6,
+    "name": "GAFC_EXP3_ASSIGN_UNI_V"
+   },
+   {
+    "offset": 7,
+    "name": "GAFC_EXP3_ASSIGN_TREMOLO"
+   },
+   {
+    "offset": 8,
+    "name": "GAFC_EXP3_ASSIGN_VIBRATO"
+   },
+   {
+    "offset": 9,
+    "name": "GAFC_EXP3_ASSIGN_ROTARY"
+   },
+   {
+    "offset": 10,
+    "name": "GAFC_EXP3_ASSIGN_RING_MOD"
+   },
+   {
+    "offset": 11,
+    "name": "GAFC_EXP3_ASSIGN_SLOW_GEAR"
+   },
+   {
+    "offset": 12,
+    "name": "GAFC_EXP3_ASSIGN_SLICER"
+   },
+   {
+    "offset": 13,
+    "name": "GAFC_EXP3_ASSIGN_COMP"
+   },
+   {
+    "offset": 14,
+    "name": "GAFC_EXP3_ASSIGN_LIMITER"
+   },
+   {
+    "offset": 15,
+    "name": "GAFC_EXP3_ASSIGN_T_WAH"
+   },
+   {
+    "offset": 16,
+    "name": "GAFC_EXP3_ASSIGN_AUTO_WAH"
+   },
+   {
+    "offset": 17,
+    "name": "GAFC_EXP3_ASSIGN_PEDAL_WAH"
+   },
+   {
+    "offset": 18,
+    "name": "GAFC_EXP3_ASSIGN_GEQ"
+   },
+   {
+    "offset": 19,
+    "name": "GAFC_EXP3_ASSIGN_PEQ"
+   },
+   {
+    "offset": 20,
+    "name": "GAFC_EXP3_ASSIGN_GUITAR_SIM"
+   },
+   {
+    "offset": 21,
+    "name": "GAFC_EXP3_ASSIGN_AC_GUITAR_SIM"
+   },
+   {
+    "offset": 22,
+    "name": "GAFC_EXP3_ASSIGN_AC_PROCESSOR"
+   },
+   {
+    "offset": 23,
+    "name": "GAFC_EXP3_ASSIGN_WAVE_SYNTH"
+   },
+   {
+    "offset": 24,
+    "name": "GAFC_EXP3_ASSIGN_OCTAVE"
+   },
+   {
+    "offset": 25,
+    "name": "GAFC_EXP3_ASSIGN_PITCH_SHIFTER"
+   },
+   {
+    "offset": 26,
+    "name": "GAFC_EXP3_ASSIGN_HARMONIST"
+   },
+   {
+    "offset": 27,
+    "name": "GAFC_EXP3_ASSIGN_HUMANIZER"
+   },
+   {
+    "offset": 28,
+    "name": "GAFC_EXP3_ASSIGN_EVH_PHASER"
+   },
+   {
+    "offset": 29,
+    "name": "GAFC_EXP3_ASSIGN_EVH_FLANGER"
+   },
+   {
+    "offset": 30,
+    "name": "GAFC_EXP3_ASSIGN_EVH_WAH"
+   },
+   {
+    "offset": 31,
+    "name": "GAFC_EXP3_ASSIGN_DC30"
+   },
+   {
+    "offset": 32,
+    "name": "GAFC_EXP3_ASSIGN_HEAVY_OCT"
+   },
+   {
+    "offset": 33,
+    "name": "GAFC_EXP3_ASSIGN_PEDAL_BEND"
+   }
+  ],
+  "GAFCEXP3ASGNMINMAX": [
+   {
+    "offset": 0,
+    "name": "GAFC_EXP3_ASSIGN_BOOSTER_MIN"
+   },
+   {
+    "offset": 1,
+    "name": "GAFC_EXP3_ASSIGN_BOOSTER_MAX"
+   },
+   {
+    "offset": 2,
+    "name": "js"
+   },
+   {
+    "offset": 4,
+    "name": "ks"
+   },
+   {
+    "offset": 6,
+    "name": "ls"
+   },
+   {
+    "offset": 8,
+    "name": "ms"
+   },
+   {
+    "offset": 10,
+    "name": "GAFC_EXP3_ASSIGN_CHORUS_MIN"
+   },
+   {
+    "offset": 11,
+    "name": "GAFC_EXP3_ASSIGN_CHORUS_MAX"
+   },
+   {
+    "offset": 12,
+    "name": "GAFC_EXP3_ASSIGN_FLANGER_MIN"
+   },
+   {
+    "offset": 13,
+    "name": "GAFC_EXP3_ASSIGN_FLANGER_MAX"
+   },
+   {
+    "offset": 14,
+    "name": "GAFC_EXP3_ASSIGN_PHASER_MIN"
+   },
+   {
+    "offset": 15,
+    "name": "GAFC_EXP3_ASSIGN_PHASER_MAX"
+   },
+   {
+    "offset": 16,
+    "name": "GAFC_EXP3_ASSIGN_UNI_V_MIN"
+   },
+   {
+    "offset": 17,
+    "name": "GAFC_EXP3_ASSIGN_UNI_V_MAX"
+   },
+   {
+    "offset": 18,
+    "name": "GAFC_EXP3_ASSIGN_TREMOLO_MIN"
+   },
+   {
+    "offset": 19,
+    "name": "GAFC_EXP3_ASSIGN_TREMOLO_MAX"
+   },
+   {
+    "offset": 20,
+    "name": "GAFC_EXP3_ASSIGN_VIBRATO_MIN"
+   },
+   {
+    "offset": 21,
+    "name": "GAFC_EXP3_ASSIGN_VIBRATO_MAX"
+   },
+   {
+    "offset": 22,
+    "name": "GAFC_EXP3_ASSIGN_ROTARY_MIN"
+   },
+   {
+    "offset": 23,
+    "name": "GAFC_EXP3_ASSIGN_ROTARY_MAX"
+   },
+   {
+    "offset": 24,
+    "name": "GAFC_EXP3_ASSIGN_RING_MOD_MIN"
+   },
+   {
+    "offset": 25,
+    "name": "GAFC_EXP3_ASSIGN_RING_MOD_MAX"
+   },
+   {
+    "offset": 26,
+    "name": "GAFC_EXP3_ASSIGN_SLOW_GEAR_MIN"
+   },
+   {
+    "offset": 27,
+    "name": "GAFC_EXP3_ASSIGN_SLOW_GEAR_MAX"
+   },
+   {
+    "offset": 28,
+    "name": "GAFC_EXP3_ASSIGN_SLICER_MIN"
+   },
+   {
+    "offset": 29,
+    "name": "GAFC_EXP3_ASSIGN_SLICER_MAX"
+   },
+   {
+    "offset": 30,
+    "name": "GAFC_EXP3_ASSIGN_COMP_MIN"
+   },
+   {
+    "offset": 31,
+    "name": "GAFC_EXP3_ASSIGN_COMP_MAX"
+   },
+   {
+    "offset": 32,
+    "name": "GAFC_EXP3_ASSIGN_LIMITER_MIN"
+   },
+   {
+    "offset": 33,
+    "name": "GAFC_EXP3_ASSIGN_LIMITER_MAX"
+   },
+   {
+    "offset": 34,
+    "name": "GAFC_EXP3_ASSIGN_T_WAH_MIN"
+   },
+   {
+    "offset": 35,
+    "name": "GAFC_EXP3_ASSIGN_T_WAH_MAX"
+   },
+   {
+    "offset": 36,
+    "name": "GAFC_EXP3_ASSIGN_AUTO_WAH_MIN"
+   },
+   {
+    "offset": 37,
+    "name": "GAFC_EXP3_ASSIGN_AUTO_WAH_MAX"
+   },
+   {
+    "offset": 38,
+    "name": "GAFC_EXP3_ASSIGN_PEDAL_WAH_MIN"
+   },
+   {
+    "offset": 39,
+    "name": "GAFC_EXP3_ASSIGN_PEDAL_WAH_MAX"
+   },
+   {
+    "offset": 40,
+    "name": "GAFC_EXP3_ASSIGN_GEQ_MIN"
+   },
+   {
+    "offset": 41,
+    "name": "GAFC_EXP3_ASSIGN_GEQ_MAX"
+   },
+   {
+    "offset": 42,
+    "name": "GAFC_EXP3_ASSIGN_PEQ_MIN"
+   },
+   {
+    "offset": 43,
+    "name": "GAFC_EXP3_ASSIGN_PEQ_MAX"
+   },
+   {
+    "offset": 44,
+    "name": "GAFC_EXP3_ASSIGN_GUITAR_SIM_MIN"
+   },
+   {
+    "offset": 45,
+    "name": "GAFC_EXP3_ASSIGN_GUITAR_SIM_MAX"
+   },
+   {
+    "offset": 46,
+    "name": "GAFC_EXP3_ASSIGN_AC_GUITAR_SIM_MIN"
+   },
+   {
+    "offset": 47,
+    "name": "GAFC_EXP3_ASSIGN_AC_GUITAR_SIM_MAX"
+   },
+   {
+    "offset": 48,
+    "name": "GAFC_EXP3_ASSIGN_AC_PROCESSOR_MIN"
+   },
+   {
+    "offset": 49,
+    "name": "GAFC_EXP3_ASSIGN_AC_PROCESSOR_MAX"
+   },
+   {
+    "offset": 50,
+    "name": "GAFC_EXP3_ASSIGN_WAVE_SYNTH_MIN"
+   },
+   {
+    "offset": 51,
+    "name": "GAFC_EXP3_ASSIGN_WAVE_SYNTH_MAX"
+   },
+   {
+    "offset": 52,
+    "name": "GAFC_EXP3_ASSIGN_OCTAVE_MIN"
+   },
+   {
+    "offset": 53,
+    "name": "GAFC_EXP3_ASSIGN_OCTAVE_MAX"
+   },
+   {
+    "offset": 54,
+    "name": "ft"
+   },
+   {
+    "offset": 56,
+    "name": "gt"
+   },
+   {
+    "offset": 58,
+    "name": "ht"
+   },
+   {
+    "offset": 60,
+    "name": "jt"
+   },
+   {
+    "offset": 62,
+    "name": "GAFC_EXP3_ASSIGN_HUMANIZER_MIN"
+   },
+   {
+    "offset": 63,
+    "name": "GAFC_EXP3_ASSIGN_HUMANIZER_MAX"
+   },
+   {
+    "offset": 64,
+    "name": "GAFC_EXP3_ASSIGN_EVH_PHASER_MIN"
+   },
+   {
+    "offset": 65,
+    "name": "GAFC_EXP3_ASSIGN_EVH_PHASER_MAX"
+   },
+   {
+    "offset": 66,
+    "name": "GAFC_EXP3_ASSIGN_EVH_FLANGER_MIN"
+   },
+   {
+    "offset": 67,
+    "name": "GAFC_EXP3_ASSIGN_EVH_FLANGER_MAX"
+   },
+   {
+    "offset": 68,
+    "name": "GAFC_EXP3_ASSIGN_EVH_WAH_MIN"
+   },
+   {
+    "offset": 69,
+    "name": "GAFC_EXP3_ASSIGN_EVH_WAH_MAX"
+   },
+   {
+    "offset": 70,
+    "name": "st"
+   },
+   {
+    "offset": 72,
+    "name": "tt"
+   },
+   {
+    "offset": 74,
+    "name": "GAFC_EXP3_ASSIGN_HEAVY_OCT_MIN"
+   },
+   {
+    "offset": 75,
+    "name": "GAFC_EXP3_ASSIGN_HEAVY_OCT_MAX"
+   },
+   {
+    "offset": 76,
+    "name": "GAFC_EXP3_ASSIGN_PEDAL_BEND_MIN"
+   },
+   {
+    "offset": 77,
+    "name": "GAFC_EXP3_ASSIGN_PEDAL_BEND_MAX"
+   }
+  ],
+  "KNOBASGN": [
+   {
+    "offset": 0,
+    "name": "KNOB_ASSIGN_BOOSTER"
+   },
+   {
+    "offset": 1,
+    "name": "KNOB_ASSIGN_DELAY"
+   },
+   {
+    "offset": 2,
+    "name": "KNOB_ASSIGN_REVERB"
+   },
+   {
+    "offset": 3,
+    "name": "KNOB_ASSIGN_CHORUS"
+   },
+   {
+    "offset": 4,
+    "name": "KNOB_ASSIGN_FLANGER"
+   },
+   {
+    "offset": 5,
+    "name": "KNOB_ASSIGN_PHASER"
+   },
+   {
+    "offset": 6,
+    "name": "KNOB_ASSIGN_UNI_V"
+   },
+   {
+    "offset": 7,
+    "name": "KNOB_ASSIGN_TREMOLO"
+   },
+   {
+    "offset": 8,
+    "name": "KNOB_ASSIGN_VIBRATO"
+   },
+   {
+    "offset": 9,
+    "name": "KNOB_ASSIGN_ROTARY"
+   },
+   {
+    "offset": 10,
+    "name": "KNOB_ASSIGN_RING_MOD"
+   },
+   {
+    "offset": 11,
+    "name": "KNOB_ASSIGN_SLOW_GEAR"
+   },
+   {
+    "offset": 12,
+    "name": "KNOB_ASSIGN_SLICER"
+   },
+   {
+    "offset": 13,
+    "name": "KNOB_ASSIGN_COMP"
+   },
+   {
+    "offset": 14,
+    "name": "KNOB_ASSIGN_LIMITER"
+   },
+   {
+    "offset": 15,
+    "name": "KNOB_ASSIGN_T_WAH"
+   },
+   {
+    "offset": 16,
+    "name": "KNOB_ASSIGN_AUTO_WAH"
+   },
+   {
+    "offset": 17,
+    "name": "KNOB_ASSIGN_PEDAL_WAH"
+   },
+   {
+    "offset": 18,
+    "name": "KNOB_ASSIGN_GEQ"
+   },
+   {
+    "offset": 19,
+    "name": "KNOB_ASSIGN_PEQ"
+   },
+   {
+    "offset": 20,
+    "name": "KNOB_ASSIGN_GUITAR_SIM"
+   },
+   {
+    "offset": 21,
+    "name": "KNOB_ASSIGN_AC_GUITAR_SIM"
+   },
+   {
+    "offset": 22,
+    "name": "KNOB_ASSIGN_AC_PROCESSOR"
+   },
+   {
+    "offset": 23,
+    "name": "KNOB_ASSIGN_WAVE_SYNTH"
+   },
+   {
+    "offset": 24,
+    "name": "KNOB_ASSIGN_OCTAVE"
+   },
+   {
+    "offset": 25,
+    "name": "KNOB_ASSIGN_PITCH_SHIFTER"
+   },
+   {
+    "offset": 26,
+    "name": "KNOB_ASSIGN_HARMONIST"
+   },
+   {
+    "offset": 27,
+    "name": "KNOB_ASSIGN_HUMANIZER"
+   },
+   {
+    "offset": 28,
+    "name": "KNOB_ASSIGN_EVH_PHASER"
+   },
+   {
+    "offset": 29,
+    "name": "KNOB_ASSIGN_EVH_FLANGER"
+   },
+   {
+    "offset": 30,
+    "name": "KNOB_ASSIGN_EVH_WAH"
+   },
+   {
+    "offset": 31,
+    "name": "KNOB_ASSIGN_DC30"
+   },
+   {
+    "offset": 32,
+    "name": "KNOB_ASSIGN_HEAVY_OCT"
+   },
+   {
+    "offset": 33,
+    "name": "KNOB_ASSIGN_PEDAL_BEND"
+   }
+  ],
+  "PATCH_0": [
+   {
+    "offset": 0,
+    "name": "OD_DS_ON_OFF"
+   },
+   {
+    "offset": 1,
+    "name": "OD_DS_TYPE"
+   },
+   {
+    "offset": 2,
+    "name": "OD_DS_DRIVE"
+   },
+   {
+    "offset": 3,
+    "name": "OD_DS_BOTTOM"
+   },
+   {
+    "offset": 4,
+    "name": "OD_DS_TONE"
+   },
+   {
+    "offset": 5,
+    "name": "OD_DS_SOLO_SW"
+   },
+   {
+    "offset": 6,
+    "name": "OD_DS_SOLO_LEVEL"
+   },
+   {
+    "offset": 7,
+    "name": "OD_DS_EFFECT_LEVEL"
+   },
+   {
+    "offset": 8,
+    "name": "OD_DS_DIRECT_MIX"
+   },
+   {
+    "offset": 9,
+    "name": "OD_DS_CUSTOM_TYPE"
+   },
+   {
+    "offset": 10,
+    "name": "OD_DS_CUSTOM_BOTTOM"
+   },
+   {
+    "offset": 11,
+    "name": "OD_DS_CUSTOM_TOP"
+   },
+   {
+    "offset": 12,
+    "name": "OD_DS_CUSTOM_LOW"
+   },
+   {
+    "offset": 13,
+    "name": "OD_DS_CUSTOM_HIGH"
+   },
+   {
+    "offset": 14,
+    "name": "OD_DS_CUSTOM_CHARACTER"
+   },
+   {
+    "offset": 16,
+    "name": "PREAMP_A_ON_OFF"
+   },
+   {
+    "offset": 17,
+    "name": "PREAMP_A_TYPE"
+   },
+   {
+    "offset": 18,
+    "name": "PREAMP_A_GAIN"
+   },
+   {
+    "offset": 19,
+    "name": "PRM_PREAMP_A_PICKING_NUANCE"
+   },
+   {
+    "offset": 20,
+    "name": "PREAMP_A_BASS"
+   },
+   {
+    "offset": 21,
+    "name": "PREAMP_A_MIDDLE"
+   },
+   {
+    "offset": 22,
+    "name": "PREAMP_A_TREBLE"
+   },
+   {
+    "offset": 23,
+    "name": "PREAMP_A_PRESENCE"
+   },
+   {
+    "offset": 24,
+    "name": "PREAMP_A_LEVEL"
+   },
+   {
+    "offset": 25,
+    "name": "PREAMP_A_BRIGHT"
+   },
+   {
+    "offset": 26,
+    "name": "PRM_PREAMP_A_GAIN_SW"
+   },
+   {
+    "offset": 27,
+    "name": "PREAMP_A_SOLO_SW"
+   },
+   {
+    "offset": 28,
+    "name": "PREAMP_A_SOLO_LEVEL"
+   },
+   {
+    "offset": 29,
+    "name": "PRM_PREAMP_A_SP_TYPE"
+   },
+   {
+    "offset": 30,
+    "name": "PRM_PREAMP_A_MIC_TYPE"
+   },
+   {
+    "offset": 31,
+    "name": "PRM_PREAMP_A_MIC_DIS"
+   },
+   {
+    "offset": 32,
+    "name": "PRM_PREAMP_A_MIC_POS"
+   },
+   {
+    "offset": 33,
+    "name": "PRM_PREAMP_A_MIC_LEVEL"
+   },
+   {
+    "offset": 34,
+    "name": "PRM_PREAMP_A_DIRECT_LEVEL"
+   },
+   {
+    "offset": 35,
+    "name": "PRM_PRECUSTOM_A_TYPE"
+   },
+   {
+    "offset": 36,
+    "name": "PRM_PRECUSTOM_A_BOTTOM"
+   },
+   {
+    "offset": 37,
+    "name": "PRM_PRECUSTOM_A_EDGE"
+   },
+   {
+    "offset": 38,
+    "name": "PRM_PRECUSTOM_A_BASS_FREQ"
+   },
+   {
+    "offset": 39,
+    "name": "PRM_PRECUSTOM_A_TREBLE_FREQ"
+   },
+   {
+    "offset": 40,
+    "name": "PRM_PRECUSTOM_A_PREAMP_LOW"
+   },
+   {
+    "offset": 41,
+    "name": "PRM_PRECUSTOM_A_PREAMP_HIGH"
+   },
+   {
+    "offset": 42,
+    "name": "PRM_PREAMP_A_CHARACTER"
+   },
+   {
+    "offset": 43,
+    "name": "PRM_SPCUSTOM_A_SIZE"
+   },
+   {
+    "offset": 44,
+    "name": "PRM_SPCUSTOM_A_COLOR_LOW"
+   },
+   {
+    "offset": 45,
+    "name": "PRM_SPCUSTOM_A_COLOR_HIGH"
+   },
+   {
+    "offset": 46,
+    "name": "PRM_SPCUSTOM_A_SP_NUM"
+   },
+   {
+    "offset": 47,
+    "name": "PRM_SPCUSTOM_A_CABINET"
+   },
+   {
+    "offset": 48,
+    "name": "EQ_ON_OFF"
+   },
+   {
+    "offset": 49,
+    "name": "EQ_TYPE"
+   },
+   {
+    "offset": 50,
+    "name": "EQ_LOW_CUT"
+   },
+   {
+    "offset": 51,
+    "name": "EQ_LOW_GAIN"
+   },
+   {
+    "offset": 52,
+    "name": "EQ_LOW_MID_FREQ"
+   },
+   {
+    "offset": 53,
+    "name": "EQ_LOW_MID_Q"
+   },
+   {
+    "offset": 54,
+    "name": "EQ_LOW_MID_GAIN"
+   },
+   {
+    "offset": 55,
+    "name": "EQ_HIGH_MID_FREQ"
+   },
+   {
+    "offset": 56,
+    "name": "EQ_HIGH_MID_Q"
+   },
+   {
+    "offset": 57,
+    "name": "EQ_HIGH_MID_GAIN"
+   },
+   {
+    "offset": 58,
+    "name": "EQ_HIGH_GAIN"
+   },
+   {
+    "offset": 59,
+    "name": "EQ_HIGH_CUT"
+   },
+   {
+    "offset": 60,
+    "name": "EQ_LEVEL"
+   },
+   {
+    "offset": 61,
+    "name": "EQ_GEQ_31HZ"
+   },
+   {
+    "offset": 62,
+    "name": "EQ_GEQ_62HZ"
+   },
+   {
+    "offset": 63,
+    "name": "EQ_GEQ_125HZ"
+   },
+   {
+    "offset": 64,
+    "name": "EQ_GEQ_250HZ"
+   },
+   {
+    "offset": 65,
+    "name": "EQ_GEQ_500HZ"
+   },
+   {
+    "offset": 66,
+    "name": "EQ_GEQ_1KHZ"
+   },
+   {
+    "offset": 67,
+    "name": "EQ_GEQ_2KHZ"
+   },
+   {
+    "offset": 68,
+    "name": "EQ_GEQ_4KHZ"
+   },
+   {
+    "offset": 69,
+    "name": "EQ_GEQ_8KHZ"
+   },
+   {
+    "offset": 70,
+    "name": "EQ_GEQ_16KHZ"
+   },
+   {
+    "offset": 71,
+    "name": "EQ_GEQ_LEVEL"
+   }
+  ],
+  "PATCH_1": [
+   {
+    "offset": 0,
+    "name": "REVERB_ON_OFF"
+   },
+   {
+    "offset": 1,
+    "name": "REVERB_TYPE"
+   },
+   {
+    "offset": 2,
+    "name": "REVERB_TIME"
+   },
+   {
+    "offset": 3,
+    "name": "Bb"
+   },
+   {
+    "offset": 5,
+    "name": "REVERB_LOW_CUT"
+   },
+   {
+    "offset": 6,
+    "name": "REVERB_HIGH_CUT"
+   },
+   {
+    "offset": 7,
+    "name": "REVERB_DENSITY"
+   },
+   {
+    "offset": 8,
+    "name": "REVERB_EFFECT_LEVEL"
+   },
+   {
+    "offset": 9,
+    "name": "REVERB_DIRECT_MIX"
+   },
+   {
+    "offset": 11,
+    "name": "REVERB_SPRING_COLOR"
+   },
+   {
+    "offset": 16,
+    "name": "PEDAL_FX_ON_OFF"
+   },
+   {
+    "offset": 17,
+    "name": "PEDAL_FX_TYPE"
+   },
+   {
+    "offset": 18,
+    "name": "PEDAL_FX_WAH_TYPE"
+   },
+   {
+    "offset": 19,
+    "name": "PEDAL_FX_WAH_POSITION"
+   },
+   {
+    "offset": 20,
+    "name": "PEDAL_FX_WAH_PEDAL_MIN"
+   },
+   {
+    "offset": 21,
+    "name": "PEDAL_FX_WAH_PEDAL_MAX"
+   },
+   {
+    "offset": 22,
+    "name": "PEDAL_FX_WAH_EFFECT_LEVEL"
+   },
+   {
+    "offset": 23,
+    "name": "PEDAL_FX_WAH_DIRECT_MIX"
+   },
+   {
+    "offset": 24,
+    "name": "PEDAL_FX_PEDAL_BEND_PITCH"
+   },
+   {
+    "offset": 25,
+    "name": "PEDAL_FX_PEDAL_BEND_POSITION"
+   },
+   {
+    "offset": 26,
+    "name": "PEDAL_FX_PEDAL_BEND_EFFECT_LEVEL"
+   },
+   {
+    "offset": 27,
+    "name": "PEDAL_FX_PEDAL_BEND_DIRECT_MIX"
+   },
+   {
+    "offset": 28,
+    "name": "PEDAL_FX_EVH95_POSITION"
+   },
+   {
+    "offset": 29,
+    "name": "PEDAL_FX_EVH95_PEDAL_MIN"
+   },
+   {
+    "offset": 30,
+    "name": "PEDAL_FX_EVH95_PEDAL_MAX"
+   },
+   {
+    "offset": 31,
+    "name": "PEDAL_FX_EVH95_EFFECT_LEVEL"
+   },
+   {
+    "offset": 32,
+    "name": "PEDAL_FX_EVH95_DIRECT_MIX"
+   },
+   {
+    "offset": 33,
+    "name": "PRM_FOOT_VOLUME_VOL_LEVEL"
+   },
+   {
+    "offset": 34,
+    "name": "SEND_RETURN_ON_OFF"
+   },
+   {
+    "offset": 35,
+    "name": "SEND_RETURN_MODE"
+   },
+   {
+    "offset": 36,
+    "name": "SEND_RETURN_SEND_LEVEL"
+   },
+   {
+    "offset": 37,
+    "name": "SEND_RETURN_RETURN_LEVEL"
+   },
+   {
+    "offset": 38,
+    "name": "NS1_ON_OFF"
+   },
+   {
+    "offset": 39,
+    "name": "NS1_THRESHOLD"
+   },
+   {
+    "offset": 40,
+    "name": "NS1_RELEASE"
+   },
+   {
+    "offset": 48,
+    "name": "PRM_PATCH_LEVEL"
+   },
+   {
+    "offset": 49,
+    "name": "MASTER_KEY"
+   },
+   {
+    "offset": 84,
+    "name": "PRM_SOLO_SW"
+   },
+   {
+    "offset": 85,
+    "name": "PRM_SOLO_LEVEL"
+   },
+   {
+    "offset": 86,
+    "name": "PRM_CONTOUR_SW"
+   },
+   {
+    "offset": 87,
+    "name": "PRM_CONTOUR_SELECT"
+   },
+   {
+    "offset": 88,
+    "name": "PRM_FS_FUNCTION_FS2"
+   },
+   {
+    "offset": 89,
+    "name": "PRM_POSITION_EQ2"
+   },
+   {
+    "offset": 90,
+    "name": "PRM_CONTOUR_FREQUENCY_SHIFT"
+   }
+  ],
+  "PATCH_2": [
+   {
+    "offset": 0,
+    "name": "CHAIN_PTN"
+   },
+   {
+    "offset": 1,
+    "name": "SEND_RETURN_POSITION"
+   },
+   {
+    "offset": 2,
+    "name": "EQ_POSITION"
+   },
+   {
+    "offset": 3,
+    "name": "PEDAL_FX_POSITION"
+   },
+   {
+    "offset": 4,
+    "name": "FXBOX_ASGN_FX1A_G"
+   },
+   {
+    "offset": 5,
+    "name": "FXBOX_ASGN_FX1A_R"
+   },
+   {
+    "offset": 6,
+    "name": "FXBOX_ASGN_FX1A_Y"
+   },
+   {
+    "offset": 7,
+    "name": "FXBOX_ASGN_FX1B_G"
+   },
+   {
+    "offset": 8,
+    "name": "FXBOX_ASGN_FX1B_R"
+   },
+   {
+    "offset": 9,
+    "name": "FXBOX_ASGN_FX1B_Y"
+   },
+   {
+    "offset": 10,
+    "name": "FXBOX_ASGN_FX2B_G"
+   },
+   {
+    "offset": 11,
+    "name": "FXBOX_ASGN_FX2B_R"
+   },
+   {
+    "offset": 12,
+    "name": "FXBOX_ASGN_FX2B_Y"
+   },
+   {
+    "offset": 13,
+    "name": "FXBOX_ASGN_FX2A_G"
+   },
+   {
+    "offset": 14,
+    "name": "FXBOX_ASGN_FX2A_R"
+   },
+   {
+    "offset": 15,
+    "name": "FXBOX_ASGN_FX2A_Y"
+   },
+   {
+    "offset": 16,
+    "name": "FXBOX_ASGN_FX3_G"
+   },
+   {
+    "offset": 17,
+    "name": "FXBOX_ASGN_FX3_R"
+   },
+   {
+    "offset": 18,
+    "name": "FXBOX_ASGN_FX3_Y"
+   },
+   {
+    "offset": 19,
+    "name": "FXBOX_ASGN_FX3B_G"
+   },
+   {
+    "offset": 20,
+    "name": "FXBOX_ASGN_FX3B_R"
+   },
+   {
+    "offset": 21,
+    "name": "FXBOX_ASGN_FX3B_Y"
+   },
+   {
+    "offset": 22,
+    "name": "FXBOX_LAYER_FX3_G"
+   },
+   {
+    "offset": 23,
+    "name": "FXBOX_LAYER_FX3_R"
+   },
+   {
+    "offset": 24,
+    "name": "FXBOX_LAYER_FX3_Y"
+   },
+   {
+    "offset": 25,
+    "name": "FXBOX_SEL_FX1A"
+   },
+   {
+    "offset": 26,
+    "name": "FXBOX_SEL_FX1B"
+   },
+   {
+    "offset": 27,
+    "name": "FXBOX_SEL_FX2B"
+   },
+   {
+    "offset": 28,
+    "name": "FXBOX_SEL_FX2A"
+   },
+   {
+    "offset": 29,
+    "name": "FXBOX_SEL_FX3"
+   },
+   {
+    "offset": 30,
+    "name": "PEDAL_FUNCTION_EXP_PEDAL"
+   },
+   {
+    "offset": 31,
+    "name": "PEDAL_FUNCTION_GAFC_EXP1"
+   },
+   {
+    "offset": 32,
+    "name": "PEDAL_FUNCTION_GAFC_EXP2"
+   },
+   {
+    "offset": 33,
+    "name": "PRM_FS_FUNCTION_GAFC_FS1"
+   },
+   {
+    "offset": 34,
+    "name": "PRM_FS_FUNCTION_GAFC_FS2"
+   },
+   {
+    "offset": 35,
+    "name": "PRM_CABINET_RESONANCE"
+   }
+  ],
+  "PATCH_MK2V2": [
+   {
+    "offset": 0,
+    "name": "PRM_SOLO_EQ_POSITION"
+   },
+   {
+    "offset": 1,
+    "name": "PRM_SOLO_EQ_SW"
+   },
+   {
+    "offset": 2,
+    "name": "PRM_SOLO_EQ_LOW_CUT"
+   },
+   {
+    "offset": 3,
+    "name": "PRM_SOLO_EQ_LOW_GAIN"
+   },
+   {
+    "offset": 4,
+    "name": "PRM_SOLO_EQ_MID_FREQ"
+   },
+   {
+    "offset": 5,
+    "name": "PRM_SOLO_EQ_MID_Q"
+   },
+   {
+    "offset": 6,
+    "name": "PRM_SOLO_EQ_MID_GAIN"
+   },
+   {
+    "offset": 7,
+    "name": "PRM_SOLO_EQ_HIGH_GAIN"
+   },
+   {
+    "offset": 8,
+    "name": "PRM_SOLO_EQ_HIGH_CUT"
+   },
+   {
+    "offset": 9,
+    "name": "PRM_SOLO_EQ_LEVEL"
+   },
+   {
+    "offset": 10,
+    "name": "PRM_SOLO_DELAY_SW"
+   },
+   {
+    "offset": 11,
+    "name": "PRM_SOLO_DELAY_CARRYOVER"
+   },
+   {
+    "offset": 12,
+    "name": "Pz"
+   },
+   {
+    "offset": 14,
+    "name": "PRM_SOLO_DELAY_FEEDBACK"
+   },
+   {
+    "offset": 15,
+    "name": "PRM_SOLO_DELAY_EFFECT_LEVEL"
+   },
+   {
+    "offset": 16,
+    "name": "PRM_SOLO_DELAY_DIRECT_LEVEL"
+   },
+   {
+    "offset": 17,
+    "name": "PRM_SOLO_DELAY_FILTER"
+   },
+   {
+    "offset": 18,
+    "name": "PRM_SOLO_DELAY_HIGH_CUT"
+   },
+   {
+    "offset": 19,
+    "name": "PRM_SOLO_DELAY_MOD_SW"
+   },
+   {
+    "offset": 20,
+    "name": "PRM_SOLO_DELAY_MOD_RATE"
+   },
+   {
+    "offset": 21,
+    "name": "PRM_SOLO_DELAY_MOD_DEPTH"
+   }
+  ],
+  "PATCH_NAME": [
+   {
+    "offset": 0,
+    "name": "PATCH_NAME1"
+   },
+   {
+    "offset": 1,
+    "name": "PATCH_NAME2"
+   },
+   {
+    "offset": 2,
+    "name": "PATCH_NAME3"
+   },
+   {
+    "offset": 3,
+    "name": "PATCH_NAME4"
+   },
+   {
+    "offset": 4,
+    "name": "PATCH_NAME5"
+   },
+   {
+    "offset": 5,
+    "name": "PATCH_NAME6"
+   },
+   {
+    "offset": 6,
+    "name": "PATCH_NAME7"
+   },
+   {
+    "offset": 7,
+    "name": "PATCH_NAME8"
+   },
+   {
+    "offset": 8,
+    "name": "PATCH_NAME9"
+   },
+   {
+    "offset": 9,
+    "name": "PATCH_NAME10"
+   },
+   {
+    "offset": 10,
+    "name": "PATCH_NAME11"
+   },
+   {
+    "offset": 11,
+    "name": "PATCH_NAME12"
+   },
+   {
+    "offset": 12,
+    "name": "PATCH_NAME13"
+   },
+   {
+    "offset": 13,
+    "name": "PATCH_NAME14"
+   },
+   {
+    "offset": 14,
+    "name": "PATCH_NAME15"
+   },
+   {
+    "offset": 15,
+    "name": "PATCH_NAME16"
+   }
+  ],
+  "STATUS": [
+   {
+    "offset": 0,
+    "name": "PRM_KNOB_POS_TYPE"
+   },
+   {
+    "offset": 1,
+    "name": "PRM_KNOB_POS_GAIN"
+   },
+   {
+    "offset": 2,
+    "name": "PRM_KNOB_POS_VOLUME"
+   },
+   {
+    "offset": 3,
+    "name": "PRM_KNOB_POS_BASS"
+   },
+   {
+    "offset": 4,
+    "name": "PRM_KNOB_POS_MIDDLE"
+   },
+   {
+    "offset": 5,
+    "name": "PRM_KNOB_POS_TREBLE"
+   },
+   {
+    "offset": 6,
+    "name": "PRM_KNOB_POS_PRESENCE"
+   },
+   {
+    "offset": 7,
+    "name": "PRM_KNOB_POS_BOOST"
+   },
+   {
+    "offset": 8,
+    "name": "PRM_KNOB_POS_MOD"
+   },
+   {
+    "offset": 9,
+    "name": "PRM_KNOB_POS_FX"
+   },
+   {
+    "offset": 10,
+    "name": "PRM_KNOB_POS_DELAY"
+   },
+   {
+    "offset": 11,
+    "name": "PRM_KNOB_POS_REVERB"
+   },
+   {
+    "offset": 12,
+    "name": "PRM_LED_STATE_VARI"
+   },
+   {
+    "offset": 13,
+    "name": "PRM_LED_STATE_BOOST"
+   },
+   {
+    "offset": 14,
+    "name": "PRM_LED_STATE_MOD"
+   },
+   {
+    "offset": 15,
+    "name": "PRM_LED_STATE_FX"
+   },
+   {
+    "offset": 16,
+    "name": "PRM_LED_STATE_DELAY"
+   },
+   {
+    "offset": 17,
+    "name": "PRM_LED_STATE_REVERB"
+   }
+  ]
+ }
+}

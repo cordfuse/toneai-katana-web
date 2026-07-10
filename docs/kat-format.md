@@ -183,6 +183,37 @@ but we have **no MkII/MkIII sample files** to validate a writer against yet. The
 value→name enum tables above are shared across generations (the 2nd/3rd/4th
 constructor args give the per-gen stored value).
 
+### MkII table extracted (2026-07-10)
+
+The MkII section+offset table is now **pulled from the bytecode** — 1486 params
+parsed from `h.java` method `A()` (`l.b` section in `f5440k`, offset in
+`f5441l`). Persisted at `nodejs/lib/patch/mk2/param-table.json`
+(APK sha256 recorded in its `_meta`). Confidence is **derived**: recovered from
+bytecode, **not yet round-tripped** against a ground-truth `.tsl`.
+
+Key structural finding: **MkII is section-addressed, not a flat image.** Each
+param lives at an offset *within* a named section, and those sections are the
+`.tsl` keys. Core layout:
+
+| section | holds | example offsets |
+|---------|-------|-----------------|
+| `PATCH_NAME` | 16-byte patch name | 0–15 |
+| `PATCH_0` | OD/booster, preamp A (+mic/cab), EQ | OD_DS 0–14 · PREAMP_A 16–47 · EQ 48–71 |
+| `PATCH_1` | reverb, pedal FX | REVERB 0–11 · PEDAL_FX 16+ |
+| `PATCH_2` | further per-patch params | — |
+| `DELAY_1` / `DELAY_2` | the two delay blocks | DELAY_TYPE @1 |
+| `FX_1` / `FX_2` | the two MOD/FX blocks | FX_TYPE @1 |
+| `EQ_2`, `STATUS`, `CHAIN_DATA`, `*ASGN` | EQ2, status, chain routing, assigns | — |
+
+Two divergences from MkI worth noting: **reverb is a first-class block** in
+`PATCH_1` (MkII names it `REVERB_*`), and there is **no `PREAMP_B`** — this MkII
+build is single-amp, so a patch model's channel B is unused for MkII.
+
+Still needed for a byte-accurate writer: per-section byte sizes + multi-byte
+(`v`-enum) encodings, the `.tsl` JSON wrapper (`g.java` import/export), the
+per-generation enum stored values (`k1.*`), and finally a ground-truth `.tsl`
+export to round-trip against.
+
 ## `.kat` ↔ SysEx ↔ `.tsl`
 
 - **`.kat`** = the flat parameter image, no framing. Writing to the amp wraps it
