@@ -36,7 +36,7 @@ providers:
     label: Anthropic
     category: cloud
     envKey: ANTHROPIC_API_KEY
-    defaultModel: claude-opus-4-8
+    defaultModel: claude-sonnet-5
     models:
       - { id: claude-opus-4-8,  label: Claude Opus 4.8 }
       - { id: claude-sonnet-5,  label: Claude Sonnet 5 }

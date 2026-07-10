@@ -1043,7 +1043,9 @@ export default function Home({
   // Both are still sent on the wire so the server can validate them against
   // config/providers.yaml rather than silently accepting anything.
   const [provider, setProviderState] = useState<string>('anthropic')
-  const [model, setModelState] = useState<string>('claude-opus-4-8')
+  // Pre-hydration placeholder only; replaced by the provider's real defaultModel
+  // (env-driven, Sonnet) once /api/providers resolves.
+  const [model, setModelState] = useState<string>('claude-sonnet-5')
   const [modelOpen, setModelOpen] = useState(false)
   // Live model list per provider id — populated lazily when the dropdown
   // opens. For local providers this is the actual installed-models list
@@ -1201,7 +1203,7 @@ export default function Home({
         const chosenInfo = list.find(p => p.id === chosen)
         const storedModel = getSelectedModel(chosen)
         const storedModelValid = storedModel && chosenInfo?.models.some(m => m.id === storedModel)
-        setModelState(storedModelValid ? storedModel! : (chosenInfo?.defaultModel ?? 'claude-opus-4-8'))
+        setModelState(storedModelValid ? storedModel! : (chosenInfo?.defaultModel ?? 'claude-sonnet-5'))
       } catch (e) {
         console.error('providers fetch failed:', e)
       }

@@ -15,6 +15,7 @@ import { anthropic, createAnthropic } from '@ai-sdk/anthropic'
 
 import { tavilySearch, type SearchResult } from './web-search'
 import { getToolsForServers, executeMcpToolCall, isMcpToolName } from './mcp'
+import { DEFAULT_MODEL } from './models'
 import {
   buildToneTool, buildTonePatchEvent, TONE_TOOL_NAME,
   type ToneContext, type TonePatchEvent,
@@ -65,6 +66,18 @@ const FACTORIES: Record<string, InternalModelFactory> = {
 }
 
 export const PROVIDERS: ProviderInfo[] = loadProvidersConfig(FACTORIES)
+
+// Make CHATFRAME_MODEL the authoritative default for the default provider, so
+// the client (which reads defaultModel via /api/providers) and the server agree
+// on one env-driven model. Ignored if the env model isn't in that provider's
+// list — YAML stays the fallback.
+const DEFAULT_PROVIDER_ID = process.env.CHATFRAME_PROVIDER ?? 'anthropic'
+{
+  const dp = PROVIDERS.find(p => p.id === DEFAULT_PROVIDER_ID)
+  if (dp && dp.models.some(m => m.id === DEFAULT_MODEL)) {
+    dp.defaultModel = DEFAULT_MODEL
+  }
+}
 
 export function findProvider(id: string): ProviderInfo | undefined {
   return PROVIDERS.find(p => p.id === id)
@@ -337,7 +350,7 @@ export type StreamEvent =
 export async function runChat(
   messages: ChatMessage[],
   providerId: string = 'anthropic',
-  model: string = 'claude-opus-4-8',
+  model: string = DEFAULT_MODEL,
   systemPrompt: string = 'You are a helpful AI assistant.',
   options: RunChatOptions = {},
 ): Promise<ChatResult> {
@@ -380,7 +393,7 @@ export async function runChat(
 export async function* runChatStream(
   messages: ChatMessage[],
   providerId: string = 'anthropic',
-  model: string = 'claude-opus-4-8',
+  model: string = DEFAULT_MODEL,
   systemPrompt: string = 'You are a helpful AI assistant.',
   options: RunChatOptions = {},
 ): AsyncGenerator<StreamEvent, void, unknown> {

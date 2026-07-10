@@ -12,6 +12,7 @@ import { resolveLocale } from '@/lib/i18n/server'
 import { katanaSystemPrompt, type ToneContext } from '@/lib/server/tone'
 import { KATANA_DEVICES, type KatanaDevice } from '@/lib/storage'
 import { slog } from '@/lib/server/log'
+import { DEFAULT_MODEL } from '@/lib/server/models'
 
 const DEFAULT_DEVICE: KatanaDevice = 'katana-100-mk2'
 
@@ -47,7 +48,9 @@ function resolveToneContext(rawDevice: unknown, rawRig: unknown): ToneContext {
 export const maxDuration = 300
 
 const ENV_PROVIDER = process.env.CHATFRAME_PROVIDER ?? 'anthropic'
-const ENV_MODEL = process.env.CHATFRAME_MODEL ?? 'claude-sonnet-4-6'
+// The default chat model — env-driven (CHATFRAME_MODEL), Sonnet by default.
+// Same source the provider registry uses, so client and server agree.
+const ENV_MODEL = DEFAULT_MODEL
 
 // Auto-append a one-line language instruction so the model knows to
 // respond in the user's chosen UI language. English is the no-op default
