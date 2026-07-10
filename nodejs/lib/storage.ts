@@ -379,10 +379,10 @@ export function setEnabledMcps(ids: string[]) {
 
 // ─── Generation settings (user overrides — operator defaults via env) ────────
 //
-// All three are `null` when the user hasn't set them; in that case the server
-// falls back to CHATFRAME_SYSTEM_PROMPT / CHATFRAME_TEMPERATURE / CHATFRAME_MAX_TOKENS env
-// vars, then to hardcoded defaults. Read/written as strings since localStorage
-// is string-only — callers handle conversion.
+// Both are `null` when the user hasn't set them; in that case the server uses
+// its own defaults (temperature falls back to CHATFRAME_TEMPERATURE, then a
+// hardcoded default; the tone designer's system prompt is fixed server-side).
+// Read/written as strings since localStorage is string-only — callers convert.
 
 const SYSTEM_PROMPT_KEY = 'chatframe_system_prompt'
 const TEMPERATURE_KEY   = 'chatframe_temperature'

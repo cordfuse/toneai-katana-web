@@ -40,27 +40,14 @@ services:
       # Operator overrides any of these by uncommenting the matching line
       # in .env. Anything left at the default is just baseline behavior.
 
-      # Provider + model — default to anthropic / sonnet 4.6. Switch to
-      # any provider for which you've supplied an API key in .env.
+      # Provider + model — default to anthropic / Sonnet. Switch to any
+      # provider for which you've supplied an API key in .env.
       CHATFRAME_PROVIDER: ${CHATFRAME_PROVIDER:-anthropic}
-      CHATFRAME_MODEL: ${CHATFRAME_MODEL:-claude-opus-4-8}
+      CHATFRAME_MODEL: ${CHATFRAME_MODEL:-claude-sonnet-5}
 
-      # System prompt + temperature — server-side defaults. Users can
-      # override per-conversation in the Settings panel (unless kiosk
-      # mode hides it; see flags below).
-      CHATFRAME_SYSTEM_PROMPT: ${CHATFRAME_SYSTEM_PROMPT:-You are a helpful AI assistant.}
+      # Sampling temperature — server-side default. Users can override
+      # per-conversation in the Settings panel.
       CHATFRAME_TEMPERATURE: ${CHATFRAME_TEMPERATURE:-1.0}
-
-      # ── Kiosk visibility flags (1 = show, 0 = hide) ──
-      # When a control is hidden, the underlying feature still runs server-
-      # side using whatever's configured (see docs/kiosk-mode.md). To make
-      # something a true no-op, don't configure the backing key/server.
-      CHATFRAME_SHOW_SETTINGS:     ${CHATFRAME_SHOW_SETTINGS:-1}
-      CHATFRAME_PERSIST_CHAT:      ${CHATFRAME_PERSIST_CHAT:-1}
-      CHATFRAME_SHOW_WEB_SEARCH:   ${CHATFRAME_SHOW_WEB_SEARCH:-1}
-      CHATFRAME_SHOW_MCP:          ${CHATFRAME_SHOW_MCP:-1}
-      CHATFRAME_SHOW_MODEL_PICKER: ${CHATFRAME_SHOW_MODEL_PICKER:-1}
-      CHATFRAME_SHOW_ATTACHMENTS:  ${CHATFRAME_SHOW_ATTACHMENTS:-1}
 
     volumes:
       # The persistent config volume. Single mount point for ALL operator

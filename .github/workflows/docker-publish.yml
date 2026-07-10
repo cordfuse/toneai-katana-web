@@ -5,9 +5,9 @@
 #   - On `main` push    → tags edge (head-of-trunk)
 #   - workflow_dispatch → manual run, same as main
 #
-# The `if: github.repository == 'cordfuse/chatframe'` guard prevents forks from
-# running this workflow on their own dime — they'd push to their own
-# ghcr.io/<fork>/chatframe anyway, which is their call to opt into.
+# The `if: github.repository == 'cordfuse/toneai-katana-web'` guard prevents
+# forks from running this workflow on their own dime — they'd push to their own
+# ghcr.io/<fork>/toneai-katana-web anyway, which is their call to opt into.
 
 name: Docker — publish
 
@@ -20,11 +20,11 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: ${{ github.repository }}   # → cordfuse/chatframe
+  IMAGE_NAME: ${{ github.repository }}   # → cordfuse/toneai-katana-web
 
 jobs:
   ghcr:
-    if: github.repository == 'cordfuse/chatframe'
+    if: github.repository == 'cordfuse/toneai-katana-web'
     runs-on: ubuntu-latest
     permissions:
       contents: read

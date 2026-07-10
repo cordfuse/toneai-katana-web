@@ -74,7 +74,7 @@ const defaults: ChatframeConfig = {
   defaultSystemPrompt: 'You are a helpful AI assistant.',
   welcomeMessage: '',
   starterPrompts: [],
-  checkForUpdatesUrl: 'https://github.com/cordfuse/chatframe/releases',
+  checkForUpdatesUrl: 'https://github.com/cordfuse/toneai-katana-web/releases',
   defaultTheme: 'dark',
   hideBuiltInThemes: false,
   themes: [],
