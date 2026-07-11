@@ -241,22 +241,23 @@ export function saveTheme(theme: Theme) {
 // lib/patch/generations.ts). Those differences are hardware (wattage, speaker,
 // Waza cab), not patch data, so a single "KATANA MkII" is the correct model.
 export type KatanaDevice =
-  | 'katana-mk1' | 'katana-mk2' | 'katana-mk3' | 'katana-go'
+  | 'katana-mk1' | 'katana-mk2' | 'katana-mk3' | 'katana-go' | 'katana-bass'
 
 // `supported` gates what the user can actually select. Only MkII is proven
-// against real exports today; the other generations stay LISTED (so players see
-// their amp is on the roadmap) but are not selectable, and the picker shows a
-// note to that effect. Flip a row to true as each generation's writer is proven.
+// against real exports today; the others stay LISTED (so players see their amp
+// is on the roadmap) but are not selectable, and the picker shows a note to that
+// effect. Flip a row to true as each writer is proven.
 //
-// Guitar KATANA only — these four are exactly what the Katana Librarian's device
-// selector distinguishes (MK1/MK2/MK3/GO). The bass line is a SEPARATE ecosystem
-// the guitar Librarian doesn't cover, so it's omitted until its own format is
-// sourced from the bass tooling directly.
+// The four guitar entries match the guitar Katana Librarian's device selector
+// (MK1/MK2/MK3/GO). `katana-bass` is a single roadmap placeholder for the whole
+// bass line (110 / 210 / Head) — confirmed to share the MkII .tsl family; its
+// writer is pending extraction from the bass editor source.
 export const KATANA_DEVICES: { id: KatanaDevice; label: string; supported: boolean }[] = [
   { id: 'katana-mk2',  label: 'KATANA MkII',  supported: true  },
   { id: 'katana-mk3',  label: 'KATANA Gen 3', supported: false },
   { id: 'katana-mk1',  label: 'KATANA MkI',   supported: false },
   { id: 'katana-go',   label: 'KATANA:GO',    supported: false },
+  { id: 'katana-bass', label: 'KATANA Bass',  supported: false },
 ]
 
 const DEVICE_KEY = 'katana_device'
