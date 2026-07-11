@@ -182,6 +182,17 @@ interface ResolvedSearch {
   consumeSourceChunks: boolean
 }
 
+// Max web searches the model may run per assistant turn. This is the primary
+// cost governor for search (searches bill to the server key on the free tier);
+// combined with FREE_DAILY_LIMIT it bounds the daily search ceiling to
+// requests/day * maxUses. Operator-tunable; clamped 1..10 so a bad value can't
+// disable search (0) or blow the budget. Default 3 — enough to identify the
+// artist/song rig, pull settings, and cross-check, without wandering.
+const WEB_SEARCH_MAX_USES: number = (() => {
+  const raw = parseInt(process.env.TONEAI_WEB_SEARCH_MAX_USES ?? '', 10)
+  return Number.isFinite(raw) ? Math.min(10, Math.max(1, raw)) : 3
+})()
+
 function resolveSearch(webSearchEnabled: boolean, providerId: string): ResolvedSearch {
   if (!webSearchEnabled || !hasNativeWebSearch(providerId)) {
     return { tools: {}, consumeSourceChunks: false }
@@ -190,10 +201,9 @@ function resolveSearch(webSearchEnabled: boolean, providerId: string): ResolvedS
   // than 2026-02-09) because the newer one defaults to "programmatic" tool
   // calling, which Haiku 4.5 doesn't support and any model without the
   // programmatic capability rejects with HTTP 400. 2025-03-05 works across all
-  // current Claude models (Opus/Sonnet/Haiku). maxUses caps searches per
-  // assistant turn; 5 mirrors MAX_TOOL_ROUNDS.
+  // current Claude models (Opus/Sonnet/Haiku). maxUses caps searches per turn.
   return {
-    tools: { web_search: anthropic.tools.webSearch_20250305({ maxUses: 5 }) },
+    tools: { web_search: anthropic.tools.webSearch_20250305({ maxUses: WEB_SEARCH_MAX_USES }) },
     consumeSourceChunks: true,
   }
 }

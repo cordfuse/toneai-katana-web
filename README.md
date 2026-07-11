@@ -128,6 +128,7 @@ platform-managed deploy (e.g. Render), set **Dockerfile Path** to
 | `JWT_SECRET` | **yes** | — | Signs device tokens. `openssl rand -base64 32` |
 | `ANTHROPIC_API_KEY` | for free tier | — | Powers the shared free daily quota. Unset = BYOK only |
 | `FREE_DAILY_LIMIT` | no | `1000` | Global daily free-tier ceiling (shared, resets midnight UTC) |
+| `TONEAI_WEB_SEARCH_MAX_USES` | no | `3` | Max web searches per response (clamped 1–10). Search always-on; this is the per-request cost cap |
 | `TONEAI_MODEL` | no | `claude-sonnet-5` | Tone-design model |
 | `TONEAI_TEMPERATURE` | no | `1.0` | Sampling temperature (user-overridable per chat) |
 | `TONEAI_CONFIG_DIR` | no | bundled | Where branding / themes config is read from |

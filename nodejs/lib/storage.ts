@@ -337,25 +337,9 @@ export function setSelectedModel(provider: string, model: string) {
   localStorage.setItem(MODELS_KEY, JSON.stringify(map))
 }
 
-// ─── Web search toggle (global, sticky across sessions) ─────────────────────
-//
-// One boolean stored in localStorage. v1 simplification: a single setting
-// applies to whatever conversation is active. Avoids the "no conv id until
-// after first send" chicken-and-egg. Per-conv override can come later.
-
-const WEB_SEARCH_KEY = 'toneai_web_search'
-
-// Default ON: web search augments answers unless the user turns it off. Only an
-// explicit '0' means off; absent key = default checked.
-export function getWebSearchEnabled(): boolean {
-  if (typeof window === 'undefined') return true
-  return localStorage.getItem(WEB_SEARCH_KEY) !== '0'
-}
-
-export function setWebSearchEnabled(enabled: boolean) {
-  if (enabled) localStorage.removeItem(WEB_SEARCH_KEY)
-  else localStorage.setItem(WEB_SEARCH_KEY, '0')
-}
+// Web search is always on — it's core to tone accuracy, so there's no user
+// toggle. The server offers the native search tool on every request and the
+// model decides when to actually search (capped by TONEAI_WEB_SEARCH_MAX_USES).
 
 // ─── TTS (text-to-speech) toggle ────────────────────────────────────────────
 // Same persistence pattern as web search. When on, assistant responses are

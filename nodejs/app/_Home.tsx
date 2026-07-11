@@ -12,7 +12,6 @@ import {
   getDefaultDevice, saveDefaultDevice, KATANA_DEVICES, type KatanaDevice,
   getApiKey, saveApiKey,
   getSelectedProvider, setSelectedProvider, getSelectedModel, setSelectedModel,
-  getWebSearchEnabled, setWebSearchEnabled,
   getCustomSystemPrompt, setCustomSystemPrompt,
   getTemperature, setTemperature,
   exportAll, importConversationsJson, resetAllData,
@@ -1337,12 +1336,10 @@ export default function Home({
   const [confirmDelete, setConfirmDelete] = useState<{ label: string; doDelete: () => void } | null>(null)
   const [search, setSearch] = useState('')
   const [providers, setProviders] = useState<AvailableProvider[]>([])
-  const [webSearchAvailable, setWebSearchAvailable] = useState(false)
   // Whether the server can serve free-tier requests (has its own key). Default
   // true so the quota pill shows on a normal deployment; flipped off only when
   // the server reports no key, so we don't advertise free requests that 503.
   const [freeTierAvailable, setFreeTierAvailable] = useState(true)
-  const [webSearch, setWebSearch] = useState(true)
   const [toolRunning, setToolRunning] = useState<{ name: string; query?: string } | null>(null)
   // Generation settings: null = use server default. UI shows a placeholder
   // hint when unset so user knows what value will actually be used.
@@ -1528,11 +1525,7 @@ export default function Home({
       try {
         const { providers: list, features } = await getProviders()
         setProviders(list)
-        setWebSearchAvailable(!!features.webSearch)
         setFreeTierAvailable(features.freeTier !== false)
-        // Only honor the stored toggle if the operator actually has search
-        // available — otherwise it'd be on but silently broken.
-        if (features.webSearch) setWebSearch(getWebSearchEnabled())
         // Resolve initial provider: stored choice (if still valid + available)
         // → first available → first in list. Then resolve model the same way.
         const stored = getSelectedProvider()
@@ -1583,10 +1576,6 @@ export default function Home({
     return () => synth.removeEventListener('voiceschanged', onVoices)
   }, [resolveVoice])
 
-  const handleWebSearch = useCallback((on: boolean) => {
-    setWebSearch(on)
-    setWebSearchEnabled(on)
-  }, [])
 
   // Toggle TTS. Persists to localStorage so the setting follows the user
   // across sessions. Cancels any in-flight speech when turning off so the
@@ -1991,7 +1980,7 @@ export default function Home({
         },
         abort.signal,
         {
-          provider, model, webSearch, apiKey,
+          provider, model, webSearch: true, apiKey,
           systemPrompt: customSystemPrompt ?? undefined,
           temperature: customTemperature ?? undefined,
           device,
@@ -2092,7 +2081,7 @@ export default function Home({
         setQuotaVersion(v => v + 1)
       }
     }
-  }, [activeId, conversations, provider, model, webSearch, apiKey, customSystemPrompt, customTemperature, device, gear, position, buildWireMessages, updateUrl])
+  }, [activeId, conversations, provider, model, apiKey, customSystemPrompt, customTemperature, device, gear, position, buildWireMessages, updateUrl])
 
   // One-click starter prompts: skip the input field entirely, fire the
   // prompt as a user message immediately. Mirrors the empty-state chip
@@ -2536,25 +2525,6 @@ export default function Home({
                     }`}
                   >
                     {ttsEnabled ? <VolumeOnIcon /> : <VolumeOffIcon />}
-                  </button>
-                )}
-                {/* Web search toggle — shown when the provider has native
-                    search (Anthropic always does). */}
-                {webSearchAvailable && (
-                  <button
-                    onClick={() => handleWebSearch(!webSearch)}
-                    title={webSearch
-                      ? t('composer.webSearchOn', 'Web search: ON — click to turn off')
-                      : t('composer.webSearchOff', 'Web search: off — click to turn on')}
-                    aria-label={t('composer.webSearchOff', 'Toggle web search')}
-                    aria-pressed={webSearch}
-                    className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
-                      webSearch
-                        ? 'text-primary bg-primary/15 hover:bg-primary/25'
-                        : 'text-fg-3 hover:bg-surface-2 hover:text-fg'
-                    }`}
-                  >
-                    <GlobeIcon />
                   </button>
                 )}
               </div>
