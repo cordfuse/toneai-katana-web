@@ -100,6 +100,23 @@ export function markTonesBackfilled() {
   localStorage.setItem(TONES_BACKFILLED_KEY, '1')
 }
 
+// ─── Welcome banner (once per version) ───────────────────────────────────────
+// Stores the version whose welcome the user has dismissed. The banner shows when
+// the stored value differs from the running app version, so a new release
+// re-triggers it exactly once. SSR returns `true` (seen) so the modal never
+// flashes during hydration — it only appears client-side once we can read the
+// real stored value.
+const WELCOME_KEY = 'toneai_welcome_seen'
+
+export function getWelcomeSeen(version: string): boolean {
+  if (typeof window === 'undefined') return true
+  return localStorage.getItem(WELCOME_KEY) === version
+}
+
+export function saveWelcomeSeen(version: string) {
+  localStorage.setItem(WELCOME_KEY, version)
+}
+
 // Serialize one conversation to a markdown transcript suitable for download.
 // Includes title, export timestamp, every turn with role label, and any
 // source citations the assistant produced. Attachment binaries are not

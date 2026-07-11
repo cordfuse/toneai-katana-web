@@ -20,6 +20,7 @@ import {
   getTtsEnabled, setTtsEnabled,
   loadTones, addTone, deleteTone, renameTone, clearAllTones,
   tonesBackfilled, markTonesBackfilled,
+  getWelcomeSeen, saveWelcomeSeen,
 } from '@/lib/storage'
 import type { ChatMessage, Conversation, Attachment, TonePatchResult, SavedTone } from '@/lib/types'
 import { ToneCard, ToneModal } from './_ToneCard'
@@ -298,8 +299,13 @@ const WHATS_NEW: { version: string; items: { text: string; sub?: string }[] }[] 
   {
     version: '0.7.1',
     items: [
-      { text: 'OLED is now the default theme', sub: 'True-black UI — easier on the eyes and on OLED battery. Switch any time in Settings → Theme.' },
-      { text: 'This About screen', sub: 'Tap the version number in Settings whenever you want to see what shipped.' },
+      { text: 'ToneAI Kat is here', sub: 'Describe a song, an artist, or just a vibe — and get a ready-to-import .tsl patch for your BOSS KATANA MkII, straight into BOSS Tone Studio.' },
+      { text: 'Patches you can trust', sub: 'A deterministic writer builds every .tsl and round-trips it against a real KATANA MkII export — the AI picks the tone, it never hand-writes the file.' },
+      { text: 'Guitar and bass', sub: 'Set neck, bridge, or both so tones match the instrument in your hands.' },
+      { text: 'My Gear and My Tones', sub: 'Save your instruments once, and keep every patch you generate to revisit, rename, and re-download.' },
+      { text: 'Live artist and song search', sub: 'Looks up real tone references while it designs.' },
+      { text: 'Free daily tier, or your own key', sub: 'Start free; add an Anthropic key in Settings for unlimited use.' },
+      { text: 'Themes, OLED by default', sub: 'True-black UI out of the box — change it any time in Settings → Theme.' },
     ],
   },
 ]
@@ -366,6 +372,65 @@ function AboutModal({ onClose }: { onClose: () => void }) {
           <div className="border-t border-white/10 pt-4 space-y-1">
             <p className="text-[11px] font-medium text-fg-3 uppercase tracking-wider">Credits</p>
             <p className="text-[11px] text-fg-4">Tone design by Claude (Anthropic). Patches are verified against a real KATANA MkII export before download — the model never writes the <code className="text-[10px]">.tsl</code> directly.</p>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+// ─── Welcome banner ──────────────────────────────────────────────────────────
+//
+// Shown once per app version (gated by getWelcomeSeen/saveWelcomeSeen). Pulls
+// its content from the newest WHATS_NEW entry so it stays in sync with the About
+// screen — the first item is the headline highlight, the rest a bullet list.
+// No settings toggle: dismissing simply records this version as seen.
+
+function WelcomeModal({ onDismiss }: { onDismiss: () => void }) {
+  const branding = getToneaiBranding()
+  const latest = WHATS_NEW[0]
+  const [headline, ...rest] = latest.items
+  return (
+    <>
+      <div className="fixed inset-0 z-[90] bg-black/80 backdrop-blur-sm" />
+      <div className="fixed inset-0 z-[90] flex items-center justify-center p-4">
+        <div className="w-full max-w-md rounded-3xl border border-white/10 bg-surface shadow-2xl animate-scale-up overflow-hidden flex flex-col max-h-[90vh]">
+
+          {/* Header */}
+          <div className="relative bg-primary/10 border-b border-primary/20 px-6 pt-5 pb-4 text-center shrink-0">
+            <img src={branding.icon192} alt={branding.name} className="h-12 w-12 rounded-xl mx-auto mb-3 shadow-lg" />
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-primary mb-0.5">What&apos;s new</p>
+            <h2 className="text-xl font-bold text-fg">{branding.name} {latest.version}</h2>
+          </div>
+
+          {/* Body */}
+          <div className="px-6 py-4 space-y-3 overflow-y-auto">
+            {headline && (
+              <div className="rounded-2xl border border-primary/30 bg-primary/10 p-3">
+                <p className="text-sm font-semibold text-fg mb-0.5">{headline.text}</p>
+                {headline.sub && <p className="text-[11px] text-fg-3">{headline.sub}</p>}
+              </div>
+            )}
+            {rest.length > 0 && (
+              <ul className="space-y-2">
+                {rest.map(({ text }) => (
+                  <li key={text} className="flex items-start gap-2.5 text-[11px] text-fg-3 leading-relaxed">
+                    <span className="shrink-0 text-primary leading-none mt-px">+</span>
+                    {text}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="px-6 pb-5 pt-2 border-t border-white/10 shrink-0">
+            <button
+              onClick={onDismiss}
+              className="w-full rounded-2xl bg-primary py-2.5 text-sm font-semibold text-on-primary hover:opacity-90 active:opacity-80 transition-opacity shadow-lg"
+            >
+              Let&apos;s go →
+            </button>
           </div>
         </div>
       </div>
@@ -1251,6 +1316,10 @@ export default function Home({
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
+  // Welcome banner: shown once per app version. Starts false so SSR and first
+  // client paint agree; the mount effect flips it on when the stored "seen"
+  // version differs from the running one (i.e. a new release dropped).
+  const [showWelcome, setShowWelcome] = useState(false)
   const [theme, setTheme] = useState<Theme>('dark')
   const [device, setDevice] = useState<KatanaDevice>('katana-100-mk2')
   // null → free mode (server key + global quota). Hydrated client-side; stays
@@ -1364,6 +1433,9 @@ export default function Home({
     const savedTts = getTtsEnabled()
     setTtsEnabledState(savedTts)
     ttsEnabledRef.current = savedTts
+    // Show the welcome banner once per version — client-side only, so it never
+    // causes a hydration mismatch.
+    if (!getWelcomeSeen(APP_VERSION)) setShowWelcome(true)
     // Kiosk: skip history hydration when chat persistence is off. Any
     // pre-existing localStorage entries stay untouched (a misconfiguration
     // revert shouldn't lose data) but they're not shown either.
@@ -2588,6 +2660,9 @@ export default function Home({
               : undefined
           }
         />
+      )}
+      {showWelcome && (
+        <WelcomeModal onDismiss={() => { saveWelcomeSeen(APP_VERSION); setShowWelcome(false) }} />
       )}
     </div>
   )
