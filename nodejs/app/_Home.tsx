@@ -22,6 +22,7 @@ import {
   getWelcomeSeen, saveWelcomeSeen,
 } from '@/lib/storage'
 import type { ChatMessage, Conversation, Attachment, TonePatchResult, SavedTone } from '@/lib/types'
+import { convertTone } from '@/lib/patch'
 import { ToneCard, ToneModal } from './_ToneCard'
 import { useT, useLocale, useAvailableLocales, setLocaleAndReload, labelForLocale } from '@/lib/i18n/client'
 import {
@@ -1818,6 +1819,28 @@ export default function Home({
     setTones([])
   }, [])
 
+  // Convert a tone to another device: re-voice the intent, render the target
+  // .tsl, save it as a NEW library tone (standing on its own, not tied to a
+  // chat), and re-open the modal on it. The original tone is left untouched.
+  const handleConvertTone = useCallback((src: TonePatchResult, toDevice: KatanaDevice, toLabel: string) => {
+    const { patch, notes, tsl, filename } = convertTone(src.patch, src.device as KatanaDevice, toDevice)
+    const now = Date.now()
+    const id = `conv-${now}-${Math.round(Math.random() * 1e6)}`
+    const result: TonePatchResult = {
+      ...src,
+      patch,
+      device: toDevice,
+      deviceLabel: toLabel,
+      tsl,
+      filename,
+      experimental: false, // canConvert only permits verified target writers
+      convertedFrom: { deviceLabel: src.deviceLabel, notes },
+    }
+    addTone({ id, name: patch.name, createdAt: now, updatedAt: now, conversationId: null, tone: result })
+    setTones(loadTones())
+    setOpenTone({ tone: result, conversationId: null })
+  }, [])
+
   // Open a saved tone's source conversation (from the tone detail modal).
   // No-op if that chat was since deleted — the tone still stands on its own.
   const goToChatFromTone = useCallback((conversationId: string | null) => {
@@ -2609,6 +2632,7 @@ export default function Home({
           tone={openTone.tone}
           currentDevice={device}
           currentDeviceLabel={(KATANA_DEVICES.find(d => d.id === device) ?? KATANA_DEVICES[0]).label}
+          onConvert={handleConvertTone}
           onClose={() => setOpenTone(null)}
           onGoToChat={
             openTone.conversationId && openTone.conversationId !== activeId &&

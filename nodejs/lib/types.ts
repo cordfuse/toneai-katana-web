@@ -27,6 +27,13 @@ export interface TonePatchResult {
   tsl: string
   filename: string
   experimental: boolean
+  /** Set when this tone was produced by converting another device's tone. Records
+   *  the source amp and what the re-voicing changed, so the provenance survives a
+   *  reload and shows on the card. Absent for directly-generated tones. */
+  convertedFrom?: {
+    deviceLabel: string
+    notes: import('@/lib/patch').ConvertNote[]
+  }
 }
 
 export interface ChatMessage extends Message {
