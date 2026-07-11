@@ -22,6 +22,7 @@ import {
   getWelcomeSeen, saveWelcomeSeen,
 } from '@/lib/storage'
 import type { ChatMessage, Conversation, Attachment, TonePatchResult, SavedTone } from '@/lib/types'
+import { convertTone } from '@/lib/patch'
 import { ToneCard, ToneModal } from './_ToneCard'
 import { useT, useLocale, useAvailableLocales, setLocaleAndReload, labelForLocale } from '@/lib/i18n/client'
 import {
@@ -295,6 +296,13 @@ function DeleteConfirmModal({ label, onConfirm, onCancel }: { label: string; onC
 const GITHUB_ICON_PATH = 'M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z'
 
 const WHATS_NEW: { version: string; items: { text: string; sub?: string }[] }[] = [
+  {
+    version: '0.8.0',
+    items: [
+      { text: 'KATANA Gen 3 support', sub: 'Pick Gen 3 as your amp and design for it directly — its .tsl writer is verified byte-clean against real Gen 3 exports, with the Gen 3 amp voices and effects.' },
+      { text: 'Convert a tone to your amp', sub: 'Got a tone built for a different KATANA than you play? Open it and convert — the patch is re-voiced for your amp, saved to My Tones, and ready to download.' },
+    ],
+  },
   {
     version: '0.7.3',
     items: [
@@ -617,14 +625,14 @@ function SettingsPanel({
                   <div className="absolute left-0 right-0 top-full z-20 mt-1 rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden max-h-[60vh] overflow-y-auto animate-dropdown origin-top">
                     {KATANA_DEVICES.map(d => {
                       const isActive = device === d.id
-                      // Non-MkII devices are listed but not yet selectable — their
-                      // writers aren't proven against real exports.
+                      // Unsupported devices are listed but not yet selectable —
+                      // their writers aren't proven against real exports yet.
                       if (!d.supported) {
                         return (
                           <div
                             key={d.id}
                             className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-fg-4 cursor-not-allowed select-none"
-                            title="Not yet supported — only KATANA MkII is available today"
+                            title="Not yet supported — its .tsl writer is still being verified"
                           >
                             <span className="flex-1 text-left">{d.label}</span>
                             <span className="ml-1 shrink-0 rounded bg-white/5 px-1.5 py-0.5 text-[9px] uppercase tracking-wide text-fg-4">Soon</span>
@@ -649,8 +657,8 @@ function SettingsPanel({
               )}
             </div>
             <p className="mt-2 text-[11px] leading-snug text-fg-4">
-              Only KATANA MkII is supported right now. Other models are listed but
-              not yet selectable — support lands as each is verified.
+              Models marked “Soon” are listed but not yet selectable — support lands
+              as each generation’s .tsl writer is verified against real exports.
             </p>
           </div>
 
@@ -1818,6 +1826,54 @@ export default function Home({
     setTones([])
   }, [])
 
+  // Stable identity for a tone as a conversion SOURCE. Keyed on device + name so
+  // a converted copy can be found again (and re-converting the same source to the
+  // same device maps to ONE library entry, never a pile of duplicates).
+  const toneSig = (t: TonePatchResult) => `${t.device}|${t.patch.name}`
+
+  // The already-made conversion of `src` for `device`, if one exists. Lets the
+  // card offer "open the version you made" instead of prompting to convert again.
+  // Matches on the source signature; falls back to source label + patch name so
+  // conversions made before signatures existed are still recognized.
+  const findConvertedVersion = useCallback(
+    (src: TonePatchResult, device: KatanaDevice): TonePatchResult | undefined => {
+      const sig = toneSig(src)
+      return tones.find(t => {
+        const cf = t.tone.convertedFrom
+        if (t.tone.device !== device || !cf) return false
+        return cf.sourceSig
+          ? cf.sourceSig === sig
+          : cf.deviceLabel === src.deviceLabel && t.tone.patch.name === src.patch.name
+      })?.tone
+    },
+    [tones],
+  )
+
+  // Convert a tone to another device: re-voice the intent, render the target
+  // .tsl, save it as a library tone (standing on its own, not tied to a chat),
+  // and re-open the modal on it. The original is untouched. The id is derived
+  // from source+target so converting the same tone twice REPLACES rather than
+  // duplicates (addTone upserts by id).
+  const handleConvertTone = useCallback((src: TonePatchResult, toDevice: KatanaDevice, toLabel: string) => {
+    const sig = toneSig(src)
+    const id = `conv:${sig}->${toDevice}`
+    const { patch, notes, tsl, filename } = convertTone(src.patch, src.device as KatanaDevice, toDevice)
+    const now = Date.now()
+    const result: TonePatchResult = {
+      ...src,
+      patch,
+      device: toDevice,
+      deviceLabel: toLabel,
+      tsl,
+      filename,
+      experimental: false, // canConvert only permits verified target writers
+      convertedFrom: { deviceLabel: src.deviceLabel, notes, sourceSig: sig },
+    }
+    addTone({ id, name: patch.name, createdAt: now, updatedAt: now, conversationId: null, tone: result })
+    setTones(loadTones())
+    setOpenTone({ tone: result, conversationId: null })
+  }, [])
+
   // Open a saved tone's source conversation (from the tone detail modal).
   // No-op if that chat was since deleted — the tone still stands on its own.
   const goToChatFromTone = useCallback((conversationId: string | null) => {
@@ -2607,6 +2663,11 @@ export default function Home({
       {openTone && (
         <ToneModal
           tone={openTone.tone}
+          currentDevice={device}
+          currentDeviceLabel={(KATANA_DEVICES.find(d => d.id === device) ?? KATANA_DEVICES[0]).label}
+          onConvert={handleConvertTone}
+          findConvertedVersion={findConvertedVersion}
+          onOpenConverted={t => setOpenTone({ tone: t, conversationId: null })}
           onClose={() => setOpenTone(null)}
           onGoToChat={
             openTone.conversationId && openTone.conversationId !== activeId &&

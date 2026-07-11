@@ -17,14 +17,18 @@
 // owns the 0–100 → device-value mapping, because that mapping can differ per
 // parameter and per generation.
 
-import type { AmpName, OdDsName, DelayName, ReverbName, FxName } from './enums'
+// Amp/effect type fields are plain strings, validated at write time against the
+// TARGET DEVICE'S vocabulary (each writer resolves name -> byte via its own
+// maps, throwing on an unknown name). They were fixed MkII-only unions; widening
+// to string is what lets one intent shape carry MkII, Gen 3, etc. — the schema
+// handed to the model still constrains the names per device (lib/patch/vocab).
 
 /** A 0–100 UI knob value. Not a byte — the writer scales it. */
 export type Knob = number
 
 export interface AmpChannel {
-  /** Amp model by name (enums.ts AMP_TYPES). The writer resolves the byte. */
-  type: AmpName
+  /** Amp model by name; resolved to a byte by the target device's writer. */
+  type: string
   gain: Knob
   bass: Knob
   middle: Knob
@@ -36,7 +40,7 @@ export interface AmpChannel {
 export interface Booster {
   on: boolean
   /** OD/DS/booster voicing (enums.ts OD_DS_TYPES). */
-  type: OdDsName
+  type: string
   drive: Knob
   tone: Knob
   level: Knob
@@ -45,7 +49,7 @@ export interface Booster {
 export interface ModFx {
   on: boolean
   /** One of the shared MOD/FX pool (enums.ts FX_TYPES). */
-  type: FxName
+  type: string
   // Common mod/dynamics knobs (0–100). Which apply depends on `type` — the writer
   // maps each to that effect's real byte offset (mk2 FX_PARAM_LAYOUT) and stamps a
   // musical default for any left unset, so an "on" effect is never silent. Effect
@@ -63,7 +67,7 @@ export interface ModFx {
 
 export interface Delay {
   on: boolean
-  type: DelayName
+  type: string
   /** Milliseconds. The writer clamps + encodes to the device's time range. */
   timeMs: number
   feedback: Knob
@@ -72,7 +76,7 @@ export interface Delay {
 
 export interface Reverb {
   on: boolean
-  type: ReverbName
+  type: string
   /** Seconds. Writer clamps + encodes. */
   timeS: number
   level: Knob

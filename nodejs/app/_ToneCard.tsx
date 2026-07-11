@@ -8,6 +8,8 @@
 import { useState } from 'react'
 import type { TonePatchResult } from '@/lib/types'
 import type { TonePatch } from '@/lib/patch/intent'
+import type { KatanaDevice } from '@/lib/storage'
+import { canConvert } from '@/lib/patch'
 
 const DownloadIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -111,8 +113,39 @@ export function ToneCard({ tone, onOpen }: { tone: TonePatchResult; onOpen: () =
 
 // ─── detail modal ────────────────────────────────────────────────────────────
 
-export function ToneModal({ tone, onClose, onGoToChat }: { tone: TonePatchResult; onClose: () => void; onGoToChat?: () => void }) {
+export function ToneModal({ tone, onClose, onGoToChat, currentDevice, currentDeviceLabel, onConvert, findConvertedVersion, onOpenConverted }: {
+  tone: TonePatchResult
+  onClose: () => void
+  onGoToChat?: () => void
+  /** The player's currently-selected amp — enables "Convert to …" when it
+   *  differs from the tone's target device. */
+  currentDevice?: KatanaDevice
+  currentDeviceLabel?: string
+  /** Re-voice this tone for another device. The parent saves the result to the
+   *  library and re-opens the modal on the new tone. */
+  onConvert?: (source: TonePatchResult, device: KatanaDevice, label: string) => void
+  /** Find an already-made conversion of this tone for a device, so we offer to
+   *  OPEN it instead of prompting to convert the same tone again. */
+  findConvertedVersion?: (source: TonePatchResult, device: KatanaDevice) => TonePatchResult | undefined
+  /** Open an existing converted tone in this modal. */
+  onOpenConverted?: (tone: TonePatchResult) => void
+}) {
   const [settingsOpen, setSettingsOpen] = useState(true)
+
+  // Conversion affordance, only when the player's amp differs from the tone's
+  // target and both generations have a proven writer. If a conversion for that
+  // device already exists, offer to OPEN it rather than re-convert (no dupes, no
+  // "why am I asked again?"). Otherwise offer to convert.
+  const canOfferConvert =
+    currentDevice && currentDeviceLabel &&
+    tone.device !== currentDevice && canConvert(tone.device as KatanaDevice, currentDevice)
+  const existingConversion =
+    canOfferConvert && findConvertedVersion ? findConvertedVersion(tone, currentDevice!) : undefined
+  const convertTarget =
+    canOfferConvert && onConvert && !existingConversion
+      ? { device: currentDevice!, label: currentDeviceLabel! }
+      : null
+
   // Only show blocks the tone actually uses. An empty FX/delay/reverb slot as an
   // "off" row is noise — FX1/FX2 are the Katana's two mod/FX slots, and the model
   // left them unloaded for this patch, not a failure to name anything.
@@ -144,6 +177,46 @@ export function ToneModal({ tone, onClose, onGoToChat }: { tone: TonePatchResult
               <Field label="Target device" value={tone.deviceLabel} />
               {tone.rig && <Field label="Guitar" value={tone.rig} />}
             </div>
+
+            {/* Convert affordance — the tone targets a different amp than the one
+                the player has selected. Creates a new saved tone and opens it. */}
+            {convertTarget && (
+              <button
+                onClick={() => onConvert!(tone, convertTarget.device, convertTarget.label)}
+                className="flex w-full items-center justify-between gap-2 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-[11px] leading-snug text-primary hover:bg-primary/15 transition-colors"
+              >
+                <span>This tone targets {tone.deviceLabel}. Convert it for your {currentDeviceLabel}?</span>
+                <span className="shrink-0 font-medium">Convert →</span>
+              </button>
+            )}
+
+            {/* Already converted for the selected amp — open that copy, don't
+                re-convert. */}
+            {existingConversion && (
+              <button
+                onClick={() => onOpenConverted?.(existingConversion)}
+                className="flex w-full items-center justify-between gap-2 rounded-lg border border-white/10 bg-surface-2 px-3 py-2 text-[11px] leading-snug text-fg-2 hover:text-fg hover:border-white/20 transition-colors"
+              >
+                <span>Already converted for your {currentDeviceLabel}.</span>
+                <span className="shrink-0 font-medium text-primary">Open version →</span>
+              </button>
+            )}
+
+            {/* Provenance — shown on a tone that was produced by conversion. */}
+            {tone.convertedFrom && (
+              <div className="rounded-lg border border-primary/25 bg-primary/5 px-3 py-2 text-[11px] leading-snug text-fg-2">
+                <span>Converted from {tone.convertedFrom.deviceLabel} to {tone.deviceLabel}.</span>
+                {tone.convertedFrom.notes.length > 0 && (
+                  <ul className="mt-1.5 space-y-0.5 text-fg-4">
+                    {tone.convertedFrom.notes.map((n, i) => (
+                      <li key={i}>
+                        {n.field}: {n.from} {n.to ? `→ ${n.to}` : '→ removed (no equivalent)'}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
 
             {tone.experimental && (
               <p className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-[11px] leading-snug text-amber-300/90">

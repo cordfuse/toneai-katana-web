@@ -18,6 +18,7 @@ import type { TonePatch } from './intent'
 import { generationForDevice, GENERATIONS } from './generations'
 import { LayoutNotExtractedError, UnvalidatedLayoutError, type WriteOptions } from './writer'
 import { writeMk2Tsl } from './writers/mk2'
+import { writeMk3Tsl } from './writers/mk3'
 
 // MkI registers its flat-image writer as a side effect.
 import './writers/mk1'
@@ -32,6 +33,11 @@ export {
 } from './writer'
 export { type SectionMap, toTsl, tslString, tslFilename } from './tsl'
 export { buildMk2Sections, writeMk2Tsl } from './writers/mk2'
+export { buildMk3Sections, writeMk3Tsl } from './writers/mk3'
+export {
+  type ConvertNote, type ConvertedIntent, type ConvertedTone,
+  canConvert, convertIntent, convertTone,
+} from './convert'
 
 /**
  * Write a .tsl liveset for a device, or throw if its layout can't be trusted.
@@ -59,7 +65,8 @@ export function writePatchTsl(
   }
 
   if (generation === 'mk2') return writeMk2Tsl(patch)
+  if (generation === 'mk3') return writeMk3Tsl(patch)
   // MkI's deliverable path is the .kat flat image (writePatchImage); a MkI .tsl
-  // wrapper isn't built yet. MkIII/GO are guarded out above.
+  // wrapper isn't built yet. GO is guarded out above (unextracted).
   throw new LayoutNotExtractedError(generation)
 }

@@ -38,7 +38,8 @@ for BOSS Tone Studio.
 tone-intent schema (amp type, gain, EQ, the booster / mod / fx / delay / reverb
 chain), and a **deterministic writer** converts that intent into the liveset —
 building from a golden template that round-trips byte-clean against a real
-KATANA MkII export. A patch the amp rejects is worse than no patch at all.
+KATANA export (MkII and Gen 3). A patch the amp rejects is worse than no patch
+at all.
 
 ```
 "Comfortably Numb, second solo"
@@ -61,12 +62,21 @@ entry per generation**.
 | Generation | Status |
 |---|---|
 | **KATANA MkII** | **Supported** — writer verified byte-clean against a real export |
+| **KATANA Gen 3** | **Supported** — writer verified byte-clean against real Gen 3 exports |
 | KATANA MkI | Listed, not yet selectable |
-| KATANA Gen 3 | Listed, not yet selectable |
 | KATANA:GO / KATANA:GO Bass | Listed, not yet selectable |
 
-Non-MkII writers stay gated until each is proven against a real export — see
+Remaining writers stay gated until each is proven against a real export — see
 [docs/kat-format.md](docs/kat-format.md).
+
+### Convert between amps
+
+A tone designed for one supported generation can be **converted to another** —
+open it, and if it targets a different KATANA than you play, convert it for your
+amp. Knobs carry across unchanged; amp and effect names are remapped to the
+target's vocabulary (Gen 3's six amp characters vs. MkII's larger set), and an
+effect with no counterpart is dropped rather than written as something the amp
+would reject. The converted patch is saved to *My Tones* as its own entry.
 
 ## Screenshots
 
