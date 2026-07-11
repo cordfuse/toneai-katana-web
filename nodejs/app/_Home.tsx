@@ -1826,9 +1826,19 @@ export default function Home({
 
   // The already-made conversion of `src` for `device`, if one exists. Lets the
   // card offer "open the version you made" instead of prompting to convert again.
+  // Matches on the source signature; falls back to source label + patch name so
+  // conversions made before signatures existed are still recognized.
   const findConvertedVersion = useCallback(
-    (src: TonePatchResult, device: KatanaDevice): TonePatchResult | undefined =>
-      tones.find(t => t.tone.device === device && t.tone.convertedFrom?.sourceSig === toneSig(src))?.tone,
+    (src: TonePatchResult, device: KatanaDevice): TonePatchResult | undefined => {
+      const sig = toneSig(src)
+      return tones.find(t => {
+        const cf = t.tone.convertedFrom
+        if (t.tone.device !== device || !cf) return false
+        return cf.sourceSig
+          ? cf.sourceSig === sig
+          : cf.deviceLabel === src.deviceLabel && t.tone.patch.name === src.patch.name
+      })?.tone
+    },
     [tones],
   )
 
