@@ -68,11 +68,14 @@ export const GENERATIONS: Record<Generation, GenerationProfile> = {
   mk3: {
     id: 'mk3',
     label: 'KATANA Gen 3',
-    deviceString: 'KATANA MkII', // observed; Gen-3 device string unconfirmed
+    deviceString: 'KATANA Gen3', // confirmed from a real BOSS Tone Exchange export
     fileExt: '.kat3',
     selectorIndex: 3,
-    confidence: 'unextracted',
-    addressing: 'section f5442m (m.b) + offset f5444o — TABLE NOT YET EXTRACTED',
+    // 'verified': param model, golden template, and enum orderings all confirmed
+    // against real exports; the mk3 template round-trips a genuine patch
+    // byte-for-byte and the writer overlay is byte-checked (docs/gen3-format-notes.md).
+    confidence: 'verified',
+    addressing: 'golden-template overlay (mk3/template.ts) + PATCH% block offsets (mk3/param-table.json); .tsl formatRev 0000, verified vs data/fixtures/ Gen 3 exports',
   },
   go: {
     id: 'go',
