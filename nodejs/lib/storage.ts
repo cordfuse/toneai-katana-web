@@ -235,10 +235,13 @@ export function saveTheme(theme: Theme) {
 // are listed but the writer widens to them only as each is proven against real
 // exports. IDs mirror the app's model enum; labels are the retail names.
 
+// One entry per GENERATION, not per cabinet variant. The .tsl format is
+// generation-scoped: 50 / 100 / Head / Artist within a generation write a
+// byte-identical liveset (same deviceString, same writer — see
+// lib/patch/generations.ts). Those differences are hardware (wattage, speaker,
+// Waza cab), not patch data, so a single "KATANA MkII" is the correct model.
 export type KatanaDevice =
-  | 'katana-50-mk1' | 'katana-100-mk1' | 'katana-head-mk1' | 'katana-artist-mk1'
-  | 'katana-50-mk2' | 'katana-100-mk2' | 'katana-head-mk2' | 'katana-artist-mk2'
-  | 'katana-50-mk3' | 'katana-100-mk3' | 'katana-head-mk3' | 'katana-artist-mk3'
+  | 'katana-mk1' | 'katana-mk2' | 'katana-mk3' | 'katana-go' | 'katana-go-bass'
   | 'katana-go' | 'katana-go-bass'
 
 // `supported` gates what the user can actually select. Only MkII is proven
@@ -246,24 +249,15 @@ export type KatanaDevice =
 // their amp is on the roadmap) but are not selectable, and the picker shows a
 // note to that effect. Flip a row to true as each generation's writer is proven.
 export const KATANA_DEVICES: { id: KatanaDevice; label: string; group: string; supported: boolean }[] = [
-  { id: 'katana-50-mk2',     label: 'KATANA-50 MkII',       group: 'MkII',     supported: true  },
-  { id: 'katana-100-mk2',    label: 'KATANA-100 MkII',      group: 'MkII',     supported: true  },
-  { id: 'katana-head-mk2',   label: 'KATANA-Head MkII',     group: 'MkII',     supported: true  },
-  { id: 'katana-artist-mk2', label: 'KATANA-Artist MkII',   group: 'MkII',     supported: true  },
-  { id: 'katana-50-mk3',     label: 'KATANA-50 Gen 3',      group: 'Gen 3',    supported: false },
-  { id: 'katana-100-mk3',    label: 'KATANA-100 Gen 3',     group: 'Gen 3',    supported: false },
-  { id: 'katana-head-mk3',   label: 'KATANA-Head Gen 3',    group: 'Gen 3',    supported: false },
-  { id: 'katana-artist-mk3', label: 'KATANA-Artist Gen 3',  group: 'Gen 3',    supported: false },
-  { id: 'katana-50-mk1',     label: 'KATANA-50 (MkI)',      group: 'MkI',      supported: false },
-  { id: 'katana-100-mk1',    label: 'KATANA-100 (MkI)',     group: 'MkI',      supported: false },
-  { id: 'katana-head-mk1',   label: 'KATANA-Head (MkI)',    group: 'MkI',      supported: false },
-  { id: 'katana-artist-mk1', label: 'KATANA-Artist (MkI)',  group: 'MkI',      supported: false },
-  { id: 'katana-go',         label: 'KATANA:GO',            group: 'Portable', supported: false },
-  { id: 'katana-go-bass',    label: 'KATANA:GO Bass',       group: 'Portable', supported: false },
+  { id: 'katana-mk2',     label: 'KATANA MkII',    group: 'MkII',     supported: true  },
+  { id: 'katana-mk3',     label: 'KATANA Gen 3',   group: 'Gen 3',    supported: false },
+  { id: 'katana-mk1',     label: 'KATANA MkI',     group: 'MkI',      supported: false },
+  { id: 'katana-go',      label: 'KATANA:GO',      group: 'Portable', supported: false },
+  { id: 'katana-go-bass', label: 'KATANA:GO Bass', group: 'Portable', supported: false },
 ]
 
 const DEVICE_KEY = 'katana_device'
-const DEFAULT_DEVICE: KatanaDevice = 'katana-100-mk2'
+const DEFAULT_DEVICE: KatanaDevice = 'katana-mk2'
 
 // Only supported devices are honoured — a stale non-MkII selection (or a hand-
 // edited value) falls back to the MkII default, so the UI never sits on a device

@@ -13,7 +13,7 @@ import { KATANA_DEVICES, type KatanaDevice } from '@/lib/storage'
 import { slog } from '@/lib/server/log'
 import { DEFAULT_MODEL } from '@/lib/server/models'
 
-const DEFAULT_DEVICE: KatanaDevice = 'katana-100-mk2'
+const DEFAULT_DEVICE: KatanaDevice = 'katana-mk2'
 
 // A short, safe summary of the user's prompt for the diagnostic log — the last
 // user turn's text only (image blocks stripped), truncated. Never the raw

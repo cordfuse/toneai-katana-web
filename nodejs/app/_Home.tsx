@@ -618,7 +618,6 @@ function SettingsPanel({
                 className="flex w-full items-center gap-2.5 rounded-lg border border-white/10 bg-surface-2 px-3 py-2.5 text-sm text-fg hover:bg-surface-3 transition-colors"
               >
                 <span className="flex-1 text-left">{activeDevice.label}</span>
-                <span className="text-[10px] text-fg-4 uppercase">{activeDevice.group}</span>
                 <ChevronIcon open={deviceOpen} />
               </button>
               {deviceOpen && (
@@ -1321,7 +1320,7 @@ export default function Home({
   // version differs from the running one (i.e. a new release dropped).
   const [showWelcome, setShowWelcome] = useState(false)
   const [theme, setTheme] = useState<Theme>('dark')
-  const [device, setDevice] = useState<KatanaDevice>('katana-100-mk2')
+  const [device, setDevice] = useState<KatanaDevice>('katana-mk2')
   // null → free mode (server key + global quota). Hydrated client-side; stays
   // null during SSR so the first paint never differs from the server's.
   const [apiKey, setApiKey] = useState<string | null>(null)
