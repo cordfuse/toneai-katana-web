@@ -12,6 +12,8 @@
 #
 # Build context is the repo root so the Dockerfile can COPY from nodejs/.
 
+name: toneai-katana-web
+
 services:
   toneai-kat:
     build:
@@ -58,3 +60,8 @@ services:
       # path for production:
       #   - /srv/toneai-config:/app/config
       - ../nodejs/config:/app/config
+      # Writable, persistent home for the SQLite DB (auth/quota/logs).
+      - toneai-kat-data:/app/data
+
+volumes:
+  toneai-kat-data:

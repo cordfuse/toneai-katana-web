@@ -10,6 +10,8 @@
 #   3. docker compose -f docker-compose.prod.yml up -d --build
 #   4. Caddy will provision a TLS cert on first request to your domain.
 
+name: toneai-katana-web
+
 services:
   app:
     build:
@@ -32,6 +34,8 @@ services:
       # Point this at wherever the operator keeps ToneAI Kat's config on the host
       # (e.g. /srv/toneai-config:/app/config).
       - ../nodejs/config:/app/config
+      # Writable, persistent home for the SQLite DB (auth/quota/logs).
+      - toneai-kat-data:/app/data
 
     networks:
       - internal
@@ -53,6 +57,7 @@ services:
       - app
 
 volumes:
+  toneai-kat-data:
   caddy-data:
   caddy-config:
 

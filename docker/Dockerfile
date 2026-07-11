@@ -43,7 +43,16 @@ ENV TONEAI_CONFIG_DIR=/app/config
 # the bundled config + public + static are nested inside it already.
 COPY --from=builder /app/.next/standalone ./
 
-# Drop privileges. node:22-alpine ships with a "node" user (uid 1000) —
+# The SQLite DB (device auth, quota, logs — DB_PATH defaults to data/katana.db)
+# needs a writable, persistent home owned by the runtime user. `next build`
+# evaluates db.ts as root and bakes a root-owned data/katana.db into the
+# bundle; remove it and re-create a clean, node-owned dir so the runtime opens
+# a fresh DB it can write (otherwise the first quota write 500s "readonly
+# database"). The compose files mount a named volume here for persistence —
+# it seeds from this clean dir, so it inherits node ownership too.
+RUN rm -rf /app/data && mkdir -p /app/data && chown node:node /app/data
+
+# Drop privileges. node:24-alpine ships with a "node" user (uid 1000) —
 # use it so the container doesn't run as root.
 USER node
 

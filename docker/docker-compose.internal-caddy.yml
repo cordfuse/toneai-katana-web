@@ -14,6 +14,8 @@
 #   3. cp .env.example .env  →  fill in JWT_SECRET, ANTHROPIC_API_KEY, etc.
 #   4. docker compose -f docker-compose.internal-caddy.yml up -d --build
 
+name: toneai-katana-web
+
 services:
   toneai-kat:
     build:
@@ -32,8 +34,10 @@ services:
       TONEAI_TEMPERATURE: ${TONEAI_TEMPERATURE:-1.0}
 
     volumes:
-      # Same persistent config volume convention as the other compose files.
+      # Operator config (branding/themes/icons), read from the host.
       - ../nodejs/config:/app/config
+      # Writable, persistent home for the SQLite DB (auth/quota/logs).
+      - toneai-kat-data:/app/data
 
     # No host port binding — the host reverse proxy reaches the app over
     # proxy_net by container name (see docker/Caddyfile). Add a `ports:` entry
@@ -44,3 +48,6 @@ services:
 networks:
   proxy_net:
     external: true   # created out-of-band by your host's reverse-proxy stack
+
+volumes:
+  toneai-kat-data:
