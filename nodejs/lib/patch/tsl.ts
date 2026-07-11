@@ -15,8 +15,9 @@
 // ground-truth MkII liveset). Internally we key sections bare (e.g. "Patch_0");
 // toTsl() adds the prefix on emit so it lives in exactly one place.
 
-/** The real .tsl section-key prefix. Internal SectionMaps omit it. */
-const KEY_PREFIX = 'UserPatch%'
+/** Default .tsl section-key prefix. MkII/MkI use "UserPatch%"; Gen 3 uses
+ *  "PATCH%". Internal SectionMaps omit it; toTsl() adds the right one per meta. */
+const DEFAULT_KEY_PREFIX = 'UserPatch%'
 
 /** A patch as named sections of raw bytes (section key → byte array), bare keys. */
 export type SectionMap = Map<string, Uint8Array>
@@ -28,16 +29,18 @@ function hex(b: number): string {
 }
 
 export interface TslMeta {
-  formatRev: string   // MkII = "0002"
-  device: string      // MkII = "KATANA MkII"
+  formatRev: string   // MkII = "0002", Gen 3 = "0000"
+  device: string      // MkII = "KATANA MkII", Gen 3 = "KATANA Gen3"
   name: string        // liveset name
+  keyPrefix?: string  // section-key prefix; defaults to "UserPatch%", Gen 3 = "PATCH%"
 }
 
 /** Build the .tsl JSON object for a single patch from its section map. */
 export function toTsl(sections: SectionMap, meta: TslMeta): object {
+  const prefix = meta.keyPrefix ?? DEFAULT_KEY_PREFIX
   const paramSet: Record<string, string[]> = {}
   for (const [key, bytes] of sections) {
-    paramSet[KEY_PREFIX + key] = Array.from(bytes, hex)
+    paramSet[prefix + key] = Array.from(bytes, hex)
   }
   return {
     formatRev: meta.formatRev,
