@@ -96,7 +96,33 @@ strong default, not proven; verify with the app's selector logic or a couple mor
 sample patches with known amp/effect). Until then it stays a gated "derived"
 layout — same posture MkII held before its enums were verified.
 
-## Still to extract (the build)
+## Chain routing + writer offsets (verified from the pack)
+
+- `PATCH%SW` (6 bytes) = chain on/off: `[0]BOOSTER [1]MOD [2]FX [3]DELAY [4]DELAY2 [5]REVERB`.
+- `PATCH%FX(1)` = MOD-position type, `PATCH%FX(2)` = FX-position type (1 byte each);
+  `FX(3..6)` are extra slot capacity, inactive in normal 2-effect patches.
+  ("Pushed Trem" → MOD_SW=1, FX(1)=TREMOLO confirms FX(1)=MOD.)
+- Writer offset slots (all verified):
+  - AMP: gain@0, volume(level)@1, bass@2, mid@3, treble@4, presence@5, type@7
+  - BOOSTER(1): type@0, drive@1, tone@3, effect_level@6
+  - DELAY(1): type@0, time@1 (2-byte ms), feedback@5, effect_level@7
+  - REVERB(1): type@0, time@2, effect_level@10
+
+## Remaining implementation (writer + AI integration)
+
+The format is fully cracked and verified. Two coding chunks remain:
+1. **Writer** — `mk3/sections.ts` (the slots above + Gen 3 enums) and
+   `writers/mk3.ts` overlaying the tone intent onto the golden template (amp,
+   booster, fx1->MOD, fx2->FX, delay, reverb; set the SW flags). Wire
+   `generations.ts` + `index.ts`. Testable byte-for-byte against the fixtures.
+2. **Device-aware AI intent** — the model currently emits MkII amp/effect NAMES
+   (`enums.ts`), but Gen 3's sets differ (BROWN, PUSHED, SDE-3000, etc.). For
+   Gen 3 to actually generate valid tones, the intent schema/prompt must be
+   device-aware so the model picks Gen-3 names. This is the design boundary: the
+   `AmpName`/`FxName` unions are MkII-specific today; Gen 3 needs its own
+   vocabulary (and this same per-device vocab feeds the future convert feature).
+
+`katana-mk3` stays `supported: false` until both land and round-trip verifies.
 
 1. Per-block byte offsets, sizes, and multi-byte encodings (from the JS model +
    `item.json`) → `lib/patch/mk3/param-table.json`.
