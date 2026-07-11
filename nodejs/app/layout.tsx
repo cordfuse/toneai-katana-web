@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
+import localFont from 'next/font/local'
 import { loadToneaiConfig } from '@/lib/config'
 import { resolveLocale } from '@/lib/i18n/server'
 import { I18nProvider } from '@/lib/i18n/client'
@@ -12,10 +12,14 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 // Modern UI font — Inter is the de-facto open alternative to Google Sans
-// (used by Vercel, OpenAI, etc.). next/font/google self-hosts at build,
-// no runtime fetch, no FOUT. Exposed as --font-sans for globals.css.
-const inter = Inter({
-  subsets: ['latin'],
+// (used by Vercel, OpenAI, etc.). Bundled LOCALLY (the Inter variable woff2
+// lives in app/fonts/) rather than via next/font/google, because the Google
+// variant fetches from fonts.googleapis.com AT BUILD TIME — which the CI Docker
+// buildx sandbox blocks (ECONNRESET), failing the image build. Local font =
+// zero build-time network, no runtime fetch, no FOUT. Exposed as --font-sans.
+const inter = localFont({
+  src: './fonts/inter.woff2',
+  weight: '100 900',
   display: 'swap',
   variable: '--font-sans',
 })
