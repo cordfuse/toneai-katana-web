@@ -66,14 +66,21 @@ const MK2_AMP_CANON: Record<string, AmpCanon> = {
 const MK3_AMP_CANON: Record<string, AmpCanon> = {
   ACOUSTIC: 'acoustic', CLEAN: 'clean', PUSHED: 'pushed', CRUNCH: 'crunch', LEAD: 'lead', BROWN: 'brown',
 }
+// Air has FIVE panel voices — no PUSHED (it folds into CRUNCH). These are the amp
+// INSTRUCTIONS an Air tone ships (the amp is never written to the .tsl).
+const AIR_AMP_CANON: Record<string, AmpCanon> = {
+  ACOUSTIC: 'acoustic', CLEAN: 'clean', CRUNCH: 'crunch', LEAD: 'lead', BROWN: 'brown',
+}
 const AMP_TO_CANON: Partial<Record<Generation, Record<string, AmpCanon>>> = {
-  mk2: MK2_AMP_CANON, mk3: MK3_AMP_CANON,
+  mk2: MK2_AMP_CANON, mk3: MK3_AMP_CANON, air: AIR_AMP_CANON,
 }
 
-// Representative amp per bucket, per generation.
+// Representative amp per bucket, per generation. Air has no PUSHED voice, so
+// pushed maps to its nearest, CRUNCH.
 const AMP_FROM_CANON: Partial<Record<Generation, Record<AmpCanon, string>>> = {
   mk2: { acoustic: 'Acoustic', clean: 'Clean', pushed: 'VO Drive', crunch: 'Crunch', lead: 'Lead', brown: 'Brown' },
   mk3: { acoustic: 'ACOUSTIC', clean: 'CLEAN', pushed: 'PUSHED', crunch: 'CRUNCH', lead: 'LEAD', brown: 'BROWN' },
+  air: { acoustic: 'ACOUSTIC', clean: 'CLEAN', pushed: 'CRUNCH', crunch: 'CRUNCH', lead: 'LEAD', brown: 'BROWN' },
 }
 
 /** Translate an amp name from one generation to another via its character bucket.

@@ -9,7 +9,7 @@
 
 import type { KatanaDevice } from '@/lib/storage'
 
-export type Generation = 'mk1' | 'mk2' | 'mk3' | 'go'
+export type Generation = 'mk1' | 'mk2' | 'mk3' | 'go' | 'air'
 
 export type Confidence =
   /** Writer validated against real sample files (round-trip byte-identical). */
@@ -27,9 +27,11 @@ export interface GenerationProfile {
   /** The `device` string written into the .tsl liveset. */
   deviceString: string
   /** Librarian binary extension for a single patch. */
-  fileExt: '.kat' | '.kat2' | '.kat3' | '.katgo'
-  /** Device selector index from the app (MK1=1, MK2=2, MK3=3, GO=4). */
-  selectorIndex: 1 | 2 | 3 | 4
+  fileExt: '.kat' | '.kat2' | '.kat3' | '.katgo' | '.katair'
+  /** Device selector index from the app (MK1=1, MK2=2, MK3=3, GO=4). Air is a
+   *  separate app (BOSS Tone Studio for KATANA:AIR), not the guitar Librarian —
+   *  index 5 marks it as out-of-band rather than a Librarian slot. */
+  selectorIndex: 1 | 2 | 3 | 4 | 5
   confidence: Confidence
   /** Human note on how offsets are addressed, for the writer + docs. */
   addressing: string
@@ -86,6 +88,22 @@ export const GENERATIONS: Record<Generation, GenerationProfile> = {
     confidence: 'unextracted',
     addressing: 'section f5446q (a.b) + offset f5447r — TABLE NOT YET EXTRACTED',
   },
+  air: {
+    id: 'air',
+    label: 'KATANA:AIR',
+    deviceString: 'KATANA-AIR', // hyphenated, confirmed from a real ToneCentral export
+    fileExt: '.katair',
+    selectorIndex: 5,
+    // 'verified': the 2335-byte flat image param model (air/param-table.json,
+    // 478 params) is extracted from the Air editor app and the golden template
+    // round-trips a real bank byte-for-byte (air/__tests__). Effect offsets are
+    // verified; the writer emits the effects chain ONLY — an Air patch stores no
+    // amp (global panel state), so amp is surfaced as instructions. Residual
+    // unknowns needing hardware: delay-TIME encoding on-device and single-patch
+    // vs full 8-slot bank import (docs/air-format-notes.md § Open questions).
+    confidence: 'verified',
+    addressing: 'golden-template overlay (air/template.ts) + flat User%Patch offsets (air/param-table.json); .tsl formatRev 0000, effects-only, verified vs data/fixtures/ Air bank',
+  },
 }
 
 /**
@@ -100,6 +118,7 @@ export function generationForDevice(device: KatanaDevice): Generation {
   if (device.endsWith('-mk1')) return 'mk1'
   if (device.endsWith('-mk2')) return 'mk2'
   if (device.endsWith('-mk3')) return 'mk3'
+  if (device.startsWith('katana-air')) return 'air'
   if (device.startsWith('katana-go')) return 'go'
   // Defensive default: unknown suffix → mk1, the only verified layout. Better
   // to target the safe writer than to guess an unvalidated one.

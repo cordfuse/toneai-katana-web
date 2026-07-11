@@ -9,7 +9,7 @@ import { useState } from 'react'
 import type { TonePatchResult } from '@/lib/types'
 import type { TonePatch } from '@/lib/patch/intent'
 import type { KatanaDevice } from '@/lib/storage'
-import { canConvert } from '@/lib/patch'
+import { canConvert, airAmpSettings } from '@/lib/patch'
 
 const DownloadIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -224,6 +224,31 @@ export function ToneModal({ tone, onClose, onGoToChat, currentDevice, currentDev
                 hasn’t been validated against a factory export — import at your own risk.
               </p>
             )}
+
+            {/* Air stores no amp in the file — it's front-panel state. Surface the
+                target voicing as hand-dial instructions so the tone is complete. */}
+            {tone.device === 'katana-air' && (() => {
+              const a = airAmpSettings(tone.patch)
+              const dials: [string, number][] = [
+                ['gain', a.gain], ['volume', a.volume], ['bass', a.bass],
+                ['middle', a.middle], ['treble', a.treble], ['presence', a.presence],
+              ]
+              return (
+                <div className="rounded-lg border border-sky-400/30 bg-sky-400/10 px-3 py-2.5">
+                  <p className="text-[11px] font-medium text-sky-300/90">
+                    Set on the amp — the KATANA:AIR file carries effects only.
+                  </p>
+                  <p className="mt-1 text-[11px] text-sky-200/80">
+                    AMP TYPE: <span className="font-medium text-sky-100">{a.type}</span>
+                  </p>
+                  <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5">
+                    {dials.map(([k, v]) => (
+                      <span key={k} className="text-[10px] text-sky-200/70">{k}: {v}</span>
+                    ))}
+                  </div>
+                </div>
+              )
+            })()}
 
             {/* settings list */}
             <div className="rounded-xl border border-white/10">
