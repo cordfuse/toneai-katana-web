@@ -63,7 +63,12 @@ jobs:
         with:
           context: .
           file: docker/Dockerfile
-          platforms: linux/amd64,linux/arm64
+          # amd64 only. The arm64 leg was built via QEMU emulation on the amd64
+          # runner and the Next.js build worker crashes there (qemu SIGILL /
+          # illegal instruction). amd64 covers Render + virtually all container
+          # hosts; Apple Silicon runs it fine under emulation. Re-add arm64 only
+          # with a NATIVE arm64 runner (ubuntu-*-arm) + manifest merge, never QEMU.
+          platforms: linux/amd64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
