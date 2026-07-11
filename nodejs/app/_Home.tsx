@@ -1819,13 +1819,29 @@ export default function Home({
     setTones([])
   }, [])
 
+  // Stable identity for a tone as a conversion SOURCE. Keyed on device + name so
+  // a converted copy can be found again (and re-converting the same source to the
+  // same device maps to ONE library entry, never a pile of duplicates).
+  const toneSig = (t: TonePatchResult) => `${t.device}|${t.patch.name}`
+
+  // The already-made conversion of `src` for `device`, if one exists. Lets the
+  // card offer "open the version you made" instead of prompting to convert again.
+  const findConvertedVersion = useCallback(
+    (src: TonePatchResult, device: KatanaDevice): TonePatchResult | undefined =>
+      tones.find(t => t.tone.device === device && t.tone.convertedFrom?.sourceSig === toneSig(src))?.tone,
+    [tones],
+  )
+
   // Convert a tone to another device: re-voice the intent, render the target
-  // .tsl, save it as a NEW library tone (standing on its own, not tied to a
-  // chat), and re-open the modal on it. The original tone is left untouched.
+  // .tsl, save it as a library tone (standing on its own, not tied to a chat),
+  // and re-open the modal on it. The original is untouched. The id is derived
+  // from source+target so converting the same tone twice REPLACES rather than
+  // duplicates (addTone upserts by id).
   const handleConvertTone = useCallback((src: TonePatchResult, toDevice: KatanaDevice, toLabel: string) => {
+    const sig = toneSig(src)
+    const id = `conv:${sig}->${toDevice}`
     const { patch, notes, tsl, filename } = convertTone(src.patch, src.device as KatanaDevice, toDevice)
     const now = Date.now()
-    const id = `conv-${now}-${Math.round(Math.random() * 1e6)}`
     const result: TonePatchResult = {
       ...src,
       patch,
@@ -1834,7 +1850,7 @@ export default function Home({
       tsl,
       filename,
       experimental: false, // canConvert only permits verified target writers
-      convertedFrom: { deviceLabel: src.deviceLabel, notes },
+      convertedFrom: { deviceLabel: src.deviceLabel, notes, sourceSig: sig },
     }
     addTone({ id, name: patch.name, createdAt: now, updatedAt: now, conversationId: null, tone: result })
     setTones(loadTones())
@@ -2633,6 +2649,8 @@ export default function Home({
           currentDevice={device}
           currentDeviceLabel={(KATANA_DEVICES.find(d => d.id === device) ?? KATANA_DEVICES[0]).label}
           onConvert={handleConvertTone}
+          findConvertedVersion={findConvertedVersion}
+          onOpenConverted={t => setOpenTone({ tone: t, conversationId: null })}
           onClose={() => setOpenTone(null)}
           onGoToChat={
             openTone.conversationId && openTone.conversationId !== activeId &&

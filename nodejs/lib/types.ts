@@ -33,6 +33,9 @@ export interface TonePatchResult {
   convertedFrom?: {
     deviceLabel: string
     notes: import('@/lib/patch').ConvertNote[]
+    /** Signature of the source tone (`device|name`), so the UI can find this
+     *  converted version again and offer to open it instead of re-converting. */
+    sourceSig?: string
   }
 }
 

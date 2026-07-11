@@ -113,7 +113,7 @@ export function ToneCard({ tone, onOpen }: { tone: TonePatchResult; onOpen: () =
 
 // ─── detail modal ────────────────────────────────────────────────────────────
 
-export function ToneModal({ tone, onClose, onGoToChat, currentDevice, currentDeviceLabel, onConvert }: {
+export function ToneModal({ tone, onClose, onGoToChat, currentDevice, currentDeviceLabel, onConvert, findConvertedVersion, onOpenConverted }: {
   tone: TonePatchResult
   onClose: () => void
   onGoToChat?: () => void
@@ -124,15 +124,26 @@ export function ToneModal({ tone, onClose, onGoToChat, currentDevice, currentDev
   /** Re-voice this tone for another device. The parent saves the result to the
    *  library and re-opens the modal on the new tone. */
   onConvert?: (source: TonePatchResult, device: KatanaDevice, label: string) => void
+  /** Find an already-made conversion of this tone for a device, so we offer to
+   *  OPEN it instead of prompting to convert the same tone again. */
+  findConvertedVersion?: (source: TonePatchResult, device: KatanaDevice) => TonePatchResult | undefined
+  /** Open an existing converted tone in this modal. */
+  onOpenConverted?: (tone: TonePatchResult) => void
 }) {
   const [settingsOpen, setSettingsOpen] = useState(true)
 
-  // Offer conversion when the player's amp differs from the tone's target and
-  // both generations have a proven writer (canConvert).
-  const convertTarget =
-    onConvert && currentDevice && currentDeviceLabel &&
+  // Conversion affordance, only when the player's amp differs from the tone's
+  // target and both generations have a proven writer. If a conversion for that
+  // device already exists, offer to OPEN it rather than re-convert (no dupes, no
+  // "why am I asked again?"). Otherwise offer to convert.
+  const canOfferConvert =
+    currentDevice && currentDeviceLabel &&
     tone.device !== currentDevice && canConvert(tone.device as KatanaDevice, currentDevice)
-      ? { device: currentDevice, label: currentDeviceLabel }
+  const existingConversion =
+    canOfferConvert && findConvertedVersion ? findConvertedVersion(tone, currentDevice!) : undefined
+  const convertTarget =
+    canOfferConvert && onConvert && !existingConversion
+      ? { device: currentDevice!, label: currentDeviceLabel! }
       : null
 
   // Only show blocks the tone actually uses. An empty FX/delay/reverb slot as an
@@ -174,8 +185,20 @@ export function ToneModal({ tone, onClose, onGoToChat, currentDevice, currentDev
                 onClick={() => onConvert!(tone, convertTarget.device, convertTarget.label)}
                 className="flex w-full items-center justify-between gap-2 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-[11px] leading-snug text-primary hover:bg-primary/15 transition-colors"
               >
-                <span>This tone targets {tone.deviceLabel}. Convert it for your {convertTarget.label}?</span>
+                <span>This tone targets {tone.deviceLabel}. Convert it for your {currentDeviceLabel}?</span>
                 <span className="shrink-0 font-medium">Convert →</span>
+              </button>
+            )}
+
+            {/* Already converted for the selected amp — open that copy, don't
+                re-convert. */}
+            {existingConversion && (
+              <button
+                onClick={() => onOpenConverted?.(existingConversion)}
+                className="flex w-full items-center justify-between gap-2 rounded-lg border border-white/10 bg-surface-2 px-3 py-2 text-[11px] leading-snug text-fg-2 hover:text-fg hover:border-white/20 transition-colors"
+              >
+                <span>Already converted for your {currentDeviceLabel}.</span>
+                <span className="shrink-0 font-medium text-primary">Open version →</span>
               </button>
             )}
 
