@@ -24,7 +24,12 @@ const ChevronIcon = ({ open }: { open: boolean }) => (
 
 /** Trigger a .tsl download from the in-memory liveset string. */
 function downloadTsl(tone: TonePatchResult) {
-  const blob = new Blob([tone.tsl], { type: 'application/json' })
+  // A .tsl is JSON internally, but the MIME type must NOT be application/json:
+  // mobile browsers (Android Chrome especially) override the download filename's
+  // extension to match a recognised MIME type, saving it as .json and breaking
+  // the BOSS Tone Studio import. octet-stream forces the browser to honour the
+  // .tsl filename verbatim.
+  const blob = new Blob([tone.tsl], { type: 'application/octet-stream' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
