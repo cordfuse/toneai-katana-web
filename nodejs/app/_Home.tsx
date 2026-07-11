@@ -617,14 +617,14 @@ function SettingsPanel({
                   <div className="absolute left-0 right-0 top-full z-20 mt-1 rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden max-h-[60vh] overflow-y-auto animate-dropdown origin-top">
                     {KATANA_DEVICES.map(d => {
                       const isActive = device === d.id
-                      // Non-MkII devices are listed but not yet selectable — their
-                      // writers aren't proven against real exports.
+                      // Unsupported devices are listed but not yet selectable —
+                      // their writers aren't proven against real exports yet.
                       if (!d.supported) {
                         return (
                           <div
                             key={d.id}
                             className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-fg-4 cursor-not-allowed select-none"
-                            title="Not yet supported — only KATANA MkII is available today"
+                            title="Not yet supported — its .tsl writer is still being verified"
                           >
                             <span className="flex-1 text-left">{d.label}</span>
                             <span className="ml-1 shrink-0 rounded bg-white/5 px-1.5 py-0.5 text-[9px] uppercase tracking-wide text-fg-4">Soon</span>
@@ -649,8 +649,8 @@ function SettingsPanel({
               )}
             </div>
             <p className="mt-2 text-[11px] leading-snug text-fg-4">
-              Only KATANA MkII is supported right now. Other models are listed but
-              not yet selectable — support lands as each is verified.
+              Models marked “Soon” are listed but not yet selectable — support lands
+              as each generation’s .tsl writer is verified against real exports.
             </p>
           </div>
 
