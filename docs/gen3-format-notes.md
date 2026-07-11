@@ -61,9 +61,11 @@ redistributed, same policy as the MkII fixture). It pins the envelope:
 
 ## Enum name lists (from config/resource.js, index order)
 
-Text lists are in selector order; byte value = index (STRONG assumption, standard
-for these Roland apps, but the ordering should be confirmed against ground truth
-before flipping Gen 3 to "supported" — see below).
+Text lists are in selector order; **byte value = index — VERIFIED** against a
+second ground-truth pack (`data/fixtures/gen3-studio-rats-pack.tsl`, 8 patches):
+patch "TSR Clean"→CLEAN(1), "TSR Pushed"→PUSHED(2), "TSR Crunch"→CRUNCH(3),
+"TSR EVH"→BROWN(5, the Van Halen brown sound); effect side "Pushed Trem"→TREMOLO,
+"LOW Oct"→OCTAVE. The resource-text ordering holds across amp/FX/delay/reverb.
 
 - **Amp type** (`PATCH%AMP` byte 7, 0–5): ACOUSTIC, CLEAN, PUSHED, CRUNCH, LEAD, BROWN
 - **MOD/FX type** (31): T.WAH, AUTO WAH, PEDAL WAH, COMP, LIMITER, GRAPHIC EQ,
