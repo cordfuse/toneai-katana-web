@@ -11,14 +11,13 @@ import './globals.css'
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-// Modern UI font — Inter is the de-facto open alternative to Google Sans
-// (used by Vercel, OpenAI, etc.). Bundled LOCALLY (the Inter variable woff2
-// lives in app/fonts/) rather than via next/font/google, because the Google
+// Modern UI font — Geist, Vercel's typeface. Bundled LOCALLY (the Geist variable
+// woff2 lives in app/fonts/) rather than via next/font/google, because the Google
 // variant fetches from fonts.googleapis.com AT BUILD TIME — which the CI Docker
 // buildx sandbox blocks (ECONNRESET), failing the image build. Local font =
 // zero build-time network, no runtime fetch, no FOUT. Exposed as --font-sans.
-const inter = localFont({
-  src: './fonts/inter.woff2',
+const geist = localFont({
+  src: './fonts/geist.woff2',
   weight: '100 900',
   display: 'swap',
   variable: '--font-sans',
@@ -85,7 +84,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html
       lang={activeLocale}
       translate="no"
-      className={`h-dvh notranslate ${inter.variable}`}
+      className={`h-dvh notranslate ${geist.variable}`}
       suppressHydrationWarning
     >
       <head>
