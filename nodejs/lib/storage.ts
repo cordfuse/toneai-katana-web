@@ -259,8 +259,8 @@ export const KATANA_DEVICES: { id: KatanaDevice; label: string; supported: boole
   { id: 'katana-mk2',  label: 'KATANA MkII',  supported: true  },
   { id: 'katana-mk3',  label: 'KATANA Gen 3', supported: true  },
   { id: 'katana-air',  label: 'KATANA:AIR',   supported: true  },
+  { id: 'katana-go',   label: 'KATANA:GO',    supported: true  },
   { id: 'katana-mk1',  label: 'KATANA MkI',   supported: false },
-  { id: 'katana-go',   label: 'KATANA:GO',    supported: false },
   { id: 'katana-bass', label: 'KATANA Bass',  supported: false },
 ]
 

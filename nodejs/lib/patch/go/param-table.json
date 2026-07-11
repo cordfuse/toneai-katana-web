@@ -1,0 +1,629 @@
+{
+  "_meta": {
+    "device": "KATANA:GO_guitarmode",
+    "keyPrefix": "PATCH%",
+    "formatRev": "0000"
+  },
+  "blocks": {
+    "COM": {
+      "GROUP_NUMBER": {
+        "offset": 0,
+        "bytes": 2,
+        "ofs": 0,
+        "min": 0,
+        "max": 9,
+        "init": 0
+      },
+      "CHANNEL": {
+        "offset": 2,
+        "bytes": 2,
+        "ofs": 0,
+        "min": 0,
+        "max": 2,
+        "init": 0
+      },
+      "NAME": {
+        "offset": 4,
+        "bytes": 16,
+        "ofs": 0,
+        "min": 32,
+        "max": 125,
+        "init": "KATANA:GO       "
+      }
+    },
+    "OTHER": {
+      "CHAIN": {
+        "offset": 0,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 8,
+        "init": 2
+      },
+      "CABINET_RESONANCE": {
+        "offset": 1,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 5,
+        "init": 1
+      },
+      "MASTER_KEY": {
+        "offset": 2,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 11,
+        "init": 0
+      }
+    },
+    "AMP": {
+      "GAIN": {
+        "offset": 0,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 50
+      },
+      "VOLUME": {
+        "offset": 1,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 50
+      },
+      "SHAPE": {
+        "offset": 2,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 3,
+        "init": 0
+      },
+      "BASS": {
+        "offset": 3,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 50
+      },
+      "MIDDLE": {
+        "offset": 4,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 50
+      },
+      "TREBLE": {
+        "offset": 5,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 50
+      },
+      "LOW_MID": {
+        "offset": 6,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 50
+      },
+      "LOW_MID_FREQ": {
+        "offset": 7,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 27,
+        "init": 11
+      },
+      "HIGH_MID": {
+        "offset": 8,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 50
+      },
+      "HIGH_MID_FREQ": {
+        "offset": 9,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 27,
+        "init": 16
+      },
+      "PRESENCE": {
+        "offset": 10,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 50
+      },
+      "POWERAMP_VARIATION": {
+        "offset": 11,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 0,
+        "init": 0
+      },
+      "TYPE": {
+        "offset": 12,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 7,
+        "init": 3
+      },
+      "PREAMP_VARIATION": {
+        "offset": 13,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 1,
+        "init": 0
+      }
+    },
+    "SW": {
+      "BOOSTER_SW": {
+        "offset": 0,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 1,
+        "init": 0
+      },
+      "MOD_SW": {
+        "offset": 1,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 1,
+        "init": 0
+      },
+      "FX_SW": {
+        "offset": 2,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 1,
+        "init": 0
+      },
+      "DELAY_SW": {
+        "offset": 3,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 1,
+        "init": 0
+      },
+      "DELAY2_SW": {
+        "offset": 4,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 1,
+        "init": 0
+      },
+      "REVERB_SW": {
+        "offset": 5,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 1,
+        "init": 0
+      },
+      "COMP_SW": {
+        "offset": 6,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 1,
+        "init": 0
+      }
+    },
+    "BOOSTER": {
+      "TYPE": {
+        "offset": 0,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 35,
+        "init": 9
+      },
+      "DRIVE": {
+        "offset": 1,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 120,
+        "init": 50
+      },
+      "BOTTOM": {
+        "offset": 2,
+        "bytes": 1,
+        "ofs": 50,
+        "min": -50,
+        "max": 50,
+        "init": 10
+      },
+      "TONE": {
+        "offset": 3,
+        "bytes": 1,
+        "ofs": 50,
+        "min": -50,
+        "max": 50,
+        "init": 0
+      },
+      "SOLO_SW": {
+        "offset": 4,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 1,
+        "init": 0
+      },
+      "SOLO_LEVEL": {
+        "offset": 5,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 50
+      },
+      "EFFECT_LEVEL": {
+        "offset": 6,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 40
+      },
+      "DIRECT_MIX": {
+        "offset": 7,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 0
+      }
+    },
+    "FX(1)": {
+      "TYPE": {
+        "offset": 0,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 33,
+        "init": 0
+      }
+    },
+    "FX(2)": {
+      "TYPE": {
+        "offset": 0,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 33,
+        "init": 0
+      }
+    },
+    "DELAY(1)": {
+      "TYPE": {
+        "offset": 0,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 7,
+        "init": 0
+      },
+      "TIME": {
+        "offset": 1,
+        "bytes": 4,
+        "ofs": 0,
+        "min": 1,
+        "max": 2000,
+        "init": 400
+      },
+      "FEEDBACK": {
+        "offset": 5,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 22
+      },
+      "HIGH_CUT": {
+        "offset": 6,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 14,
+        "init": 14
+      },
+      "EFFECT_LEVEL": {
+        "offset": 7,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 120,
+        "init": 50
+      },
+      "DIRECT_LEVEL": {
+        "offset": 8,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 100
+      },
+      "TAP_TIME": {
+        "offset": 9,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 50
+      },
+      "MOD_RATE": {
+        "offset": 10,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 40
+      },
+      "MOD_DEPTH": {
+        "offset": 11,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 55
+      },
+      "LPF": {
+        "offset": 12,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 1,
+        "init": 0
+      },
+      "FILTER": {
+        "offset": 13,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 1,
+        "init": 0
+      },
+      "FEEDBACK_PHASE": {
+        "offset": 14,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 1,
+        "init": 0
+      },
+      "DELAY_PHASE": {
+        "offset": 15,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 1,
+        "init": 0
+      },
+      "MOD_SW": {
+        "offset": 16,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 1,
+        "init": 0
+      }
+    },
+    "DELAY(2)": {
+      "TYPE": {
+        "offset": 0,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 7,
+        "init": 0
+      },
+      "TIME": {
+        "offset": 1,
+        "bytes": 4,
+        "ofs": 0,
+        "min": 1,
+        "max": 2000,
+        "init": 400
+      },
+      "FEEDBACK": {
+        "offset": 5,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 22
+      },
+      "HIGH_CUT": {
+        "offset": 6,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 14,
+        "init": 14
+      },
+      "EFFECT_LEVEL": {
+        "offset": 7,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 120,
+        "init": 50
+      },
+      "DIRECT_LEVEL": {
+        "offset": 8,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 100
+      },
+      "TAP_TIME": {
+        "offset": 9,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 50
+      },
+      "MOD_RATE": {
+        "offset": 10,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 40
+      },
+      "MOD_DEPTH": {
+        "offset": 11,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 55
+      },
+      "LPF": {
+        "offset": 12,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 1,
+        "init": 0
+      },
+      "FILTER": {
+        "offset": 13,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 1,
+        "init": 0
+      },
+      "FEEDBACK_PHASE": {
+        "offset": 14,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 1,
+        "init": 0
+      },
+      "DELAY_PHASE": {
+        "offset": 15,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 1,
+        "init": 0
+      },
+      "MOD_SW": {
+        "offset": 16,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 1,
+        "init": 0
+      }
+    },
+    "REVERB": {
+      "TYPE": {
+        "offset": 0,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 4,
+        "init": 1
+      },
+      "LAYER_MODE": {
+        "offset": 1,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 1,
+        "max": 1,
+        "init": 1
+      },
+      "TIME": {
+        "offset": 2,
+        "bytes": 1,
+        "ofs": -1,
+        "min": 1,
+        "max": 100,
+        "init": 30
+      },
+      "PRE_DELAY": {
+        "offset": 3,
+        "bytes": 4,
+        "ofs": 0,
+        "min": 0,
+        "max": 500,
+        "init": 10
+      },
+      "LOW_CUT": {
+        "offset": 7,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 17,
+        "init": 0
+      },
+      "HIGH_CUT": {
+        "offset": 8,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 14,
+        "init": 14
+      },
+      "DENSITY": {
+        "offset": 9,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 10,
+        "init": 8
+      },
+      "EFFECT_LEVEL": {
+        "offset": 10,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 35
+      },
+      "DIRECT_LEVEL": {
+        "offset": 11,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 100
+      },
+      "SPRING_COLOR": {
+        "offset": 12,
+        "bytes": 1,
+        "ofs": 0,
+        "min": 0,
+        "max": 100,
+        "init": 100
+      }
+    }
+  }
+}

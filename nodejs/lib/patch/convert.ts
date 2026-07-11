@@ -71,8 +71,12 @@ const MK3_AMP_CANON: Record<string, AmpCanon> = {
 const AIR_AMP_CANON: Record<string, AmpCanon> = {
   ACOUSTIC: 'acoustic', CLEAN: 'clean', CRUNCH: 'crunch', LEAD: 'lead', BROWN: 'brown',
 }
+// GO guitar mode shares Air's 5-voice amp model (no PUSHED).
+const GO_AMP_CANON: Record<string, AmpCanon> = {
+  ACOUSTIC: 'acoustic', CLEAN: 'clean', CRUNCH: 'crunch', LEAD: 'lead', BROWN: 'brown',
+}
 const AMP_TO_CANON: Partial<Record<Generation, Record<string, AmpCanon>>> = {
-  mk2: MK2_AMP_CANON, mk3: MK3_AMP_CANON, air: AIR_AMP_CANON,
+  mk2: MK2_AMP_CANON, mk3: MK3_AMP_CANON, air: AIR_AMP_CANON, go: GO_AMP_CANON,
 }
 
 // Representative amp per bucket, per generation. Air has no PUSHED voice, so
@@ -81,6 +85,7 @@ const AMP_FROM_CANON: Partial<Record<Generation, Record<AmpCanon, string>>> = {
   mk2: { acoustic: 'Acoustic', clean: 'Clean', pushed: 'VO Drive', crunch: 'Crunch', lead: 'Lead', brown: 'Brown' },
   mk3: { acoustic: 'ACOUSTIC', clean: 'CLEAN', pushed: 'PUSHED', crunch: 'CRUNCH', lead: 'LEAD', brown: 'BROWN' },
   air: { acoustic: 'ACOUSTIC', clean: 'CLEAN', pushed: 'CRUNCH', crunch: 'CRUNCH', lead: 'LEAD', brown: 'BROWN' },
+  go: { acoustic: 'ACOUSTIC', clean: 'CLEAN', pushed: 'CRUNCH', crunch: 'CRUNCH', lead: 'LEAD', brown: 'BROWN' },
 }
 
 /** Translate an amp name from one generation to another via its character bucket.

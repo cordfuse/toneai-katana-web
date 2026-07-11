@@ -21,8 +21,10 @@ const mk2Patch: TonePatch = {
 test('canConvert only across proven, distinct generations', () => {
   assert.equal(canConvert('katana-mk2', 'katana-mk3'), true)
   assert.equal(canConvert('katana-mk3', 'katana-mk2'), true)
+  assert.equal(canConvert('katana-mk2', 'katana-go'), true, 'GO guitar has a verified writer')
+  assert.equal(canConvert('katana-go', 'katana-air'), true, 'GO <-> Air both convertible')
   assert.equal(canConvert('katana-mk2', 'katana-mk2'), false, 'same device')
-  assert.equal(canConvert('katana-mk2', 'katana-go'), false, 'GO has no writer')
+  assert.equal(canConvert('katana-mk2', 'katana-mk1'), false, 'MkI has no convert vocabulary')
 })
 
 test('MkII -> Gen 3: names land in the Gen 3 vocabulary', () => {

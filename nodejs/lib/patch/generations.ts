@@ -82,11 +82,19 @@ export const GENERATIONS: Record<Generation, GenerationProfile> = {
   go: {
     id: 'go',
     label: 'KATANA:GO',
-    deviceString: 'KATANA:GO',
+    deviceString: 'KATANA:GO_guitarmode', // guitar mode; bass mode is a separate device string
     fileExt: '.katgo',
     selectorIndex: 4,
-    confidence: 'unextracted',
-    addressing: 'section f5446q (a.b) + offset f5447r — TABLE NOT YET EXTRACTED',
+    // 'verified': param model extracted from the GO editor app, enum orderings
+    // cross-checked against the app's own Gen 3 → GO conversion map, and the
+    // golden template round-trips a real guitar-mode export byte-for-byte
+    // (go/__tests__, docs/go-format-notes.md). GO is a Gen 3-style PATCH% section
+    // map; the amp IS stored in-patch (unlike Air). GO is dual-mode — the same
+    // app + block layout serves guitar and bass, split only by the .tsl device
+    // string (_guitarmode / _bassmode) and patch-slot range. Guitar mode ships
+    // first; bass mode is built on the same GO app (no bass profile yet).
+    confidence: 'verified',
+    addressing: 'golden-template overlay (go/template.ts) + PATCH% block offsets (go/param-table.json); .tsl formatRev 0000, verified vs data/fixtures/ GO guitar export',
   },
   air: {
     id: 'air',

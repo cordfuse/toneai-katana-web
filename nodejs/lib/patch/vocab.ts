@@ -16,6 +16,9 @@ import {
 import {
   AIR_AMP_TYPES, AIR_BOOSTER_NAMES, AIR_FX_NAMES, AIR_DELAY_NAMES, AIR_REVERB_NAMES,
 } from './air/enums'
+import {
+  GO_AMP_TYPES, GO_BOOSTER_TYPES, GO_FX_TYPES, GO_DELAY_TYPES, GO_REVERB_TYPES,
+} from './go/enums'
 
 export interface DeviceVocab {
   amps: readonly string[]
@@ -38,6 +41,11 @@ const AIR_VOCAB: DeviceVocab = {
   amps: AIR_AMP_TYPES, boosters: AIR_BOOSTER_NAMES, fx: AIR_FX_NAMES,
   delays: AIR_DELAY_NAMES, reverbs: AIR_REVERB_NAMES,
 }
+// GO guitar mode — Gen 3-style, amp stored in-patch. 5-voice amp like Air.
+const GO_VOCAB: DeviceVocab = {
+  amps: GO_AMP_TYPES, boosters: GO_BOOSTER_TYPES, fx: GO_FX_TYPES,
+  delays: GO_DELAY_TYPES, reverbs: GO_REVERB_TYPES,
+}
 
 // Generations with a writer + vocabulary. Others fall back to MkII's (they're
 // gated from emitting anyway by the confidence guard in index.ts).
@@ -45,6 +53,7 @@ const BY_GENERATION: Partial<Record<Generation, DeviceVocab>> = {
   mk2: MK2_VOCAB,
   mk3: MK3_VOCAB,
   air: AIR_VOCAB,
+  go: GO_VOCAB,
 }
 
 export function vocabForGeneration(gen: Generation): DeviceVocab {
