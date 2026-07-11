@@ -59,6 +59,41 @@ redistributed, same policy as the MkII fixture). It pins the envelope:
 - This real patch IS the golden template for `mk3` (round-trip target), the way
   the real MkII liveset was for `mk2`.
 
+## Enum name lists (from config/resource.js, index order)
+
+Text lists are in selector order; byte value = index (STRONG assumption, standard
+for these Roland apps, but the ordering should be confirmed against ground truth
+before flipping Gen 3 to "supported" — see below).
+
+- **Amp type** (`PATCH%AMP` byte 7, 0–5): ACOUSTIC, CLEAN, PUSHED, CRUNCH, LEAD, BROWN
+- **MOD/FX type** (31): T.WAH, AUTO WAH, PEDAL WAH, COMP, LIMITER, GRAPHIC EQ,
+  PARAMETRIC EQ, GUITAR SIM, SLOW GEAR, WAVE SYNTH, OCTAVE, PITCH SHIFTER,
+  HARMONIST, AC.PROCESSOR, PHASER, FLANGER, TREMOLO, ROTARY, UNI-V, SLICER,
+  VIBRATO, RING MOD, HUMANIZER, CHORUS, AC.GUITAR SIM, PHASER 90E, FLANGER 117E,
+  WAH 95E, DC-30, HEAVY OCTAVE, PEDAL BEND
+- **Delay type** (8): DIGITAL, PAN, STEREO, ANALOG, TAPE ECHO, REVERSE, MODULATE, SDE-3000
+- **Reverb type** (5): PLATE, ROOM, HALL, SPRING, MODULATE
+- **Booster type** (SMALL, MEDIUM, BRIGHT, POWER ... plus the pedal-fx families)
+- **Chain block order**: BOOSTER, MOD, FX, DELAY, DELAY2, REVERB, SOLO, CONTOUR,
+  PEDAL FX, EQ, EQ2, NS, SEND/RETURN, ASSIGN
+
+## Status (2026-07-11)
+
+VERIFIED: param model (`mk3/param-table.json`), golden template, and a full
+byte-for-byte round-trip of a real export (`mk3/template.ts` + test). The
+serialization/envelope path is proven.
+
+NEXT (writer overlay): `mk3/sections.ts` offset slots for the controlled params
+(from param-table), `writers/mk3.ts` (mirror mk2), map the tone intent onto
+Gen 3's blocks (amp -> PATCH%AMP, booster -> BOOSTER(1), fx1/fx2 -> FX(n)+
+FX_DETAIL(n), delay -> DELAY(1), reverb -> REVERB(1)), wire `generations.ts` +
+`index.ts`, and a device-aware AI schema so the model picks Gen-3 amp/effect
+names. **Do not flip `katana-mk3` to supported until the enum index->name
+orderings are confirmed against ground truth** (the resource-text order is a
+strong default, not proven; verify with the app's selector logic or a couple more
+sample patches with known amp/effect). Until then it stays a gated "derived"
+layout — same posture MkII held before its enums were verified.
+
 ## Still to extract (the build)
 
 1. Per-block byte offsets, sizes, and multi-byte encodings (from the JS model +
