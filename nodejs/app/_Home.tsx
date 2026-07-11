@@ -984,6 +984,7 @@ function Sidebar({
         {/* brand + close (mobile) */}
         <div className="flex items-center justify-between px-3 py-3 shrink-0 min-w-[260px]">
           <div className="flex items-center gap-2.5">
+            <img src={getToneaiBranding().icon192} alt="" className="h-8 w-8 rounded-lg shrink-0" />
             <span className="text-sm font-medium text-fg whitespace-nowrap">{appName}</span>
           </div>
           <button onClick={onClose} className="flex h-7 w-7 items-center justify-center rounded-lg text-fg-3 hover:bg-surface-2 hover:text-fg transition-colors lg:hidden" aria-label={t('sidebar.closeSidebar', 'Close sidebar')}>
