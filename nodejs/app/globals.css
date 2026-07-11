@@ -459,3 +459,15 @@ html, body {
 .typing-dot:nth-child(1) { animation: bounce-dot 1.2s ease-in-out infinite 0ms; }
 .typing-dot:nth-child(2) { animation: bounce-dot 1.2s ease-in-out infinite 150ms; }
 .typing-dot:nth-child(3) { animation: bounce-dot 1.2s ease-in-out infinite 300ms; }
+
+/* Respect users who ask the OS to minimise motion: collapse every enter/exit
+   animation and transition to an instant change. The UI stays fully functional,
+   just without the movement. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

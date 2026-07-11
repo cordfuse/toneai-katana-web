@@ -26,6 +26,9 @@ const config: Config = {
         'slide-in-right': 'slideInRight 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
         'slide-out-right':'slideOutRight 0.26s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards',
         'slide-in-bottom':'slideInBottom 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        // Dropdown menus: a quick unfold from the anchor. Short + top-origin so
+        // it reads as the menu dropping open rather than a full modal pop.
+        'dropdown':      'dropdown 0.16s ease-out',
       },
       keyframes: {
         fadeIn:         { from: { opacity: '0' }, to: { opacity: '1' } },
@@ -34,6 +37,7 @@ const config: Config = {
         slideInRight:   { from: { transform: 'translateX(100%)' }, to: { transform: 'translateX(0)' } },
         slideOutRight:  { from: { transform: 'translateX(0)' }, to: { transform: 'translateX(100%)' } },
         slideInBottom:  { from: { opacity: '0', transform: 'translateY(16px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+        dropdown:       { from: { opacity: '0', transform: 'translateY(-4px) scale(0.98)' }, to: { opacity: '1', transform: 'translateY(0) scale(1)' } },
       },
     },
   },

@@ -117,10 +117,10 @@ export function ToneModal({ tone, onClose, onGoToChat }: { tone: TonePatchResult
 
   return (
     <>
-      <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={onClose} />
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
         <div
-          className="pointer-events-auto flex max-h-[90svh] w-full max-w-sm flex-col overflow-hidden rounded-2xl border border-white/10 bg-surface shadow-2xl"
+          className="pointer-events-auto flex max-h-[90svh] w-full max-w-sm flex-col overflow-hidden rounded-2xl border border-white/10 bg-surface shadow-2xl animate-scale-up"
           onClick={e => e.stopPropagation()}
         >
           {/* header */}

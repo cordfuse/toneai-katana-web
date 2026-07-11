@@ -271,7 +271,7 @@ function CodeBlock({ children }: { children?: React.ReactNode }) {
 function DeleteConfirmModal({ label, onConfirm, onCancel }: { label: string; onConfirm: () => void; onCancel: () => void }) {
   return (
     <>
-      <div className="fixed inset-0 z-[70] bg-black/60 backdrop-blur-sm" onClick={onCancel} />
+      <div className="fixed inset-0 z-[70] bg-black/60 backdrop-blur-sm animate-fade-in" onClick={onCancel} />
       <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 pointer-events-none">
         <div className="pointer-events-auto w-full max-w-sm rounded-2xl border border-white/10 bg-surface shadow-2xl animate-scale-up p-5 space-y-4" onClick={e => e.stopPropagation()}>
           <h3 className="text-sm font-semibold text-fg">Delete {label}?</h3>
@@ -316,7 +316,7 @@ function AboutModal({ onClose }: { onClose: () => void }) {
   const toggle = (v: string) => setOpenVersions(prev => ({ ...prev, [v]: !prev[v] }))
   return (
     <>
-      <div className="fixed inset-0 z-[80] bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 z-[80] bg-black/70 backdrop-blur-sm animate-fade-in" onClick={onClose} />
       <div className="fixed inset-0 z-[80] flex items-center justify-center p-4 pointer-events-none">
         <div className="pointer-events-auto w-full max-w-sm rounded-2xl border border-white/10 bg-surface shadow-2xl animate-scale-up p-6 space-y-5 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
           <div className="flex items-start justify-between gap-3">
@@ -392,7 +392,7 @@ function WelcomeModal({ onDismiss }: { onDismiss: () => void }) {
   const [headline, ...rest] = latest.items
   return (
     <>
-      <div className="fixed inset-0 z-[90] bg-black/80 backdrop-blur-sm" />
+      <div className="fixed inset-0 z-[90] bg-black/80 backdrop-blur-sm animate-fade-in" />
       <div className="fixed inset-0 z-[90] flex items-center justify-center p-4">
         <div className="w-full max-w-md rounded-3xl border border-white/10 bg-surface shadow-2xl animate-scale-up overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -544,7 +544,7 @@ function SettingsPanel({
 
   return (
     <>
-      <div className="fixed inset-0 z-40 bg-black/50" onClick={handleClose} />
+      <div className="fixed inset-0 z-40 bg-black/50 animate-fade-in" onClick={handleClose} />
       <aside className={`fixed right-0 top-0 z-50 flex h-full w-[min(20rem,100vw)] flex-col bg-surface shadow-2xl ${closing ? 'animate-slide-out-right' : 'animate-slide-in-right'}`}>
         <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
           <h2 className="text-sm font-medium text-fg">{t('settings.title', 'Settings')}</h2>
@@ -574,7 +574,7 @@ function SettingsPanel({
               {themeOpen && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setThemeOpen(false)} />
-                  <div className="absolute left-0 right-0 top-full z-20 mt-1 rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden max-h-[60vh] overflow-y-auto">
+                  <div className="absolute left-0 right-0 top-full z-20 mt-1 rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden max-h-[60vh] overflow-y-auto animate-dropdown origin-top">
                     {THEME_GROUPS_LIVE.map(group => (
                       <div key={group.label}>
                         <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-fg-4 bg-surface">{group.label}</p>
@@ -623,7 +623,7 @@ function SettingsPanel({
               {deviceOpen && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setDeviceOpen(false)} />
-                  <div className="absolute left-0 right-0 top-full z-20 mt-1 rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden max-h-[60vh] overflow-y-auto">
+                  <div className="absolute left-0 right-0 top-full z-20 mt-1 rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden max-h-[60vh] overflow-y-auto animate-dropdown origin-top">
                     {DEVICE_GROUPS.map(group => (
                       <div key={group.label}>
                         <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-fg-4 bg-surface">{group.label}</p>
@@ -686,7 +686,7 @@ function SettingsPanel({
                 {localeOpen && (
                   <>
                     <div className="fixed inset-0 z-10" onClick={() => setLocaleOpen(false)} />
-                    <div className="absolute left-0 right-0 top-full z-20 mt-1 rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden max-h-[60vh] overflow-y-auto">
+                    <div className="absolute left-0 right-0 top-full z-20 mt-1 rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden max-h-[60vh] overflow-y-auto animate-dropdown origin-top">
                       {availableLocales.map(code => {
                         const isActive = code === activeLocale
                         return (
@@ -974,7 +974,7 @@ function Sidebar({
 
   return (
     <>
-      {visible && <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={onClose} />}
+      {visible && <div className="fixed inset-0 z-40 bg-black/50 lg:hidden animate-fade-in" onClick={onClose} />}
       <aside className={`
         fixed top-0 left-0 z-50 h-full bg-surface shadow-[4px_0_16px_rgba(0,0,0,0.35)]
         flex flex-col overflow-hidden transition-transform duration-200 w-[260px]
@@ -2203,7 +2203,7 @@ export default function Home({
           {(
             <button
               onClick={() => setSidebarOpen(true)}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-fg-3 hover:bg-surface hover:text-fg transition-colors"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-fg-3 hover:bg-surface hover:text-fg transition-colors lg:hidden"
               title={t('header.openChats', 'Open chats')}
               aria-label={t('header.openChats', 'Open chats')}
             >
@@ -2255,7 +2255,7 @@ export default function Home({
               {headerMenuOpen && (
                 <>
                   <div className="fixed inset-0 z-30" onClick={() => setHeaderMenuOpen(false)} />
-                  <div className="absolute right-0 top-full z-40 mt-1 min-w-[12rem] rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden">
+                  <div className="absolute right-0 top-full z-40 mt-1 min-w-[12rem] rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden animate-dropdown origin-top">
                     <button
                       onClick={() => { setHeaderMenuOpen(false); window.location.reload() }}
                       className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-fg hover:bg-surface-3 transition-colors"

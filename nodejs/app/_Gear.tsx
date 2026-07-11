@@ -69,7 +69,7 @@ export function GearSection({ gear, onManage, onSelect }: {
             {open && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
-                <div className="absolute left-0 right-0 top-full z-20 mt-1 rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden max-h-[60vh] overflow-y-auto">
+                <div className="absolute left-0 right-0 top-full z-20 mt-1 rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden max-h-[60vh] overflow-y-auto animate-dropdown origin-top">
                   {gear.instruments.map(i => {
                     const isActive = i.id === gear.activeInstrumentId
                     return (
@@ -150,9 +150,9 @@ export function GearModal({ gear, onSave, onClose }: {
 
   return (
     <>
-      <div className="fixed inset-0 z-50 bg-black/60" onClick={onClose} />
+      <div className="fixed inset-0 z-50 bg-black/60 animate-fade-in" onClick={onClose} />
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-        <div className="pointer-events-auto flex max-h-[85vh] w-full max-w-md flex-col overflow-hidden rounded-xl border border-white/10 bg-surface shadow-2xl">
+        <div className="pointer-events-auto flex max-h-[85vh] w-full max-w-md flex-col overflow-hidden rounded-xl border border-white/10 bg-surface shadow-2xl animate-scale-up">
           <div className="flex items-center justify-between border-b border-white/10 px-4 py-3 shrink-0">
             <h2 className="text-sm font-medium text-fg">My gear</h2>
             <button onClick={onClose} aria-label="Close gear" className="text-fg-3 hover:text-fg text-lg leading-none">×</button>
