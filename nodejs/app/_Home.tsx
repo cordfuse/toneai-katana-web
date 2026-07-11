@@ -297,6 +297,13 @@ const GITHUB_ICON_PATH = 'M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.83
 
 const WHATS_NEW: { version: string; items: { text: string; sub?: string }[] }[] = [
   {
+    version: '0.8.0',
+    items: [
+      { text: 'KATANA Gen 3 support', sub: 'Pick Gen 3 as your amp and design for it directly — its .tsl writer is verified byte-clean against real Gen 3 exports, with the Gen 3 amp voices and effects.' },
+      { text: 'Convert a tone to your amp', sub: 'Got a tone built for a different KATANA than you play? Open it and convert — the patch is re-voiced for your amp, saved to My Tones, and ready to download.' },
+    ],
+  },
+  {
     version: '0.7.3',
     items: [
       { text: 'ToneAI Kat is here', sub: 'Describe a song, an artist, or just a vibe — and get a ready-to-import .tsl patch for your BOSS KATANA MkII, straight into BOSS Tone Studio.' },
