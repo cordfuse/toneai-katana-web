@@ -44,6 +44,34 @@ Vol.1" bank of 8 patches.
 - **memo:** a JSON *string* (double-encoded), carrying `isToneCentralPatch`.
   A user-authored patch likely differs here — confirm when we have the app.
 
+## CRITICAL: Air patches do NOT store the amp
+
+Extracted the full patch parameter model from the Air editor app
+(`config/address_map.js`, nibble-addressed → `lib/patch/air/param-table.json`,
+478 params, block length **2335 bytes — exact match to the fixture**, offsets
+verified against the real bank).
+
+The patch block (`prm_prop_patch`) carries **only the effects chain**:
+
+| Block | What | Options |
+|---|---|---|
+| ODDS | booster / overdrive / distortion | 25 types |
+| FX1, FX2 | two mod/FX slots | 37 types each |
+| DLY | delay | 7 types |
+| REVERB | reverb | 5 types |
+| EQ, NS1, SEND, MASTER, CHAIN, … | EQ, noise gate, routing | — |
+
+There is **no amp / preamp block in the patch.** The amp voicing —
+AMP TYPE (5 voices), GAIN, VOLUME, BASS, MIDDLE, TREBLE, PRESENCE — lives in the
+**System** block as `PRM_SYS_KNOB_POS_*`: those are the physical panel-knob
+positions, global to the amp, **not saved per patch.**
+
+**Product consequence:** an Air `.tsl` tone is the effects/booster/EQ/delay/
+reverb chain only. The amp character is set by the player's front-panel knobs and
+cannot be baked into the file. A generated Air tone must deliver the amp settings
+as **instructions** ("set Type to Crunch, Gain ~7, …"), not bytes. This reshapes
+the tone-intent → Air mapping (the `ampA` section becomes guidance, not payload).
+
 ## NOT yet known (blocks a verified writer)
 
 1. **Parameter address map** — which offsets in the 2335-byte image hold amp

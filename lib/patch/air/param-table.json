@@ -1,0 +1,4791 @@
+{
+  "_meta": {
+    "device": "KATANA-AIR",
+    "keyPrefix": "User%",
+    "block": "Patch",
+    "layoutBytes": 2335,
+    "source": "katana air editor app address_map.js (nibble-addressed)"
+  },
+  "params": [
+    {
+      "offset": 0,
+      "bytes": 16,
+      "name": "PATCH NAME",
+      "prm": "PRM_PATCH_NAME0",
+      "min": 32,
+      "max": 125,
+      "ofs": 0,
+      "init": "KATANA AIR      "
+    },
+    {
+      "offset": 48,
+      "bytes": 1,
+      "name": "SW",
+      "prm": "PRM_ODDS_SW",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 49,
+      "bytes": 1,
+      "name": "TYPE",
+      "prm": "PRM_ODDS_TYPE",
+      "min": 0,
+      "max": 24,
+      "ofs": 0,
+      "init": 10
+    },
+    {
+      "offset": 50,
+      "bytes": 1,
+      "name": "DRIVE",
+      "prm": "PRM_ODDS_DRIVE",
+      "min": 0,
+      "max": 120,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 51,
+      "bytes": 1,
+      "name": "BOTTOM",
+      "prm": "PRM_ODDS_BOTTOM",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 10
+    },
+    {
+      "offset": 52,
+      "bytes": 1,
+      "name": "TONE",
+      "prm": "PRM_ODDS_TONE",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 0
+    },
+    {
+      "offset": 53,
+      "bytes": 1,
+      "name": "SOLO SW",
+      "prm": "PRM_ODDS_SOLO_SW",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 54,
+      "bytes": 1,
+      "name": "SOLO LEVEL",
+      "prm": "PRM_ODDS_SOLO_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 55,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_ODDS_EFFECT_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 40
+    },
+    {
+      "offset": 56,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_ODDS_DIRECT_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 176,
+      "bytes": 1,
+      "name": "SW",
+      "prm": "PRM_EQ_SW",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 177,
+      "bytes": 1,
+      "name": "LOW CUT",
+      "prm": "PRM_EQ_LOW_CUT",
+      "min": 0,
+      "max": 17,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 178,
+      "bytes": 1,
+      "name": "LOW GAIN",
+      "prm": "PRM_EQ_LOW_GAIN",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 179,
+      "bytes": 1,
+      "name": "LOW-MID FREQ",
+      "prm": "PRM_EQ_LOWMID_FREQ",
+      "min": 0,
+      "max": 27,
+      "ofs": 0,
+      "init": 14
+    },
+    {
+      "offset": 180,
+      "bytes": 1,
+      "name": "LOW-MID Q",
+      "prm": "PRM_EQ_LOWMID_Q",
+      "min": 0,
+      "max": 5,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 181,
+      "bytes": 1,
+      "name": "LOW-MID GAIN",
+      "prm": "PRM_EQ_LOWMID_GAIN",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 182,
+      "bytes": 1,
+      "name": "HIGH-MID FREQ",
+      "prm": "PRM_EQ_HIGHMID_FREQ",
+      "min": 0,
+      "max": 27,
+      "ofs": 0,
+      "init": 23
+    },
+    {
+      "offset": 183,
+      "bytes": 1,
+      "name": "HIGH-MID Q",
+      "prm": "PRM_EQ_HIGHMID_Q",
+      "min": 0,
+      "max": 5,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 184,
+      "bytes": 1,
+      "name": "HIGH-MID GAIN",
+      "prm": "PRM_EQ_HIGHMID_GAIN",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 185,
+      "bytes": 1,
+      "name": "HIGH GAIN",
+      "prm": "PRM_EQ_HIGH_GAIN",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 186,
+      "bytes": 1,
+      "name": "HIGH CUT",
+      "prm": "PRM_EQ_HIGH_CUT",
+      "min": 0,
+      "max": 14,
+      "ofs": 0,
+      "init": 14
+    },
+    {
+      "offset": 187,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_EQ_LEVEL",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 192,
+      "bytes": 1,
+      "name": "SW",
+      "prm": "PRM_FX1_SW",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 193,
+      "bytes": 1,
+      "name": "TYPE",
+      "prm": "PRM_FX1_FXTYPE",
+      "min": 0,
+      "max": 36,
+      "ofs": 0,
+      "init": 23
+    },
+    {
+      "offset": 204,
+      "bytes": 1,
+      "name": "MODE",
+      "prm": "PRM_FX1_TWAH_MODE",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 205,
+      "bytes": 1,
+      "name": "POLAR",
+      "prm": "PRM_FX1_TWAH_POLARITY",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 206,
+      "bytes": 1,
+      "name": "SENS",
+      "prm": "PRM_FX1_TWAH_SENS",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 207,
+      "bytes": 1,
+      "name": "FREQ",
+      "prm": "PRM_FX1_TWAH_FREQ",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 35
+    },
+    {
+      "offset": 208,
+      "bytes": 1,
+      "name": "PEAK",
+      "prm": "PRM_FX1_TWAH_PEAK",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 35
+    },
+    {
+      "offset": 209,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX1_TWAH_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 210,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_FX1_TWAH_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 212,
+      "bytes": 1,
+      "name": "MODE",
+      "prm": "PRM_FX1_AWAH_MODE",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 213,
+      "bytes": 1,
+      "name": "FREQ",
+      "prm": "PRM_FX1_AWAH_FREQ",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 35
+    },
+    {
+      "offset": 214,
+      "bytes": 1,
+      "name": "PEAK",
+      "prm": "PRM_FX1_AWAH_PEAK",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 215,
+      "bytes": 1,
+      "name": "RATE",
+      "prm": "PRM_FX1_AWAH_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 216,
+      "bytes": 1,
+      "name": "DEPTH",
+      "prm": "PRM_FX1_AWAH_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 60
+    },
+    {
+      "offset": 217,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX1_AWAH_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 218,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_FX1_AWAH_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 220,
+      "bytes": 1,
+      "name": "TYPE",
+      "prm": "PRM_FX1_SUBWAH_TYPE",
+      "min": 0,
+      "max": 5,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 221,
+      "bytes": 1,
+      "name": "PEDAL POS",
+      "prm": "PRM_FX1_SUBWAH_PDLPOS",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 222,
+      "bytes": 1,
+      "name": "PEDAL MIN",
+      "prm": "PRM_FX1_SUBWAH_MIN",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 223,
+      "bytes": 1,
+      "name": "PEDAL MAX",
+      "prm": "PRM_FX1_SUBWAH_MAX",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 224,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_FX1_SUBWAH_E_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 225,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX1_SUBWAH_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 227,
+      "bytes": 1,
+      "name": "TYPE",
+      "prm": "PRM_FX1_ADCOMP_TYPE",
+      "min": 0,
+      "max": 6,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 228,
+      "bytes": 1,
+      "name": "SUSTAIN",
+      "prm": "PRM_FX1_ADCOMP_SUSTAIN",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 229,
+      "bytes": 1,
+      "name": "ATTACK",
+      "prm": "PRM_FX1_ADCOMP_ATTACK",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 230,
+      "bytes": 1,
+      "name": "TONE",
+      "prm": "PRM_FX1_ADCOMP_TONE",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 0
+    },
+    {
+      "offset": 231,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX1_ADCOMP_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 233,
+      "bytes": 1,
+      "name": "TYPE",
+      "prm": "PRM_FX1_LIMITER_TYPE",
+      "min": 0,
+      "max": 2,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 234,
+      "bytes": 1,
+      "name": "ATTACK",
+      "prm": "PRM_FX1_LIMITER_ATTACK",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 235,
+      "bytes": 1,
+      "name": "THRESHOLD",
+      "prm": "PRM_FX1_LIMITER_THRESHOLD",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 30
+    },
+    {
+      "offset": 236,
+      "bytes": 1,
+      "name": "RATIO",
+      "prm": "PRM_FX1_LIMITER_RATIO",
+      "min": 0,
+      "max": 17,
+      "ofs": 0,
+      "init": 11
+    },
+    {
+      "offset": 237,
+      "bytes": 1,
+      "name": "RELEASE",
+      "prm": "PRM_FX1_LIMITER_RELEASE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 10
+    },
+    {
+      "offset": 238,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX1_LIMITER_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 30
+    },
+    {
+      "offset": 240,
+      "bytes": 1,
+      "name": "31Hz",
+      "prm": "PRM_FX1_GEQ_BAND1",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 241,
+      "bytes": 1,
+      "name": "62Hz",
+      "prm": "PRM_FX1_GEQ_BAND2",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 242,
+      "bytes": 1,
+      "name": "125Hz",
+      "prm": "PRM_FX1_GEQ_BAND3",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 243,
+      "bytes": 1,
+      "name": "250Hz",
+      "prm": "PRM_FX1_GEQ_BAND4",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 244,
+      "bytes": 1,
+      "name": "500Hz",
+      "prm": "PRM_FX1_GEQ_BAND5",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 245,
+      "bytes": 1,
+      "name": "1kHz",
+      "prm": "PRM_FX1_GEQ_BAND6",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 246,
+      "bytes": 1,
+      "name": "2kHz",
+      "prm": "PRM_FX1_GEQ_BAND7",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 247,
+      "bytes": 1,
+      "name": "4kHz",
+      "prm": "PRM_FX1_GEQ_BAND8",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 248,
+      "bytes": 1,
+      "name": "8kHz",
+      "prm": "PRM_FX1_GEQ_BAND9",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 249,
+      "bytes": 1,
+      "name": "16kHz",
+      "prm": "PRM_FX1_GEQ_BAND10",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 250,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX1_GEQ_LEVEL",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 252,
+      "bytes": 1,
+      "name": "LOW CUT",
+      "prm": "PRM_FX1_PEQ_LOW_CUT",
+      "min": 0,
+      "max": 17,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 253,
+      "bytes": 1,
+      "name": "LOW GAIN",
+      "prm": "PRM_FX1_PEQ_LOW_GAIN",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 254,
+      "bytes": 1,
+      "name": "LOW-MID FREQ",
+      "prm": "PRM_FX1_PEQ_LOWMID_FREQ",
+      "min": 0,
+      "max": 27,
+      "ofs": 0,
+      "init": 13
+    },
+    {
+      "offset": 255,
+      "bytes": 1,
+      "name": "LOW-MID Q",
+      "prm": "PRM_FX1_PEQ_LOWMID_Q",
+      "min": 0,
+      "max": 5,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 256,
+      "bytes": 1,
+      "name": "LOW-MID GAIN",
+      "prm": "PRM_FX1_PEQ_LOWMID_GAIN",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 257,
+      "bytes": 1,
+      "name": "HIGH-MID FREQ",
+      "prm": "PRM_FX1_PEQ_HIGHMID_FREQ",
+      "min": 0,
+      "max": 27,
+      "ofs": 0,
+      "init": 23
+    },
+    {
+      "offset": 258,
+      "bytes": 1,
+      "name": "HIGH-MID Q",
+      "prm": "PRM_FX1_PEQ_HIGHMID_Q",
+      "min": 0,
+      "max": 5,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 259,
+      "bytes": 1,
+      "name": "HIGH-MID GAIN",
+      "prm": "PRM_FX1_PEQ_HIGHMID_GAIN",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 260,
+      "bytes": 1,
+      "name": "HIGH GAIN",
+      "prm": "PRM_FX1_PEQ_HIGH_GAIN",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 261,
+      "bytes": 1,
+      "name": "HIGH CUT",
+      "prm": "PRM_FX1_PEQ_HIGH_CUT",
+      "min": 0,
+      "max": 14,
+      "ofs": 0,
+      "init": 14
+    },
+    {
+      "offset": 262,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX1_PEQ_LEVEL",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 270,
+      "bytes": 1,
+      "name": "TYPE",
+      "prm": "PRM_FX1_GTRSIM_TYPE",
+      "min": 0,
+      "max": 7,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 271,
+      "bytes": 1,
+      "name": "LOW",
+      "prm": "PRM_FX1_GTRSIM_LOW",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 0
+    },
+    {
+      "offset": 272,
+      "bytes": 1,
+      "name": "HIGH",
+      "prm": "PRM_FX1_GTRSIM_HIGH",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 0
+    },
+    {
+      "offset": 273,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX1_GTRSIM_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 274,
+      "bytes": 1,
+      "name": "BODY",
+      "prm": "PRM_FX1_GTRSIM_BODY",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 276,
+      "bytes": 1,
+      "name": "SENS",
+      "prm": "PRM_FX1_SLOWGEAR_SENS",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 45
+    },
+    {
+      "offset": 277,
+      "bytes": 1,
+      "name": "RISE TIME",
+      "prm": "PRM_FX1_SLOWGEAR_RISETIME",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 278,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX1_SLOWGEAR_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 60
+    },
+    {
+      "offset": 288,
+      "bytes": 1,
+      "name": "WAVE",
+      "prm": "PRM_FX1_WAVESYN_WAVE",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 289,
+      "bytes": 1,
+      "name": "CUTOFF",
+      "prm": "PRM_FX1_WAVESYN_CUTOFF",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 40
+    },
+    {
+      "offset": 290,
+      "bytes": 1,
+      "name": "RESONANCE",
+      "prm": "PRM_FX1_WAVESYN_RESONANCE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 30
+    },
+    {
+      "offset": 291,
+      "bytes": 1,
+      "name": "FILTER SENS",
+      "prm": "PRM_FX1_WAVESYN_FLT_SENS",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 40
+    },
+    {
+      "offset": 292,
+      "bytes": 1,
+      "name": "FILTER DECAY",
+      "prm": "PRM_FX1_WAVESYN_FLT_DECAY",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 293,
+      "bytes": 1,
+      "name": "FILTER DEPTH",
+      "prm": "PRM_FX1_WAVESYN_FLT_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 294,
+      "bytes": 1,
+      "name": "SYNTH LEVEL",
+      "prm": "PRM_FX1_WAVESYN_SYN_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 25
+    },
+    {
+      "offset": 295,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX1_WAVESYN_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 305,
+      "bytes": 1,
+      "name": "RANGE",
+      "prm": "PRM_FX1_OCTAVE_RANGE",
+      "min": 0,
+      "max": 3,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 306,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_FX1_OCTAVE_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 62
+    },
+    {
+      "offset": 307,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX1_OCTAVE_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 309,
+      "bytes": 1,
+      "name": "VOICE",
+      "prm": "PRM_FX1_PITCHSHIFT_VOICE",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 310,
+      "bytes": 1,
+      "name": "PS1:MODE",
+      "prm": "PRM_FX1_PITCHSHIFT_MODE1",
+      "min": 0,
+      "max": 3,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 311,
+      "bytes": 1,
+      "name": "PS1:PITCH",
+      "prm": "PRM_FX1_PITCHSHIFT_PITCH1",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 312,
+      "bytes": 1,
+      "name": "PS1:FINE",
+      "prm": "PRM_FX1_PITCHSHIFT_FINE1",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 10
+    },
+    {
+      "offset": 313,
+      "bytes": 2,
+      "name": "PS1:PRE DELAY",
+      "prm": "PRM_FX1_PITCHSHIFT_PREDELAY1",
+      "min": 0,
+      "max": 300,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 315,
+      "bytes": 1,
+      "name": "PS1:LEVEL",
+      "prm": "PRM_FX1_PITCHSHIFT_LEVEL1",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 70
+    },
+    {
+      "offset": 316,
+      "bytes": 1,
+      "name": "PS2:MODE",
+      "prm": "PRM_FX1_PITCHSHIFT_MODE2",
+      "min": 0,
+      "max": 3,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 317,
+      "bytes": 1,
+      "name": "PS2:PITCH",
+      "prm": "PRM_FX1_PITCHSHIFT_PITCH2",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 318,
+      "bytes": 1,
+      "name": "PS2:FINE",
+      "prm": "PRM_FX1_PITCHSHIFT_FINE2",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": -10
+    },
+    {
+      "offset": 319,
+      "bytes": 2,
+      "name": "PS2:PRE DELAY",
+      "prm": "PRM_FX1_PITCHSHIFT_PREDELAY2",
+      "min": 0,
+      "max": 300,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 321,
+      "bytes": 1,
+      "name": "PS2:LEVEL",
+      "prm": "PRM_FX1_PITCHSHIFT_LEVEL2",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 70
+    },
+    {
+      "offset": 322,
+      "bytes": 1,
+      "name": "PS1:FEEDBACK",
+      "prm": "PRM_FX1_PITCHSHIFT_FEEDBACK",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 323,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX1_PITCHSHIFT_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 325,
+      "bytes": 1,
+      "name": "VOICE",
+      "prm": "PRM_FX1_HARMONIST_VOICE",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 326,
+      "bytes": 1,
+      "name": "HR1:HARMONY",
+      "prm": "PRM_FX1_HARMONIST_HARMONY1",
+      "min": 0,
+      "max": 29,
+      "ofs": 0,
+      "init": 12
+    },
+    {
+      "offset": 327,
+      "bytes": 2,
+      "name": "HR1:PRE DELAY",
+      "prm": "PRM_FX1_HARMONIST_PREDELAY1",
+      "min": 0,
+      "max": 300,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 329,
+      "bytes": 1,
+      "name": "HR1:LEVEL",
+      "prm": "PRM_FX1_HARMONIST_LEVEL1",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 70
+    },
+    {
+      "offset": 330,
+      "bytes": 1,
+      "name": "HR2:HARMONY",
+      "prm": "PRM_FX1_HARMONIST_HARMONY2",
+      "min": 0,
+      "max": 29,
+      "ofs": 0,
+      "init": 7
+    },
+    {
+      "offset": 331,
+      "bytes": 2,
+      "name": "HR2:PRE DELAY",
+      "prm": "PRM_FX1_HARMONIST_PREDELAY2",
+      "min": 0,
+      "max": 300,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 333,
+      "bytes": 1,
+      "name": "HR2:LEVEL",
+      "prm": "PRM_FX1_HARMONIST_LEVEL2",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 80
+    },
+    {
+      "offset": 334,
+      "bytes": 1,
+      "name": "HR1:FEEDBACK",
+      "prm": "PRM_FX1_HARMONIST_FEEDBACK",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 335,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX1_HARMONIST_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 336,
+      "bytes": 1,
+      "name": "HR1:C",
+      "prm": "PRM_FX1_HARMONIST_V1_HARM_1",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 337,
+      "bytes": 1,
+      "name": "HR1:Db",
+      "prm": "PRM_FX1_HARMONIST_V1_HARM_2",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 338,
+      "bytes": 1,
+      "name": "HR1:D",
+      "prm": "PRM_FX1_HARMONIST_V1_HARM_3",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 339,
+      "bytes": 1,
+      "name": "HR1:Eb",
+      "prm": "PRM_FX1_HARMONIST_V1_HARM_4",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 340,
+      "bytes": 1,
+      "name": "HR1:E",
+      "prm": "PRM_FX1_HARMONIST_V1_HARM_5",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 341,
+      "bytes": 1,
+      "name": "HR1:F",
+      "prm": "PRM_FX1_HARMONIST_V1_HARM_6",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 342,
+      "bytes": 1,
+      "name": "HR1:F#",
+      "prm": "PRM_FX1_HARMONIST_V1_HARM_7",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 343,
+      "bytes": 1,
+      "name": "HR1:G",
+      "prm": "PRM_FX1_HARMONIST_V1_HARM_8",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 344,
+      "bytes": 1,
+      "name": "HR1:Ab",
+      "prm": "PRM_FX1_HARMONIST_V1_HARM_9",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 345,
+      "bytes": 1,
+      "name": "HR1:A",
+      "prm": "PRM_FX1_HARMONIST_V1_HARM_10",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 346,
+      "bytes": 1,
+      "name": "HR1:Bb",
+      "prm": "PRM_FX1_HARMONIST_V1_HARM_11",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 347,
+      "bytes": 1,
+      "name": "HR1:B",
+      "prm": "PRM_FX1_HARMONIST_V1_HARM_12",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 348,
+      "bytes": 1,
+      "name": "HR2:C",
+      "prm": "PRM_FX1_HARMONIST_V2_HARM_1",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 349,
+      "bytes": 1,
+      "name": "HR2:Db",
+      "prm": "PRM_FX1_HARMONIST_V2_HARM_2",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 350,
+      "bytes": 1,
+      "name": "HR2:D",
+      "prm": "PRM_FX1_HARMONIST_V2_HARM_3",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 351,
+      "bytes": 1,
+      "name": "HR2:Eb",
+      "prm": "PRM_FX1_HARMONIST_V2_HARM_4",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 352,
+      "bytes": 1,
+      "name": "HR2:E",
+      "prm": "PRM_FX1_HARMONIST_V2_HARM_5",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 353,
+      "bytes": 1,
+      "name": "HR2:F",
+      "prm": "PRM_FX1_HARMONIST_V2_HARM_6",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 354,
+      "bytes": 1,
+      "name": "HR2:F#",
+      "prm": "PRM_FX1_HARMONIST_V2_HARM_7",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 355,
+      "bytes": 1,
+      "name": "HR2:G",
+      "prm": "PRM_FX1_HARMONIST_V2_HARM_8",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 356,
+      "bytes": 1,
+      "name": "HR2:Ab",
+      "prm": "PRM_FX1_HARMONIST_V2_HARM_9",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 357,
+      "bytes": 1,
+      "name": "HR2:A",
+      "prm": "PRM_FX1_HARMONIST_V2_HARM_10",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 358,
+      "bytes": 1,
+      "name": "HR2:Bb",
+      "prm": "PRM_FX1_HARMONIST_V2_HARM_11",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 359,
+      "bytes": 1,
+      "name": "HR2:B",
+      "prm": "PRM_FX1_HARMONIST_V2_HARM_12",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 365,
+      "bytes": 1,
+      "name": "TYPE",
+      "prm": "PRM_FX1_ACPROCESS_TYPE",
+      "min": 0,
+      "max": 3,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 366,
+      "bytes": 1,
+      "name": "BASS",
+      "prm": "PRM_FX1_ACPROCESS_BASS",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 0
+    },
+    {
+      "offset": 367,
+      "bytes": 1,
+      "name": "MIDDLE",
+      "prm": "PRM_FX1_ACPROCESS_MID",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 0
+    },
+    {
+      "offset": 368,
+      "bytes": 1,
+      "name": "MIDDLE FREQ",
+      "prm": "PRM_FX1_ACPROCESS_MID_F",
+      "min": 0,
+      "max": 27,
+      "ofs": 0,
+      "init": 16
+    },
+    {
+      "offset": 369,
+      "bytes": 1,
+      "name": "TREBLE",
+      "prm": "PRM_FX1_ACPROCESS_TREBLE",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 0
+    },
+    {
+      "offset": 370,
+      "bytes": 1,
+      "name": "PRESENCE",
+      "prm": "PRM_FX1_ACPROCESS_PRESENCE",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 0
+    },
+    {
+      "offset": 371,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX1_ACPROCESS_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 373,
+      "bytes": 1,
+      "name": "TYPE",
+      "prm": "PRM_FX1_PHASER_TYPE",
+      "min": 0,
+      "max": 3,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 374,
+      "bytes": 1,
+      "name": "RATE",
+      "prm": "PRM_FX1_PHASER_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 70
+    },
+    {
+      "offset": 375,
+      "bytes": 1,
+      "name": "DEPTH",
+      "prm": "PRM_FX1_PHASER_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 40
+    },
+    {
+      "offset": 376,
+      "bytes": 1,
+      "name": "MANUAL",
+      "prm": "PRM_FX1_PHASER_MANUAL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 55
+    },
+    {
+      "offset": 377,
+      "bytes": 1,
+      "name": "RESONANCE",
+      "prm": "PRM_FX1_PHASER_RESONANCE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 378,
+      "bytes": 1,
+      "name": "STEP RATE",
+      "prm": "PRM_FX1_PHASER_STEPRATE",
+      "min": 0,
+      "max": 101,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 379,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_FX1_PHASER_E_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 380,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX1_PHASER_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 382,
+      "bytes": 1,
+      "name": "RATE",
+      "prm": "PRM_FX1_FLANGER_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 31
+    },
+    {
+      "offset": 383,
+      "bytes": 1,
+      "name": "DEPTH",
+      "prm": "PRM_FX1_FLANGER_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 40
+    },
+    {
+      "offset": 384,
+      "bytes": 1,
+      "name": "MANUAL",
+      "prm": "PRM_FX1_FLANGER_MANUAL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 82
+    },
+    {
+      "offset": 385,
+      "bytes": 1,
+      "name": "RESONANCE",
+      "prm": "PRM_FX1_FLANGER_RESONANCE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 387,
+      "bytes": 1,
+      "name": "LOW CUT",
+      "prm": "PRM_FX1_FLANGER_LOWCUT",
+      "min": 0,
+      "max": 10,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 388,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_FX1_FLANGER_E_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 60
+    },
+    {
+      "offset": 389,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX1_FLANGER_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 391,
+      "bytes": 1,
+      "name": "WAVE SHAPE",
+      "prm": "PRM_FX1_TREMOLO_WAVESHAPE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 70
+    },
+    {
+      "offset": 392,
+      "bytes": 1,
+      "name": "RATE",
+      "prm": "PRM_FX1_TREMOLO_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 85
+    },
+    {
+      "offset": 393,
+      "bytes": 1,
+      "name": "DEPTH",
+      "prm": "PRM_FX1_TREMOLO_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 65
+    },
+    {
+      "offset": 394,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX1_TREMOLO_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 398,
+      "bytes": 1,
+      "name": "RATE",
+      "prm": "PRM_FX1_ROTARY_RATE_FAST",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 85
+    },
+    {
+      "offset": 401,
+      "bytes": 1,
+      "name": "DEPTH",
+      "prm": "PRM_FX1_ROTARY_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 60
+    },
+    {
+      "offset": 402,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX1_ROTARY_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 404,
+      "bytes": 1,
+      "name": "RATE",
+      "prm": "PRM_FX1_UNI_V_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 70
+    },
+    {
+      "offset": 405,
+      "bytes": 1,
+      "name": "DEPTH",
+      "prm": "PRM_FX1_UNI_V_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 60
+    },
+    {
+      "offset": 406,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX1_UNI_V_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 415,
+      "bytes": 1,
+      "name": "PATTERN",
+      "prm": "PRM_FX1_SLICER_PATTERN",
+      "min": 0,
+      "max": 19,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 416,
+      "bytes": 1,
+      "name": "RATE",
+      "prm": "PRM_FX1_SLICER_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 417,
+      "bytes": 1,
+      "name": "TRIGGER SENS",
+      "prm": "PRM_FX1_SLICER_TRIGSENS",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 418,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_FX1_SLICER_EFFECT_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 419,
+      "bytes": 1,
+      "name": "DIRECT LEVEL",
+      "prm": "PRM_FX1_SLICER_DIRECT_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 421,
+      "bytes": 1,
+      "name": "RATE",
+      "prm": "PRM_FX1_VIBRATO_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 80
+    },
+    {
+      "offset": 422,
+      "bytes": 1,
+      "name": "DEPTH",
+      "prm": "PRM_FX1_VIBRATO_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 45
+    },
+    {
+      "offset": 425,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX1_VIBRATO_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 427,
+      "bytes": 1,
+      "name": "MODE",
+      "prm": "PRM_FX1_RINGMOD_MODE",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 428,
+      "bytes": 1,
+      "name": "FREQUENCY",
+      "prm": "PRM_FX1_RINGMOD_FREQ",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 429,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_FX1_RINGMOD_E_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 430,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX1_RINGMOD_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 432,
+      "bytes": 1,
+      "name": "MODE",
+      "prm": "PRM_FX1_HUMANIZER_MODE",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 433,
+      "bytes": 1,
+      "name": "VOWEL1",
+      "prm": "PRM_FX1_HUMANIZER_VOWEL1",
+      "min": 0,
+      "max": 4,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 434,
+      "bytes": 1,
+      "name": "VOWEL2",
+      "prm": "PRM_FX1_HUMANIZER_VOWEL2",
+      "min": 0,
+      "max": 4,
+      "ofs": 0,
+      "init": 2
+    },
+    {
+      "offset": 435,
+      "bytes": 1,
+      "name": "SENS",
+      "prm": "PRM_FX1_HUMANIZER_SENS",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 436,
+      "bytes": 1,
+      "name": "RATE",
+      "prm": "PRM_FX1_HUMANIZER_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 80
+    },
+    {
+      "offset": 437,
+      "bytes": 1,
+      "name": "DEPTH",
+      "prm": "PRM_FX1_HUMANIZER_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 438,
+      "bytes": 1,
+      "name": "MANUAL",
+      "prm": "PRM_FX1_HUMANIZER_MANUAL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 439,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX1_HUMANIZER_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 441,
+      "bytes": 1,
+      "name": "XOVER FREQUENCY",
+      "prm": "PRM_FX1_2x2CHORUS_XOVERF",
+      "min": 0,
+      "max": 16,
+      "ofs": 0,
+      "init": 4
+    },
+    {
+      "offset": 442,
+      "bytes": 1,
+      "name": "LOW RATE",
+      "prm": "PRM_FX1_2x2CHORUS_LOW_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 43
+    },
+    {
+      "offset": 443,
+      "bytes": 1,
+      "name": "LOW DEPTH",
+      "prm": "PRM_FX1_2x2CHORUS_LOW_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 46
+    },
+    {
+      "offset": 444,
+      "bytes": 1,
+      "name": "LOW PRE DELAY",
+      "prm": "PRM_FX1_2x2CHORUS_LOW_PREDELAY",
+      "min": 0,
+      "max": 80,
+      "ofs": 0,
+      "init": 3
+    },
+    {
+      "offset": 445,
+      "bytes": 1,
+      "name": "LOW LEVEL",
+      "prm": "PRM_FX1_2x2CHORUS_LOW_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 75
+    },
+    {
+      "offset": 446,
+      "bytes": 1,
+      "name": "HIGH RATE",
+      "prm": "PRM_FX1_2x2CHORUS_HIGH_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 33
+    },
+    {
+      "offset": 447,
+      "bytes": 1,
+      "name": "HIGH DEPTH",
+      "prm": "PRM_FX1_2x2CHORUS_HIGH_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 48
+    },
+    {
+      "offset": 448,
+      "bytes": 1,
+      "name": "HIGH FREQUENCY",
+      "prm": "PRM_FX1_2x2CHORUS_HIGH_PREDELAY",
+      "min": 0,
+      "max": 80,
+      "ofs": 0,
+      "init": 3
+    },
+    {
+      "offset": 449,
+      "bytes": 1,
+      "name": "HIGH LEVEL",
+      "prm": "PRM_FX1_2x2CHORUS_HIGH_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 65
+    },
+    {
+      "offset": 450,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX1_2x2CHORUS_DIRECT_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 80
+    },
+    {
+      "offset": 460,
+      "bytes": 1,
+      "name": "SW",
+      "prm": "PRM_FX2_SW",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 461,
+      "bytes": 1,
+      "name": "TYPE",
+      "prm": "PRM_FX2_FXTYPE",
+      "min": 0,
+      "max": 36,
+      "ofs": 0,
+      "init": 21
+    },
+    {
+      "offset": 472,
+      "bytes": 1,
+      "name": "MODE",
+      "prm": "PRM_FX2_TWAH_MODE",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 473,
+      "bytes": 1,
+      "name": "POLAR",
+      "prm": "PRM_FX2_TWAH_POLARITY",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 474,
+      "bytes": 1,
+      "name": "SENS",
+      "prm": "PRM_FX2_TWAH_SENS",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 475,
+      "bytes": 1,
+      "name": "FREQ",
+      "prm": "PRM_FX2_TWAH_FREQ",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 35
+    },
+    {
+      "offset": 476,
+      "bytes": 1,
+      "name": "PEAK",
+      "prm": "PRM_FX2_TWAH_PEAK",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 35
+    },
+    {
+      "offset": 477,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX2_TWAH_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 478,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_FX2_TWAH_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 480,
+      "bytes": 1,
+      "name": "MODE",
+      "prm": "PRM_FX2_AWAH_MODE",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 481,
+      "bytes": 1,
+      "name": "FREQ",
+      "prm": "PRM_FX2_AWAH_FREQ",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 35
+    },
+    {
+      "offset": 482,
+      "bytes": 1,
+      "name": "PEAK",
+      "prm": "PRM_FX2_AWAH_PEAK",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 483,
+      "bytes": 1,
+      "name": "RATE",
+      "prm": "PRM_FX2_AWAH_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 484,
+      "bytes": 1,
+      "name": "DEPTH",
+      "prm": "PRM_FX2_AWAH_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 60
+    },
+    {
+      "offset": 485,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX2_AWAH_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 486,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_FX2_AWAH_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 488,
+      "bytes": 1,
+      "name": "TYPE",
+      "prm": "PRM_FX2_SUBWAH_TYPE",
+      "min": 0,
+      "max": 5,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 489,
+      "bytes": 1,
+      "name": "PEDAL POS",
+      "prm": "PRM_FX2_SUBWAH_PDLPOS",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 490,
+      "bytes": 1,
+      "name": "PEDAL MIN",
+      "prm": "PRM_FX2_SUBWAH_MIN",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 491,
+      "bytes": 1,
+      "name": "PEDAL MAX",
+      "prm": "PRM_FX2_SUBWAH_MAX",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 492,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_FX2_SUBWAH_E_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 493,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX2_SUBWAH_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 495,
+      "bytes": 1,
+      "name": "TYPE",
+      "prm": "PRM_FX2_ADCOMP_TYPE",
+      "min": 0,
+      "max": 6,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 496,
+      "bytes": 1,
+      "name": "SUSTAIN",
+      "prm": "PRM_FX2_ADCOMP_SUSTAIN",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 497,
+      "bytes": 1,
+      "name": "ATTACK",
+      "prm": "PRM_FX2_ADCOMP_ATTACK",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 498,
+      "bytes": 1,
+      "name": "TONE",
+      "prm": "PRM_FX2_ADCOMP_TONE",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 0
+    },
+    {
+      "offset": 499,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX2_ADCOMP_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 501,
+      "bytes": 1,
+      "name": "TYPE",
+      "prm": "PRM_FX2_LIMITER_TYPE",
+      "min": 0,
+      "max": 2,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 502,
+      "bytes": 1,
+      "name": "ATTACK",
+      "prm": "PRM_FX2_LIMITER_ATTACK",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 503,
+      "bytes": 1,
+      "name": "THRESHOLD",
+      "prm": "PRM_FX2_LIMITER_THRESHOLD",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 30
+    },
+    {
+      "offset": 504,
+      "bytes": 1,
+      "name": "RATIO",
+      "prm": "PRM_FX2_LIMITER_RATIO",
+      "min": 0,
+      "max": 17,
+      "ofs": 0,
+      "init": 11
+    },
+    {
+      "offset": 505,
+      "bytes": 1,
+      "name": "RELEASE",
+      "prm": "PRM_FX2_LIMITER_RELEASE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 10
+    },
+    {
+      "offset": 506,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX2_LIMITER_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 30
+    },
+    {
+      "offset": 508,
+      "bytes": 1,
+      "name": "31Hz",
+      "prm": "PRM_FX2_GEQ_BAND1",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 509,
+      "bytes": 1,
+      "name": "62Hz",
+      "prm": "PRM_FX2_GEQ_BAND2",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 510,
+      "bytes": 1,
+      "name": "125Hz",
+      "prm": "PRM_FX2_GEQ_BAND3",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 511,
+      "bytes": 1,
+      "name": "250Hz",
+      "prm": "PRM_FX2_GEQ_BAND4",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 512,
+      "bytes": 1,
+      "name": "500Hz",
+      "prm": "PRM_FX2_GEQ_BAND5",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 513,
+      "bytes": 1,
+      "name": "1kHz",
+      "prm": "PRM_FX2_GEQ_BAND6",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 514,
+      "bytes": 1,
+      "name": "2kHz",
+      "prm": "PRM_FX2_GEQ_BAND7",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 515,
+      "bytes": 1,
+      "name": "4kHz",
+      "prm": "PRM_FX2_GEQ_BAND8",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 516,
+      "bytes": 1,
+      "name": "8kHz",
+      "prm": "PRM_FX2_GEQ_BAND9",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 517,
+      "bytes": 1,
+      "name": "16kHz",
+      "prm": "PRM_FX2_GEQ_BAND10",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 518,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX2_GEQ_LEVEL",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 520,
+      "bytes": 1,
+      "name": "LOW CUT",
+      "prm": "PRM_FX2_PEQ_LOW_CUT",
+      "min": 0,
+      "max": 17,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 521,
+      "bytes": 1,
+      "name": "LOW GAIN",
+      "prm": "PRM_FX2_PEQ_LOW_GAIN",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 522,
+      "bytes": 1,
+      "name": "LOW-MID FREQ",
+      "prm": "PRM_FX2_PEQ_LOWMID_FREQ",
+      "min": 0,
+      "max": 27,
+      "ofs": 0,
+      "init": 13
+    },
+    {
+      "offset": 523,
+      "bytes": 1,
+      "name": "LOW-MID Q",
+      "prm": "PRM_FX2_PEQ_LOWMID_Q",
+      "min": 0,
+      "max": 5,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 524,
+      "bytes": 1,
+      "name": "LOW-MID GAIN",
+      "prm": "PRM_FX2_PEQ_LOWMID_GAIN",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 525,
+      "bytes": 1,
+      "name": "HIGH-MID FREQ",
+      "prm": "PRM_FX2_PEQ_HIGHMID_FREQ",
+      "min": 0,
+      "max": 27,
+      "ofs": 0,
+      "init": 23
+    },
+    {
+      "offset": 526,
+      "bytes": 1,
+      "name": "HIGH-MID Q",
+      "prm": "PRM_FX2_PEQ_HIGHMID_Q",
+      "min": 0,
+      "max": 5,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 527,
+      "bytes": 1,
+      "name": "HIGH-MID GAIN",
+      "prm": "PRM_FX2_PEQ_HIGHMID_GAIN",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 528,
+      "bytes": 1,
+      "name": "HIGH GAIN",
+      "prm": "PRM_FX2_PEQ_HIGH_GAIN",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 529,
+      "bytes": 1,
+      "name": "HIGH CUT",
+      "prm": "PRM_FX2_PEQ_HIGH_CUT",
+      "min": 0,
+      "max": 14,
+      "ofs": 0,
+      "init": 14
+    },
+    {
+      "offset": 530,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX2_PEQ_LEVEL",
+      "min": -20,
+      "max": 20,
+      "ofs": 20,
+      "init": 0
+    },
+    {
+      "offset": 538,
+      "bytes": 1,
+      "name": "TYPE",
+      "prm": "PRM_FX2_GTRSIM_TYPE",
+      "min": 0,
+      "max": 7,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 539,
+      "bytes": 1,
+      "name": "LOW",
+      "prm": "PRM_FX2_GTRSIM_LOW",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 0
+    },
+    {
+      "offset": 540,
+      "bytes": 1,
+      "name": "HIGH",
+      "prm": "PRM_FX2_GTRSIM_HIGH",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 0
+    },
+    {
+      "offset": 541,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX2_GTRSIM_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 542,
+      "bytes": 1,
+      "name": "BODY",
+      "prm": "PRM_FX2_GTRSIM_BODY",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 544,
+      "bytes": 1,
+      "name": "SENS",
+      "prm": "PRM_FX2_SLOWGEAR_SENS",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 45
+    },
+    {
+      "offset": 545,
+      "bytes": 1,
+      "name": "RISE TIME",
+      "prm": "PRM_FX2_SLOWGEAR_RISETIME",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 546,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX2_SLOWGEAR_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 60
+    },
+    {
+      "offset": 556,
+      "bytes": 1,
+      "name": "WAVE",
+      "prm": "PRM_FX2_WAVESYN_WAVE",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 557,
+      "bytes": 1,
+      "name": "CUTOFF",
+      "prm": "PRM_FX2_WAVESYN_CUTOFF",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 40
+    },
+    {
+      "offset": 558,
+      "bytes": 1,
+      "name": "RESONANCE",
+      "prm": "PRM_FX2_WAVESYN_RESONANCE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 30
+    },
+    {
+      "offset": 559,
+      "bytes": 1,
+      "name": "FILTER SENS",
+      "prm": "PRM_FX2_WAVESYN_FLT_SENS",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 40
+    },
+    {
+      "offset": 560,
+      "bytes": 1,
+      "name": "FILTER DECAY",
+      "prm": "PRM_FX2_WAVESYN_FLT_DECAY",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 561,
+      "bytes": 1,
+      "name": "FILTER DEPTH",
+      "prm": "PRM_FX2_WAVESYN_FLT_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 562,
+      "bytes": 1,
+      "name": "SYNTH LEVEL",
+      "prm": "PRM_FX2_WAVESYN_SYN_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 25
+    },
+    {
+      "offset": 563,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX2_WAVESYN_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 573,
+      "bytes": 1,
+      "name": "RANGE",
+      "prm": "PRM_FX2_OCTAVE_RANGE",
+      "min": 0,
+      "max": 3,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 574,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_FX2_OCTAVE_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 62
+    },
+    {
+      "offset": 575,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX2_OCTAVE_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 577,
+      "bytes": 1,
+      "name": "VOICE",
+      "prm": "PRM_FX2_PITCHSHIFT_VOICE",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 578,
+      "bytes": 1,
+      "name": "PS1:MODE",
+      "prm": "PRM_FX2_PITCHSHIFT_MODE1",
+      "min": 0,
+      "max": 3,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 579,
+      "bytes": 1,
+      "name": "PS1:PITCH",
+      "prm": "PRM_FX2_PITCHSHIFT_PITCH1",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 580,
+      "bytes": 1,
+      "name": "PS1:FINE",
+      "prm": "PRM_FX2_PITCHSHIFT_FINE1",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 10
+    },
+    {
+      "offset": 581,
+      "bytes": 2,
+      "name": "PS1:PRE DELAY",
+      "prm": "PRM_FX2_PITCHSHIFT_PREDELAY1",
+      "min": 0,
+      "max": 300,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 583,
+      "bytes": 1,
+      "name": "PS1:LEVEL",
+      "prm": "PRM_FX2_PITCHSHIFT_LEVEL1",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 70
+    },
+    {
+      "offset": 584,
+      "bytes": 1,
+      "name": "PS2:MODE",
+      "prm": "PRM_FX2_PITCHSHIFT_MODE2",
+      "min": 0,
+      "max": 3,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 585,
+      "bytes": 1,
+      "name": "PS2:PITCH",
+      "prm": "PRM_FX2_PITCHSHIFT_PITCH2",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 586,
+      "bytes": 1,
+      "name": "PS2:FINE",
+      "prm": "PRM_FX2_PITCHSHIFT_FINE2",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": -10
+    },
+    {
+      "offset": 587,
+      "bytes": 2,
+      "name": "PS2:PRE DELAY",
+      "prm": "PRM_FX2_PITCHSHIFT_PREDELAY2",
+      "min": 0,
+      "max": 300,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 589,
+      "bytes": 1,
+      "name": "PS2:LEVEL",
+      "prm": "PRM_FX2_PITCHSHIFT_LEVEL2",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 70
+    },
+    {
+      "offset": 590,
+      "bytes": 1,
+      "name": "PS1:FEEDBACK",
+      "prm": "PRM_FX2_PITCHSHIFT_FEEDBACK",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 591,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX2_PITCHSHIFT_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 593,
+      "bytes": 1,
+      "name": "VOICE",
+      "prm": "PRM_FX2_HARMONIST_VOICE",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 594,
+      "bytes": 1,
+      "name": "HR1:HARMONY",
+      "prm": "PRM_FX2_HARMONIST_HARMONY1",
+      "min": 0,
+      "max": 29,
+      "ofs": 0,
+      "init": 12
+    },
+    {
+      "offset": 595,
+      "bytes": 2,
+      "name": "HR1:PRE DELAY",
+      "prm": "PRM_FX2_HARMONIST_PREDELAY1",
+      "min": 0,
+      "max": 300,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 597,
+      "bytes": 1,
+      "name": "HR1:LEVEL",
+      "prm": "PRM_FX2_HARMONIST_LEVEL1",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 70
+    },
+    {
+      "offset": 598,
+      "bytes": 1,
+      "name": "HR2:HARMONY",
+      "prm": "PRM_FX2_HARMONIST_HARMONY2",
+      "min": 0,
+      "max": 29,
+      "ofs": 0,
+      "init": 7
+    },
+    {
+      "offset": 599,
+      "bytes": 2,
+      "name": "HR2:PRE DELAY",
+      "prm": "PRM_FX2_HARMONIST_PREDELAY2",
+      "min": 0,
+      "max": 300,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 601,
+      "bytes": 1,
+      "name": "HR2:LEVEL",
+      "prm": "PRM_FX2_HARMONIST_LEVEL2",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 80
+    },
+    {
+      "offset": 602,
+      "bytes": 1,
+      "name": "HR1:FEEDBACK",
+      "prm": "PRM_FX2_HARMONIST_FEEDBACK",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 603,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX2_HARMONIST_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 604,
+      "bytes": 1,
+      "name": "HR1:C",
+      "prm": "PRM_FX2_HARMONIST_V1_HARM_1",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 605,
+      "bytes": 1,
+      "name": "HR1:Db",
+      "prm": "PRM_FX2_HARMONIST_V1_HARM_2",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 606,
+      "bytes": 1,
+      "name": "HR1:D",
+      "prm": "PRM_FX2_HARMONIST_V1_HARM_3",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 607,
+      "bytes": 1,
+      "name": "HR1:Eb",
+      "prm": "PRM_FX2_HARMONIST_V1_HARM_4",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 608,
+      "bytes": 1,
+      "name": "HR1:E",
+      "prm": "PRM_FX2_HARMONIST_V1_HARM_5",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 609,
+      "bytes": 1,
+      "name": "HR1:F",
+      "prm": "PRM_FX2_HARMONIST_V1_HARM_6",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 610,
+      "bytes": 1,
+      "name": "HR1:F#",
+      "prm": "PRM_FX2_HARMONIST_V1_HARM_7",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 611,
+      "bytes": 1,
+      "name": "HR1:G",
+      "prm": "PRM_FX2_HARMONIST_V1_HARM_8",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 612,
+      "bytes": 1,
+      "name": "HR1:Ab",
+      "prm": "PRM_FX2_HARMONIST_V1_HARM_9",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 613,
+      "bytes": 1,
+      "name": "HR1:A",
+      "prm": "PRM_FX2_HARMONIST_V1_HARM_10",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 614,
+      "bytes": 1,
+      "name": "HR1:Bb",
+      "prm": "PRM_FX2_HARMONIST_V1_HARM_11",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 615,
+      "bytes": 1,
+      "name": "HR1:B",
+      "prm": "PRM_FX2_HARMONIST_V1_HARM_12",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 616,
+      "bytes": 1,
+      "name": "HR2:C",
+      "prm": "PRM_FX2_HARMONIST_V2_HARM_1",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 617,
+      "bytes": 1,
+      "name": "HR2:Db",
+      "prm": "PRM_FX2_HARMONIST_V2_HARM_2",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 618,
+      "bytes": 1,
+      "name": "HR2:D",
+      "prm": "PRM_FX2_HARMONIST_V2_HARM_3",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 619,
+      "bytes": 1,
+      "name": "HR2:Eb",
+      "prm": "PRM_FX2_HARMONIST_V2_HARM_4",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 620,
+      "bytes": 1,
+      "name": "HR2:E",
+      "prm": "PRM_FX2_HARMONIST_V2_HARM_5",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 621,
+      "bytes": 1,
+      "name": "HR2:F",
+      "prm": "PRM_FX2_HARMONIST_V2_HARM_6",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 622,
+      "bytes": 1,
+      "name": "HR2:F#",
+      "prm": "PRM_FX2_HARMONIST_V2_HARM_7",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 623,
+      "bytes": 1,
+      "name": "HR2:G",
+      "prm": "PRM_FX2_HARMONIST_V2_HARM_8",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 624,
+      "bytes": 1,
+      "name": "HR2:Ab",
+      "prm": "PRM_FX2_HARMONIST_V2_HARM_9",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 625,
+      "bytes": 1,
+      "name": "HR2:A",
+      "prm": "PRM_FX2_HARMONIST_V2_HARM_10",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 626,
+      "bytes": 1,
+      "name": "HR2:Bb",
+      "prm": "PRM_FX2_HARMONIST_V2_HARM_11",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 627,
+      "bytes": 1,
+      "name": "HR2:B",
+      "prm": "PRM_FX2_HARMONIST_V2_HARM_12",
+      "min": -24,
+      "max": 24,
+      "ofs": 24,
+      "init": 0
+    },
+    {
+      "offset": 633,
+      "bytes": 1,
+      "name": "TYPE",
+      "prm": "PRM_FX2_ACPROCESS_TYPE",
+      "min": 0,
+      "max": 3,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 634,
+      "bytes": 1,
+      "name": "BASS",
+      "prm": "PRM_FX2_ACPROCESS_BASS",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 0
+    },
+    {
+      "offset": 635,
+      "bytes": 1,
+      "name": "MIDDLE",
+      "prm": "PRM_FX2_ACPROCESS_MID",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 0
+    },
+    {
+      "offset": 636,
+      "bytes": 1,
+      "name": "MIDDLE FREQ",
+      "prm": "PRM_FX2_ACPROCESS_MID_F",
+      "min": 0,
+      "max": 27,
+      "ofs": 0,
+      "init": 16
+    },
+    {
+      "offset": 637,
+      "bytes": 1,
+      "name": "TREBLE",
+      "prm": "PRM_FX2_ACPROCESS_TREBLE",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 0
+    },
+    {
+      "offset": 638,
+      "bytes": 1,
+      "name": "PRESENCE",
+      "prm": "PRM_FX2_ACPROCESS_PRESENCE",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 0
+    },
+    {
+      "offset": 639,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX2_ACPROCESS_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 641,
+      "bytes": 1,
+      "name": "TYPE",
+      "prm": "PRM_FX2_PHASER_TYPE",
+      "min": 0,
+      "max": 3,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 642,
+      "bytes": 1,
+      "name": "RATE",
+      "prm": "PRM_FX2_PHASER_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 70
+    },
+    {
+      "offset": 643,
+      "bytes": 1,
+      "name": "DEPTH",
+      "prm": "PRM_FX2_PHASER_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 40
+    },
+    {
+      "offset": 644,
+      "bytes": 1,
+      "name": "MANUAL",
+      "prm": "PRM_FX2_PHASER_MANUAL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 55
+    },
+    {
+      "offset": 645,
+      "bytes": 1,
+      "name": "RESONANCE",
+      "prm": "PRM_FX2_PHASER_RESONANCE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 646,
+      "bytes": 1,
+      "name": "STEP RATE",
+      "prm": "PRM_FX2_PHASER_STEPRATE",
+      "min": 0,
+      "max": 101,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 647,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_FX2_PHASER_E_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 648,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX2_PHASER_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 650,
+      "bytes": 1,
+      "name": "RATE",
+      "prm": "PRM_FX2_FLANGER_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 31
+    },
+    {
+      "offset": 651,
+      "bytes": 1,
+      "name": "DEPTH",
+      "prm": "PRM_FX2_FLANGER_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 40
+    },
+    {
+      "offset": 652,
+      "bytes": 1,
+      "name": "MANUAL",
+      "prm": "PRM_FX2_FLANGER_MANUAL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 82
+    },
+    {
+      "offset": 653,
+      "bytes": 1,
+      "name": "RESONANCE",
+      "prm": "PRM_FX2_FLANGER_RESONANCE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 655,
+      "bytes": 1,
+      "name": "LOW CUT",
+      "prm": "PRM_FX2_FLANGER_LOWCUT",
+      "min": 0,
+      "max": 10,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 656,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_FX2_FLANGER_E_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 60
+    },
+    {
+      "offset": 657,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX2_FLANGER_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 659,
+      "bytes": 1,
+      "name": "WAVE SHAPE",
+      "prm": "PRM_FX2_TREMOLO_WAVESHAPE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 70
+    },
+    {
+      "offset": 660,
+      "bytes": 1,
+      "name": "RATE",
+      "prm": "PRM_FX2_TREMOLO_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 85
+    },
+    {
+      "offset": 661,
+      "bytes": 1,
+      "name": "DEPTH",
+      "prm": "PRM_FX2_TREMOLO_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 65
+    },
+    {
+      "offset": 662,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX2_TREMOLO_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 666,
+      "bytes": 1,
+      "name": "RATE",
+      "prm": "PRM_FX2_ROTARY_RATE_FAST",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 85
+    },
+    {
+      "offset": 669,
+      "bytes": 1,
+      "name": "DEPTH",
+      "prm": "PRM_FX2_ROTARY_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 60
+    },
+    {
+      "offset": 670,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX2_ROTARY_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 672,
+      "bytes": 1,
+      "name": "RATE",
+      "prm": "PRM_FX2_UNI_V_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 70
+    },
+    {
+      "offset": 673,
+      "bytes": 1,
+      "name": "DEPTH",
+      "prm": "PRM_FX2_UNI_V_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 60
+    },
+    {
+      "offset": 674,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX2_UNI_V_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 683,
+      "bytes": 1,
+      "name": "PATTERN",
+      "prm": "PRM_FX2_SLICER_PATTERN",
+      "min": 0,
+      "max": 19,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 684,
+      "bytes": 1,
+      "name": "RATE",
+      "prm": "PRM_FX2_SLICER_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 685,
+      "bytes": 1,
+      "name": "TRIGGER SENS",
+      "prm": "PRM_FX2_SLICER_TRIGSENS",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 686,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_FX2_SLICER_EFFECT_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 687,
+      "bytes": 1,
+      "name": "DIRECT LEVEL",
+      "prm": "PRM_FX2_SLICER_DIRECT_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 689,
+      "bytes": 1,
+      "name": "RATE",
+      "prm": "PRM_FX2_VIBRATO_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 80
+    },
+    {
+      "offset": 690,
+      "bytes": 1,
+      "name": "DEPTH",
+      "prm": "PRM_FX2_VIBRATO_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 45
+    },
+    {
+      "offset": 693,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX2_VIBRATO_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 695,
+      "bytes": 1,
+      "name": "MODE",
+      "prm": "PRM_FX2_RINGMOD_MODE",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 696,
+      "bytes": 1,
+      "name": "FREQUENCY",
+      "prm": "PRM_FX2_RINGMOD_FREQ",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 697,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_FX2_RINGMOD_E_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 698,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX2_RINGMOD_D_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 700,
+      "bytes": 1,
+      "name": "MODE",
+      "prm": "PRM_FX2_HUMANIZER_MODE",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 701,
+      "bytes": 1,
+      "name": "VOWEL1",
+      "prm": "PRM_FX2_HUMANIZER_VOWEL1",
+      "min": 0,
+      "max": 4,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 702,
+      "bytes": 1,
+      "name": "VOWEL2",
+      "prm": "PRM_FX2_HUMANIZER_VOWEL2",
+      "min": 0,
+      "max": 4,
+      "ofs": 0,
+      "init": 2
+    },
+    {
+      "offset": 703,
+      "bytes": 1,
+      "name": "SENS",
+      "prm": "PRM_FX2_HUMANIZER_SENS",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 704,
+      "bytes": 1,
+      "name": "RATE",
+      "prm": "PRM_FX2_HUMANIZER_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 80
+    },
+    {
+      "offset": 705,
+      "bytes": 1,
+      "name": "DEPTH",
+      "prm": "PRM_FX2_HUMANIZER_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 706,
+      "bytes": 1,
+      "name": "MANUAL",
+      "prm": "PRM_FX2_HUMANIZER_MANUAL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 707,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX2_HUMANIZER_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 709,
+      "bytes": 1,
+      "name": "XOVER FREQUENCY",
+      "prm": "PRM_FX2_2x2CHORUS_XOVERF",
+      "min": 0,
+      "max": 16,
+      "ofs": 0,
+      "init": 4
+    },
+    {
+      "offset": 710,
+      "bytes": 1,
+      "name": "LOW RATE",
+      "prm": "PRM_FX2_2x2CHORUS_LOW_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 43
+    },
+    {
+      "offset": 711,
+      "bytes": 1,
+      "name": "LOW DEPTH",
+      "prm": "PRM_FX2_2x2CHORUS_LOW_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 46
+    },
+    {
+      "offset": 712,
+      "bytes": 1,
+      "name": "LOW PRE DELAY",
+      "prm": "PRM_FX2_2x2CHORUS_LOW_PREDELAY",
+      "min": 0,
+      "max": 80,
+      "ofs": 0,
+      "init": 3
+    },
+    {
+      "offset": 713,
+      "bytes": 1,
+      "name": "LOW LEVEL",
+      "prm": "PRM_FX2_2x2CHORUS_LOW_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 75
+    },
+    {
+      "offset": 714,
+      "bytes": 1,
+      "name": "HIGH RATE",
+      "prm": "PRM_FX2_2x2CHORUS_HIGH_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 33
+    },
+    {
+      "offset": 715,
+      "bytes": 1,
+      "name": "HIGH DEPTH",
+      "prm": "PRM_FX2_2x2CHORUS_HIGH_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 48
+    },
+    {
+      "offset": 716,
+      "bytes": 1,
+      "name": "HIGH FREQUENCY",
+      "prm": "PRM_FX2_2x2CHORUS_HIGH_PREDELAY",
+      "min": 0,
+      "max": 80,
+      "ofs": 0,
+      "init": 3
+    },
+    {
+      "offset": 717,
+      "bytes": 1,
+      "name": "HIGH LEVEL",
+      "prm": "PRM_FX2_2x2CHORUS_HIGH_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 65
+    },
+    {
+      "offset": 718,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_FX2_2x2CHORUS_DIRECT_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 80
+    },
+    {
+      "offset": 736,
+      "bytes": 1,
+      "name": "SW",
+      "prm": "PRM_DLY_SW",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 737,
+      "bytes": 1,
+      "name": "TYPE",
+      "prm": "PRM_DLY_TYPE",
+      "min": 0,
+      "max": 6,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 738,
+      "bytes": 2,
+      "name": "DELAY TIME",
+      "prm": "PRM_DLY_COMMON_DLY_TIME",
+      "min": 1,
+      "max": 2000,
+      "ofs": 0,
+      "init": 400
+    },
+    {
+      "offset": 740,
+      "bytes": 1,
+      "name": "FEEDBACK",
+      "prm": "PRM_DLY_COMMON_FEEDBACK",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 22
+    },
+    {
+      "offset": 741,
+      "bytes": 1,
+      "name": "HIGH CUT",
+      "prm": "PRM_DLY_COMMON_HICUT",
+      "min": 0,
+      "max": 14,
+      "ofs": 0,
+      "init": 10
+    },
+    {
+      "offset": 742,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_DLY_COMMON_EFFECT_LEVEL",
+      "min": 0,
+      "max": 120,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 743,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_DLY_COMMON_DIRECT_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 744,
+      "bytes": 1,
+      "name": "PAN TAP TIME",
+      "prm": "PRM_DLY_PAN_TAPTIME",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 755,
+      "bytes": 1,
+      "name": "MOD RATE",
+      "prm": "PRM_DLY_MOD_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 40
+    },
+    {
+      "offset": 756,
+      "bytes": 1,
+      "name": "MOD DEPTH",
+      "prm": "PRM_DLY_MOD_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 55
+    },
+    {
+      "offset": 784,
+      "bytes": 1,
+      "name": "SW",
+      "prm": "PRM_REVERB_SW",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 785,
+      "bytes": 1,
+      "name": "TYPE",
+      "prm": "PRM_REVERB_TYPE",
+      "min": 0,
+      "max": 4,
+      "ofs": 0,
+      "init": 4
+    },
+    {
+      "offset": 786,
+      "bytes": 1,
+      "name": "REVERB TIME",
+      "prm": "PRM_REVERB_TIME",
+      "min": 0,
+      "max": 99,
+      "ofs": 0,
+      "init": 29
+    },
+    {
+      "offset": 787,
+      "bytes": 2,
+      "name": "PRE DELAY",
+      "prm": "PRM_REVERB_PREDELAY",
+      "min": 0,
+      "max": 500,
+      "ofs": 0,
+      "init": 10
+    },
+    {
+      "offset": 789,
+      "bytes": 1,
+      "name": "LOW CUT",
+      "prm": "PRM_REVERB_LOWCUT",
+      "min": 0,
+      "max": 17,
+      "ofs": 0,
+      "init": 14
+    },
+    {
+      "offset": 790,
+      "bytes": 1,
+      "name": "HIGH CUT",
+      "prm": "PRM_REVERB_HICUT",
+      "min": 0,
+      "max": 14,
+      "ofs": 0,
+      "init": 8
+    },
+    {
+      "offset": 791,
+      "bytes": 1,
+      "name": "DENSITY",
+      "prm": "PRM_REVERB_DENSITY",
+      "min": 0,
+      "max": 10,
+      "ofs": 0,
+      "init": 8
+    },
+    {
+      "offset": 792,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_REVERB_EFFECT_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 35
+    },
+    {
+      "offset": 793,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_REVERB_DIRECT_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 794,
+      "bytes": 1,
+      "name": "SPRING SENS",
+      "prm": "PRM_REVERB_SPRING_SENS",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 5
+    },
+    {
+      "offset": 853,
+      "bytes": 1,
+      "name": "SW",
+      "prm": "PRM_SEND_RETURN_SW",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 854,
+      "bytes": 1,
+      "name": "MODE",
+      "prm": "PRM_SEND_RETURN_MODE",
+      "min": 0,
+      "max": 2,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 855,
+      "bytes": 1,
+      "name": "SEND LEVEL",
+      "prm": "PRM_SEND_RETURN_SEND_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 856,
+      "bytes": 1,
+      "name": "RETURN LEVEL",
+      "prm": "PRM_SEND_RETURN_RETURN_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 867,
+      "bytes": 1,
+      "name": "SW",
+      "prm": "PRM_NS1_SW",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 868,
+      "bytes": 1,
+      "name": "THRESHOLD",
+      "prm": "PRM_NS1_THRESHOLD",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 5
+    },
+    {
+      "offset": 869,
+      "bytes": 1,
+      "name": "RELEASE",
+      "prm": "PRM_NS1_RELEASE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 920,
+      "bytes": 1,
+      "name": "MASTER KEY",
+      "prm": "PRM_MASTER_KEY",
+      "min": 0,
+      "max": 11,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 2064,
+      "bytes": 1,
+      "name": "HIGH",
+      "prm": "PRM_FX1_ACSIM_TOP",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 0
+    },
+    {
+      "offset": 2065,
+      "bytes": 1,
+      "name": "BODY",
+      "prm": "PRM_FX1_ACSIM_BODY",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 2066,
+      "bytes": 1,
+      "name": "LOW",
+      "prm": "PRM_FX1_ACSIM_LOW",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 0
+    },
+    {
+      "offset": 2068,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX1_ACSIM_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 2079,
+      "bytes": 1,
+      "name": "HIGH",
+      "prm": "PRM_FX2_ACSIM_TOP",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 0
+    },
+    {
+      "offset": 2080,
+      "bytes": 1,
+      "name": "BODY",
+      "prm": "PRM_FX2_ACSIM_BODY",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 2081,
+      "bytes": 1,
+      "name": "LOW",
+      "prm": "PRM_FX2_ACSIM_LOW",
+      "min": -50,
+      "max": 50,
+      "ofs": 50,
+      "init": 0
+    },
+    {
+      "offset": 2083,
+      "bytes": 1,
+      "name": "LEVEL",
+      "prm": "PRM_FX2_ACSIM_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 2109,
+      "bytes": 1,
+      "name": "SCRIPT",
+      "prm": "PRM_FX1_EVH_PHASER_SCRIPT",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 2110,
+      "bytes": 1,
+      "name": "SPEED",
+      "prm": "PRM_FX1_EVH_PHASER_SPEED",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 2111,
+      "bytes": 1,
+      "name": "MANUAL",
+      "prm": "PRM_FX1_EVH_FLANGER_MANUAL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 45
+    },
+    {
+      "offset": 2112,
+      "bytes": 1,
+      "name": "WIDTH",
+      "prm": "PRM_FX1_EVH_FLANGER_WIDTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 2113,
+      "bytes": 1,
+      "name": "SPEED",
+      "prm": "PRM_FX1_EVH_FLANGER_SPEED",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 2114,
+      "bytes": 1,
+      "name": "REGEN.",
+      "prm": "PRM_FX1_EVH_FLANGER_REGEN",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 80
+    },
+    {
+      "offset": 2115,
+      "bytes": 1,
+      "name": "SCRIPT",
+      "prm": "PRM_FX2_EVH_PHASER_SCRIPT",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 2116,
+      "bytes": 1,
+      "name": "SPEED",
+      "prm": "PRM_FX2_EVH_PHASER_SPEED",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 2117,
+      "bytes": 1,
+      "name": "MANUAL",
+      "prm": "PRM_FX2_EVH_FLANGER_MANUAL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 45
+    },
+    {
+      "offset": 2118,
+      "bytes": 1,
+      "name": "WIDTH",
+      "prm": "PRM_FX2_EVH_FLANGER_WIDTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 2119,
+      "bytes": 1,
+      "name": "SPEED",
+      "prm": "PRM_FX2_EVH_FLANGER_SPEED",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 2120,
+      "bytes": 1,
+      "name": "REGEN.",
+      "prm": "PRM_FX2_EVH_FLANGER_REGEN",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 80
+    },
+    {
+      "offset": 2121,
+      "bytes": 1,
+      "name": "RANGE",
+      "prm": "PRM_DLY_VINTAGE_LPF",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 2122,
+      "bytes": 1,
+      "name": "FILTER",
+      "prm": "PRM_DLY_VINTAGE_FILTER",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 2123,
+      "bytes": 1,
+      "name": "FEEDBACK PHASE",
+      "prm": "PRM_DLY_VINTAGE_FEEDBACK_PHASE",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 2124,
+      "bytes": 1,
+      "name": "DELAY PHASE",
+      "prm": "PRM_DLY_VINTAGE_EFFECT_PHASE",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 2125,
+      "bytes": 1,
+      "name": "MOD SW",
+      "prm": "PRM_DLY_VINTAGE_MOD_SW",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 2126,
+      "bytes": 1,
+      "name": "SW",
+      "prm": "PRM_DLY2_SW",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 2127,
+      "bytes": 1,
+      "name": "TYPE",
+      "prm": "PRM_DLY2_TYPE",
+      "min": 0,
+      "max": 6,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 2128,
+      "bytes": 2,
+      "name": "DELAY TIME",
+      "prm": "PRM_DLY2_COMMON_DLY_TIME",
+      "min": 1,
+      "max": 2000,
+      "ofs": 0,
+      "init": 400
+    },
+    {
+      "offset": 2130,
+      "bytes": 1,
+      "name": "FEEDBACK",
+      "prm": "PRM_DLY2_COMMON_FEEDBACK",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 22
+    },
+    {
+      "offset": 2131,
+      "bytes": 1,
+      "name": "HIGH CUT",
+      "prm": "PRM_DLY2_COMMON_HICUT",
+      "min": 0,
+      "max": 14,
+      "ofs": 0,
+      "init": 10
+    },
+    {
+      "offset": 2132,
+      "bytes": 1,
+      "name": "EFFECT LEVEL",
+      "prm": "PRM_DLY2_COMMON_EFFECT_LEVEL",
+      "min": 0,
+      "max": 120,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 2133,
+      "bytes": 1,
+      "name": "DIRECT MIX",
+      "prm": "PRM_DLY2_COMMON_DIRECT_LEVEL",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 100
+    },
+    {
+      "offset": 2134,
+      "bytes": 1,
+      "name": "PAN TAP TIME",
+      "prm": "PRM_DLY2_PAN_TAPTIME",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 50
+    },
+    {
+      "offset": 2145,
+      "bytes": 1,
+      "name": "MOD RATE",
+      "prm": "PRM_DLY2_MOD_RATE",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 40
+    },
+    {
+      "offset": 2146,
+      "bytes": 1,
+      "name": "MOD DEPTH",
+      "prm": "PRM_DLY2_MOD_DEPTH",
+      "min": 0,
+      "max": 100,
+      "ofs": 0,
+      "init": 55
+    },
+    {
+      "offset": 2147,
+      "bytes": 1,
+      "name": "RANGE",
+      "prm": "PRM_DLY2_VINTAGE_LPF",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 2148,
+      "bytes": 1,
+      "name": "FILTER",
+      "prm": "PRM_DLY2_VINTAGE_FILTER",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 2149,
+      "bytes": 1,
+      "name": "FEEDBACK PHASE",
+      "prm": "PRM_DLY2_VINTAGE_FEEDBACK_PHASE",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 2150,
+      "bytes": 1,
+      "name": "DELAY PHASE",
+      "prm": "PRM_DLY2_VINTAGE_EFFECT_PHASE",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 2151,
+      "bytes": 1,
+      "name": "MOD SW",
+      "prm": "PRM_DLY2_VINTAGE_MOD_SW",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 2304,
+      "bytes": 1,
+      "name": "CHAIN",
+      "prm": "PRM_CHAIN_PTN",
+      "min": 0,
+      "max": 2,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 2305,
+      "bytes": 1,
+      "name": "BOOSTER",
+      "prm": "PRM_FXBOX_ASGN_FX1A_G",
+      "min": 0,
+      "max": 24,
+      "ofs": 0,
+      "init": 10
+    },
+    {
+      "offset": 2306,
+      "bytes": 1,
+      "name": "BOOSTER",
+      "prm": "PRM_FXBOX_ASGN_FX1A_R",
+      "min": 0,
+      "max": 24,
+      "ofs": 0,
+      "init": 11
+    },
+    {
+      "offset": 2307,
+      "bytes": 1,
+      "name": "BOOSTER",
+      "prm": "PRM_FXBOX_ASGN_FX1A_Y",
+      "min": 0,
+      "max": 24,
+      "ofs": 0,
+      "init": 14
+    },
+    {
+      "offset": 2308,
+      "bytes": 1,
+      "name": "MOD",
+      "prm": "PRM_FXBOX_ASGN_FX1B_G",
+      "min": 0,
+      "max": 36,
+      "ofs": 0,
+      "init": 23
+    },
+    {
+      "offset": 2309,
+      "bytes": 1,
+      "name": "MOD",
+      "prm": "PRM_FXBOX_ASGN_FX1B_R",
+      "min": 0,
+      "max": 36,
+      "ofs": 0,
+      "init": 20
+    },
+    {
+      "offset": 2310,
+      "bytes": 1,
+      "name": "MOD",
+      "prm": "PRM_FXBOX_ASGN_FX1B_Y",
+      "min": 0,
+      "max": 36,
+      "ofs": 0,
+      "init": 19
+    },
+    {
+      "offset": 2311,
+      "bytes": 1,
+      "name": "DELAY",
+      "prm": "PRM_FXBOX_ASGN_FX2A_G",
+      "min": 0,
+      "max": 10,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 2312,
+      "bytes": 1,
+      "name": "DELAY",
+      "prm": "PRM_FXBOX_ASGN_FX2A_R",
+      "min": 0,
+      "max": 10,
+      "ofs": 0,
+      "init": 7
+    },
+    {
+      "offset": 2313,
+      "bytes": 1,
+      "name": "DELAY",
+      "prm": "PRM_FXBOX_ASGN_FX2A_Y",
+      "min": 0,
+      "max": 10,
+      "ofs": 0,
+      "init": 8
+    },
+    {
+      "offset": 2314,
+      "bytes": 1,
+      "name": "FX",
+      "prm": "PRM_FXBOX_ASGN_FX2B_G",
+      "min": 0,
+      "max": 36,
+      "ofs": 0,
+      "init": 21
+    },
+    {
+      "offset": 2315,
+      "bytes": 1,
+      "name": "FX",
+      "prm": "PRM_FXBOX_ASGN_FX2B_R",
+      "min": 0,
+      "max": 36,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 2316,
+      "bytes": 1,
+      "name": "FX",
+      "prm": "PRM_FXBOX_ASGN_FX2B_Y",
+      "min": 0,
+      "max": 36,
+      "ofs": 0,
+      "init": 14
+    },
+    {
+      "offset": 2317,
+      "bytes": 1,
+      "name": "REVERB",
+      "prm": "PRM_FXBOX_ASGN_FX3A_G",
+      "min": 0,
+      "max": 6,
+      "ofs": 0,
+      "init": 4
+    },
+    {
+      "offset": 2318,
+      "bytes": 1,
+      "name": "REVERB",
+      "prm": "PRM_FXBOX_ASGN_FX3A_R",
+      "min": 0,
+      "max": 6,
+      "ofs": 0,
+      "init": 5
+    },
+    {
+      "offset": 2319,
+      "bytes": 1,
+      "name": "REVERB",
+      "prm": "PRM_FXBOX_ASGN_FX3A_Y",
+      "min": 0,
+      "max": 6,
+      "ofs": 0,
+      "init": 3
+    },
+    {
+      "offset": 2327,
+      "bytes": 1,
+      "name": "POSITION",
+      "prm": "PRM_POSITION_SEND_RETURN",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 2328,
+      "bytes": 1,
+      "name": "POSITION",
+      "prm": "PRM_POSITION_EQ",
+      "min": 0,
+      "max": 1,
+      "ofs": 0,
+      "init": 1
+    },
+    {
+      "offset": 2329,
+      "bytes": 1,
+      "name": "DELAY2",
+      "prm": "PRM_FXBOX_ASGN_FX3B_G",
+      "min": 0,
+      "max": 10,
+      "ofs": 0,
+      "init": 0
+    },
+    {
+      "offset": 2330,
+      "bytes": 1,
+      "name": "DELAY2",
+      "prm": "PRM_FXBOX_ASGN_FX3B_R",
+      "min": 0,
+      "max": 10,
+      "ofs": 0,
+      "init": 7
+    },
+    {
+      "offset": 2331,
+      "bytes": 1,
+      "name": "DELAY2",
+      "prm": "PRM_FXBOX_ASGN_FX3B_Y",
+      "min": 0,
+      "max": 10,
+      "ofs": 0,
+      "init": 8
+    },
+    {
+      "offset": 2332,
+      "bytes": 1,
+      "name": "MODE",
+      "prm": "PRM_FXBOX_FX3_LAYER_G",
+      "min": 0,
+      "max": 2,
+      "ofs": 0,
+      "init": 2
+    },
+    {
+      "offset": 2333,
+      "bytes": 1,
+      "name": "MODE",
+      "prm": "PRM_FXBOX_FX3_LAYER_R",
+      "min": 0,
+      "max": 2,
+      "ofs": 0,
+      "init": 2
+    },
+    {
+      "offset": 2334,
+      "bytes": 1,
+      "name": "MODE",
+      "prm": "PRM_FXBOX_FX3_LAYER_Y",
+      "min": 0,
+      "max": 2,
+      "ofs": 0,
+      "init": 2
+    }
+  ]
+}
