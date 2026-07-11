@@ -285,6 +285,94 @@ function DeleteConfirmModal({ label, onConfirm, onCancel }: { label: string; onC
   )
 }
 
+// ─── About modal ─────────────────────────────────────────────────────────────
+//
+// Opened by tapping the version label in the settings footer. Structure mirrors
+// mighty-ai-qr-web's About screen: app identity, a collapsible per-version
+// "What's new" changelog, and an author link. Keep WHATS_NEW newest-first and
+// add an entry whenever a release ships user-visible changes.
+
+const GITHUB_ICON_PATH = 'M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z'
+
+const WHATS_NEW: { version: string; items: { text: string; sub?: string }[] }[] = [
+  {
+    version: '0.7.1',
+    items: [
+      { text: 'OLED is now the default theme', sub: 'True-black UI — easier on the eyes and on OLED battery. Switch any time in Settings → Theme.' },
+      { text: 'This About screen', sub: 'Tap the version number in Settings whenever you want to see what shipped.' },
+    ],
+  },
+]
+
+function AboutModal({ onClose }: { onClose: () => void }) {
+  const branding = getToneaiBranding()
+  const [openVersions, setOpenVersions] = useState<Record<string, boolean>>({ [WHATS_NEW[0].version]: true })
+  const toggle = (v: string) => setOpenVersions(prev => ({ ...prev, [v]: !prev[v] }))
+  return (
+    <>
+      <div className="fixed inset-0 z-[80] bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 z-[80] flex items-center justify-center p-4 pointer-events-none">
+        <div className="pointer-events-auto w-full max-w-sm rounded-2xl border border-white/10 bg-surface shadow-2xl animate-scale-up p-6 space-y-5 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <img src={branding.icon192} alt={branding.name} className="h-12 w-12 rounded-xl shrink-0" />
+              <div>
+                <p className="text-sm font-semibold text-fg">{branding.name} <span className="text-[11px] font-normal text-fg-4">v{APP_VERSION}</span></p>
+                <p className="text-[11px] text-fg-4 mt-1 leading-relaxed">
+                  Describe a sound in plain English — get a ready-to-import <code className="text-[10px]">.tsl</code> patch for your BOSS KATANA.
+                </p>
+              </div>
+            </div>
+            <button onClick={onClose} className="shrink-0 text-fg-4 hover:text-fg transition-colors" aria-label="Close"><CloseIcon /></button>
+          </div>
+
+          {WHATS_NEW.map(({ version, items }) => {
+            const open = !!openVersions[version]
+            return (
+              <div key={version} className="border-t border-white/10 pt-4">
+                <button
+                  onClick={() => toggle(version)}
+                  className="flex w-full items-center justify-between gap-2 text-left"
+                >
+                  <p className="text-[11px] font-medium text-fg-3 uppercase tracking-wider">What&apos;s new in v{version}</p>
+                  <ChevronIcon open={open} />
+                </button>
+                {open && (
+                  <ul className="mt-2.5 space-y-2">
+                    {items.map((item, i) => (
+                      <li key={i} className="flex items-start gap-2 leading-relaxed">
+                        <span className="text-primary mt-px shrink-0">•</span>
+                        <div>
+                          <span className={i === 0 ? 'text-[11px] font-medium text-fg' : 'text-[11px] text-fg-4'}>{item.text}</span>
+                          {item.sub && <p className="text-[10px] text-fg-4 mt-0.5">{item.sub}</p>}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )
+          })}
+
+          <div className="border-t border-white/10 pt-4 space-y-1">
+            <p className="text-[11px] font-medium text-fg-3 uppercase tracking-wider">Author</p>
+            <a href="https://github.com/cordfuse/toneai-katana-web" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs text-primary hover:underline">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d={GITHUB_ICON_PATH} /></svg>
+              github.com/cordfuse/toneai-katana-web
+            </a>
+            <p className="text-[10px] text-fg-4 pt-1">Steve Krisjanovs · Cordfuse</p>
+          </div>
+
+          <div className="border-t border-white/10 pt-4 space-y-1">
+            <p className="text-[11px] font-medium text-fg-3 uppercase tracking-wider">Credits</p>
+            <p className="text-[11px] text-fg-4">Tone design by Claude (Anthropic). Patches are verified against a real KATANA MkII export before download — the model never writes the <code className="text-[10px]">.tsl</code> directly.</p>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
 // ─── settings panel (right drawer) ───────────────────────────────────────────
 
 // ─── Free-tier quota pill ───────────────────────────────────────────────────
@@ -355,6 +443,7 @@ function SettingsPanel({
   const [deviceOpen, setDeviceOpen] = useState(false)
   const [localeOpen, setLocaleOpen] = useState(false)
   const [gearModalOpen, setGearModalOpen] = useState(false)
+  const [aboutOpen, setAboutOpen] = useState(false)
   // Local draft so typing doesn't write to localStorage on every keystroke.
   // Commits on blur, same pattern the system-prompt textarea used.
   const [keyDraft, setKeyDraft] = useState(apiKey ?? '')
@@ -634,12 +723,19 @@ function SettingsPanel({
         </div>
 
         <div className="px-5 py-3 flex items-center justify-end text-xs text-fg-4">
-          <span>{branding.name} v{APP_VERSION}</span>
+          <button
+            onClick={() => setAboutOpen(true)}
+            className="hover:text-fg-2 transition-colors underline decoration-dotted decoration-fg-4/40 underline-offset-2"
+            title={t('settings.about', 'About')}
+          >
+            {branding.name} v{APP_VERSION}
+          </button>
         </div>
       </aside>
       {gearModalOpen && (
         <GearModal gear={gear} onSave={onGear} onClose={() => setGearModalOpen(false)} />
       )}
+      {aboutOpen && <AboutModal onClose={() => setAboutOpen(false)} />}
     </>
   )
 }
