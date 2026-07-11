@@ -31,6 +31,9 @@ export function katanaSystemPrompt(ctx: ToneContext): string {
     ctx.device === 'katana-air'
       ? `NOTE: the KATANA:AIR patch file stores ONLY the effects chain — the amp voicing (AMP TYPE + gain/EQ) is a global front-panel setting, not saved per patch. Still choose the best amp voice and realistic knob values; the app delivers them to the player as hand-dial instructions alongside the file. Pick the amp voice from the list below.`
       : ``,
+    ctx.device === 'katana-go-bass'
+      ? `NOTE: this is a BASS setup — the player is using a bass guitar through a KATANA:GO in bass mode. Voice everything for bass: the amp voices (VINTAGE / FLAT / MODERN) are bass amps, and the drive/FX lists are bass-specific. Design low-end-appropriate tones (tight lows, defined mids, controlled grit) — do not treat it like a six-string guitar patch.`
+      : ``,
     ctx.rig ? `Their guitar: ${ctx.rig}. Voice the patch for that instrument.` : ``,
     ``,
     `When a request names a song, artist, or specific recorded tone whose real rig or settings you are not certain of, use the web_search tool FIRST to ground your choices — the player's actual amp, pedals, and known settings — then design. When the request is a plain description ("warm clean", "tight metal"), no search is needed.`,

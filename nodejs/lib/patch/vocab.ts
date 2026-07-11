@@ -18,6 +18,7 @@ import {
 } from './air/enums'
 import {
   GO_AMP_TYPES, GO_BOOSTER_TYPES, GO_FX_TYPES, GO_DELAY_TYPES, GO_REVERB_TYPES,
+  GO_BASS_AMP_TYPES, GO_BASS_BOOSTER_TYPES, GO_BASS_FX_TYPES, GO_BASS_DELAY_TYPES, GO_BASS_REVERB_TYPES,
 } from './go/enums'
 
 export interface DeviceVocab {
@@ -46,6 +47,11 @@ const GO_VOCAB: DeviceVocab = {
   amps: GO_AMP_TYPES, boosters: GO_BOOSTER_TYPES, fx: GO_FX_TYPES,
   delays: GO_DELAY_TYPES, reverbs: GO_REVERB_TYPES,
 }
+// GO bass mode — same GO app, bass amp voices (VINTAGE/FLAT/MODERN) + bass drives/FX.
+const GO_BASS_VOCAB: DeviceVocab = {
+  amps: GO_BASS_AMP_TYPES, boosters: GO_BASS_BOOSTER_TYPES, fx: GO_BASS_FX_TYPES,
+  delays: GO_BASS_DELAY_TYPES, reverbs: GO_BASS_REVERB_TYPES,
+}
 
 // Generations with a writer + vocabulary. Others fall back to MkII's (they're
 // gated from emitting anyway by the confidence guard in index.ts).
@@ -54,6 +60,7 @@ const BY_GENERATION: Partial<Record<Generation, DeviceVocab>> = {
   mk3: MK3_VOCAB,
   air: AIR_VOCAB,
   go: GO_VOCAB,
+  gobass: GO_BASS_VOCAB,
 }
 
 export function vocabForGeneration(gen: Generation): DeviceVocab {

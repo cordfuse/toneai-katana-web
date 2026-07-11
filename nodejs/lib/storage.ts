@@ -241,27 +241,30 @@ export function saveTheme(theme: Theme) {
 // lib/patch/generations.ts). Those differences are hardware (wattage, speaker,
 // Waza cab), not patch data, so a single "KATANA MkII" is the correct model.
 export type KatanaDevice =
-  | 'katana-mk1' | 'katana-mk2' | 'katana-mk3' | 'katana-air' | 'katana-go' | 'katana-bass'
+  | 'katana-mk1' | 'katana-mk2' | 'katana-mk3' | 'katana-air'
+  | 'katana-go' | 'katana-go-bass' | 'katana-bass'
 
 // `supported` gates what the user can actually select. MkII and Gen 3 are both
 // proven against real exports today; the others stay LISTED (so players see their
 // amp is on the roadmap) but are not selectable, and the picker shows a note to
 // that effect. Flip a row to true as each writer is proven.
 //
-// The four guitar entries match the guitar Katana Librarian's device selector
-// (MK1/MK2/MK3/GO). `katana-air` is the KATANA:AIR (its own BOSS Tone Studio app,
-// not the Librarian) — an effects-only .tsl (the amp is a global panel state, so
-// a generated Air tone ships amp settings as INSTRUCTIONS alongside the file;
-// docs/air-format-notes.md). `katana-bass` is a single roadmap placeholder for
-// the whole bass line (110 / 210 / Head) — confirmed to share the MkII .tsl
-// family; its writer is pending extraction from the bass editor source.
+// MK1/MK2/MK3/GO mirror the guitar Katana Librarian's device selector. `katana-air`
+// is the KATANA:AIR (its own BOSS Tone Studio app) — an effects-only .tsl (the amp
+// is global panel state, so a generated Air tone ships amp settings as INSTRUCTIONS
+// alongside the file; docs/air-format-notes.md). `katana-go` / `katana-go-bass` are
+// the two MODES of the one dual-mode GO app (guitar verified; bass 'derived' — same
+// block layout, bass vocabulary, pending a real bass export; docs/go-format-notes.md).
+// `katana-bass` is a separate roadmap placeholder for the DESKTOP bass line
+// (110 / 210 / Head) — confirmed to share the MkII .tsl family; writer pending.
 export const KATANA_DEVICES: { id: KatanaDevice; label: string; supported: boolean }[] = [
-  { id: 'katana-mk2',  label: 'KATANA MkII',  supported: true  },
-  { id: 'katana-mk3',  label: 'KATANA Gen 3', supported: true  },
-  { id: 'katana-air',  label: 'KATANA:AIR',   supported: true  },
-  { id: 'katana-go',   label: 'KATANA:GO',    supported: true  },
-  { id: 'katana-mk1',  label: 'KATANA MkI',   supported: false },
-  { id: 'katana-bass', label: 'KATANA Bass',  supported: false },
+  { id: 'katana-mk2',     label: 'KATANA MkII',     supported: true  },
+  { id: 'katana-mk3',     label: 'KATANA Gen 3',    supported: true  },
+  { id: 'katana-air',     label: 'KATANA:AIR',      supported: true  },
+  { id: 'katana-go',      label: 'KATANA:GO',       supported: true  },
+  { id: 'katana-go-bass', label: 'KATANA:GO Bass',  supported: true  },
+  { id: 'katana-mk1',     label: 'KATANA MkI',      supported: false },
+  { id: 'katana-bass',    label: 'KATANA Bass',     supported: false },
 ]
 
 const DEVICE_KEY = 'katana_device'

@@ -5,7 +5,7 @@
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { writeGoTsl, buildGoSections } from '../go'
+import { writeGoTsl, buildGoSections, writeGoBassTsl } from '../go'
 import type { TonePatch } from '../../intent'
 
 const patch: TonePatch = {
@@ -73,7 +73,7 @@ test('reverb: HALL=2, time with -1 offset, level', () => {
 })
 
 test('unknown amp name is rejected', () => {
-  assert.throws(() => writeGoTsl({ ...patch, ampA: { ...patch.ampA, type: 'Twin Reverb' } }), /unknown KATANA:GO amp type/)
+  assert.throws(() => writeGoTsl({ ...patch, ampA: { ...patch.ampA, type: 'Twin Reverb' } }), /unknown KATANA:GO_guitarmode amp type/)
 })
 
 test('an off effect clears its chain switch', () => {
@@ -86,4 +86,56 @@ test('an off effect clears its chain switch', () => {
   assert.equal(s.get('SW')![0], 0, 'booster off')
   assert.equal(s.get('SW')![3], 0, 'delay off')
   assert.equal(s.get('SW')![5], 0, 'reverb off')
+})
+
+// ── BASS MODE ────────────────────────────────────────────────────────────────
+
+const bassPatch: TonePatch = {
+  name: 'GO Bass Grind',
+  ampA: { type: 'VINTAGE', gain: 70, bass: 65, middle: 50, treble: 45, presence: 40, level: 85 },
+  booster: { on: true, type: 'BASS DRV', drive: 55, tone: 50, level: 70 },
+  fx1: { on: true, type: 'BASS SIMULATOR' },
+  fx2: { on: false, type: 'CHORUS' },
+  delay: { on: true, type: 'ANALOG', timeMs: 320, feedback: 20, level: 30 },
+  reverb: { on: true, type: 'ROOM', timeS: 1.5, level: 25 },
+}
+
+const bps = (writeGoBassTsl(bassPatch) as any).data[0][0].paramSet
+const bat = (block: string, i: number) => parseInt(bps[`PATCH%${block}`][i], 16)
+
+test('bass envelope: _bassmode device string, PATCH% keys', () => {
+  const t = writeGoBassTsl(bassPatch) as any
+  assert.equal(t.device, 'KATANA:GO_bassmode')
+  assert.equal(t.formatRev, '0000')
+})
+
+test('bass amp voices sit at bytes 5-7; VINTAGE=5', () => {
+  assert.equal(bat('AMP', 12), 5, 'VINTAGE = amp type byte 5 (bass range)')
+  assert.equal(bat('AMP', 0), 70, 'gain')
+  assert.equal(bat('AMP', 3), 65, 'bass')
+})
+
+test('bass chain routing byte set to 7 (bass range)', () => {
+  assert.equal(bat('OTHER', 0), 7, 'OTHER.CHAIN = 7 for bass')
+})
+
+test('bass DRIVE/FX resolve to their real byte values', () => {
+  assert.equal(bat('SW', 0), 1, 'drive on')
+  assert.equal(bat('BOOSTER', 0), 33, 'BASS DRV = booster byte 33')
+  assert.equal(bat('SW', 1), 1, 'fx1 on')
+  assert.equal(bat('FX(1)', 0), 29, 'BASS SIMULATOR = fx byte 29')
+})
+
+test('bass delay/reverb share the guitar orderings', () => {
+  assert.equal(bat('DELAY(1)', 0), 3, 'ANALOG = 3')
+  assert.equal(bat('REVERB', 0), 1, 'ROOM = 1')
+})
+
+test('bass name at COM offset 4', () => {
+  const name = bps['PATCH%COM'].slice(4, 20).map((h: string) => String.fromCharCode(parseInt(h, 16))).join('')
+  assert.equal(name, 'GO Bass Grind'.padEnd(16, ' '))
+})
+
+test('a guitar amp name is rejected in bass mode', () => {
+  assert.throws(() => writeGoBassTsl({ ...bassPatch, ampA: { ...bassPatch.ampA, type: 'BROWN' } }), /unknown KATANA:GO_bassmode amp type/)
 })

@@ -9,7 +9,7 @@
 
 import type { KatanaDevice } from '@/lib/storage'
 
-export type Generation = 'mk1' | 'mk2' | 'mk3' | 'go' | 'air'
+export type Generation = 'mk1' | 'mk2' | 'mk3' | 'go' | 'gobass' | 'air'
 
 export type Confidence =
   /** Writer validated against real sample files (round-trip byte-identical). */
@@ -96,6 +96,20 @@ export const GENERATIONS: Record<Generation, GenerationProfile> = {
     confidence: 'verified',
     addressing: 'golden-template overlay (go/template.ts) + PATCH% block offsets (go/param-table.json); .tsl formatRev 0000, verified vs data/fixtures/ GO guitar export',
   },
+  gobass: {
+    id: 'gobass',
+    label: 'KATANA:GO Bass',
+    deviceString: 'KATANA:GO_bassmode',
+    fileExt: '.katgo',
+    selectorIndex: 4,
+    // 'derived': GO bass reuses the SAME 30-block PATCH% layout as GO guitar
+    // (block skeleton already round-trip-verified), and its enums come from the
+    // GO app + its bass conversion map — but no real bass-mode export has been
+    // round-tripped, so it stays 'derived' (emits with a warning, never silently)
+    // until a ground-truth bass .tsl lands. Same app as guitar (dual-mode).
+    confidence: 'derived',
+    addressing: 'shared go/template.ts overlay with bass enums + _bassmode device string; block layout proven via guitar round-trip, bass values from app + ktn bass conversion map — DERIVED, no bass export yet',
+  },
   air: {
     id: 'air',
     label: 'KATANA:AIR',
@@ -127,6 +141,7 @@ export function generationForDevice(device: KatanaDevice): Generation {
   if (device.endsWith('-mk2')) return 'mk2'
   if (device.endsWith('-mk3')) return 'mk3'
   if (device.startsWith('katana-air')) return 'air'
+  if (device === 'katana-go-bass') return 'gobass'  // before the katana-go prefix
   if (device.startsWith('katana-go')) return 'go'
   // Defensive default: unknown suffix → mk1, the only verified layout. Better
   // to target the safe writer than to guess an unvalidated one.

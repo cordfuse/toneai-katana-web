@@ -51,3 +51,53 @@ export const GO_BOOSTER_BY_NAME = byName(GO_BOOSTER_TYPES)
 export const GO_FX_BY_NAME = byName(GO_FX_TYPES)
 export const GO_DELAY_BY_NAME = byName(GO_DELAY_TYPES)
 export const GO_REVERB_BY_NAME = byName(GO_REVERB_TYPES)
+
+// ── BASS MODE ────────────────────────────────────────────────────────────────
+//
+// GO is dual-mode: bass mode reuses the SAME 30-block PATCH% layout but with a
+// different vocabulary (mode gated in the app by businesslogic/mode/mode_info.js).
+// Byte values here are the real field values, NOT list positions:
+//  • AMP_TYPE is one shared field — guitar uses 0–4, BASS uses 5–7 (resource
+//    _[amp2] has blanks at 0–4). VINTAGE=5, FLAT=6, MODERN=7.
+//  • The booster ("DRIVE" in bass) shares PATCH_BOOSTER_TYPE; bass shows indices
+//    ≥23 (MAX_INDEX_BST_TYPE_GUITAR_MODE=23), i.e. bytes 23–35.
+//  • Bass FX has its own list with reserved (null) slots — byte = true index.
+// Delay + reverb lists are identical to guitar mode.
+//
+// NOTE: no real bass-mode export has been round-tripped yet, so the GO bass
+// profile ships at confidence 'derived' (see generations.ts) until one lands.
+
+/** Bass amp voices, mapped to their real AMP_TYPE byte values (5–7). */
+export const GO_BASS_AMP_TYPES = ['VINTAGE', 'FLAT', 'MODERN'] as const
+export const GO_BASS_AMP_BY_NAME = new Map<string, number>([
+  ['VINTAGE', 5], ['FLAT', 6], ['MODERN', 7],
+])
+
+/** Bass DRIVE (PATCH_BOOSTER_TYPE ≥23). Listed with their real byte values. */
+const GO_BASS_BOOSTER_ENTRIES: readonly [string, number][] = [
+  ['BLUES OD', 23], ['NATURAL', 24], ['GUV DS', 25], ['METAL ZONE', 26], ['MUFF FUZZ', 27],
+  ['BOOSTER', 28], ['BASS OD', 29], ['BASS DS', 30], ['BASS MT', 31], ['BASS FUZZ', 32],
+  ['BASS DRV', 33], ['HIBAND DRV', 34], ['BASS DI', 35],
+]
+export const GO_BASS_BOOSTER_TYPES = GO_BASS_BOOSTER_ENTRIES.map(([n]) => n)
+export const GO_BASS_BOOSTER_BY_NAME = new Map<string, number>(GO_BASS_BOOSTER_ENTRIES)
+
+/** Bass FX (own list; null = reserved slot, kept so real names keep their byte). */
+export const GO_BASS_FX_LIST: readonly (string | null)[] = [
+  'CHORUS', 'FLANGER', 'PHASER', 'UNI-V', 'TREMOLO', 'VIBRATO', 'ROTARY', 'RING MOD',
+  'SLOW GEAR', 'SLICER', null, null, null, 'AUTO WAH', 'GRAPHIC EQ', 'PARAMETRIC EQ',
+  null, null, null, null, null, 'HEAVY OCTAVE', 'PITCH SHIFTER', 'HARMONIST', 'HUMANIZER',
+  null, null, null, 'ENHANCER', 'BASS SIMULATOR', 'DEFRETTER', 'OCTAVE', 'T.WAH', 'BASS SYNTH',
+]
+export const GO_BASS_FX_TYPES = GO_BASS_FX_LIST.filter((x): x is string => !!x)
+export const GO_BASS_FX_BY_NAME = (() => {
+  const m = new Map<string, number>()
+  GO_BASS_FX_LIST.forEach((n, i) => { if (n) m.set(n, i) })
+  return m
+})()
+
+// Delay + reverb are shared with guitar mode.
+export const GO_BASS_DELAY_TYPES = GO_DELAY_TYPES
+export const GO_BASS_DELAY_BY_NAME = GO_DELAY_BY_NAME
+export const GO_BASS_REVERB_TYPES = GO_REVERB_TYPES
+export const GO_BASS_REVERB_BY_NAME = GO_REVERB_BY_NAME

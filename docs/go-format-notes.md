@@ -90,6 +90,33 @@ comments are the known Gen 3 names, its values GO indices — reproduces the
   the −1 display offset applied. As on the other generations, reverb decay is the
   least-verified continuous parameter.
 
+## Bass mode (`KATANA:GO_bassmode`) — `derived`
+
+Same app, same 30-block `PATCH%` layout — so the block skeleton is already
+verified by the guitar round-trip. Bass changes only the **vocabulary** and a
+couple of mode bytes; it ships at confidence `derived` (emits with the
+experimental warning) until a real bass-mode `.tsl` is round-tripped.
+
+Mode gating comes from `businesslogic/mode/mode_info.js`. Bass byte values
+(verified against that file + `resource.js`):
+
+- **Amp** — the `AMP_TYPE` field (@12) is SHARED: guitar uses 0–4, bass uses
+  **5–7** (VINTAGE=5, FLAT=6, MODERN=7; the resource list has blanks at 0–4).
+- **DRIVE** (booster, relabelled "DRIVE" in bass) — shares `PATCH_BOOSTER_TYPE`;
+  bass shows indices **≥23** (`MAX_INDEX_BST_TYPE_GUITAR_MODE=23`): BLUES OD(23) …
+  BASS DI(35).
+- **FX** — its own list (`fx-bass-type-select-list`) with reserved slots; byte =
+  true index (e.g. ENHANCER=28, BASS SIMULATOR=29, BASS SYNTH=33).
+- **Delay / reverb** — identical orderings to guitar mode.
+- **Chain** — guitar routings are 0–6, bass 7–8; the writer sets `OTHER.CHAIN=7`.
+
+Both modes run through one builder (`writers/go.ts` `buildGo`) with a per-mode
+config; the golden template is shared (the guitar patch's block skeleton).
+**Derived caveat:** non-overlaid blocks (bass comp `BA_COMP`, bass EQ, amp
+variation bytes) keep the guitar template's values — valid byte ranges, but not
+bass-tuned. A real bass export would let those be cloned from ground truth and
+lift bass to `verified`.
+
 ## Open questions (need hardware)
 
 - **Single patch vs multi-patch liveset.** The sample is 2 groups of 5; the

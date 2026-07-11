@@ -1,28 +1,34 @@
-// KATANA:GO writer (guitar mode) — emits a .tsl liveset (device
-// "KATANA:GO_guitarmode", formatRev "0000", PATCH% block keys).
+// KATANA:GO writer — emits a .tsl liveset (PATCH% block keys, formatRev "0000").
 //
-// Structurally a Gen 3 sibling: same PATCH% section map, same SW-block chain
-// layout (MOD = FX(1), FX = FX(2)), same 4-nibble delay TIME. Differences from
-// mk3, all verified against the app param model + a real guitar-mode export
-// (docs/go-format-notes.md): the patch NAME sits at COM offset 4 (not 0); GO's
-// AMP block is wider (AMP_TYPE @12); and REVERB TIME carries a −1 display offset.
+// GO is dual-mode: guitar and bass share ONE 30-block PATCH% layout, split only
+// by the .tsl device string (KATANA:GO_guitarmode / _bassmode) and the enum
+// vocabulary each mode exposes. Both modes run through the same core builder
+// (buildGo); the mode config supplies the device string, the amp/booster/FX
+// name→byte maps, and (bass only) the chain routing byte.
 //
-// Clone the golden template (go/template.ts — a real patch's full block map) and
-// overlay only the intent fields; every other block keeps factory values. Enum
-// byte values come from go/enums.ts (proven via the app's Gen 3 → GO map).
+// Structurally a Gen 3 sibling: same SW-block chain (MOD = FX(1), FX = FX(2)),
+// same 4-nibble delay TIME. GO-specific, verified against the app param model +
+// a real guitar export (docs/go-format-notes.md): the NAME sits at COM offset 4;
+// the AMP block is wider (AMP_TYPE @12); REVERB TIME carries a −1 display offset.
+//
+// GUITAR mode is 'verified' (round-trips a real export byte-for-byte). BASS mode
+// is 'derived': the block layout is proven (shared with guitar), and the bass
+// enums come from the app + its bass conversion map, but no real bass export has
+// been round-tripped yet, so its confidence is gated (generations.ts 'gobass').
 
 import type { TonePatch, ModFx } from '../intent'
 import {
   GO_AMP_BY_NAME, GO_BOOSTER_BY_NAME, GO_FX_BY_NAME, GO_DELAY_BY_NAME, GO_REVERB_BY_NAME,
+  GO_BASS_AMP_BY_NAME, GO_BASS_BOOSTER_BY_NAME, GO_BASS_FX_BY_NAME,
+  GO_BASS_DELAY_BY_NAME, GO_BASS_REVERB_BY_NAME,
 } from '../go/enums'
 import { templateSections } from '../go/template'
 import { type SectionMap, toTsl } from '../tsl'
 
-const GO_META = { formatRev: '0000', device: 'KATANA:GO_guitarmode', name: '', keyPrefix: 'PATCH%' }
-
 // Verified block byte offsets (docs/go-format-notes.md, go/param-table.json).
 const O = {
   com:     { name: 4 },                                              // 16 ASCII @4
+  other:   { chain: 0 },
   amp:     { gain: 0, level: 1, bass: 3, mid: 4, treble: 5, presence: 10, type: 12 },
   booster: { type: 0, drive: 1, tone: 3, level: 6 },                 // TONE centered (−50..50)
   delay:   { type: 0, time: 1, feedback: 5, level: 7 },              // time = 4 nibble-bytes @1..4
@@ -30,12 +36,36 @@ const O = {
   sw:      { booster: 0, mod: 1, fx: 2, delay: 3, delay2: 4, reverb: 5 },
 } as const
 
+/** Per-mode configuration for the shared builder. */
+interface ModeConfig {
+  device: string
+  amps: Map<string, number>
+  boosters: Map<string, number>
+  fx: Map<string, number>
+  delays: Map<string, number>
+  reverbs: Map<string, number>
+  /** Bass sets a mode-valid chain routing byte; guitar keeps the template's. */
+  chainByte?: number
+}
+
+const GUITAR: ModeConfig = {
+  device: 'KATANA:GO_guitarmode',
+  amps: GO_AMP_BY_NAME, boosters: GO_BOOSTER_BY_NAME, fx: GO_FX_BY_NAME,
+  delays: GO_DELAY_BY_NAME, reverbs: GO_REVERB_BY_NAME,
+}
+const BASS: ModeConfig = {
+  device: 'KATANA:GO_bassmode',
+  amps: GO_BASS_AMP_BY_NAME, boosters: GO_BASS_BOOSTER_BY_NAME, fx: GO_BASS_FX_BY_NAME,
+  delays: GO_BASS_DELAY_BY_NAME, reverbs: GO_BASS_REVERB_BY_NAME,
+  chainByte: 7, // first bass-mode chain (guitar chains are 0–6, bass 7–8)
+}
+
 const clamp = (v: number, lo: number, hi: number) => (v < lo ? lo : v > hi ? hi : Math.round(v))
 const knob = (v: number) => clamp(v, 0, 100)
 
-function enumByte(map: Map<string, number>, name: string, kind: string): number {
+function enumByte(map: Map<string, number>, name: string, kind: string, device: string): number {
   const v = map.get(name)
-  if (v === undefined) throw new Error(`unknown KATANA:GO ${kind}: "${name}"`)
+  if (v === undefined) throw new Error(`unknown ${device} ${kind}: "${name}"`)
   return v
 }
 
@@ -71,21 +101,22 @@ function putDelayTime(s: SectionMap, ms: number): void {
 
 /** Set one mod slot: type into FX(n) + the chain switch. Detail params stay at
  *  the template default (same limitation as Gen 3). */
-function writeFx(s: SectionMap, fxBlock: string, swOffset: number, fx: ModFx | undefined): void {
+function writeFx(s: SectionMap, cfg: ModeConfig, fxBlock: string, swOffset: number, fx: ModFx | undefined): void {
   if (!fx?.on) { put(s, 'SW', swOffset, 0); return }
   put(s, 'SW', swOffset, 1)
-  put(s, fxBlock, 0, enumByte(GO_FX_BY_NAME, fx.type, 'FX type'))
+  put(s, fxBlock, 0, enumByte(cfg.fx, fx.type, 'FX type', cfg.device))
 }
 
-/** Build the GO block map from tone intent, overlaid on the golden template. */
-export function buildGoSections(patch: TonePatch): SectionMap {
+/** Build the GO block map from tone intent for a given mode, overlaid on the
+ *  golden template (shared across modes — same block skeleton). */
+function buildGo(patch: TonePatch, cfg: ModeConfig): SectionMap {
   const s = templateSections()
 
-  // Patch name — 16 ASCII into PATCH%COM at offset 4.
   writeName(s, patch.name)
+  if (cfg.chainByte !== undefined) put(s, 'OTHER', O.other.chain, cfg.chainByte)
 
   // Amp (stored in-patch, unlike Air).
-  put(s, 'AMP', O.amp.type, enumByte(GO_AMP_BY_NAME, patch.ampA.type, 'amp type'))
+  put(s, 'AMP', O.amp.type, enumByte(cfg.amps, patch.ampA.type, 'amp type', cfg.device))
   put(s, 'AMP', O.amp.gain, knob(patch.ampA.gain))
   put(s, 'AMP', O.amp.level, knob(patch.ampA.level))
   put(s, 'AMP', O.amp.bass, knob(patch.ampA.bass))
@@ -93,24 +124,24 @@ export function buildGoSections(patch: TonePatch): SectionMap {
   put(s, 'AMP', O.amp.treble, knob(patch.ampA.treble))
   put(s, 'AMP', O.amp.presence, knob(patch.ampA.presence))
 
-  // Booster (chain slot 0).
+  // Booster / DRIVE (chain slot 0).
   put(s, 'SW', O.sw.booster, patch.booster.on ? 1 : 0)
   if (patch.booster.on) {
-    put(s, 'BOOSTER', O.booster.type, enumByte(GO_BOOSTER_BY_NAME, patch.booster.type, 'booster type'))
+    put(s, 'BOOSTER', O.booster.type, enumByte(cfg.boosters, patch.booster.type, 'booster type', cfg.device))
     put(s, 'BOOSTER', O.booster.drive, knob(patch.booster.drive))
-    put(s, 'BOOSTER', O.booster.tone, knob(patch.booster.tone))   // 0..100 → display −50..+50
+    put(s, 'BOOSTER', O.booster.tone, knob(patch.booster.tone))
     put(s, 'BOOSTER', O.booster.level, knob(patch.booster.level))
   }
 
   // Mod slots: fx1 → FX(1)/MOD, fx2 → FX(2)/FX.
-  writeFx(s, 'FX(1)', O.sw.mod, patch.fx1)
-  writeFx(s, 'FX(2)', O.sw.fx, patch.fx2)
+  writeFx(s, cfg, 'FX(1)', O.sw.mod, patch.fx1)
+  writeFx(s, cfg, 'FX(2)', O.sw.fx, patch.fx2)
 
   // Delay (chain slot 3); leave DELAY2 (slot 4) off.
   put(s, 'SW', O.sw.delay2, 0)
   put(s, 'SW', O.sw.delay, patch.delay.on ? 1 : 0)
   if (patch.delay.on) {
-    put(s, 'DELAY(1)', O.delay.type, enumByte(GO_DELAY_BY_NAME, patch.delay.type, 'delay type'))
+    put(s, 'DELAY(1)', O.delay.type, enumByte(cfg.delays, patch.delay.type, 'delay type', cfg.device))
     putDelayTime(s, patch.delay.timeMs)
     put(s, 'DELAY(1)', O.delay.feedback, knob(patch.delay.feedback))
     put(s, 'DELAY(1)', O.delay.level, knob(patch.delay.level))
@@ -119,7 +150,7 @@ export function buildGoSections(patch: TonePatch): SectionMap {
   // Reverb (chain slot 5). TIME is one byte with a −1 display offset; map s*10.
   put(s, 'SW', O.sw.reverb, patch.reverb.on ? 1 : 0)
   if (patch.reverb.on) {
-    put(s, 'REVERB', O.reverb.type, enumByte(GO_REVERB_BY_NAME, patch.reverb.type, 'reverb type'))
+    put(s, 'REVERB', O.reverb.type, enumByte(cfg.reverbs, patch.reverb.type, 'reverb type', cfg.device))
     put(s, 'REVERB', O.reverb.time, clamp(patch.reverb.timeS * 10, 1, 100) + O.reverb.timeOfs)
     put(s, 'REVERB', O.reverb.level, knob(patch.reverb.level))
   }
@@ -127,7 +158,22 @@ export function buildGoSections(patch: TonePatch): SectionMap {
   return s
 }
 
-/** Build the GO .tsl liveset object for one patch. */
+/** GO guitar-mode block map from tone intent. */
+export function buildGoSections(patch: TonePatch): SectionMap {
+  return buildGo(patch, GUITAR)
+}
+
+/** GO bass-mode block map from tone intent. */
+export function buildGoBassSections(patch: TonePatch): SectionMap {
+  return buildGo(patch, BASS)
+}
+
+/** GO guitar-mode .tsl liveset for one patch. */
 export function writeGoTsl(patch: TonePatch): object {
-  return toTsl(buildGoSections(patch), { ...GO_META, name: patch.name })
+  return toTsl(buildGoSections(patch), { formatRev: '0000', device: GUITAR.device, name: patch.name, keyPrefix: 'PATCH%' })
+}
+
+/** GO bass-mode .tsl liveset for one patch. */
+export function writeGoBassTsl(patch: TonePatch): object {
+  return toTsl(buildGoBassSections(patch), { formatRev: '0000', device: BASS.device, name: patch.name, keyPrefix: 'PATCH%' })
 }
