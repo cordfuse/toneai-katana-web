@@ -532,14 +532,6 @@ function SettingsPanel({
 
   const active = THEMES_LIVE.find(t => t.id === theme) ?? THEMES_LIVE[0]
   const activeDevice = KATANA_DEVICES.find(d => d.id === device) ?? KATANA_DEVICES[0]
-  // Group the flat device list by generation for the dropdown, preserving
-  // first-seen group order (MkII first — the v1 ground-truth target).
-  const DEVICE_GROUPS: { label: string; ids: KatanaDevice[] }[] = []
-  for (const d of KATANA_DEVICES) {
-    let g = DEVICE_GROUPS.find(x => x.label === d.group)
-    if (!g) { g = { label: d.group, ids: [] }; DEVICE_GROUPS.push(g) }
-    g.ids.push(d.id)
-  }
 
   return (
     <>
@@ -623,42 +615,35 @@ function SettingsPanel({
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setDeviceOpen(false)} />
                   <div className="absolute left-0 right-0 top-full z-20 mt-1 rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden max-h-[60vh] overflow-y-auto animate-dropdown origin-top">
-                    {DEVICE_GROUPS.map(group => (
-                      <div key={group.label}>
-                        <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-fg-4 bg-surface">{group.label}</p>
-                        {group.ids.map(id => {
-                          const d = KATANA_DEVICES.find(x => x.id === id)
-                          if (!d) return null
-                          const isActive = device === d.id
-                          // Non-MkII generations are listed but not yet selectable
-                          // — their writers aren't proven against real exports.
-                          if (!d.supported) {
-                            return (
-                              <div
-                                key={d.id}
-                                className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-fg-4 cursor-not-allowed select-none"
-                                title="Not yet supported — only KATANA MkII is available today"
-                              >
-                                <span className="flex-1 text-left">{d.label}</span>
-                                <span className="ml-1 shrink-0 rounded bg-white/5 px-1.5 py-0.5 text-[9px] uppercase tracking-wide text-fg-4">Soon</span>
-                              </div>
-                            )
-                          }
-                          return (
-                            <button
-                              key={d.id}
-                              onClick={() => { onDevice(d.id); setDeviceOpen(false) }}
-                              className={`flex w-full items-center gap-2.5 px-3 py-2 text-sm transition-colors ${
-                                isActive ? 'text-primary bg-primary/10' : 'text-fg-2 hover:bg-surface-3 hover:text-fg'
-                              }`}
-                            >
-                              <span className="flex-1 text-left">{d.label}</span>
-                              {isActive && <span className="ml-1 text-primary shrink-0">✓</span>}
-                            </button>
-                          )
-                        })}
-                      </div>
-                    ))}
+                    {KATANA_DEVICES.map(d => {
+                      const isActive = device === d.id
+                      // Non-MkII devices are listed but not yet selectable — their
+                      // writers aren't proven against real exports.
+                      if (!d.supported) {
+                        return (
+                          <div
+                            key={d.id}
+                            className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-fg-4 cursor-not-allowed select-none"
+                            title="Not yet supported — only KATANA MkII is available today"
+                          >
+                            <span className="flex-1 text-left">{d.label}</span>
+                            <span className="ml-1 shrink-0 rounded bg-white/5 px-1.5 py-0.5 text-[9px] uppercase tracking-wide text-fg-4">Soon</span>
+                          </div>
+                        )
+                      }
+                      return (
+                        <button
+                          key={d.id}
+                          onClick={() => { onDevice(d.id); setDeviceOpen(false) }}
+                          className={`flex w-full items-center gap-2.5 px-3 py-2 text-sm transition-colors ${
+                            isActive ? 'text-primary bg-primary/10' : 'text-fg-2 hover:bg-surface-3 hover:text-fg'
+                          }`}
+                        >
+                          <span className="flex-1 text-left">{d.label}</span>
+                          {isActive && <span className="ml-1 text-primary shrink-0">✓</span>}
+                        </button>
+                      )
+                    })}
                   </div>
                 </>
               )}

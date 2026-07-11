@@ -241,19 +241,23 @@ export function saveTheme(theme: Theme) {
 // lib/patch/generations.ts). Those differences are hardware (wattage, speaker,
 // Waza cab), not patch data, so a single "KATANA MkII" is the correct model.
 export type KatanaDevice =
-  | 'katana-mk1' | 'katana-mk2' | 'katana-mk3' | 'katana-go' | 'katana-go-bass'
-  | 'katana-go' | 'katana-go-bass'
+  | 'katana-mk1' | 'katana-mk2' | 'katana-mk3'
+  | 'katana-bass' | 'katana-go' | 'katana-go-bass'
 
 // `supported` gates what the user can actually select. Only MkII is proven
 // against real exports today; the other generations stay LISTED (so players see
 // their amp is on the roadmap) but are not selectable, and the picker shows a
 // note to that effect. Flip a row to true as each generation's writer is proven.
-export const KATANA_DEVICES: { id: KatanaDevice; label: string; group: string; supported: boolean }[] = [
-  { id: 'katana-mk2',     label: 'KATANA MkII',    group: 'MkII',     supported: true  },
-  { id: 'katana-mk3',     label: 'KATANA Gen 3',   group: 'Gen 3',    supported: false },
-  { id: 'katana-mk1',     label: 'KATANA MkI',     group: 'MkI',      supported: false },
-  { id: 'katana-go',      label: 'KATANA:GO',      group: 'Portable', supported: false },
-  { id: 'katana-go-bass', label: 'KATANA:GO Bass', group: 'Portable', supported: false },
+// Flat list — no group headers. Labels are self-describing, and grouping split
+// the two bass form factors (combo + GO) awkwardly. Supported device first,
+// then the guitar roadmap, then the bass pair.
+export const KATANA_DEVICES: { id: KatanaDevice; label: string; supported: boolean }[] = [
+  { id: 'katana-mk2',     label: 'KATANA MkII',     supported: true  },
+  { id: 'katana-mk3',     label: 'KATANA Gen 3',    supported: false },
+  { id: 'katana-mk1',     label: 'KATANA MkI',      supported: false },
+  { id: 'katana-go',      label: 'KATANA:GO',       supported: false },
+  { id: 'katana-bass',    label: 'KATANA-110 Bass', supported: false },
+  { id: 'katana-go-bass', label: 'KATANA:GO Bass',  supported: false },
 ]
 
 const DEVICE_KEY = 'katana_device'
