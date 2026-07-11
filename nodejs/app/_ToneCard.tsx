@@ -8,6 +8,8 @@
 import { useState } from 'react'
 import type { TonePatchResult } from '@/lib/types'
 import type { TonePatch } from '@/lib/patch/intent'
+import type { KatanaDevice } from '@/lib/storage'
+import { canConvert, convertTone, type ConvertNote } from '@/lib/patch'
 
 const DownloadIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -111,13 +113,51 @@ export function ToneCard({ tone, onOpen }: { tone: TonePatchResult; onOpen: () =
 
 // ─── detail modal ────────────────────────────────────────────────────────────
 
-export function ToneModal({ tone, onClose, onGoToChat }: { tone: TonePatchResult; onClose: () => void; onGoToChat?: () => void }) {
+export function ToneModal({ tone, onClose, onGoToChat, currentDevice, currentDeviceLabel }: {
+  tone: TonePatchResult
+  onClose: () => void
+  onGoToChat?: () => void
+  /** The player's currently-selected amp — enables "Convert to …" when it
+   *  differs from the tone's target device. */
+  currentDevice?: KatanaDevice
+  currentDeviceLabel?: string
+}) {
   const [settingsOpen, setSettingsOpen] = useState(true)
+  // A converted view of this tone (re-voiced for currentDevice), or null while
+  // showing the original. Downloads and the settings list follow `view`.
+  const [converted, setConverted] = useState<{ tone: TonePatchResult; notes: ConvertNote[] } | null>(null)
+  const view = converted?.tone ?? tone
+
+  // Offer conversion when the player's amp differs from the tone's target and
+  // both generations have a proven writer (canConvert). Hidden once converted.
+  const convertTarget =
+    !converted && currentDevice && currentDeviceLabel &&
+    tone.device !== currentDevice && canConvert(tone.device as KatanaDevice, currentDevice)
+      ? { device: currentDevice, label: currentDeviceLabel }
+      : null
+
+  const runConvert = () => {
+    if (!convertTarget) return
+    const r = convertTone(tone.patch, tone.device as KatanaDevice, convertTarget.device)
+    setConverted({
+      tone: {
+        ...tone,
+        patch: r.patch,
+        device: convertTarget.device,
+        deviceLabel: convertTarget.label,
+        tsl: r.tsl,
+        filename: r.filename,
+        experimental: false, // canConvert only permits verified target writers
+      },
+      notes: r.notes,
+    })
+  }
+
   // Only show blocks the tone actually uses. An empty FX/delay/reverb slot as an
   // "off" row is noise — FX1/FX2 are the Katana's two mod/FX slots, and the model
   // left them unloaded for this patch, not a failure to name anything.
-  const rows = patchRows(tone.patch).filter(r => r.on)
-  const offBlocks = patchRows(tone.patch).filter(r => !r.on).map(r => r.block)
+  const rows = patchRows(view.patch).filter(r => r.on)
+  const offBlocks = patchRows(view.patch).filter(r => !r.on).map(r => r.block)
   const subtitle = [tone.song, tone.artist].filter(Boolean).join(' — ')
 
   return (
@@ -141,11 +181,42 @@ export function ToneModal({ tone, onClose, onGoToChat }: { tone: TonePatchResult
           <div className="flex-1 overflow-y-auto p-5 space-y-4 min-h-0">
             {/* target + rig */}
             <div className="grid grid-cols-1 gap-2">
-              <Field label="Target device" value={tone.deviceLabel} />
+              <Field label="Target device" value={view.deviceLabel} />
               {tone.rig && <Field label="Guitar" value={tone.rig} />}
             </div>
 
-            {tone.experimental && (
+            {/* Convert affordance — the tone targets a different amp than the one
+                the player has selected. */}
+            {convertTarget && (
+              <button
+                onClick={runConvert}
+                className="flex w-full items-center justify-between gap-2 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-[11px] leading-snug text-primary hover:bg-primary/15 transition-colors"
+              >
+                <span>This tone targets {tone.deviceLabel}. Convert it for your {convertTarget.label}?</span>
+                <span className="shrink-0 font-medium">Convert →</span>
+              </button>
+            )}
+
+            {/* Converted banner — what was re-voiced, plus revert. */}
+            {converted && (
+              <div className="rounded-lg border border-primary/25 bg-primary/5 px-3 py-2 text-[11px] leading-snug text-fg-2">
+                <div className="flex items-center justify-between gap-2">
+                  <span>Converted from {tone.deviceLabel} to {view.deviceLabel}.</span>
+                  <button onClick={() => setConverted(null)} className="shrink-0 font-medium text-primary hover:underline">Revert</button>
+                </div>
+                {converted.notes.length > 0 && (
+                  <ul className="mt-1.5 space-y-0.5 text-fg-4">
+                    {converted.notes.map((n, i) => (
+                      <li key={i}>
+                        {n.field}: {n.from} {n.to ? `→ ${n.to}` : '→ removed (no equivalent)'}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+
+            {view.experimental && (
               <p className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-[11px] leading-snug text-amber-300/90">
                 Experimental layout. This patch is built from a derived MkII map and
                 hasn’t been validated against a factory export — import at your own risk.
@@ -195,7 +266,7 @@ export function ToneModal({ tone, onClose, onGoToChat }: { tone: TonePatchResult
           <div className="flex flex-col gap-2 border-t border-white/10 p-4 shrink-0">
             <div className="grid grid-cols-2 gap-2">
               <button
-                onClick={() => downloadTsl(tone)}
+                onClick={() => downloadTsl(view)}
                 className="flex items-center justify-center gap-2 rounded-xl bg-primary px-3 py-2.5 text-sm font-medium text-black hover:opacity-90 transition-opacity"
               >
                 <DownloadIcon /> Download .tsl

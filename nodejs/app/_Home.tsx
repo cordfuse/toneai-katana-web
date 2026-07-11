@@ -2607,6 +2607,8 @@ export default function Home({
       {openTone && (
         <ToneModal
           tone={openTone.tone}
+          currentDevice={device}
+          currentDeviceLabel={(KATANA_DEVICES.find(d => d.id === device) ?? KATANA_DEVICES[0]).label}
           onClose={() => setOpenTone(null)}
           onGoToChat={
             openTone.conversationId && openTone.conversationId !== activeId &&
