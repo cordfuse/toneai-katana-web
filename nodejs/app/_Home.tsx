@@ -296,7 +296,7 @@ const GITHUB_ICON_PATH = 'M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.83
 
 const WHATS_NEW: { version: string; items: { text: string; sub?: string }[] }[] = [
   {
-    version: '0.7.2',
+    version: '0.7.3',
     items: [
       { text: 'ToneAI Kat is here', sub: 'Describe a song, an artist, or just a vibe — and get a ready-to-import .tsl patch for your BOSS KATANA MkII, straight into BOSS Tone Studio.' },
       { text: 'Patches you can trust', sub: 'A deterministic writer builds every .tsl and round-trips it against a real KATANA MkII export — the AI picks the tone, it never hand-writes the file.' },
