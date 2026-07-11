@@ -300,7 +300,7 @@ export async function* runChatStream(
   const resolvedSearch = resolveSearch(!!options.webSearch, providerId)
   const tools = buildTools(resolvedSearch)
   // Offer the tone-design tool when the request carries tone context.
-  if (options.tone) tools[TONE_TOOL_NAME] = buildToneTool()
+  if (options.tone) tools[TONE_TOOL_NAME] = buildToneTool(options.tone.device)
 
   const result = streamText({
     model: p.createModel(model, options.apiKey),
