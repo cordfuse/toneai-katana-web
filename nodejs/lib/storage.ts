@@ -207,7 +207,16 @@ const VALID_THEMES = new Set<Theme>([
 export function getTheme(): Theme {
   if (typeof window === 'undefined') return DEFAULT_THEME
   const stored = localStorage.getItem(THEME_KEY) as Theme | null
-  return stored && VALID_THEMES.has(stored) ? stored : DEFAULT_THEME
+  if (stored && VALID_THEMES.has(stored)) return stored
+  // No saved preference: honor the operator's configured defaultTheme rather
+  // than a hard-coded fallback. The pre-hydration bootstrap in layout.tsx has
+  // already stamped that default onto <html data-theme> (from toneai.config
+  // .json). Reading it back keeps the client in sync with the bootstrap —
+  // otherwise React would override the configured default (e.g. oled) with
+  // DEFAULT_THEME on mount, reverting a fresh visitor to dark.
+  const bootstrapped = document.documentElement.getAttribute('data-theme') as Theme | null
+  if (bootstrapped && VALID_THEMES.has(bootstrapped)) return bootstrapped
+  return DEFAULT_THEME
 }
 
 export function saveTheme(theme: Theme) {
