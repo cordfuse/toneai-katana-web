@@ -35,6 +35,30 @@ MkII bytecode extraction.
   exact string written into the `.tsl` `device` field still needs pinning down
   (find where the liveset export sets it).
 
+## CONFIRMED from a real BTX export (2026-07-11)
+
+Ground-truth patch from BOSS Tone Exchange staged at gitignored
+`data/fixtures/gen3-tri-stereo-chorus.tsl` (third-party community patch, NOT
+redistributed, same policy as the MkII fixture). It pins the envelope:
+
+- **`.tsl` device string: `"KATANA Gen3"`** (exact spelling; the writer's mk3
+  `deviceString`). The `KATANA-50` / `KATANA-100` names in `model_info.js` are
+  UI model labels, not the liveset device field.
+- **`"formatRev": "0000"`** (MkII is `"0002"`).
+- Envelope shape identical to MkII: `{name, formatRev, device,
+  data:[[{memo:"", paramSet:{...}}]]}`; `paramSet` maps `PATCH%<BLOCK>` to an
+  array of hex-byte strings.
+- **80 blocks, 2649 bytes total.** Block families + byte lengths (per instance):
+  COM 16, OTHER 3, COLOR 5, PATCH_KNOB_READONLY 5, AMP 10, SW 6,
+  BOOSTER(1..3) 8, FX(1..6) 1, FX_DETAIL(1..6) 225, DELAY(1..6) 17,
+  REVERB(1..3) 13, SOLO_COM 2 / SOLO_EQ 10 / SOLO_DELAY 14,
+  CONTOUR_COM 1 / CONTOUR(1..3) 2, PEDALFX_COM 3 / PEDALFX 15,
+  EQ_EACH(1..2) 3, EQ_PEQ(1..2) 11, EQ_GE10(1..2) 11, NS 3, SENDRETURN 5,
+  and the ASSIGN / GAFC banks (ASSIGN_KNOBS 34, ASSIGN_EXPPDL_* , and
+  ASSIGN_GAFCEXPPDL1..3 _FUNC/_DETAIL 34/_MIN 49/_MAX 49 each ×2).
+- This real patch IS the golden template for `mk3` (round-trip target), the way
+  the real MkII liveset was for `mk2`.
+
 ## Still to extract (the build)
 
 1. Per-block byte offsets, sizes, and multi-byte encodings (from the JS model +
