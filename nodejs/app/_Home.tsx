@@ -12,7 +12,7 @@ import {
   getDefaultDevice, saveDefaultDevice, KATANA_DEVICES, type KatanaDevice,
   deviceInstrumentIssue, deviceInstrumentIssueMessage,
   getApiKey, saveApiKey,
-  getSelectedProvider, migrateModelPrefs,
+  getSelectedProvider, migrateLocalStorage,
   getCustomSystemPrompt, setCustomSystemPrompt,
   getTemperature, setTemperature,
   exportAll, importConversationsJson, resetAllData,
@@ -1518,6 +1518,12 @@ export default function Home({
       window.addEventListener('popstate', onPop)
     }
     // No cleanup needed — initialized.current guard prevents re-binding.
+
+    // Bring stored state up to date with this build BEFORE anything reads it,
+    // and outside the network path below — a migration must not be contingent
+    // on a fetch succeeding, or an offline user never gets migrated.
+    migrateLocalStorage()
+
     // Auth, then load providers. The provider list endpoint requires auth,
     // so we sequence rather than parallel.
     void (async () => {
@@ -1532,15 +1538,12 @@ export default function Home({
         setProviders(list)
         setFreeTierAvailable(features.freeTier !== false)
         // Resolve initial provider: stored choice (if still valid + available)
-        // → first available → first in list. Then resolve model the same way.
+        // → first available → first in list.
         const stored = getSelectedProvider()
         const storedIsValid = stored && list.some(p => p.id === stored && p.available)
         const firstAvailable = list.find(p => p.available)
         const chosen = storedIsValid ? stored! : (firstAvailable?.id ?? list[0]?.id ?? 'anthropic')
         setProviderState(chosen)
-        // Purge the legacy per-provider model pin left by builds that had a
-        // model picker. Nothing reads it now — the server owns the model.
-        migrateModelPrefs()
       } catch (e) {
         console.error('providers fetch failed:', e)
       }

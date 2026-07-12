@@ -407,15 +407,36 @@ export function setSelectedProvider(provider: string) {
 // tier it spends the operator's key, so letting the client choose would let a
 // caller bill an expensive model to us. The server ignores any `model` in the
 // request body (app/api/chat/route.ts); operators set TONEAI_MODEL.
+
+// ─── Stored-state migration ──────────────────────────────────────────────────
 //
-// Older builds shipped a model picker and left a `toneai_models` pin in
-// localStorage. Nothing reads it now, so purge it once rather than leave a
-// stale key that looks meaningful to whoever reads the storage next.
+// Browsers keep whatever the LAST build wrote, so a returning user arrives with
+// storage shaped by a version we no longer ship. This is the one place that
+// reconciles it. Called once on mount, before anything reads storage, and NOT
+// behind any network call — an offline user must migrate too.
+//
+// Every step must be idempotent (it runs on every load) and must never throw:
+// storage is not load-bearing, and a migration that breaks the app is worse
+// than a stale key.
+//
+// Keys deliberately left alone: `toneai_provider` (still valid — Anthropic),
+// `katana_device`, `toneai_gear`, `toneai_tones`, `toneai_conversations`
+// (unchanged schemas), `device_id` / `auth_token` (server-issued identity —
+// clearing them would orphan a user's quota identity for no reason).
+
+/** `toneai_models` — the per-provider model pin written by builds that had a
+ *  model picker. The picker is gone and the server owns the model, so the key
+ *  is dead. Purge it rather than leave something that looks meaningful to the
+ *  next person reading a user's storage. */
 const LEGACY_MODELS_KEY = 'toneai_models'
 
-export function migrateModelPrefs(): void {
+export function migrateLocalStorage(): void {
   if (typeof window === 'undefined') return
-  localStorage.removeItem(LEGACY_MODELS_KEY)
+  try {
+    localStorage.removeItem(LEGACY_MODELS_KEY)
+  } catch {
+    /* private mode / quota errors — never break boot over a migration */
+  }
 }
 
 // Web search is always on — it's core to tone accuracy, so there's no user
