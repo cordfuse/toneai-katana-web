@@ -114,3 +114,49 @@ export function blankPatch(name = 'Init Patch'): TonePatch {
     reverb: { on: false, type: 'Plate', timeS: 2, level: 40 },
   }
 }
+
+/**
+ * One-line, human-readable summary of what the model actually dialled.
+ *
+ * This is TELEMETRY, and it is the only record of the model's real output. The log
+ * used to store just the tone's NAME ("Rebel Rebel"), which tells you nothing about
+ * whether the patch behind it was any good. With this you can answer the questions
+ * that matter after a model change: is it reaching for the same amp every time? has
+ * it stopped using the delay? are the gain values sane, or is everything pinned at
+ * 100?
+ *
+ * Safe to log unconditionally: this is the MODEL's output, not the user's words.
+ * Unlike a prompt it carries nothing personal, so it is never withheld.
+ *
+ * Example:
+ *   Clean Twin g38 b44 m60 t72 p65 · OD Overdrive d52 t72 · FX1 Comp · Reverb Room 1.0s
+ */
+export function describePatch(p: TonePatch): string {
+  const parts: string[] = []
+
+  const amp = (a: AmpChannel) =>
+    `${a.type} g${a.gain} b${a.bass} m${a.middle} t${a.treble} p${a.presence}`
+  parts.push(amp(p.ampA))
+  if (p.ampB) parts.push(`+amp2 ${amp(p.ampB)}`)
+
+  // `on: false` is meaningful — "the model chose NOT to use a drive" is a finding,
+  // not an absence. Record it rather than dropping the block silently.
+  parts.push(p.booster.on
+    ? `OD ${p.booster.type} d${p.booster.drive} t${p.booster.tone}`
+    : 'OD off')
+
+  const fx = (f: ModFx | undefined, label: string) =>
+    !f ? null : f.on ? `${label} ${f.type}` : `${label} off`
+  const fx1 = fx(p.fx1, 'FX1'); if (fx1) parts.push(fx1)
+  const fx2 = fx(p.fx2, 'FX2'); if (fx2) parts.push(fx2)
+
+  parts.push(p.delay.on
+    ? `Delay ${p.delay.type} ${p.delay.timeMs}ms fb${p.delay.feedback}`
+    : 'Delay off')
+
+  parts.push(p.reverb.on
+    ? `Reverb ${p.reverb.type} ${p.reverb.timeS.toFixed(1)}s`
+    : 'Reverb off')
+
+  return parts.join(' · ')
+}

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getDeviceIdFromRequest } from '@/lib/server/jwt'
 import { checkAndIncrementQuota, refundQuota, FREE_DEVICE_DAILY_LIMIT, FREE_DAILY_LIMIT } from '@/lib/server/quota'
 import { scrubString } from '@/lib/log/scrub'
+import { describePatch, type TonePatch } from '@/lib/patch/intent'
 import {
   runChat, runChatStream, findProvider, isModelValidForProvider,
 } from '@/lib/server/ai-tools'
@@ -324,6 +325,11 @@ export async function POST(request: NextRequest) {
     // The buffer absorbs them; replay clients catch up via Last-Event-ID.
     void (async () => {
       let tone: string | undefined
+      // What the model actually DIALLED, not just what it called the tone. The log
+      // recorded only the name, which cannot tell you whether the patch behind it
+      // was any good — see describePatch().
+      let patch: string | undefined
+      let amp: string | undefined
       let chars = 0
       // Token usage for this request, filled by runChatStream's onUsage once the
       // run completes (see runOpts below). Logged on the chat.response line so
@@ -334,9 +340,20 @@ export async function POST(request: NextRequest) {
           messages, provider, model, systemPrompt,
           { ...runOpts, onUsage: u => { usage = u } },
         )) {
-          const e = event as { type?: string; content?: string; patch?: { name?: string }; name?: string }
+          const e = event as {
+            type?: string; content?: string; name?: string
+            patch?: TonePatch
+          }
           if (e?.type === 'delta' && typeof e.content === 'string') chars += e.content.length
-          if (e?.type === 'tone_patch') tone = e.patch?.name ?? e.name ?? tone
+          if (e?.type === 'tone_patch') {
+            tone = e.patch?.name ?? e.name ?? tone
+            // Record the settings themselves. Model output, not user input — no
+            // privacy weight, so never withheld (unlike the prompt).
+            if (e.patch) {
+              patch = describePatch(e.patch)
+              amp = e.patch.ampA?.type
+            }
+          }
           push(`data: ${JSON.stringify(event)}\n\n`)
         }
         push(`data: ${JSON.stringify({ type: 'done' })}\n\n`)
@@ -351,12 +368,18 @@ export async function POST(request: NextRequest) {
           ` out=${usage.outputTokens ?? '?'} prose=${chars}ch` +
           ` cacheR=${usage.cacheReadTokens ?? 0} cacheW=${usage.cacheWriteTokens ?? 0}` +
           ` searches=${usage.webSearches ?? 0}` +
-          ` est=$${usage.estUsd ?? '?'} ${keyOwner === 'user' ? '(their key)' : '(OURS)'}`,
+          ` est=$${usage.estUsd ?? '?'} ${keyOwner === 'user' ? '(their key)' : '(OURS)'}` +
+          (patch ? `\n[chat]   patch: ${tone ?? '?'} — ${patch}` : ''),
         )
         slog(deviceId, requestId, 'info', 'chat.response', tone ? `tone: ${tone}` : undefined, {
           ms: Date.now() - startedAt, chars, tone, stream: true,
           model, webSearch: wantWebSearch, byok: !!byokKey,
           keyOwner, modelPicker,
+          // The generated settings. `amp` is broken out as its own field because
+          // it's the one worth AGGREGATING on — "Haiku picked Clean Twin for 80% of
+          // requests" is the kind of quality regression that is invisible in a
+          // free-text blob.
+          amp, patch,
           // estUsd is in `usage`. It is a real cost either way — but WHOSE cost is
           // keyOwner, and any spend rollup must filter on it or it will bill us
           // for tones our users paid for themselves.

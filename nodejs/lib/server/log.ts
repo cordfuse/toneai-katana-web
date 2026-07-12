@@ -191,6 +191,10 @@ export interface AdminSummary {
   devices: number
   /** Model mix, by request count. */
   models: Record<string, number>
+  /** Amp mix across generated tones. THE quality signal: if one amp is 80% of the
+   *  output, the model has collapsed onto a favourite and the tones are getting
+   *  samey — a regression that is invisible in cost and latency numbers. */
+  amps: Record<string, number>
 }
 
 interface CtxShape {
@@ -199,13 +203,14 @@ interface CtxShape {
   blockedBy?: string
   model?: string
   tone?: string
+  amp?: string
 }
 
 export function summarizeLogs(sinceTs: number, untilTs: number): AdminSummary {
   const empty: AdminSummary = {
     sinceTs, untilTs, requests: 0, responses: 0, errors: 0,
     rejected: { total: 0, device: 0, global: 0, other: 0 },
-    estUsd: { ours: 0, theirs: 0 }, tones: 0, devices: 0, models: {},
+    estUsd: { ours: 0, theirs: 0 }, tones: 0, devices: 0, models: {}, amps: {},
   }
   if (!db) return empty
 
@@ -217,7 +222,13 @@ export function summarizeLogs(sinceTs: number, untilTs: number): AdminSummary {
       .all(sinceTs, untilTs) as unknown as { device_id: string; level: string; event: string; ctx: string | null }[]
 
     const devices = new Set<string>()
-    const out = { ...empty, rejected: { ...empty.rejected }, estUsd: { ...empty.estUsd }, models: {} as Record<string, number> }
+    const out = {
+      ...empty,
+      rejected: { ...empty.rejected },
+      estUsd: { ...empty.estUsd },
+      models: {} as Record<string, number>,
+      amps: {} as Record<string, number>,
+    }
 
     for (const r of rows) {
       devices.add(r.device_id)
@@ -230,6 +241,7 @@ export function summarizeLogs(sinceTs: number, untilTs: number): AdminSummary {
       } else if (r.event === 'chat.response') {
         out.responses++
         if (ctx.tone) out.tones++
+        if (ctx.amp) out.amps[ctx.amp] = (out.amps[ctx.amp] ?? 0) + 1
         // The cost is only OURS when the request ran on the server's key. A rollup
         // that ignores keyOwner bills the operator for tones BYOK users paid for
         // themselves — a BYOK Opus tone is ~$0.30 and would badly distort this.
