@@ -42,7 +42,7 @@ providers:
     # (2026-08-31) it costs ~25% more per unit of text than 4.6. Both support
     # the web-search tool's dynamic filtering, which is the lever that actually
     # governs this app's token bill. See docs/cost.md.
-    defaultModel: claude-sonnet-4-6
+    defaultModel: claude-haiku-4-5
     # OPERATOR options, not user options. The model is a server-side decision
     # (it spends the server's key on the free tier), so this list exists only to
     # validate TONEAI_MODEL — the client cannot choose from it. Opus is absent on

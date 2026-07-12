@@ -344,14 +344,52 @@ export async function* runChatStream(
   // measurement. One web_search tool-call = one billed search.
   let webSearches = 0
 
+  // PRE-TOOL NARRATION FILTER.
+  //
+  // The system prompt tells the model to say nothing before it calls a tool.
+  // Sonnet obeys; Haiku does not — it leaks its research notes ("Now I have
+  // enough background. Mick Ronson's tone centers on a Tone Bender...") and the
+  // real explanation then gets glued onto the end of that. Asking more firmly is
+  // not a fix: small models are unreliable at negative instructions, and the
+  // failure is user-visible.
+  //
+  // So don't ask — make it structurally impossible. Text emitted before the
+  // model COMMITS TO A PATCH is buffered, never streamed, and dropped once the
+  // patch arrives: by definition it was talking about a tone it had not chosen
+  // yet, which is exactly the narration we don't want.
+  //
+  // THE GATE IS THE TONE TOOL, NOT "the first tool call". Measured, 2026-07-12:
+  // Haiku leaks in the gap BETWEEN the web search and the tone call — it reports
+  // what it found, then designs. Gating on the first tool call opens the gate on
+  // the *search* and lets that second block straight through, which is the bug
+  // this comment exists to stop someone re-introducing.
+  //
+  // The buffer must be FLUSHED if the tone tool is never called: a plain
+  // conversational reply ("what does presence do?") produces text and no patch,
+  // and swallowing it would turn a good answer into an empty one. That flush is
+  // the safety property this whole filter hinges on.
+  const gateTool = options.tone ? TONE_TOOL_NAME : null
+  let gateOpen = false
+  let preface = ''
+
   for await (const chunk of result.fullStream) {
     switch (chunk.type) {
       case 'text-delta':
         // AI SDK v6 uses `text` on text-delta chunks.
-        if (chunk.text) yield { type: 'delta', content: chunk.text }
+        if (!chunk.text) break
+        // No tone context (a plain chat) — there is no patch to gate on, so
+        // stream normally.
+        if (gateOpen || !gateTool) yield { type: 'delta', content: chunk.text }
+        else preface += chunk.text
         break
 
       case 'tool-call': {
+        // The patch is committed: everything buffered so far was pre-design
+        // narration. Bin it, and let the real explanation through from here.
+        if (chunk.toolName === gateTool) {
+          gateOpen = true
+          preface = ''
+        }
         // The tone tool's call carries the whole patch as its input — build the
         // .tsl and surface it as a tone_patch event (the card). Skip the generic
         // tool_running hint for it; it's not a "searching…" affordance.
@@ -405,6 +443,10 @@ export async function* runChatStream(
         break
     }
   }
+
+  // The tone tool was never called, so the buffered text is not narration — it
+  // IS the answer (a question, a clarification, a refusal). Release it.
+  if (!gateOpen && preface) yield { type: 'delta', content: preface }
 
   // Token accounting, once the run is done. `totalUsage` — NOT `usage` — because
   // it sums every step: in a tool loop the accumulated search results are
