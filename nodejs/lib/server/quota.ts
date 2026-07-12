@@ -31,13 +31,16 @@
 
 import db from './db'
 
-/** The operator's daily budget ceiling, shared by everyone. */
-export const FREE_DAILY_LIMIT = parseInt(process.env.FREE_DAILY_LIMIT ?? '1000', 10)
+/** The operator's daily budget ceiling, shared by everyone. THIS NUMBER IS THE
+ *  BILL: a served request costs roughly $0.09 (measured — see lib/server/usage.ts),
+ *  so 50/day is about $4.50/day, ~$135/month worst case. It was 1000 by default,
+ *  which was a ~$90/day ceiling nobody had chosen. Change it deliberately. */
+export const FREE_DAILY_LIMIT = parseInt(process.env.FREE_DAILY_LIMIT ?? '50', 10)
 
 /** What one device may take from that pool per day. Enough to genuinely try the
- *  product (a few tones plus retries), small enough that the pool serves many
- *  people rather than one. */
-export const FREE_DEVICE_DAILY_LIMIT = parseInt(process.env.FREE_DEVICE_DAILY_LIMIT ?? '10', 10)
+ *  product (a few tones plus a retry), small enough that the pool serves ten
+ *  people a day rather than one. */
+export const FREE_DEVICE_DAILY_LIMIT = parseInt(process.env.FREE_DEVICE_DAILY_LIMIT ?? '5', 10)
 
 /** UTC date, `YYYY-MM-DD`. The quota resets at midnight UTC. */
 function today(): string {

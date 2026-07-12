@@ -157,8 +157,40 @@ interface AppSettings {
 
 | Mode | Key | Limit |
 |------|-----|-------|
-| **Free** | server's key | **1000 requests/day, global** — shared across all users |
-| **BYOK** | user's Anthropic key | unbounded; never touches the quota |
+| **Free** | server's key | **5 tones/device/day**, under a **50/day global pool** shared by everyone |
+| **BYOK** | user's Anthropic key | unbounded; never touches either counter |
+
+### The numbers are a budget, and they were measured
+
+A served request costs **~$0.09** — measured, not estimated (usage is now logged
+on every request; see `lib/server/usage.ts`). So the global pool IS the bill:
+50/day ≈ **$4.50/day, ~$135/month** at full draw.
+
+It defaulted to **1000/day** for months, which is a **~$90/day** ceiling nobody
+had chosen. That is how a $20 day happened.
+
+Where the ~$0.09 goes on a request that runs one web search:
+
+| | share |
+|---|---|
+| Cache writes (a 5-step tool loop re-caching a growing prefix) | ~34% |
+| Billed input (mostly search results, which bill as input tokens) | ~30% |
+| Output (the write-up) | ~20% |
+| The web-search fee itself ($10/1,000 searches) | ~11% |
+| Cache reads | ~5% |
+
+Two things to know before trying to "fix" this:
+
+- **The search payload is not optional, and the obvious remedy backfires.** Search
+  results bill as input tokens. The documented fix — the web-search tool's
+  *dynamic filtering* — was measured here and made it about **2x worse**: it runs
+  the search inside code execution, and that wrapper costs more than the filtering
+  saves when a request makes ~1 search. Don't re-run the experiment; the numbers
+  are in the comment in `lib/server/ai-tools.ts`.
+- **Both limits are needed; they do different jobs.** The global cap is the
+  BUDGET. The per-device cap is FAIRNESS — without it one visitor drains the whole
+  day, spending the budget *and* denying everyone else. `device_id` is a
+  client-generated UUID, so the device cap is a speed bump, not a wall.
 
 Consequences, in the order they'll bite:
 
@@ -193,13 +225,22 @@ overridden. The scaffold exposed both as per-conversation user settings; those
 chains lingered here as dead code — the client sent a `systemPrompt` the server
 never even read — and are now removed.
 
-### The global cap has a hole — it needs a per-device sub-cap
+### The per-device sub-cap — built (2026-07-12)
 
-A single global counter means **one script exhausts the day's budget for
-everyone**. The fork already inherits JWT device auth
-(`app/api/auth/device/route.ts`), so gate free-mode requests on a per-device
-daily sub-cap (e.g. 10/device/day) *underneath* the 1000 global ceiling. Without
-it, "free mode" is a denial-of-service switch that any visitor can flip.
+A single global counter meant **one script exhausted the day's budget for
+everyone** — "free mode" was a denial-of-service switch any visitor could flip.
+This sat unbuilt for months while the global limit was 1000.
+
+Free requests are now gated on a per-device daily cap (`FREE_DEVICE_DAILY_LIMIT`,
+default 5) *underneath* the global pool, keyed on the `device_id` from the
+inherited JWT device auth (`app/api/auth/device/route.ts`).
+
+The device cap is checked **first**, so a user who has had their share stops
+drawing on the pool — that is the entire point. If the device passes but the pool
+is dry, the device increment is rolled back: we refused the request, so it must
+not cost the user a slot. Both counters surface in the Usage modal (kebab →
+Usage), and the two refusals are worded differently — "you've used your share" and
+"the pool everyone shares is empty" are not the same message.
 
 ### The sibling's quota increment races — do not copy it verbatim
 
