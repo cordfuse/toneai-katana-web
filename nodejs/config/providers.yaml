@@ -43,8 +43,12 @@ providers:
     # the web-search tool's dynamic filtering, which is the lever that actually
     # governs this app's token bill. See docs/cost.md.
     defaultModel: claude-sonnet-4-6
+    # OPERATOR options, not user options. The model is a server-side decision
+    # (it spends the server's key on the free tier), so this list exists only to
+    # validate TONEAI_MODEL — the client cannot choose from it. Opus is absent on
+    # purpose: Sonnet is more than capable of tone design, and Opus costs 2.5x
+    # Sonnet 5 per token for no gain here. Don't re-add it.
     models:
-      - { id: claude-opus-4-8,   label: Claude Opus 4.8 }
-      - { id: claude-sonnet-5,   label: Claude Sonnet 5 }
       - { id: claude-sonnet-4-6, label: Claude Sonnet 4.6 }
+      - { id: claude-sonnet-5,   label: Claude Sonnet 5 }
       - { id: claude-haiku-4-5,  label: Claude Haiku 4.5 }

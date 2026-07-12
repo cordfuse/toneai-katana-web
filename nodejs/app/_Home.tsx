@@ -12,7 +12,7 @@ import {
   getDefaultDevice, saveDefaultDevice, KATANA_DEVICES, type KatanaDevice,
   deviceInstrumentIssue, deviceInstrumentIssueMessage,
   getApiKey, saveApiKey,
-  getSelectedProvider, setSelectedProvider, getSelectedModel, setSelectedModel, migrateModelPrefs,
+  getSelectedProvider, migrateModelPrefs,
   getCustomSystemPrompt, setCustomSystemPrompt,
   getTemperature, setTemperature,
   exportAll, importConversationsJson, resetAllData,
@@ -90,11 +90,6 @@ const BUILT_IN_THEME_GROUPS: { label: string; ids: Theme[] }[] = [
 ]
 
 const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION ?? '0.1.0'
-
-// Pre-hydration placeholder for the model picker only. The authoritative default
-// is the provider registry's defaultModel (config/providers.yaml), fetched from
-// /api/providers; this is what renders for the instant before that resolves.
-const DEFAULT_MODEL_ID = 'claude-sonnet-4-6'
 
 // Branding pulled from window.__TONEAI (injected by app/layout.tsx from
 // the runtime toneai.config.json read). All fields fall back to "ToneAI Kat"
@@ -1360,8 +1355,9 @@ export default function Home({
   const [provider, setProviderState] = useState<string>('anthropic')
   // Pre-hydration placeholder only; replaced by the provider's real defaultModel
   // (env-driven, Sonnet) once /api/providers resolves.
-  const [model, setModelState] = useState<string>(DEFAULT_MODEL_ID)
-  const [modelOpen, setModelOpen] = useState(false)
+  // NOTE: there is deliberately no `model` state. The model is a server-side
+  // decision (it spends the operator's key on the free tier) — the client
+  // neither picks it nor sends it. See app/api/chat/route.ts.
   // Live model list per provider id — populated lazily when the dropdown
   // opens. For local providers this is the actual installed-models list
   // returned by the local server's /v1/models endpoint.
@@ -1542,13 +1538,9 @@ export default function Home({
         const firstAvailable = list.find(p => p.available)
         const chosen = storedIsValid ? stored! : (firstAvailable?.id ?? list[0]?.id ?? 'anthropic')
         setProviderState(chosen)
-        const chosenInfo = list.find(p => p.id === chosen)
-        // Drop a stale model pin before reading it, so a registry default change
-        // reaches existing users instead of only new ones (see migrateModelPrefs).
+        // Purge the legacy per-provider model pin left by builds that had a
+        // model picker. Nothing reads it now — the server owns the model.
         migrateModelPrefs()
-        const storedModel = getSelectedModel(chosen)
-        const storedModelValid = storedModel && chosenInfo?.models.some(m => m.id === storedModel)
-        setModelState(storedModelValid ? storedModel! : (chosenInfo?.defaultModel ?? DEFAULT_MODEL_ID))
       } catch (e) {
         console.error('providers fetch failed:', e)
       }
@@ -1769,22 +1761,6 @@ export default function Home({
     if (!rig) { setPosition('auto'); return }
     setPosition(prev => (prev === 'auto' || positionsFor(rig).includes(prev) ? prev : 'auto'))
   }, [gear])
-
-  const handleProvider = useCallback((p: string) => {
-    setProviderState(p)
-    setSelectedProvider(p)
-    // Restore the user's last-used model for the new provider, else its default.
-    const info = providers.find(x => x.id === p)
-    if (!info) return
-    const stored = getSelectedModel(p)
-    const storedValid = stored && info.models.some(m => m.id === stored)
-    setModelState(storedValid ? stored! : info.defaultModel)
-  }, [providers])
-
-  const handleModel = useCallback((m: string) => {
-    setModelState(m)
-    setSelectedModel(provider, m)
-  }, [provider])
 
   // URL sync helper. Soft-update only (history.replaceState) — we never
   // re-mount Home for in-app navigation, only on hard refresh / shared
@@ -2050,7 +2026,7 @@ export default function Home({
         },
         abort.signal,
         {
-          provider, model, webSearch: true, apiKey,
+          provider, webSearch: true, apiKey,
           systemPrompt: customSystemPrompt ?? undefined,
           temperature: customTemperature ?? undefined,
           device,
@@ -2152,7 +2128,7 @@ export default function Home({
         setQuotaVersion(v => v + 1)
       }
     }
-  }, [activeId, conversations, provider, model, apiKey, customSystemPrompt, customTemperature, device, gear, position, buildWireMessages, updateUrl])
+  }, [activeId, conversations, provider, apiKey, customSystemPrompt, customTemperature, device, gear, position, buildWireMessages, updateUrl])
 
   // One-click starter prompts: skip the input field entirely, fire the
   // prompt as a user message immediately. Mirrors the empty-state chip

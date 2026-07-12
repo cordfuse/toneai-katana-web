@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json()
   const {
     messages, stream: wantStream,
-    provider: clientProvider, model: clientModel,
+    provider: clientProvider,   // note: `model` in the body is ignored on purpose (see below)
     webSearch,
     temperature: clientTemperature,
     device: clientDevice,
@@ -148,21 +148,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: `Unknown provider '${providerId}'` }, { status: 400 })
   }
 
-  // Model: when picker is hidden, ignore client choice. Otherwise prefer
-  // client → env default (if matches) → provider's defaultModel from registry.
-  let model: string
-  if (true && typeof clientModel === 'string') {
-    if (!isModelValidForProvider(providerId, clientModel)) {
-      return NextResponse.json({
-        error: `Model '${clientModel}' is not registered for provider '${providerId}'`,
-      }, { status: 400 })
-    }
-    model = clientModel
-  } else if (providerId === ENV_PROVIDER && isModelValidForProvider(providerId, ENV_MODEL)) {
-    model = ENV_MODEL
-  } else {
-    model = providerInfo.defaultModel
-  }
+  // Model: a SERVER decision, never the client's. On the free tier the model
+  // spends the operator's key, so a client-supplied `model` would let a caller
+  // pick an expensive one (Opus is 2.5x Sonnet per token) and bill it to us.
+  // The request body's `model` is therefore ignored outright — same rule the
+  // system prompt and tone schema already follow (docs/settings.md § Inference
+  // is server-side). Operators choose via TONEAI_MODEL; config/providers.yaml
+  // is the allow-list that validates it.
+  const model: string =
+    providerId === ENV_PROVIDER && isModelValidForProvider(providerId, ENV_MODEL)
+      ? ENV_MODEL
+      : providerInfo.defaultModel
 
   // Free mode needs the server's key. BYOK brings its own, so the server's
   // key being absent is not an error on that path. Keep the message generic —

@@ -393,7 +393,6 @@ export function saveApiKey(key: string | null) {
 // back to its registry default if anything's stale or unknown.
 
 const PROVIDER_KEY = 'toneai_provider'
-const MODELS_KEY = 'toneai_models'  // JSON map: { providerId: modelId }
 
 export function getSelectedProvider(): string | null {
   if (typeof window === 'undefined') return null
@@ -404,36 +403,19 @@ export function setSelectedProvider(provider: string) {
   localStorage.setItem(PROVIDER_KEY, provider)
 }
 
-function loadModelMap(): Record<string, string> {
-  if (typeof window === 'undefined') return {}
-  try { return JSON.parse(localStorage.getItem(MODELS_KEY) ?? '{}') } catch { return {} }
-}
-
-export function getSelectedModel(provider: string): string | null {
-  return loadModelMap()[provider] ?? null
-}
-
-export function setSelectedModel(provider: string, model: string) {
-  const map = loadModelMap()
-  map[provider] = model
-  localStorage.setItem(MODELS_KEY, JSON.stringify(map))
-}
-
-// A stored model pin outlives a change to the registry default: an existing
-// user who was on Sonnet 5 keeps sending Sonnet 5 forever, because it's still
-// a valid id. That silently exempts precisely the people already using the app
-// from a default chosen on cost grounds. This clears the pin ONCE per marker
-// value so everyone lands back on the registry default; bump MODELS_RESET when
-// a future default change needs the same treatment. A user who re-picks a model
-// afterwards keeps it — this resets the stale pin, it doesn't remove the choice.
-const MODELS_RESET_KEY = 'toneai_models_reset'
-const MODELS_RESET = '2026-07-12-sonnet-4-6'
+// There is no model preference. The model is a SERVER decision — on the free
+// tier it spends the operator's key, so letting the client choose would let a
+// caller bill an expensive model to us. The server ignores any `model` in the
+// request body (app/api/chat/route.ts); operators set TONEAI_MODEL.
+//
+// Older builds shipped a model picker and left a `toneai_models` pin in
+// localStorage. Nothing reads it now, so purge it once rather than leave a
+// stale key that looks meaningful to whoever reads the storage next.
+const LEGACY_MODELS_KEY = 'toneai_models'
 
 export function migrateModelPrefs(): void {
   if (typeof window === 'undefined') return
-  if (localStorage.getItem(MODELS_RESET_KEY) === MODELS_RESET) return
-  localStorage.removeItem(MODELS_KEY)
-  localStorage.setItem(MODELS_RESET_KEY, MODELS_RESET)
+  localStorage.removeItem(LEGACY_MODELS_KEY)
 }
 
 // Web search is always on — it's core to tone accuracy, so there's no user
