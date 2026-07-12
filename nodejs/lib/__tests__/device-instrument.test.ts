@@ -35,9 +35,10 @@ test('no device selected is always an error, regardless of gear', () => {
   assert.deepEqual(deviceInstrumentIssue(null, undefined), { code: 'no-device' })
 })
 
-test('unsupported (roadmap) device is treated as no-device', () => {
-  // katana-mk1 is listed but not supported yet.
-  assert.deepEqual(deviceInstrumentIssue('katana-mk1', 'guitar'), { code: 'no-device' })
+test('unknown / unsupported device is treated as no-device', () => {
+  // Every listed device is supported now; an id not in the supported set (a stale
+  // or hand-edited value) must still be rejected rather than silently defaulted.
+  assert.deepEqual(deviceInstrumentIssue('katana-nonexistent' as any, 'guitar'), { code: 'no-device' })
 })
 
 test('messages are actionable and distinct per issue', () => {

@@ -32,6 +32,12 @@ export interface DeviceVocab {
   reverbs: readonly string[]
 }
 
+// MkI and MkII share the same amp/effect NAME set (lib/patch/enums.ts) — the
+// original KATANA vocabulary. They differ in byte layout, not the words the
+// model may choose, so both point at the same name lists.
+const MK1_VOCAB: DeviceVocab = {
+  amps: AMP_NAMES, boosters: OD_DS_NAMES, fx: FX_NAMES, delays: DELAY_NAMES, reverbs: REVERB_NAMES,
+}
 const MK2_VOCAB: DeviceVocab = {
   amps: AMP_NAMES, boosters: OD_DS_NAMES, fx: FX_NAMES, delays: DELAY_NAMES, reverbs: REVERB_NAMES,
 }
@@ -65,6 +71,7 @@ const BASS_VOCAB: DeviceVocab = {
 // Generations with a writer + vocabulary. Others fall back to MkII's (they're
 // gated from emitting anyway by the confidence guard in index.ts).
 const BY_GENERATION: Partial<Record<Generation, DeviceVocab>> = {
+  mk1: MK1_VOCAB,
   mk2: MK2_VOCAB,
   mk3: MK3_VOCAB,
   air: AIR_VOCAB,

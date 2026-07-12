@@ -48,7 +48,11 @@ export const GENERATIONS: Record<Generation, GenerationProfile> = {
     fileExt: '.kat',
     selectorIndex: 1,
     confidence: 'verified',
-    addressing: 'raw addr f5439j → file offset z.c(f5439j); flat 2797-byte image',
+    // Two deliverables: the flat 2797-byte .kat single-patch image (writers/mk1.ts,
+    // proven vs 20 factory samples) AND the "GT" liveset (writers/mk1-liveset.ts) —
+    // a named-parameter JSON, NOT the byte-section .tsl the other gens use — cloned
+    // from a real export and round-tripped byte-clean (docs/mk1-format-notes.md).
+    addressing: 'flat 2797-byte .kat image (raw addr → z.c(addr)) + "GT" named-param liveset, verified vs data/fixtures/ MkI export',
   },
   mk2: {
     id: 'mk2',

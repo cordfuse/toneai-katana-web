@@ -22,6 +22,7 @@ import { writeMk3Tsl } from './writers/mk3'
 import { writeAirTsl } from './writers/air'
 import { writeGoTsl, writeGoBassTsl } from './writers/go'
 import { writeBassTsl } from './writers/bass'
+import { writeMk1Tsl } from './writers/mk1-liveset'
 
 // MkI registers its flat-image writer as a side effect.
 import './writers/mk1'
@@ -40,6 +41,7 @@ export { buildMk3Sections, writeMk3Tsl } from './writers/mk3'
 export { buildAirSections, writeAirTsl, airAmpSettings, type AirAmpSettings } from './writers/air'
 export { buildGoSections, writeGoTsl, buildGoBassSections, writeGoBassTsl } from './writers/go'
 export { buildBassSections, writeBassTsl } from './writers/bass'
+export { buildMk1Patch, writeMk1Tsl } from './writers/mk1-liveset'
 export {
   type ConvertNote, type ConvertedIntent, type ConvertedTone,
   canConvert, convertIntent, convertTone,
@@ -70,13 +72,14 @@ export function writePatchTsl(
       throw new LayoutNotExtractedError(generation)
   }
 
+  if (generation === 'mk1') return writeMk1Tsl(patch)
   if (generation === 'mk2') return writeMk2Tsl(patch)
   if (generation === 'mk3') return writeMk3Tsl(patch)
   if (generation === 'air') return writeAirTsl(patch)
   if (generation === 'go') return writeGoTsl(patch)
   if (generation === 'gobass') return writeGoBassTsl(patch)
   if (generation === 'basshead') return writeBassTsl(patch)
-  // MkI's deliverable path is the .kat flat image (writePatchImage); a MkI .tsl
-  // wrapper isn't built yet. GO is guarded out above (unextracted).
+  // MkI also has a flat .kat single-patch path (writePatchImage); writeMk1Tsl
+  // above emits its "GT" liveset for parity with the other devices' downloads.
   throw new LayoutNotExtractedError(generation)
 }

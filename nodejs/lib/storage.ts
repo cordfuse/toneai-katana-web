@@ -271,7 +271,7 @@ export const KATANA_DEVICES: { id: KatanaDevice; label: string; instrument: Kata
   { id: 'katana-go',      label: 'KATANA:GO',       instrument: 'guitar', supported: true  },
   { id: 'katana-go-bass', label: 'KATANA:GO Bass',  instrument: 'bass',   supported: true  },
   { id: 'katana-bass',    label: 'KATANA Bass',     instrument: 'bass',   supported: true  },
-  { id: 'katana-mk1',     label: 'KATANA MkI',      instrument: 'guitar', supported: false },
+  { id: 'katana-mk1',     label: 'KATANA MkI',      instrument: 'guitar', supported: true  },
 ]
 
 const DEVICE_INSTRUMENT = new Map<KatanaDevice, KatanaInstrument>(
