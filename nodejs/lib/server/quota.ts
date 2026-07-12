@@ -31,15 +31,59 @@
 
 import db from './db'
 
+/** No cap at all. Only reachable by writing the WORD `unlimited`. */
+export const UNLIMITED = Number.POSITIVE_INFINITY
+
+/**
+ * Read a limit from the environment.
+ *
+ *   "unlimited"  → no cap. Self-hosters run this on their own key, and telling
+ *                  them to type `1000` when they mean "no limit" is silly.
+ *   0            → NO free requests at all. BYOK-only. A real, useful setting.
+ *   n            → n requests per day.
+ *
+ * ZERO DOES NOT MEAN UNLIMITED, and that is a deliberate refusal.
+ *
+ * `0` is the natural way to write "none". An operator who wants to switch the free
+ * tier OFF — because they only want BYOK — will type `0` and expect zero. If `0`
+ * meant "unlimited" they would get the exact inverse of their intent: an unbounded
+ * bill on their own key, with nothing in the UI to reveal it. A stray zero, an
+ * empty field in a dashboard, a bad copy-paste — all silently uncap the spend.
+ *
+ * Every other guard in this app fails CLOSED. This one must too. `unlimited` cannot
+ * be typed by accident and cannot be confused with "none", which is exactly why it
+ * is a word and not a number.
+ *
+ * An unparseable value falls back to the default rather than becoming NaN — a NaN
+ * limit makes every comparison false, which silently blocks ALL free traffic.
+ */
+function parseLimit(raw: string | undefined, fallback: number, name: string): number {
+  const v = raw?.trim()
+  if (!v) return fallback
+  if (v.toLowerCase() === 'unlimited') return UNLIMITED
+
+  const n = Number(v)
+  if (!Number.isInteger(n) || n < 0) {
+    console.warn(
+      `[quota] ${name}="${raw}" is not a whole number >= 0 or the word "unlimited" — ` +
+      `falling back to ${fallback}.`,
+    )
+    return fallback
+  }
+  return n
+}
+
 /** The operator's daily budget ceiling, shared by everyone. THIS NUMBER IS THE
- *  BILL: a served tone costs roughly $0.03 (measured on Haiku 4.5 — see
- *  lib/server/usage.ts), so 100/day is about $3/day, ~$90/month worst case, and
- *  only if the pool is drained every single day.
+ *  BILL: a served tone costs roughly $0.035 (measured in production on Haiku 4.5 —
+ *  see lib/server/usage.ts), so 100/day is about $3.50/day, ~$105/month worst case,
+ *  and only if the pool is drained every single day.
  *
  *  It was 1000 by default — a ceiling nobody had chosen, which at the old model's
- *  ~$0.09/tone was ~$90 PER DAY. Change this deliberately: it is the only thing
- *  bounding what a day can cost. */
-export const FREE_DAILY_LIMIT = parseInt(process.env.FREE_DAILY_LIMIT ?? '100', 10)
+ *  ~$0.10/tone was ~$100 PER DAY. Change this deliberately: it is the only thing
+ *  bounding what a day can cost. `unlimited` removes the bound entirely, which is
+ *  reasonable when it is your own key and your own instance, and reckless when it
+ *  is not. */
+export const FREE_DAILY_LIMIT = parseLimit(process.env.FREE_DAILY_LIMIT, 100, 'FREE_DAILY_LIMIT')
 
 /** What one device may take from that pool per day. Deliberately 10% of the pool:
  *  generous enough to genuinely try the product (several tones plus retries),
@@ -48,7 +92,14 @@ export const FREE_DAILY_LIMIT = parseInt(process.env.FREE_DAILY_LIMIT ?? '100', 
  *  Keep the RATIO if you change either number — 10-of-100 and 5-of-50 are the same
  *  fairness guarantee, and it is the ratio, not the absolute, that decides how
  *  many people a full pool can serve. */
-export const FREE_DEVICE_DAILY_LIMIT = parseInt(process.env.FREE_DEVICE_DAILY_LIMIT ?? '10', 10)
+export const FREE_DEVICE_DAILY_LIMIT = parseLimit(
+  process.env.FREE_DEVICE_DAILY_LIMIT, 10, 'FREE_DEVICE_DAILY_LIMIT',
+)
+
+/** SQLite cannot bind Infinity. Where a limit becomes a SQL bound, send the largest
+ *  integer instead — semantically identical at any traffic a day can produce. */
+const sqlBound = (limit: number): number =>
+  Number.isFinite(limit) ? limit : Number.MAX_SAFE_INTEGER
 
 /** UTC date, `YYYY-MM-DD`. The quota resets at midnight UTC. */
 function today(): string {
@@ -64,17 +115,34 @@ export interface QuotaResult {
   allowed: boolean
   /** Set only when allowed === false. */
   blockedBy?: QuotaBlock
-  /** Remaining for THIS device after this call. */
-  deviceRemaining: number
-  /** Remaining in the shared pool after this call. */
-  globalRemaining: number
+  /** Remaining for THIS device after this call. `null` = unlimited. */
+  deviceRemaining: number | null
+  /** Remaining in the shared pool after this call. `null` = unlimited. */
+  globalRemaining: number | null
 }
 
 interface CountRow { count: number }
 
+/** One counter as the API reports it.
+ *
+ *  `limit: null` means UNLIMITED — and null, not Infinity, because
+ *  `JSON.stringify(Infinity)` is `null` anyway. Making that explicit stops the
+ *  client from having to guess what a null it never expected was supposed to mean.
+ *  `remaining` is null for the same reason: there is no meaningful count-down. */
+export interface QuotaCounter {
+  remaining: number | null
+  limit: number | null
+}
+
 export interface QuotaView {
-  device: { remaining: number; limit: number }
-  global: { remaining: number; limit: number }
+  device: QuotaCounter
+  global: QuotaCounter
+}
+
+/** Shape one counter for the wire, collapsing an infinite limit to nulls. */
+function counter(limit: number, used: number): QuotaCounter {
+  if (!Number.isFinite(limit)) return { remaining: null, limit: null }
+  return { remaining: Math.max(0, limit - used), limit }
 }
 
 /** Read both counters without consuming anything. Backs `GET /api/quota`.
@@ -96,14 +164,8 @@ export function readQuota(deviceId?: string): QuotaView {
   }
 
   return {
-    device: {
-      remaining: Math.max(0, FREE_DEVICE_DAILY_LIMIT - deviceCount),
-      limit: FREE_DEVICE_DAILY_LIMIT,
-    },
-    global: {
-      remaining: Math.max(0, FREE_DAILY_LIMIT - (g?.count ?? 0)),
-      limit: FREE_DAILY_LIMIT,
-    },
+    device: counter(FREE_DEVICE_DAILY_LIMIT, deviceCount),
+    global: counter(FREE_DAILY_LIMIT, g?.count ?? 0),
   }
 }
 
@@ -120,6 +182,19 @@ export function readQuota(deviceId?: string): QuotaView {
 export function checkAndIncrementQuota(deviceId: string): QuotaResult {
   const date = today()
 
+  // A zero limit is a HARD OFF, not a degenerate number. Short-circuit before
+  // touching the DB: `count < 0` could never pass anyway, but saying it out loud
+  // keeps "the operator switched the free tier off" from looking like "the pool
+  // happens to be empty today".
+  if (FREE_DEVICE_DAILY_LIMIT === 0 || FREE_DAILY_LIMIT === 0) {
+    return {
+      allowed: false,
+      blockedBy: FREE_DEVICE_DAILY_LIMIT === 0 ? 'device' : 'global',
+      deviceRemaining: 0,
+      globalRemaining: 0,
+    }
+  }
+
   db.prepare('INSERT OR IGNORE INTO daily_quota_device (date, device_id, count) VALUES (?, ?, 0)')
     .run(date, deviceId)
   const deviceRow = db
@@ -128,7 +203,7 @@ export function checkAndIncrementQuota(deviceId: string): QuotaResult {
         WHERE date = ? AND device_id = ? AND count < ?
         RETURNING count`,
     )
-    .get(date, deviceId, FREE_DEVICE_DAILY_LIMIT) as unknown as CountRow | undefined
+    .get(date, deviceId, sqlBound(FREE_DEVICE_DAILY_LIMIT)) as unknown as CountRow | undefined
 
   if (!deviceRow) {
     const view = readQuota(deviceId)
@@ -147,7 +222,7 @@ export function checkAndIncrementQuota(deviceId: string): QuotaResult {
         WHERE date = ? AND count < ?
         RETURNING count`,
     )
-    .get(date, FREE_DAILY_LIMIT) as unknown as CountRow | undefined
+    .get(date, sqlBound(FREE_DAILY_LIMIT)) as unknown as CountRow | undefined
 
   if (!globalRow) {
     // Pool is dry. Hand the device its slot back — it never got served, so it
@@ -156,15 +231,15 @@ export function checkAndIncrementQuota(deviceId: string): QuotaResult {
     return {
       allowed: false,
       blockedBy: 'global',
-      deviceRemaining: Math.max(0, FREE_DEVICE_DAILY_LIMIT - (deviceRow.count - 1)),
+      deviceRemaining: counter(FREE_DEVICE_DAILY_LIMIT, deviceRow.count - 1).remaining,
       globalRemaining: 0,
     }
   }
 
   return {
     allowed: true,
-    deviceRemaining: Math.max(0, FREE_DEVICE_DAILY_LIMIT - deviceRow.count),
-    globalRemaining: Math.max(0, FREE_DAILY_LIMIT - globalRow.count),
+    deviceRemaining: counter(FREE_DEVICE_DAILY_LIMIT, deviceRow.count).remaining,
+    globalRemaining: counter(FREE_DAILY_LIMIT, globalRow.count).remaining,
   }
 }
 

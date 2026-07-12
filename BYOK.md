@@ -195,6 +195,8 @@ docker run -d \
   -p 3008:3000 \
   -e ANTHROPIC_API_KEY=sk-ant-... \
   -e JWT_SECRET="$(openssl rand -base64 32)" \
+  -e FREE_DAILY_LIMIT=unlimited \
+  -e FREE_DEVICE_DAILY_LIMIT=unlimited \
   -v toneai-kat-data:/app/data \
   ghcr.io/cordfuse/toneai-katana-web:latest
 ```
@@ -207,6 +209,7 @@ What those lines do:
 |---|---|
 | `ANTHROPIC_API_KEY` | your key — the server uses it for every tone |
 | `JWT_SECRET` | signs your browser's device token; any long random string |
+| `FREE_*_LIMIT=unlimited` | removes the daily caps. The hosted app needs them to bound *its* bill; on your own instance it's your key either way. Leave them out and you'd cap yourself at 10 tones a day |
 | `-v toneai-kat-data:/app/data` | keeps the small database (auth, quota, logs) across restarts. Drop it and you start fresh every time |
 | `-p 3008:3000` | change `3008` if that port is taken |
 
@@ -262,10 +265,14 @@ is optional:
 #   claude-haiku-4-5 · claude-sonnet-4-6 · claude-sonnet-5 · claude-opus-4-8
 TONEAI_MODEL=claude-sonnet-4-6
 
-# Free-tier limits. On your own instance you are the only user and it is your key
-# either way, so raise them — the hosted app uses 100 and 10 to bound its bill.
-FREE_DAILY_LIMIT=1000
-FREE_DEVICE_DAILY_LIMIT=1000
+# Daily limits. On your own instance you are the only user and it is your own key
+# either way, so you probably want no limit at all:
+FREE_DAILY_LIMIT=unlimited
+FREE_DEVICE_DAILY_LIMIT=unlimited
+
+# Careful: 0 does NOT mean unlimited — it means NO free requests at all (which is
+# a real setting: it makes the instance BYOK-only). If you want no cap, write the
+# word `unlimited`. The hosted app uses 100 and 10 to bound its bill.
 
 # How many web searches the model may run per tone (1–10). Raise it if tones for
 # obscure material feel under-researched — it is the setting most likely to be
@@ -275,9 +282,10 @@ FREE_DEVICE_DAILY_LIMIT=1000
 TONEAI_WEB_SEARCH_MAX_USES=2
 ```
 
-**On your own instance the quota is still active**, and it counts against *your*
-key — that's what the two `FREE_*` lines above are for. Raise them or you'll cap
-yourself at 10 tones a day.
+**On your own instance the quota is still active by default**, and it counts against
+*your* key — so without the two `FREE_*` lines above you'd cap yourself at 10 tones
+a day on your own hardware. Set them to `unlimited` and the limits disappear
+entirely; the Usage panel will simply say so.
 
 ---
 

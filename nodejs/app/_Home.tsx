@@ -528,6 +528,10 @@ function UsageModal({
   // anything down at them would be a lie.
   const byok = !!apiKey
 
+  // Both limits set to `unlimited` — a self-hosted instance. `limit: null` is the
+  // server saying "there is no cap", so there is nothing to render a bar for.
+  const uncapped = !!quota && quota.device.limit === null && quota.global.limit === null
+
   const Bar = ({ remaining, limit }: { remaining: number; limit: number }) => {
     const pct = limit > 0 ? Math.max(0, Math.min(100, (remaining / limit) * 100)) : 0
     const empty = remaining === 0
@@ -549,8 +553,23 @@ function UsageModal({
   }: {
     label: string
     hint: string
-    counter: { remaining: number; limit: number }
+    counter: { remaining: number | null; limit: number | null }
   }) => {
+    // null = the operator set this limit to `unlimited` (only meaningful on a
+    // self-hosted instance). There is nothing to count down and no bar to fill —
+    // drawing an empty or full one would be a lie either way.
+    if (counter.limit === null || counter.remaining === null) {
+      return (
+        <div>
+          <div className="flex items-baseline justify-between gap-3">
+            <span className="text-sm text-fg">{label}</span>
+            <span className="text-sm text-fg-3">{t('usage.unlimited', 'Unlimited')}</span>
+          </div>
+          <p className="mt-1.5 text-[11px] leading-relaxed text-fg-4">{hint}</p>
+        </div>
+      )
+    }
+
     const remaining = Math.max(0, counter.remaining - optimistic)
     return (
       <div>
@@ -595,6 +614,15 @@ function UsageModal({
           <p className="text-sm text-fg-3">{t('usage.failed', "Couldn't load your usage. Try again in a moment.")}</p>
         ) : !quota ? (
           <p className="text-sm text-fg-4">{t('usage.loading', 'Loading…')}</p>
+        ) : uncapped ? (
+          // A self-hosted instance with no limits set. Everything below — the
+          // countdown, the midnight reset, "add a key for unlimited use" — is
+          // meaningless here, and printing it anyway is how a UI starts lying.
+          <p className="text-sm leading-relaxed text-fg-3">
+            {t('usage.uncapped',
+              'This instance has no daily limits — generate as many tones as you like. ' +
+              'Every one is billed to whichever Anthropic key the server is running on.')}
+          </p>
         ) : (
           <div className="space-y-4">
             <Row

@@ -100,8 +100,11 @@ export async function getProviders(): Promise<ProvidersResponse> {
 // ─── Free-tier quota ─────────────────────────────────────────────────────────
 
 export interface QuotaCounter {
-  remaining: number
-  limit: number
+  /** `null` = unlimited. There is nothing to count down. */
+  remaining: number | null
+  /** `null` = unlimited (the operator set the limit to `unlimited`; only reachable
+   *  on a self-hosted instance, where the operator's key is also the user's). */
+  limit: number | null
 }
 
 export interface QuotaResult {

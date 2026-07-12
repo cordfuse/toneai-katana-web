@@ -169,8 +169,14 @@ platform-managed deploy (e.g. Render), set **Dockerfile Path** to
 |---|---|---|---|
 | `JWT_SECRET` | **yes** | — | Signs device tokens. `openssl rand -base64 32` |
 | `ANTHROPIC_API_KEY` | for free tier | — | Powers the shared free daily quota. Unset = BYOK only |
-| `FREE_DAILY_LIMIT` | no | `100` | Global daily free-tier ceiling, shared by everyone — **this is the budget cap**. A served tone costs ~$0.03, so 100/day ≈ $3/day. Resets midnight UTC |
-| `FREE_DEVICE_DAILY_LIMIT` | no | `10` | What one device may take from that pool per day — the fairness cap, so one visitor can't drain the day for everyone. Kept at 10% of the pool |
+| `FREE_DAILY_LIMIT` | no | `100` | Global daily free-tier ceiling, shared by everyone — **this is the budget cap**. A served tone costs ~$0.035, so 100/day ≈ $3.50/day. Resets midnight UTC. `unlimited` = no cap; `0` = no free tier (BYOK only) |
+| `FREE_DEVICE_DAILY_LIMIT` | no | `10` | What one device may take from that pool per day — the fairness cap, so one visitor can't drain the day for everyone. Kept at 10% of the pool. Same `unlimited` / `0` values |
+
+> **`0` means NO free requests. It does not mean unlimited.** Write the word
+> `unlimited` for that. `0` is how you'd naturally express "none" — an operator
+> switching the free tier off types `0` and must get zero, not an unbounded bill.
+> Every guard here fails closed; a sentinel you can hit by accident wouldn't.
+> `unlimited` is a word precisely because a word can't be typed by mistake.
 | `TONEAI_WEB_SEARCH_MAX_USES` | no | `2` | Max web searches per response (clamped 1–10). Search always-on; this is the per-request cost cap |
 | `QUOTA_RESET_DATE` | no | — | One-shot goodwill reset. Set to **today's UTC date** (`YYYY-MM-DD`) and redeploy: today's global + per-device counters are zeroed once, at boot. **Self-disarms at midnight UTC** — a stale value is inert. It's a date rather than a flag because a flag would re-fire on every restart and silently remove your daily cap |
 | `TONEAI_MODEL` | no | `claude-haiku-4-5` | Free-tier tone-design model. Operator-only — a free-tier client cannot pick a model (it spends this key). **BYOK users can**, from the `config/providers.yaml` allow-list, since their own key pays |

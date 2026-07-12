@@ -21,8 +21,8 @@ test('a consumed slot comes off BOTH the device allowance and the shared pool', 
   assert.equal(r.allowed, true)
 
   const after = readQuota(dev)
-  assert.equal(after.device.remaining, before.device.remaining - 1, 'device allowance spent')
-  assert.equal(after.global.remaining, before.global.remaining - 1, 'shared pool spent')
+  assert.equal(after.device.remaining, before.device.remaining! - 1, 'device allowance spent')
+  assert.equal(after.global.remaining, before.global.remaining! - 1, 'shared pool spent')
 
   refundQuota(dev)
   const back = readQuota(dev)
@@ -58,7 +58,7 @@ test('a device is cut off at its own limit — and stops draining the shared poo
   // device cap is that one visitor can't keep drawing it down.
   const poolAfter = readQuota(dev).global.remaining
   assert.equal(
-    poolAfter, poolBefore - FREE_DEVICE_DAILY_LIMIT,
+    poolAfter, poolBefore! - FREE_DEVICE_DAILY_LIMIT,
     'a device-capped refusal must not spend a pool slot',
   )
 
