@@ -261,16 +261,17 @@ export type KatanaInstrument = 'guitar' | 'bass'
 // alongside the file; docs/air-format-notes.md). `katana-go` / `katana-go-bass` are
 // the two MODES of the one dual-mode GO app (guitar verified; bass 'derived' — same
 // block layout, bass vocabulary, pending a real bass export; docs/go-format-notes.md).
-// `katana-bass` is a separate roadmap placeholder for the DESKTOP bass line
-// (110 / 210 / Head) — confirmed to share the MkII .tsl family; writer pending.
+// `katana-bass` is the DESKTOP bass line (110 / 210 / Head) — its own architecture
+// (Knob-panel preamp, colour-variation effects, combined Fx2 slot), verified against
+// a real export (docs/katana-bass-format-notes.md).
 export const KATANA_DEVICES: { id: KatanaDevice; label: string; instrument: KatanaInstrument; supported: boolean }[] = [
   { id: 'katana-mk2',     label: 'KATANA MkII',     instrument: 'guitar', supported: true  },
   { id: 'katana-mk3',     label: 'KATANA Gen 3',    instrument: 'guitar', supported: true  },
   { id: 'katana-air',     label: 'KATANA:AIR',      instrument: 'guitar', supported: true  },
   { id: 'katana-go',      label: 'KATANA:GO',       instrument: 'guitar', supported: true  },
   { id: 'katana-go-bass', label: 'KATANA:GO Bass',  instrument: 'bass',   supported: true  },
+  { id: 'katana-bass',    label: 'KATANA Bass',     instrument: 'bass',   supported: true  },
   { id: 'katana-mk1',     label: 'KATANA MkI',      instrument: 'guitar', supported: false },
-  { id: 'katana-bass',    label: 'KATANA Bass',     instrument: 'bass',   supported: false },
 ]
 
 const DEVICE_INSTRUMENT = new Map<KatanaDevice, KatanaInstrument>(

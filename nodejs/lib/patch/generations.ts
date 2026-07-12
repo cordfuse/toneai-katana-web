@@ -9,7 +9,7 @@
 
 import type { KatanaDevice } from '@/lib/storage'
 
-export type Generation = 'mk1' | 'mk2' | 'mk3' | 'go' | 'gobass' | 'air'
+export type Generation = 'mk1' | 'mk2' | 'mk3' | 'go' | 'gobass' | 'air' | 'basshead'
 
 export type Confidence =
   /** Writer validated against real sample files (round-trip byte-identical). */
@@ -27,7 +27,7 @@ export interface GenerationProfile {
   /** The `device` string written into the .tsl liveset. */
   deviceString: string
   /** Librarian binary extension for a single patch. */
-  fileExt: '.kat' | '.kat2' | '.kat3' | '.katgo' | '.katair'
+  fileExt: '.kat' | '.kat2' | '.kat3' | '.katgo' | '.katair' | '.katbass'
   /** Device selector index from the app (MK1=1, MK2=2, MK3=3, GO=4). Air is a
    *  separate app (BOSS Tone Studio for KATANA:AIR), not the guitar Librarian —
    *  index 5 marks it as out-of-band rather than a Librarian slot. */
@@ -110,6 +110,21 @@ export const GENERATIONS: Record<Generation, GenerationProfile> = {
     confidence: 'verified',
     addressing: 'golden-template overlay (go/template-bass.json, real bass export) + PATCH% block offsets; .tsl formatRev 0000, _bassmode device string, verified vs data/fixtures/ GO bass export',
   },
+  basshead: {
+    id: 'basshead',
+    label: 'KATANA Bass',
+    deviceString: 'KATANA BASS', // confirmed from a real export (all 110/210/Head share it)
+    fileExt: '.katbass',
+    selectorIndex: 5,
+    // 'verified': param model extracted from the KATANA BASS editor app and the
+    // golden template round-trips a real export byte-for-byte (bass/__tests__).
+    // Distinct architecture (docs/katana-bass-format-notes.md): the amp is the
+    // Knob panel (no amp block), effects have 3 colour variations, and Fx2 is a
+    // combined mod/delay/reverb slot — the writer overlays variation 1 and fills
+    // the combined slot by priority (delay > reverb > fx2).
+    confidence: 'verified',
+    addressing: 'golden-template overlay (bass/template.ts) + UserPatch% block offsets (bass enums); .tsl formatRev 0000, device "KATANA BASS", verified vs data/fixtures/ bass export',
+  },
   air: {
     id: 'air',
     label: 'KATANA:AIR',
@@ -143,6 +158,7 @@ export function generationForDevice(device: KatanaDevice): Generation {
   if (device.startsWith('katana-air')) return 'air'
   if (device === 'katana-go-bass') return 'gobass'  // before the katana-go prefix
   if (device.startsWith('katana-go')) return 'go'
+  if (device === 'katana-bass') return 'basshead'
   // Defensive default: unknown suffix → mk1, the only verified layout. Better
   // to target the safe writer than to guess an unvalidated one.
   return 'mk1'

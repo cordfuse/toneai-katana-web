@@ -34,6 +34,9 @@ export function katanaSystemPrompt(ctx: ToneContext): string {
     ctx.device === 'katana-go-bass'
       ? `NOTE: this is a BASS setup — the player is using a bass guitar through a KATANA:GO in bass mode. Voice everything for bass: the amp voices (VINTAGE / FLAT / MODERN) are bass amps, and the drive/FX lists are bass-specific. Design low-end-appropriate tones (tight lows, defined mids, controlled grit) — do not treat it like a six-string guitar patch.`
       : ``,
+    ctx.device === 'katana-bass'
+      ? `NOTE: this is a BASS setup — the player is using a bass guitar through a KATANA BASS (desktop head/combo). Voice everything for bass: the preamp voices (VINTAGE / MODERN) are bass amps and the drive/FX lists are bass-specific. Design low-end-appropriate tones (tight lows, defined mids, controlled grit) — do not treat it like a six-string guitar patch. This amp has ONE combined time slot: it can run a delay OR a reverb, not both at once, so choose the one the sound depends on (a slapback/echo part → delay; an ambient part → reverb).`
+      : ``,
     ctx.rig ? `Their guitar: ${ctx.rig}. Voice the patch for that instrument.` : ``,
     ``,
     `When a request names a song, artist, or specific recorded tone whose real rig or settings you are not certain of, use the web_search tool FIRST to ground your choices — the player's actual amp, pedals, and known settings — then design. When the request is a plain description ("warm clean", "tight metal"), no search is needed.`,

@@ -20,6 +20,9 @@ import {
   GO_AMP_TYPES, GO_BOOSTER_TYPES, GO_FX_TYPES, GO_DELAY_TYPES, GO_REVERB_TYPES,
   GO_BASS_AMP_TYPES, GO_BASS_BOOSTER_TYPES, GO_BASS_FX_TYPES, GO_BASS_DELAY_TYPES, GO_BASS_REVERB_TYPES,
 } from './go/enums'
+import {
+  BASS_AMP_TYPES, BASS_DRIVE_TYPES, BASS_FX_TYPES, BASS_DELAY_TYPES, BASS_REVERB_TYPES,
+} from './bass/enums'
 
 export interface DeviceVocab {
   amps: readonly string[]
@@ -52,6 +55,12 @@ const GO_BASS_VOCAB: DeviceVocab = {
   amps: GO_BASS_AMP_TYPES, boosters: GO_BASS_BOOSTER_TYPES, fx: GO_BASS_FX_TYPES,
   delays: GO_BASS_DELAY_TYPES, reverbs: GO_BASS_REVERB_TYPES,
 }
+// KATANA BASS (desktop head/combo) — Knob-panel preamp voices (VINTAGE/MODERN),
+// separate drive stage, bass mod/FX, and a combined delay+reverb Fx2 slot.
+const BASS_VOCAB: DeviceVocab = {
+  amps: BASS_AMP_TYPES, boosters: BASS_DRIVE_TYPES, fx: BASS_FX_TYPES,
+  delays: BASS_DELAY_TYPES, reverbs: BASS_REVERB_TYPES,
+}
 
 // Generations with a writer + vocabulary. Others fall back to MkII's (they're
 // gated from emitting anyway by the confidence guard in index.ts).
@@ -61,6 +70,7 @@ const BY_GENERATION: Partial<Record<Generation, DeviceVocab>> = {
   air: AIR_VOCAB,
   go: GO_VOCAB,
   gobass: GO_BASS_VOCAB,
+  basshead: BASS_VOCAB,
 }
 
 export function vocabForGeneration(gen: Generation): DeviceVocab {

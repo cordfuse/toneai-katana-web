@@ -21,6 +21,7 @@ import { writeMk2Tsl } from './writers/mk2'
 import { writeMk3Tsl } from './writers/mk3'
 import { writeAirTsl } from './writers/air'
 import { writeGoTsl, writeGoBassTsl } from './writers/go'
+import { writeBassTsl } from './writers/bass'
 
 // MkI registers its flat-image writer as a side effect.
 import './writers/mk1'
@@ -38,6 +39,7 @@ export { buildMk2Sections, writeMk2Tsl } from './writers/mk2'
 export { buildMk3Sections, writeMk3Tsl } from './writers/mk3'
 export { buildAirSections, writeAirTsl, airAmpSettings, type AirAmpSettings } from './writers/air'
 export { buildGoSections, writeGoTsl, buildGoBassSections, writeGoBassTsl } from './writers/go'
+export { buildBassSections, writeBassTsl } from './writers/bass'
 export {
   type ConvertNote, type ConvertedIntent, type ConvertedTone,
   canConvert, convertIntent, convertTone,
@@ -73,6 +75,7 @@ export function writePatchTsl(
   if (generation === 'air') return writeAirTsl(patch)
   if (generation === 'go') return writeGoTsl(patch)
   if (generation === 'gobass') return writeGoBassTsl(patch)
+  if (generation === 'basshead') return writeBassTsl(patch)
   // MkI's deliverable path is the .kat flat image (writePatchImage); a MkI .tsl
   // wrapper isn't built yet. GO is guarded out above (unextracted).
   throw new LayoutNotExtractedError(generation)
