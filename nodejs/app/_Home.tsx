@@ -629,7 +629,7 @@ function SettingsPanel({
   theme, onTheme,
   device, onDevice,
   apiKey, onApiKey,
-  byokModel, onByokModel, models,
+  byokModel, onByokModel, models, defaultModel,
   gear, onGear,
   onClose,
 }: {
@@ -639,11 +639,14 @@ function SettingsPanel({
   onDevice: (d: KatanaDevice) => void
   apiKey: string | null
   onApiKey: (k: string | null) => void
-  /** BYOK-only model choice; null = the server's default. */
+  /** BYOK-only model choice; null = "whatever the server defaults to". */
   byokModel: string | null
   onByokModel: (m: string | null) => void
   /** The server's allow-list, so the picker cannot offer a rejected model. */
   models: { id: string; label: string }[]
+  /** The server's own default — what an unset `byokModel` actually resolves to,
+   *  so the dropdown shows the truth rather than a guess at list order. */
+  defaultModel: string
   gear: GearState
   onGear: (g: GearState) => void
   onClose: () => void
@@ -651,6 +654,7 @@ function SettingsPanel({
   const [closing, setClosing] = useState(false)
   const [themeOpen, setThemeOpen] = useState(false)
   const [deviceOpen, setDeviceOpen] = useState(false)
+  const [modelOpen, setModelOpen] = useState(false)
   const [localeOpen, setLocaleOpen] = useState(false)
   const [gearModalOpen, setGearModalOpen] = useState(false)
   const [aboutOpen, setAboutOpen] = useState(false)
@@ -678,6 +682,10 @@ function SettingsPanel({
 
   const active = THEMES_LIVE.find(t => t.id === theme) ?? THEMES_LIVE[0]
   const activeDevice = KATANA_DEVICES.find(d => d.id === device) ?? KATANA_DEVICES[0]
+  // An unset choice resolves to the SERVER's default — which is what the request
+  // would genuinely use — so show that, rather than guessing from list order.
+  const activeModel =
+    models.find(m => m.id === byokModel) ?? models.find(m => m.id === defaultModel) ?? models[0]
 
   return (
     <>
@@ -908,32 +916,44 @@ function SettingsPanel({
           {apiKey && models.length > 0 && (
             <div>
               <p className="text-[10px] font-semibold text-fg-3 uppercase tracking-wider mb-2">Model</p>
-              <div className="flex flex-col gap-1">
-                {models.map(m => {
-                  const isActive = (byokModel ?? '') === m.id
-                  return (
-                    <button
-                      key={m.id}
-                      onClick={() => onByokModel(isActive ? null : m.id)}
-                      className={`flex items-center justify-between rounded-lg border px-3 py-2 text-left text-xs transition-colors ${
-                        isActive
-                          ? 'border-primary/40 bg-primary/10 text-fg'
-                          : 'border-white/10 bg-surface-2 text-fg-2 hover:text-fg'
-                      }`}
-                    >
-                      <span>{m.label}</span>
-                      <span className="flex items-center gap-2">
-                        <span className="text-[10px] text-fg-4 tabular-nums">{MODEL_COST_HINT[m.id] ?? ''}</span>
-                        {isActive && <span className="text-primary shrink-0">✓</span>}
-                      </span>
-                    </button>
-                  )
-                })}
+              <div className="relative">
+                <button
+                  onClick={() => setModelOpen(o => !o)}
+                  className="flex w-full items-center gap-2.5 rounded-lg border border-white/10 bg-surface-2 px-3 py-2.5 text-sm text-fg hover:bg-surface-3 transition-colors"
+                >
+                  <span className="flex-1 text-left">{activeModel?.label ?? 'Default'}</span>
+                  <span className="text-[10px] text-fg-4 tabular-nums">
+                    {activeModel ? MODEL_COST_HINT[activeModel.id] ?? '' : ''}
+                  </span>
+                  <ChevronIcon open={modelOpen} />
+                </button>
+                {modelOpen && (
+                  <>
+                    <div className="fixed inset-0 z-10" onClick={() => setModelOpen(false)} />
+                    <div className="absolute left-0 right-0 top-full z-20 mt-1 rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden max-h-[60vh] overflow-y-auto animate-dropdown origin-top">
+                      {models.map(m => {
+                        const isActive = activeModel?.id === m.id
+                        return (
+                          <button
+                            key={m.id}
+                            onClick={() => { onByokModel(m.id); setModelOpen(false) }}
+                            className={`flex w-full items-center gap-2.5 px-3 py-2 text-sm transition-colors ${
+                              isActive ? 'text-primary bg-primary/10' : 'text-fg-2 hover:bg-surface-3 hover:text-fg'
+                            }`}
+                          >
+                            <span className="flex-1 text-left">{m.label}</span>
+                            <span className="text-[10px] text-fg-4 tabular-nums">{MODEL_COST_HINT[m.id] ?? ''}</span>
+                            {isActive && <span className="ml-1 text-primary shrink-0">✓</span>}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </>
+                )}
               </div>
               <p className="mt-1.5 text-[10px] text-fg-4 leading-relaxed">
-                {byokModel
-                  ? 'Billed to your Anthropic key. Tap again to go back to the default.'
-                  : 'Using the default (Haiku 4.5) — cheapest, and what the free tier runs. Pick a bigger model for harder tones.'}
+                Billed to your Anthropic key. Haiku 4.5 is the cheapest and is what the free
+                tier runs; the bigger models earn their cost on obscure or ambiguous sounds.
               </p>
             </div>
           )}
@@ -1534,6 +1554,7 @@ export default function Home({
   // The allow-list, from /api/providers — the same list the server validates
   // against, so the picker can never offer a model the server would reject.
   const [models, setModels] = useState<{ id: string; label: string }[]>([])
+  const [defaultModel, setDefaultModel] = useState('')
   const [pendingAttachments, setPendingAttachments] = useState<Attachment[]>([])
   // Voice — STT (mic capture → textarea) and TTS (speak assistant
   // replies). Capability is browser-determined; the UI hides each control
@@ -1712,7 +1733,9 @@ export default function Home({
         // server would reject.
         const { providers, features } = await getProviders()
         setFreeTierAvailable(features.freeTier !== false)
-        setModels(providers.find(p => p.id === provider)?.models ?? [])
+        const active = providers.find(p => p.id === provider)
+        setModels(active?.models ?? [])
+        setDefaultModel(active?.defaultModel ?? '')
       } catch (e) {
         console.error('providers fetch failed:', e)
       }
@@ -2828,6 +2851,7 @@ export default function Home({
           byokModel={byokModel}
           onByokModel={handleByokModel}
           models={models}
+          defaultModel={defaultModel}
           gear={gear}
           onGear={handleGear}
           onClose={() => setSettingsOpen(false)}
