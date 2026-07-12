@@ -22,13 +22,12 @@ import {
   GO_BASS_AMP_BY_NAME, GO_BASS_BOOSTER_BY_NAME, GO_BASS_FX_BY_NAME,
   GO_BASS_DELAY_BY_NAME, GO_BASS_REVERB_BY_NAME,
 } from '../go/enums'
-import { templateSections } from '../go/template'
+import { templateSections, bassTemplateSections } from '../go/template'
 import { type SectionMap, toTsl } from '../tsl'
 
 // Verified block byte offsets (docs/go-format-notes.md, go/param-table.json).
 const O = {
   com:     { name: 4 },                                              // 16 ASCII @4
-  other:   { chain: 0 },
   amp:     { gain: 0, level: 1, bass: 3, mid: 4, treble: 5, presence: 10, type: 12 },
   booster: { type: 0, drive: 1, tone: 3, level: 6 },                 // TONE centered (−50..50)
   delay:   { type: 0, time: 1, feedback: 5, level: 7 },              // time = 4 nibble-bytes @1..4
@@ -39,25 +38,25 @@ const O = {
 /** Per-mode configuration for the shared builder. */
 interface ModeConfig {
   device: string
+  template: () => SectionMap
   amps: Map<string, number>
   boosters: Map<string, number>
   fx: Map<string, number>
   delays: Map<string, number>
   reverbs: Map<string, number>
-  /** Bass sets a mode-valid chain routing byte; guitar keeps the template's. */
-  chainByte?: number
 }
 
 const GUITAR: ModeConfig = {
   device: 'KATANA:GO_guitarmode',
+  template: templateSections,
   amps: GO_AMP_BY_NAME, boosters: GO_BOOSTER_BY_NAME, fx: GO_FX_BY_NAME,
   delays: GO_DELAY_BY_NAME, reverbs: GO_REVERB_BY_NAME,
 }
 const BASS: ModeConfig = {
   device: 'KATANA:GO_bassmode',
+  template: bassTemplateSections, // real bass patch — carries a valid bass chain
   amps: GO_BASS_AMP_BY_NAME, boosters: GO_BASS_BOOSTER_BY_NAME, fx: GO_BASS_FX_BY_NAME,
   delays: GO_BASS_DELAY_BY_NAME, reverbs: GO_BASS_REVERB_BY_NAME,
-  chainByte: 7, // first bass-mode chain (guitar chains are 0–6, bass 7–8)
 }
 
 const clamp = (v: number, lo: number, hi: number) => (v < lo ? lo : v > hi ? hi : Math.round(v))
@@ -110,10 +109,9 @@ function writeFx(s: SectionMap, cfg: ModeConfig, fxBlock: string, swOffset: numb
 /** Build the GO block map from tone intent for a given mode, overlaid on the
  *  golden template (shared across modes — same block skeleton). */
 function buildGo(patch: TonePatch, cfg: ModeConfig): SectionMap {
-  const s = templateSections()
+  const s = cfg.template()
 
   writeName(s, patch.name)
-  if (cfg.chainByte !== undefined) put(s, 'OTHER', O.other.chain, cfg.chainByte)
 
   // Amp (stored in-patch, unlike Air).
   put(s, 'AMP', O.amp.type, enumByte(cfg.amps, patch.ampA.type, 'amp type', cfg.device))

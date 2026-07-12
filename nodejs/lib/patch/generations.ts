@@ -102,13 +102,13 @@ export const GENERATIONS: Record<Generation, GenerationProfile> = {
     deviceString: 'KATANA:GO_bassmode',
     fileExt: '.katgo',
     selectorIndex: 4,
-    // 'derived': GO bass reuses the SAME 30-block PATCH% layout as GO guitar
-    // (block skeleton already round-trip-verified), and its enums come from the
-    // GO app + its bass conversion map — but no real bass-mode export has been
-    // round-tripped, so it stays 'derived' (emits with a warning, never silently)
-    // until a ground-truth bass .tsl lands. Same app as guitar (dual-mode).
-    confidence: 'derived',
-    addressing: 'shared go/template.ts overlay with bass enums + _bassmode device string; block layout proven via guitar round-trip, bass values from app + ktn bass conversion map — DERIVED, no bass export yet',
+    // 'verified': GO bass uses the SAME 30-block PATCH% layout as GO guitar, and
+    // now has its OWN golden template cloned from a real bass-mode export
+    // (go/template-bass.json — "MONO SLOW PAD") that round-trips byte-for-byte,
+    // plus bass enums cross-checked against the app. Confirmed: bass amp voices
+    // decode at bytes 5–7, bass chain routing is genuine. Same app as guitar.
+    confidence: 'verified',
+    addressing: 'golden-template overlay (go/template-bass.json, real bass export) + PATCH% block offsets; .tsl formatRev 0000, _bassmode device string, verified vs data/fixtures/ GO bass export',
   },
   air: {
     id: 'air',

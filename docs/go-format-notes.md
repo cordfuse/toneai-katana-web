@@ -90,12 +90,13 @@ comments are the known Gen 3 names, its values GO indices — reproduces the
   the −1 display offset applied. As on the other generations, reverb decay is the
   least-verified continuous parameter.
 
-## Bass mode (`KATANA:GO_bassmode`) — `derived`
+## Bass mode (`KATANA:GO_bassmode`) — `verified`
 
-Same app, same 30-block `PATCH%` layout — so the block skeleton is already
-verified by the guitar round-trip. Bass changes only the **vocabulary** and a
-couple of mode bytes; it ships at confidence `derived` (emits with the
-experimental warning) until a real bass-mode `.tsl` is round-tripped.
+Same app, same 30-block `PATCH%` layout. Now backed by its OWN golden template
+cloned from a real bass-mode export (`go/template-bass.json` — "MONO SLOW PAD",
+from `data/fixtures/katana-go-bass-tones.tsl`) that round-trips byte-for-byte,
+and confirmed against the real bank: bass amp voices decode at bytes 5–7 across
+all four patches. Bass changes only the **vocabulary** vs guitar mode.
 
 Mode gating comes from `businesslogic/mode/mode_info.js`. Bass byte values
 (verified against that file + `resource.js`):
@@ -111,11 +112,10 @@ Mode gating comes from `businesslogic/mode/mode_info.js`. Bass byte values
 - **Chain** — guitar routings are 0–6, bass 7–8; the writer sets `OTHER.CHAIN=7`.
 
 Both modes run through one builder (`writers/go.ts` `buildGo`) with a per-mode
-config; the golden template is shared (the guitar patch's block skeleton).
-**Derived caveat:** non-overlaid blocks (bass comp `BA_COMP`, bass EQ, amp
-variation bytes) keep the guitar template's values — valid byte ranges, but not
-bass-tuned. A real bass export would let those be cloned from ground truth and
-lift bass to `verified`.
+config that supplies the device string, enum maps, and **its own golden
+template**. Non-overlaid blocks (bass comp `BA_COMP`, bass EQ, chain routing)
+now come from a real bass patch, so they're bass-tuned ground truth — which is
+what lifted bass from `derived` to `verified`.
 
 ## Open questions (need hardware)
 

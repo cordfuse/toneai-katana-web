@@ -115,8 +115,9 @@ test('bass amp voices sit at bytes 5-7; VINTAGE=5', () => {
   assert.equal(bat('AMP', 3), 65, 'bass')
 })
 
-test('bass chain routing byte set to 7 (bass range)', () => {
-  assert.equal(bat('OTHER', 0), 7, 'OTHER.CHAIN = 7 for bass')
+test('bass chain routing comes from the real bass template (bass range 7-8)', () => {
+  const chain = bat('OTHER', 0)
+  assert.ok(chain === 7 || chain === 8, `OTHER.CHAIN ${chain} is a bass routing`)
 })
 
 test('bass DRIVE/FX resolve to their real byte values', () => {

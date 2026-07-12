@@ -12,6 +12,7 @@
 
 import type { SectionMap } from '../tsl'
 import templateData from './template.json'
+import bassTemplateData from './template-bass.json'
 
 interface TemplateFile {
   order: string[]
@@ -19,15 +20,23 @@ interface TemplateFile {
 }
 
 const TEMPLATE = templateData as unknown as TemplateFile
+const BASS_TEMPLATE = bassTemplateData as unknown as TemplateFile
 
-/** The block keys in canonical emit order (bare, no "PATCH%"). */
+/** The guitar block keys in canonical emit order (bare, no "PATCH%"). */
 export const TEMPLATE_ORDER: readonly string[] = TEMPLATE.order
 
-/** A fresh clone of the golden template as a SectionMap. */
-export function templateSections(): SectionMap {
+function clone(t: TemplateFile): SectionMap {
   const m: SectionMap = new Map()
-  for (const key of TEMPLATE.order) {
-    m.set(key, Uint8Array.from(TEMPLATE.sections[key]))
-  }
+  for (const key of t.order) m.set(key, Uint8Array.from(t.sections[key]))
   return m
+}
+
+/** A fresh clone of the guitar golden template (real "SLICE CLEAN" patch). */
+export function templateSections(): SectionMap {
+  return clone(TEMPLATE)
+}
+
+/** A fresh clone of the bass golden template (real "MONO SLOW PAD" patch). */
+export function bassTemplateSections(): SectionMap {
+  return clone(BASS_TEMPLATE)
 }
