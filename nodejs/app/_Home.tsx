@@ -298,6 +298,16 @@ const GITHUB_ICON_PATH = 'M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.83
 
 const WHATS_NEW: { version: string; items: { text: string; sub?: string }[] }[] = [
   {
+    version: '0.9.0',
+    items: [
+      { text: 'Your whole KATANA lineup — 9 amps', sub: 'From the original MkI to the wireless WAZA-AIR: MkI, MkII, Gen 3, KATANA:AIR, GO, GO Bass, KATANA Bass, WAZA-AIR, and WAZA-AIR Bass. Pick yours and design straight for it — every writer is verified byte-clean against a real export.' },
+      { text: 'Bass, done right', sub: 'Dedicated bass amps (KATANA Bass, GO Bass, WAZA-AIR Bass) join the roster — and if you run a bass through a guitar KATANA, your tones are voiced for bass automatically.' },
+      { text: 'Voicing follows your instrument', sub: 'Set a guitar or bass in My Gear and every patch is dialled for what’s in your hands, whatever amp you’re on. A guitar can’t be dialled for a bass amp, so the app steers you right.' },
+      { text: 'Convert across the whole line', sub: 'Re-voice any saved tone for a different amp you own — guitar-to-guitar or bass-to-bass — and download it ready to import.' },
+      { text: 'Headphone amps show their amp settings', sub: 'KATANA:AIR and WAZA-AIR store effects only, so the app hands you the exact amp voice and knob values to dial alongside the patch.' },
+    ],
+  },
+  {
     version: '0.8.0',
     items: [
       { text: 'KATANA Gen 3 support', sub: 'Pick Gen 3 as your amp and design for it directly — its .tsl writer is verified byte-clean against real Gen 3 exports, with the Gen 3 amp voices and effects.' },

@@ -38,7 +38,7 @@ for BOSS Tone Studio.
 tone-intent schema (amp type, gain, EQ, the booster / mod / fx / delay / reverb
 chain), and a **deterministic writer** converts that intent into the liveset —
 building from a golden template that round-trips byte-clean against a real
-KATANA export (MkII and Gen 3). A patch the amp rejects is worse than no patch
+export for **every** supported device. A patch the amp rejects is worse than no patch
 at all.
 
 ```
@@ -59,24 +59,44 @@ variants within a generation write a byte-identical patch — they differ in
 hardware (wattage, speaker, cab), not patch data. So the picker lists **one
 entry per generation**.
 
-| Generation | Status |
-|---|---|
-| **KATANA MkII** | **Supported** — writer verified byte-clean against a real export |
-| **KATANA Gen 3** | **Supported** — writer verified byte-clean against real Gen 3 exports |
-| KATANA MkI | Listed, not yet selectable |
-| KATANA:GO / KATANA:GO Bass | Listed, not yet selectable |
+The full BOSS KATANA lineup is supported — **9 devices, every writer verified
+byte-clean against a real export.** Each writer is proven by round-tripping a
+genuine liveset before a single patch ships (`a patch the amp rejects is worse
+than no patch`).
 
-Remaining writers stay gated until each is proven against a real export — see
-[docs/kat-format.md](docs/kat-format.md).
+| Device | Instrument | Status |
+|---|---|---|
+| **KATANA MkI** | Guitar | Supported — the original 2019 KATANA; its own "GT" named-parameter liveset ([docs](docs/mk1-format-notes.md)) |
+| **KATANA MkII** | Guitar | Supported ([docs](docs/tsl-format.md)) |
+| **KATANA Gen 3** | Guitar | Supported ([docs](docs/gen3-format-notes.md)) |
+| **KATANA:AIR** | Guitar | Supported — effects-only; amp delivered as hand-dial instructions ([docs](docs/air-format-notes.md)) |
+| **KATANA:GO** | Guitar | Supported ([docs](docs/go-format-notes.md)) |
+| **KATANA:GO Bass** | Bass | Supported ([docs](docs/go-format-notes.md)) |
+| **KATANA Bass** | Bass | Supported — desktop 110 / 210 / Head ([docs](docs/katana-bass-format-notes.md)) |
+| **WAZA-AIR** | Guitar | Supported — wireless headphone amp, effects-only ([docs](docs/waza-air-format-notes.md)) |
+| **WAZA-AIR Bass** | Bass | Supported — wireless headphone amp, effects-only ([docs](docs/waza-air-format-notes.md)) |
+
+Within a generation the 50 / 100 / Head / Artist variants write a byte-identical
+patch — they differ in hardware (wattage, speaker, cab), not patch data — so the
+picker lists one entry per generation, not per cabinet.
+
+### Guitar and bass are separate
+
+The amp you pick sets the patch **format**; the instrument in *My Gear* sets the
+**voicing**. A guitar amp is universal — play a guitar or a bass through it and
+the tone is voiced accordingly. A bass amp only voices bass, so pairing it with a
+guitar is blocked rather than producing a patch that makes no sense.
 
 ### Convert between amps
 
-A tone designed for one supported generation can be **converted to another** —
-open it, and if it targets a different KATANA than you play, convert it for your
-amp. Knobs carry across unchanged; amp and effect names are remapped to the
-target's vocabulary (Gen 3's six amp characters vs. MkII's larger set), and an
-effect with no counterpart is dropped rather than written as something the amp
-would reject. The converted patch is saved to *My Tones* as its own entry.
+A tone designed for one amp can be **converted to another you own** — open it,
+and if it targets a different KATANA than you play, convert it for your amp.
+Conversion stays within an instrument: guitar-to-guitar or bass-to-bass, never
+across (a guitar tone isn't re-voiced for a bass rig). Knobs carry across
+unchanged; amp and effect names are remapped to the target's vocabulary (Gen 3's
+six amp characters vs. MkII's larger set), and an effect with no counterpart is
+dropped rather than written as something the amp would reject. The converted
+patch is saved to *My Tones* as its own entry.
 
 ## Screenshots
 
