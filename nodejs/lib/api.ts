@@ -211,6 +211,14 @@ export interface ChatOpts {
    * server off the free-tier quota — there is no separate mode flag.
    */
   apiKey?: string | null
+  /**
+   * BYOK-only model choice. Sent on every request, but the server HONOURS it only
+   * when `apiKey` is also present — on the free tier the model spends the
+   * operator's key, so a client-chosen model is ignored there by design. Must be
+   * an id from config/providers.yaml; anything else falls back to the server's
+   * default rather than reaching the provider.
+   */
+  model?: string
 }
 
 /** Header map for a /chat call: auth + JSON + correlation id + BYOK key. */

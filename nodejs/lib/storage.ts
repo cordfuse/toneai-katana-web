@@ -385,13 +385,32 @@ export function saveApiKey(key: string | null) {
   else localStorage.removeItem(API_KEY_KEY)
 }
 
-// ─── Provider + model preferences: there are none ────────────────────────────
+// ─── Model preference: BYOK ONLY ─────────────────────────────────────────────
 //
-// This app is Anthropic-only and the model is a SERVER decision — on the free
-// tier it spends the operator's key, so letting the client choose would let a
-// caller bill an expensive model to us. The server ignores any `provider` or
-// `model` in the request body (app/api/chat/route.ts); operators set
-// TONEAI_MODEL. Nothing is stored, because there is nothing to choose.
+// This app is Anthropic-only, and on the FREE tier the model is a server decision
+// — it spends the operator's key, so letting the client choose would let a caller
+// bill an expensive model to us. The server ignores `model` on that path outright.
+//
+// A BYOK request is different: the caller's own key pays, so the choice is theirs
+// and it costs the operator nothing. That preference is what this key stores. It
+// is sent on every request, but the server only HONOURS it when a user key is
+// present — so a stale value left behind after someone removes their key is inert
+// rather than dangerous, which is why removing a key does not clear it.
+
+const BYOK_MODEL_KEY = 'katana_byok_model'
+
+/** The model a BYOK user picked, or null for "use the server's default". */
+export function getByokModel(): string | null {
+  if (typeof window === 'undefined') return null
+  const stored = localStorage.getItem(BYOK_MODEL_KEY)
+  return stored && stored.length > 0 ? stored : null
+}
+
+export function saveByokModel(model: string | null) {
+  const trimmed = model?.trim() ?? ''
+  if (trimmed.length > 0) localStorage.setItem(BYOK_MODEL_KEY, trimmed)
+  else localStorage.removeItem(BYOK_MODEL_KEY)
+}
 
 // ─── Stored-state migration ──────────────────────────────────────────────────
 //

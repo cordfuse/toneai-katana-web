@@ -43,10 +43,16 @@ interface ModelPrice {
 // emits ~30% more tokens for the same text, which is why claude-sonnet-4-6 is
 // the default here despite the higher sticker price. If Sonnet 5 is ever made
 // the default again, update these numbers first.
+// claude-opus-4-8 is reachable ONLY on a BYOK request (the free tier ignores the
+// client's model), so its cost lands on the user's key, not the operator's. It is
+// priced here anyway: the log line is a diagnostic, and a BYOK request with no
+// price row would report tokens with no cost, which reads as "free" rather than
+// "not our bill".
 const PRICES: Record<string, ModelPrice> = {
+  'claude-haiku-4-5':  { input: 1.00, cacheWrite5m: 1.25, cacheWrite1h: 2.00, cacheRead: 0.10, output: 5.00 },
   'claude-sonnet-4-6': { input: 3.00, cacheWrite5m: 3.75, cacheWrite1h: 6.00, cacheRead: 0.30, output: 15.00 },
   'claude-sonnet-5':   { input: 2.00, cacheWrite5m: 2.50, cacheWrite1h: 4.00, cacheRead: 0.20, output: 10.00 },
-  'claude-haiku-4-5':  { input: 1.00, cacheWrite5m: 1.25, cacheWrite1h: 2.00, cacheRead: 0.10, output: 5.00 },
+  'claude-opus-4-8':   { input: 5.00, cacheWrite5m: 6.25, cacheWrite1h: 10.00, cacheRead: 0.50, output: 25.00 },
 }
 
 /** $10 per 1,000 searches, charged on top of the tokens the results cost. */

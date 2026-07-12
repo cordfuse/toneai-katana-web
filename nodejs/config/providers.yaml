@@ -36,19 +36,22 @@ providers:
     label: Anthropic
     category: cloud
     envKey: ANTHROPIC_API_KEY
-    # Sonnet 4.6, not Sonnet 5, is the default — a cost decision, not a
-    # capability one. Sonnet 5 bills on a newer tokenizer that produces ~30%
-    # more tokens for the same text, so once its introductory pricing ends
-    # (2026-08-31) it costs ~25% more per unit of text than 4.6. Both support
-    # the web-search tool's dynamic filtering, which is the lever that actually
-    # governs this app's token bill. See docs/cost.md.
+    # Haiku 4.5 is the free-tier default — a COST decision, measured not guessed:
+    # ~2.4x cheaper per tone than Sonnet 4.6, for tones that A/B'd as comparable
+    # (see lib/server/models.ts for the numbers). Operators override with
+    # TONEAI_MODEL.
     defaultModel: claude-haiku-4-5
-    # OPERATOR options, not user options. The model is a server-side decision
-    # (it spends the server's key on the free tier), so this list exists only to
-    # validate TONEAI_MODEL — the client cannot choose from it. Opus is absent on
-    # purpose: Sonnet is more than capable of tone design, and Opus costs 2.5x
-    # Sonnet 5 per token for no gain here. Don't re-add it.
+    # This list is the ALLOW-LIST, and it serves two callers:
+    #
+    #   1. TONEAI_MODEL — the operator's free-tier choice, validated against it.
+    #   2. BYOK users — a request carrying the caller's OWN Anthropic key may name
+    #      any model here (app/api/chat/route.ts). Their key pays, so their choice.
+    #
+    # A free-tier request can never select from this list: its `model` field is
+    # ignored outright, because it would be spending the operator's key. That is
+    # what makes it safe to list Opus — it is unreachable without a user key.
     models:
+      - { id: claude-haiku-4-5,  label: Claude Haiku 4.5 }
       - { id: claude-sonnet-4-6, label: Claude Sonnet 4.6 }
       - { id: claude-sonnet-5,   label: Claude Sonnet 5 }
-      - { id: claude-haiku-4-5,  label: Claude Haiku 4.5 }
+      - { id: claude-opus-4-8,   label: Claude Opus 4.8 }

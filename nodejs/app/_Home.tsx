@@ -12,6 +12,7 @@ import {
   getDefaultDevice, saveDefaultDevice, KATANA_DEVICES, type KatanaDevice,
   deviceInstrumentIssue, deviceInstrumentIssueMessage,
   getApiKey, saveApiKey,
+  getByokModel, saveByokModel,
   migrateLocalStorage,
 
   conversationToMarkdown, downloadTextFile,
@@ -36,6 +37,25 @@ import { GearSection, GearModal } from './_Gear'
 // accepting other patches would set a false expectation. Flip to true to bring
 // the composer paperclip back once the other writers are verified.
 const ATTACH_ENABLED = false
+
+// The bring-your-own-key guide. Lives in the repo (public) rather than as an
+// in-app page: it is long, it changes with Anthropic's console and pricing, and a
+// user reading it is by definition willing to leave the app for a minute. Linked
+// from Settings (under the key field) and from the Usage modal — the two places a
+// user meets the limits of the free tier.
+const BYOK_GUIDE_URL = 'https://github.com/cordfuse/toneai-katana-web/blob/main/BYOK.md'
+
+// Rough per-tone cost, for the BYOK model picker. These are ESTIMATES from
+// measured runs (see lib/server/usage.ts), shown so a user picking Opus knows it
+// is ~10x Haiku BEFORE they see their Anthropic bill, not after. Order-of-
+// magnitude guidance, not a quote — a long conversation costs more than a
+// one-shot tone.
+const MODEL_COST_HINT: Record<string, string> = {
+  'claude-haiku-4-5': '~$0.03/tone',
+  'claude-sonnet-4-6': '~$0.09/tone',
+  'claude-sonnet-5': '~$0.07/tone',
+  'claude-opus-4-8': '~$0.30/tone',
+}
 
 // ─── theme palette ───────────────────────────────────────────────────────────
 //
@@ -585,6 +605,21 @@ function UsageModal({
             </p>
           </div>
         )}
+
+        {/* The way out of the free tier. This modal is where a user LEARNS they
+         *  are limited, so it is where the escape hatch belongs — shown on the
+         *  BYOK branch too, since that reader may still want the model-choice and
+         *  cost sections. */}
+        <a
+          href={BYOK_GUIDE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 block text-[11px] text-primary/90 hover:text-primary underline underline-offset-2 transition-colors"
+        >
+          {byok
+            ? t('usage.guideByok', 'Using your own key — pricing and model choice →')
+            : t('usage.guide', 'Use your own Anthropic key — full guide →')}
+        </a>
       </div>
     </div>
   )
@@ -594,6 +629,7 @@ function SettingsPanel({
   theme, onTheme,
   device, onDevice,
   apiKey, onApiKey,
+  byokModel, onByokModel, models,
   gear, onGear,
   onClose,
 }: {
@@ -603,6 +639,11 @@ function SettingsPanel({
   onDevice: (d: KatanaDevice) => void
   apiKey: string | null
   onApiKey: (k: string | null) => void
+  /** BYOK-only model choice; null = the server's default. */
+  byokModel: string | null
+  onByokModel: (m: string | null) => void
+  /** The server's allow-list, so the picker cannot offer a rejected model. */
+  models: { id: string; label: string }[]
   gear: GearState
   onGear: (g: GearState) => void
   onClose: () => void
@@ -840,15 +881,62 @@ function SettingsPanel({
                 ? 'Using your key — no daily limit. Stored in this browser only.'
                 : 'Free mode — shared daily limit across all users. Add a key to lift it.'}
             </p>
+            <a
+              href={BYOK_GUIDE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1 inline-block text-[10px] text-primary/90 hover:text-primary underline underline-offset-2 transition-colors"
+            >
+              How to get an API key, and what it costs →
+            </a>
             {apiKey && (
               <button
                 onClick={() => { setKeyDraft(''); setKeyVisible(false); onApiKey(null) }}
-                className="mt-1 text-[10px] text-fg-4 hover:text-fg-2 transition-colors"
+                className="mt-1 block text-[10px] text-fg-4 hover:text-fg-2 transition-colors"
               >
                 Remove key → use free mode
               </button>
             )}
           </div>
+
+          {/* Model — BYOK ONLY.
+           *  Hidden without a key, because without one it would be a lie: the
+           *  server ignores a client-chosen model on the free tier (it would be
+           *  spending the operator's key). With a key, the choice is real and the
+           *  user pays for it, so the pricing is stated plainly rather than left
+           *  for them to discover on their Anthropic bill. */}
+          {apiKey && models.length > 0 && (
+            <div>
+              <p className="text-[10px] font-semibold text-fg-3 uppercase tracking-wider mb-2">Model</p>
+              <div className="flex flex-col gap-1">
+                {models.map(m => {
+                  const isActive = (byokModel ?? '') === m.id
+                  return (
+                    <button
+                      key={m.id}
+                      onClick={() => onByokModel(isActive ? null : m.id)}
+                      className={`flex items-center justify-between rounded-lg border px-3 py-2 text-left text-xs transition-colors ${
+                        isActive
+                          ? 'border-primary/40 bg-primary/10 text-fg'
+                          : 'border-white/10 bg-surface-2 text-fg-2 hover:text-fg'
+                      }`}
+                    >
+                      <span>{m.label}</span>
+                      <span className="flex items-center gap-2">
+                        <span className="text-[10px] text-fg-4 tabular-nums">{MODEL_COST_HINT[m.id] ?? ''}</span>
+                        {isActive && <span className="text-primary shrink-0">✓</span>}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+              <p className="mt-1.5 text-[10px] text-fg-4 leading-relaxed">
+                {byokModel
+                  ? 'Billed to your Anthropic key. Tap again to go back to the default.'
+                  : 'Using the default (Haiku 4.5) — cheapest, and what the free tier runs. Pick a bigger model for harder tones.'}
+              </p>
+            </div>
+          )}
 
           {/* Diagnostics — download a single .txt of client + server events for
               this browser, for reporting issues. Contains your prompts and the
@@ -1438,14 +1526,14 @@ export default function Home({
   // server validates it against config/providers.yaml rather than accepting
   // anything — but it is not, and cannot be, a user choice.
   const provider = 'anthropic'
-  // Pre-hydration placeholder only; replaced by the provider's real defaultModel
-  // (env-driven, Sonnet) once /api/providers resolves.
-  // NOTE: there is deliberately no `model` state. The model is a server-side
-  // decision (it spends the operator's key on the free tier) — the client
-  // neither picks it nor sends it. See app/api/chat/route.ts.
-  // Live model list per provider id — populated lazily when the dropdown
-  // opens. For local providers this is the actual installed-models list
-  // returned by the local server's /v1/models endpoint.
+  // BYOK model choice. Sent on every request, but the SERVER only honours it when
+  // a user key is present — on the free tier the model spends the operator's key,
+  // so the client's choice is ignored there by design (app/api/chat/route.ts).
+  // null = "use whatever the server defaults to".
+  const [byokModel, setByokModelState] = useState<string | null>(null)
+  // The allow-list, from /api/providers — the same list the server validates
+  // against, so the picker can never offer a model the server would reject.
+  const [models, setModels] = useState<{ id: string; label: string }[]>([])
   const [pendingAttachments, setPendingAttachments] = useState<Attachment[]>([])
   // Voice — STT (mic capture → textarea) and TTS (speak assistant
   // replies). Capability is browser-determined; the UI hides each control
@@ -1603,6 +1691,10 @@ export default function Home({
     // on a fetch succeeding, or an offline user never gets migrated.
     migrateLocalStorage()
 
+    // The BYOK model preference is local — read it here, not behind the fetch,
+    // so it survives an offline load like the rest of stored state.
+    setByokModelState(getByokModel())
+
     // Auth, then load providers. The provider list endpoint requires auth,
     // so we sequence rather than parallel.
     void (async () => {
@@ -1613,12 +1705,14 @@ export default function Home({
         return
       }
       try {
-        // The provider list itself is not used — the app is Anthropic-only and
-        // there is no picker. This call survives for ONE thing: whether the
-        // server holds a key and can serve the free tier, which drives the quota
-        // pill. Everything else in the payload is ignored.
-        const { features } = await getProviders()
+        // Two things come out of this call: whether the server holds a key and
+        // can serve the free tier, and the model ALLOW-LIST that the BYOK picker
+        // offers. Taking the list from the server (rather than hardcoding it in
+        // the client) is what guarantees the picker can never offer a model the
+        // server would reject.
+        const { providers, features } = await getProviders()
         setFreeTierAvailable(features.freeTier !== false)
+        setModels(providers.find(p => p.id === provider)?.models ?? [])
       } catch (e) {
         console.error('providers fetch failed:', e)
       }
@@ -1815,6 +1909,14 @@ export default function Home({
   const handleApiKey = useCallback((k: string | null) => {
     setApiKey(k)
     saveApiKey(k)
+  }, [])
+
+  // Removing a key deliberately does NOT clear this: the server ignores a
+  // client-chosen model without a key, so a leftover value is inert, and keeping
+  // it means a user who re-adds their key gets their choice back.
+  const handleByokModel = useCallback((m: string | null) => {
+    setByokModelState(m)
+    saveByokModel(m)
   }, [])
 
   const handleGear = useCallback((next: GearState) => {
@@ -2097,6 +2199,10 @@ export default function Home({
         abort.signal,
         {
           provider, webSearch: true, apiKey,
+          // Only meaningful alongside a key — the server ignores it on the free
+          // tier. Sent unconditionally rather than gated here, so the SERVER
+          // stays the single place that decides who may pick a model.
+          ...(byokModel ? { model: byokModel } : {}),
           device,
           instrument: played,
           rig: (() => {
@@ -2719,6 +2825,9 @@ export default function Home({
           onDevice={handleDevice}
           apiKey={apiKey}
           onApiKey={handleApiKey}
+          byokModel={byokModel}
+          onByokModel={handleByokModel}
+          models={models}
           gear={gear}
           onGear={handleGear}
           onClose={() => setSettingsOpen(false)}

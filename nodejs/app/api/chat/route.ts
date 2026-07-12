@@ -143,17 +143,30 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: `Unknown provider '${providerId}'` }, { status: 500 })
   }
 
-  // Model: a SERVER decision, never the client's. On the free tier the model
-  // spends the operator's key, so a client-supplied `model` would let a caller
-  // pick an expensive one (Opus is 2.5x Sonnet per token) and bill it to us.
-  // The request body's `model` is therefore ignored outright — same rule the
-  // system prompt and tone schema already follow (docs/settings.md § Inference
-  // is server-side). Operators choose via TONEAI_MODEL; config/providers.yaml
-  // is the allow-list that validates it.
-  const model: string =
+  // Model. WHO PAYS DECIDES.
+  //
+  // FREE TIER — a server decision, never the client's. The model spends the
+  // operator's key, so a client-supplied `model` would let any caller pick an
+  // expensive one (Opus is ~5x Haiku per token) and bill it to us. The body's
+  // `model` is ignored outright on this path. Operators choose via TONEAI_MODEL.
+  //
+  // BYOK — the caller's own key pays for the tokens, so the choice is genuinely
+  // theirs and costs us nothing. This is the whole point of bringing a key: the
+  // free tier runs Haiku for cost reasons, and someone who wants Opus-grade tone
+  // reasoning should be able to buy it. Still validated against
+  // config/providers.yaml, which is the allow-list — an unknown or malformed
+  // model id falls back to the server default rather than being passed through
+  // to the provider.
+  const serverModel: string =
     providerId === ENV_PROVIDER && isModelValidForProvider(providerId, ENV_MODEL)
       ? ENV_MODEL
       : providerInfo.defaultModel
+
+  const requestedModel = typeof body.model === 'string' ? body.model : undefined
+  const model: string =
+    byokKey && requestedModel && isModelValidForProvider(providerId, requestedModel)
+      ? requestedModel
+      : serverModel
 
   // Free mode needs the server's key. BYOK brings its own, so the server's
   // key being absent is not an error on that path. Keep the message generic —
