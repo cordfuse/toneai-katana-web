@@ -10,7 +10,12 @@ export interface ModelInfo {
   label: string
 }
 
-export type ProviderCategory = 'cloud' | 'local'
+// Cloud only. The scaffold this app grew from also supported LOCAL providers
+// (Ollama / LM Studio / llama.cpp) — a baseURL, a live /v1/models probe, and
+// "is the server running?" error handling. All of it was unreachable here: the
+// registry holds one cloud provider, and the loader throws on a provider with no
+// factory, so a local entry could not exist without a code change.
+export type ProviderCategory = 'cloud'
 
 // Public factory shape — what callers of provider.createModel see. The
 // provider config (envKey) is already resolved by the time it's called.
@@ -32,9 +37,7 @@ export interface ProviderInfo {
   id: string
   label: string
   category: ProviderCategory
-  envKey?: string                  // cloud: env var that must be set
-  baseURLEnv?: string              // local: env var that overrides baseURL
-  defaultBaseURL?: string          // local: fallback baseURL
+  envKey?: string                  // env var that must be set for `available`
   defaultModel: string
   models: ModelInfo[]
   createModel: ModelFactory

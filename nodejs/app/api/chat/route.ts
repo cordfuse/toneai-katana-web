@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json()
   const {
     messages, stream: wantStream,
-    provider: clientProvider,   // note: `model` in the body is ignored on purpose (see below)
+    // note: `provider` and `model` in the body are ignored on purpose (see below)
     webSearch,
     temperature: clientTemperature,
     device: clientDevice,
@@ -134,18 +134,16 @@ export async function POST(request: NextRequest) {
   }
 
 
-  // Provider: when picker is hidden, ignore client choice and use env default.
-  // Otherwise, prefer client choice if valid, else env default.
-  let providerId = ENV_PROVIDER
-  if (true && typeof clientProvider === 'string') {
-    if (!findProvider(clientProvider)) {
-      return NextResponse.json({ error: `Unknown provider '${clientProvider}'` }, { status: 400 })
-    }
-    providerId = clientProvider
-  }
+  // Provider: fixed. Like the model, it is not the client's to choose — the
+  // registry holds exactly one entry (Anthropic). The body's `provider` is
+  // ignored; the `if (SHOW_PROVIDER_PICKER && ...)` guard that used to honour it
+  // had already collapsed to `if (true && ...)`.
+  const providerId = ENV_PROVIDER
   const providerInfo = findProvider(providerId)
   if (!providerInfo) {
-    return NextResponse.json({ error: `Unknown provider '${providerId}'` }, { status: 400 })
+    // Only reachable if config/providers.yaml is misconfigured — an operator
+    // error at deploy time, not something a caller can trigger.
+    return NextResponse.json({ error: `Unknown provider '${providerId}'` }, { status: 500 })
   }
 
   // Model: a SERVER decision, never the client's. On the free tier the model
@@ -188,26 +186,12 @@ export async function POST(request: NextRequest) {
 
   const provider = providerId
 
-  // Translate provider errors into actionable messages. ECONNREFUSED to a
-  // local provider almost always means the operator's local server isn't
-  // running (Ollama / llama.cpp / LM Studio). Surfacing "Connection error."
-  // alone gives the user no clue what to fix.
+  // The scaffold's local-provider error handling ("Is the Ollama server
+  // running?", "ollama pull <model>") lived here. There are no local providers —
+  // Anthropic is the only entry in the registry — so those branches could never
+  // fire. What's left is the provider's own message.
   const friendlyError = (err: unknown): string => {
     const raw = err instanceof Error ? err.message : String(err)
-    const cause = (err as { cause?: { code?: string } })?.cause
-    const isConnRefused = cause?.code === 'ECONNREFUSED' || /ECONNREFUSED|connection error|fetch failed/i.test(raw)
-    if (isConnRefused && providerInfo.category === 'local') {
-      const baseURL = providerInfo.defaultBaseURL
-      const envHint = providerInfo.baseURLEnv ? ` (override with ${providerInfo.baseURLEnv})` : ''
-      return `Couldn't reach ${providerInfo.label}${baseURL ? ` at ${baseURL}` : ''}. Is the server running?${envHint}`
-    }
-    // Model not installed on a local server (Ollama 404, llama.cpp similar).
-    if (providerInfo.category === 'local' && /\b404\b|not found|no such model/i.test(raw)) {
-      if (providerInfo.id === 'ollama') {
-        return `Model '${model}' isn't installed on Ollama. Pull it with:  ollama pull ${model}`
-      }
-      return `Model '${model}' isn't loaded on ${providerInfo.label}. Load it on the server and retry.`
-    }
     return raw || 'Internal server error'
   }
 

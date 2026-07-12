@@ -61,7 +61,7 @@ export interface ProviderModel {
 export interface AvailableProvider {
   id: string
   label: string
-  category: 'cloud' | 'local'
+  category: 'cloud'
   available: boolean
   defaultModel: string
   models: ProviderModel[]
@@ -116,14 +116,6 @@ export async function getQuota(): Promise<QuotaResult> {
   return res.json()
 }
 
-export interface ProviderModelsResult {
-  models: ProviderModel[]
-  source: 'live' | 'registry'
-}
-
-// For local providers this probes the local server's /v1/models endpoint
-// and returns whatever's installed. For cloud providers returns the
-// curated registry list.
 export async function extractDocument(name: string, mimeType: string, dataBase64: string): Promise<string> {
   let token = getToken()
   if (!token) {
@@ -143,25 +135,6 @@ export async function extractDocument(name: string, mimeType: string, dataBase64
   const data = await res.json().catch(() => ({}))
   if (!res.ok) throw new Error(data?.error ?? `Extraction failed: ${res.status}`)
   return data.text ?? ''
-}
-
-export async function getProviderModels(providerId: string): Promise<ProviderModelsResult> {
-  let token = getToken()
-  if (!token) {
-    await authenticate()
-    token = getToken()!
-  }
-  const res = await fetch(`${BASE}/providers/${encodeURIComponent(providerId)}/models`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  if (res.status === 401) {
-    localStorage.removeItem('auth_token')
-    await authenticate()
-    return getProviderModels(providerId)
-  }
-  if (!res.ok) throw new Error(`Models fetch failed: ${res.status}`)
-  const data = await res.json()
-  return { models: data.models ?? [], source: data.source ?? 'registry' }
 }
 
 // ─── Diagnostic log ──────────────────────────────────────────────────────────
@@ -208,8 +181,10 @@ export interface ChatOpts {
   // It spends the operator's key on the free tier, so it is not the client's
   // to choose. Operators set TONEAI_MODEL (config/providers.yaml validates it).
   webSearch?: boolean
-  systemPrompt?: string
-  temperature?: number
+  // No `systemPrompt` and no `temperature`: the tone-designer prompt and schema
+  // ARE the product, so they are built server-side and cannot be overridden;
+  // temperature is an operator dial (TONEAI_TEMPERATURE). The scaffold exposed
+  // both per-conversation — the client sent a systemPrompt the server never read.
   /** Target KATANA device id — which generation's patch to write. */
   device?: string
   /** The player's rig descriptor (e.g. "Les Paul, bridge humbucker"). */
@@ -260,53 +235,11 @@ export interface StreamHooks {
   onTonePatch?: (tone: TonePatchResult) => void
 }
 
-export async function sendChat(messages: Message[] | MultimodalMessage[], signal?: AbortSignal, opts: ChatOpts = {}): Promise<ChatResponse> {
-  let token = getToken()
-  if (!token) {
-    await authenticate()
-    token = getToken()!
-  }
-
-  // apiKey travels as a header, never in the body — keep it out of the spread.
-  const { apiKey, ...bodyOpts } = opts
-  const requestId = uuidv4()
-  const startedAt = Date.now()
-  clog('info', 'chat.request', lastPrompt(messages), {
-    device: opts.device, webSearch: opts.webSearch, byok: !!apiKey, stream: false,
-  }, requestId)
-
-  const res = await fetch(`${BASE}/chat`, {
-    method: 'POST',
-    signal,
-    headers: chatHeaders(token, apiKey, requestId),
-    body: JSON.stringify({ messages, ...bodyOpts }),
-  })
-
-  if (res.status === 401) {
-    localStorage.removeItem('auth_token')
-    await authenticate()
-    return sendChat(messages, signal, opts)
-  }
-
-  if (!res.ok) {
-    let message = `Server error ${res.status}`
-    try {
-      const body = await res.json()
-      if (body?.error && typeof body.error === 'string') message = body.error
-    } catch { /* ignore parse errors */ }
-    clog('error', 'chat.error', message, { status: res.status, ms: Date.now() - startedAt }, requestId)
-    throw new Error(message)
-  }
-
-  const data = await res.json()
-  clog('info', 'chat.response', undefined, {
-    chars: (data.message ?? '').length, sources: data.sources?.length ?? 0, ms: Date.now() - startedAt,
-  }, requestId)
-  return {
-    message: data.message ?? '',
-    sources: data.sources,
-  }
-}
+// NOTE: there is no non-streaming sendChat(). The scaffold had one; nothing
+// here called it — every generation streams, because the tone card renders as
+// the patch arrives. The server still answers `stream: false`, but that path
+// does not offer the tone tool, so it cannot produce a patch (see
+// lib/server/ai-tools.ts runChat vs runChatStream).
 
 export async function sendChatStream(
   messages: Message[] | MultimodalMessage[],

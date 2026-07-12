@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { v4 as uuidv4 } from 'uuid'
-import { sendChatStream, getQuota, initAuth, getProviders, getProviderModels, downloadDiagnostics, type AvailableProvider, type ProviderModel, type MultimodalMessage, type ContentBlock } from '@/lib/api'
+import { sendChatStream, getQuota, initAuth, getProviders, downloadDiagnostics, type MultimodalMessage, type ContentBlock } from '@/lib/api'
 import { installClientLogCapture } from '@/lib/log/client'
 import {
   loadConversations, upsertConversation, deleteConversation, renameConversation,
@@ -12,10 +12,8 @@ import {
   getDefaultDevice, saveDefaultDevice, KATANA_DEVICES, type KatanaDevice,
   deviceInstrumentIssue, deviceInstrumentIssueMessage,
   getApiKey, saveApiKey,
-  getSelectedProvider, migrateLocalStorage,
-  getCustomSystemPrompt, setCustomSystemPrompt,
-  getTemperature, setTemperature,
-  exportAll, importConversationsJson, resetAllData,
+  migrateLocalStorage,
+  importConversationsJson,
   conversationToMarkdown, downloadTextFile,
   getTtsEnabled, setTtsEnabled,
   loadTones, addTone, deleteTone, renameTone, clearAllTones,
@@ -1339,20 +1337,17 @@ export default function Home({
   const [optimisticSpend, setOptimisticSpend] = useState(0)
   const [confirmDelete, setConfirmDelete] = useState<{ label: string; doDelete: () => void } | null>(null)
   const [search, setSearch] = useState('')
-  const [providers, setProviders] = useState<AvailableProvider[]>([])
   // Whether the server can serve free-tier requests (has its own key). Default
   // true so the quota pill shows on a normal deployment; flipped off only when
   // the server reports no key, so we don't advertise free requests that 503.
   const [freeTierAvailable, setFreeTierAvailable] = useState(true)
   const [toolRunning, setToolRunning] = useState<{ name: string; query?: string } | null>(null)
-  // Generation settings: null = use server default. UI shows a placeholder
-  // hint when unset so user knows what value will actually be used.
-  const [customSystemPrompt, setCustomSystemPromptState] = useState<string | null>(null)
-  const [customTemperature, setCustomTemperatureState] = useState<number | null>(null)
-  // Anthropic-only app: provider is fixed, and neither is user-selectable.
-  // Both are still sent on the wire so the server can validate them against
-  // config/providers.yaml rather than silently accepting anything.
-  const [provider, setProviderState] = useState<string>('anthropic')
+  // There are no generation settings. The tone-designer prompt and schema are
+  // built server-side and cannot be overridden; temperature is an operator dial.
+  // Anthropic-only app: the provider is fixed. It's still sent on the wire so the
+  // server validates it against config/providers.yaml rather than accepting
+  // anything — but it is not, and cannot be, a user choice.
+  const provider = 'anthropic'
   // Pre-hydration placeholder only; replaced by the provider's real defaultModel
   // (env-driven, Sonnet) once /api/providers resolves.
   // NOTE: there is deliberately no `model` state. The model is a server-side
@@ -1361,8 +1356,6 @@ export default function Home({
   // Live model list per provider id — populated lazily when the dropdown
   // opens. For local providers this is the actual installed-models list
   // returned by the local server's /v1/models endpoint.
-  const [liveModels, setLiveModels] = useState<Record<string, ProviderModel[]>>({})
-  const [liveModelsLoading, setLiveModelsLoading] = useState(false)
   const [pendingAttachments, setPendingAttachments] = useState<Attachment[]>([])
   // Voice — STT (mic capture → textarea) and TTS (speak assistant
   // replies). Capability is browser-determined; the UI hides each control
@@ -1490,9 +1483,6 @@ export default function Home({
     } else if (initialConvId && typeof window !== 'undefined') {
       window.history.replaceState(null, '', '/')
     }
-    // Generation prefs from localStorage.
-    setCustomSystemPromptState(getCustomSystemPrompt())
-    setCustomTemperatureState(getTemperature())
     // Back/forward navigation handler — when the URL changes via the
     // browser's history (popstate), reload the matching conversation
     // without remounting Home. Skip entirely when persistence is off —
@@ -1534,16 +1524,12 @@ export default function Home({
         return
       }
       try {
-        const { providers: list, features } = await getProviders()
-        setProviders(list)
+        // The provider list itself is not used — the app is Anthropic-only and
+        // there is no picker. This call survives for ONE thing: whether the
+        // server holds a key and can serve the free tier, which drives the quota
+        // pill. Everything else in the payload is ignored.
+        const { features } = await getProviders()
         setFreeTierAvailable(features.freeTier !== false)
-        // Resolve initial provider: stored choice (if still valid + available)
-        // → first available → first in list.
-        const stored = getSelectedProvider()
-        const storedIsValid = stored && list.some(p => p.id === stored && p.available)
-        const firstAvailable = list.find(p => p.available)
-        const chosen = storedIsValid ? stored! : (firstAvailable?.id ?? list[0]?.id ?? 'anthropic')
-        setProviderState(chosen)
       } catch (e) {
         console.error('providers fetch failed:', e)
       }
@@ -1698,14 +1684,6 @@ export default function Home({
     r.start()
   }, [isListening, locale])
 
-  const handleSystemPrompt = useCallback((s: string | null) => {
-    setCustomSystemPromptState(s)
-    setCustomSystemPrompt(s)
-  }, [])
-  const handleTemperature = useCallback((t: number | null) => {
-    setCustomTemperatureState(t)
-    setTemperature(t)
-  }, [])
 
   // ── auto-scroll on new content ──
   useEffect(() => {
@@ -2030,8 +2008,6 @@ export default function Home({
         abort.signal,
         {
           provider, webSearch: true, apiKey,
-          systemPrompt: customSystemPrompt ?? undefined,
-          temperature: customTemperature ?? undefined,
           device,
           instrument: played,
           rig: (() => {
@@ -2131,7 +2107,7 @@ export default function Home({
         setQuotaVersion(v => v + 1)
       }
     }
-  }, [activeId, conversations, provider, apiKey, customSystemPrompt, customTemperature, device, gear, position, buildWireMessages, updateUrl])
+  }, [activeId, conversations, provider, apiKey, device, gear, position, buildWireMessages, updateUrl])
 
   // One-click starter prompts: skip the input field entirely, fire the
   // prompt as a user message immediately. Mirrors the empty-state chip
