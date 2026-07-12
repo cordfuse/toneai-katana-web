@@ -280,7 +280,15 @@ export async function sendChatStream(
   const requestId = uuidv4()
   const startedAt = Date.now()
   clog('info', 'chat.request', lastPrompt(messages), {
-    device: opts.device, webSearch: opts.webSearch, byok: !!apiKey, stream: true,
+    device: opts.device, webSearch: opts.webSearch, stream: true,
+    // Whose key, and whose model choice — the same two facts the server logs, so
+    // a diagnostics download can be read end to end without guessing. `model`
+    // here is what the client ASKED for; the server logs what it actually USED,
+    // and on the free tier those differ by design (the request is ignored).
+    byok: !!apiKey,
+    keyOwner: apiKey ? 'user' : 'server',
+    model: opts.model,
+    modelPicker: opts.model ? 'user' : 'server',
   }, requestId)
 
   // Capture the generated tone's name for the response log without disturbing

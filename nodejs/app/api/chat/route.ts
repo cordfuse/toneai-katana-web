@@ -163,10 +163,21 @@ export async function POST(request: NextRequest) {
       : providerInfo.defaultModel
 
   const requestedModel = typeof body.model === 'string' ? body.model : undefined
-  const model: string =
-    byokKey && requestedModel && isModelValidForProvider(providerId, requestedModel)
-      ? requestedModel
-      : serverModel
+  const userPickedModel = !!byokKey && !!requestedModel && isModelValidForProvider(providerId, requestedModel)
+  const model: string = userPickedModel ? requestedModel! : serverModel
+
+  // WHOSE KEY, AND WHOSE CHOICE. Two independent facts, and the logs must carry
+  // both or they mislead:
+  //
+  //   keyOwner   'server' → WE pay for this request. 'user' → their key pays, and
+  //              the est$ on the cost line is THEIR bill, not ours. Without this,
+  //              a BYOK Opus tone at ~$0.30 reads like a hole in our budget.
+  //   modelPicker 'server' → our TONEAI_MODEL default. 'user' → they chose it in
+  //              Settings. Distinguishes "our default is expensive" from "a user
+  //              chose an expensive model", which are completely different
+  //              problems with completely different fixes.
+  const keyOwner: 'server' | 'user' = byokKey ? 'user' : 'server'
+  const modelPicker: 'server' | 'user' = userPickedModel ? 'user' : 'server'
 
   // Free mode needs the server's key. BYOK brings its own, so the server's
   // key being absent is not an error on that path. Keep the message generic —
@@ -237,11 +248,12 @@ export async function POST(request: NextRequest) {
   const temperature  = TEMPERATURE
   const runOpts = { webSearch: wantWebSearch, temperature, apiKey: byokKey, tone: toneCtx }
 
-  console.log(`[chat] msgs=${messages.length} provider=${provider} model=${model} stream=${!!wantStream} websearch=${wantWebSearch} temp=${temperature} locale=${activeLocale}`)
+  console.log(`[chat] msgs=${messages.length} provider=${provider} model=${model} (${modelPicker}) key=${keyOwner} stream=${!!wantStream} websearch=${wantWebSearch} temp=${temperature} locale=${activeLocale}`)
 
   slog(deviceId, requestId, 'info', 'chat.request', promptSummary(messages), {
     provider, model, stream: !!wantStream, webSearch: wantWebSearch,
     device: toneCtx.device, rig: toneCtx.rig, byok: !!byokKey,
+    keyOwner, modelPicker,
     msgCount: messages.length, locale: activeLocale,
   })
 
@@ -281,16 +293,26 @@ export async function POST(request: NextRequest) {
           push(`data: ${JSON.stringify(event)}\n\n`)
         }
         push(`data: ${JSON.stringify({ type: 'done' })}\n\n`)
+        // The cost is only OURS when the request ran on the server's key. Saying
+        // so on the line matters: a BYOK Opus tone costs ~$0.30, and an
+        // unqualified `est=$0.30` in the log reads as a hole in our budget when
+        // it is in fact the user's own bill.
         console.log(
           `[chat] stream ${streamId} done` +
+          ` model=${model} (${modelPicker}) key=${keyOwner}` +
           ` in=${usage.inputTokens ?? '?'} (billed ${usage.noCacheTokens ?? '?'})` +
           ` out=${usage.outputTokens ?? '?'} prose=${chars}ch` +
           ` cacheR=${usage.cacheReadTokens ?? 0} cacheW=${usage.cacheWriteTokens ?? 0}` +
-          ` searches=${usage.webSearches ?? 0} est=$${usage.estUsd ?? '?'}`,
+          ` searches=${usage.webSearches ?? 0}` +
+          ` est=$${usage.estUsd ?? '?'} ${keyOwner === 'user' ? '(their key)' : '(OURS)'}`,
         )
         slog(deviceId, requestId, 'info', 'chat.response', tone ? `tone: ${tone}` : undefined, {
           ms: Date.now() - startedAt, chars, tone, stream: true,
           model, webSearch: wantWebSearch, byok: !!byokKey,
+          keyOwner, modelPicker,
+          // estUsd is in `usage`. It is a real cost either way — but WHOSE cost is
+          // keyOwner, and any spend rollup must filter on it or it will bill us
+          // for tones our users paid for themselves.
           ...usage,
         })
       } catch (err) {
@@ -300,6 +322,10 @@ export async function POST(request: NextRequest) {
         if (spentFreeQuota && chars === 0) refundQuota(deviceId)
         slog(deviceId, requestId, 'error', 'chat.error', friendlyError(err), {
           ms: Date.now() - startedAt, stream: true,
+          // A failing BYOK request usually means THEIR key is bad (no credit,
+          // revoked, rate-limited) — a completely different diagnosis from our
+          // key failing, and indistinguishable without this.
+          model, keyOwner, modelPicker,
         })
         push(`data: ${JSON.stringify({ type: 'error', message: friendlyError(err) })}\n\n`)
       } finally {
@@ -372,6 +398,7 @@ export async function POST(request: NextRequest) {
     const r = result as { message?: string; patch?: { name?: string } }
     slog(deviceId, requestId, 'info', 'chat.response', undefined, {
       ms: Date.now() - startedAt, chars: r.message?.length ?? 0, tone: r.patch?.name, stream: false,
+      model, keyOwner, modelPicker,
     })
     return NextResponse.json(result)
   } catch (err) {
@@ -381,6 +408,7 @@ export async function POST(request: NextRequest) {
     if (spentFreeQuota) refundQuota(deviceId)
     slog(deviceId, requestId, 'error', 'chat.error', friendlyError(err), {
       ms: Date.now() - startedAt, stream: false,
+      model, keyOwner, modelPicker,
     })
     return NextResponse.json({ error: friendlyError(err) }, { status: 500 })
   }
