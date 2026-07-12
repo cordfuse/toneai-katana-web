@@ -26,9 +26,11 @@ for BOSS Tone Studio.
   bass, neck/bridge/both.
 - **My Tones.** Every patch you generate is saved to revisit, rename, and
   re-download.
-- **Free daily tier, or bring your own key.** Start free on a shared daily
-  quota; add your own Anthropic API key in Settings for unlimited use. Your key
-  is sent per-request and never stored or logged.
+- **Free daily tier, or bring your own key.** Start free — **10 tones a day per
+  device, under a 100/day pool shared by everyone** (both visible under
+  **⋮ → Usage**). Add your own Anthropic API key in Settings for unlimited use
+  and your pick of model, including Opus. Your key is sent per-request and never
+  stored or logged. Full guide: **[BYOK.md](BYOK.md)**.
 - **Themes, OLED by default.** A true-black UI out of the box, plus an
   amp-inspired palette (tweed, amber, British, oxblood, and more).
 
@@ -37,9 +39,8 @@ for BOSS Tone Studio.
 **The model never writes a `.tsl` directly.** It fills in a constrained
 tone-intent schema (amp type, gain, EQ, the booster / mod / fx / delay / reverb
 chain), and a **deterministic writer** converts that intent into the liveset —
-building from a golden template that round-trips byte-clean against a real
-export for **every** supported device. A patch the amp rejects is worse than no patch
-at all.
+building from a golden template that round-trips byte-clean against a reference
+export. A patch the amp rejects is worse than no patch at all.
 
 ```
 "Comfortably Numb, second solo"
@@ -59,22 +60,33 @@ variants within a generation write a byte-identical patch — they differ in
 hardware (wattage, speaker, cab), not patch data. So the picker lists **one
 entry per generation**.
 
-The full BOSS KATANA lineup is supported — **9 devices, every writer verified
-byte-clean against a real export.** Each writer is proven by round-tripping a
-genuine liveset before a single patch ships (`a patch the amp rejects is worse
-than no patch`).
+All nine amps in the lineup have a writer, and every writer round-trips
+byte-clean against a reference liveset. But **round-tripping a file is not the
+same as an amp accepting it**, and it is worth being straight about which is
+which:
+
+- **KATANA MkII** — verified against the real hardware. The maintainer owns one;
+  patches have been loaded and played.
+- **KATANA Gen 3** — the second amp we'd stand behind today.
+- **Everything else** — built from format research and verified against reference
+  files, **but never confirmed on the physical amp.** No one on the project owns
+  one.
+
+If you own one of the unconfirmed amps, **generating a tone and telling us what
+happened is the single most useful thing you can do** — working or broken, that is
+the information the writer needs. Open an issue.
 
 | Device | Instrument | Status |
 |---|---|---|
-| **KATANA MkI** | Guitar | Supported — the original 2019 KATANA; its own "GT" named-parameter liveset ([docs](docs/mk1-format-notes.md)) |
-| **KATANA MkII** | Guitar | Supported ([docs](docs/tsl-format.md)) |
-| **KATANA Gen 3** | Guitar | Supported ([docs](docs/gen3-format-notes.md)) |
-| **KATANA:AIR** | Guitar | Supported — effects-only; amp delivered as hand-dial instructions ([docs](docs/air-format-notes.md)) |
-| **KATANA:GO** | Guitar | Supported ([docs](docs/go-format-notes.md)) |
-| **KATANA:GO Bass** | Bass | Supported ([docs](docs/go-format-notes.md)) |
-| **KATANA Bass** | Bass | Supported — desktop 110 / 210 / Head ([docs](docs/katana-bass-format-notes.md)) |
-| **WAZA-AIR** | Guitar | Supported — wireless headphone amp, effects-only ([docs](docs/waza-air-format-notes.md)) |
-| **WAZA-AIR Bass** | Bass | Supported — wireless headphone amp, effects-only ([docs](docs/waza-air-format-notes.md)) |
+| **KATANA MkII** | Guitar | **Verified on hardware** ([docs](docs/tsl-format.md)) |
+| **KATANA Gen 3** | Guitar | **Verified** ([docs](docs/gen3-format-notes.md)) |
+| **KATANA MkI** | Guitar | Writer built, hardware untested — the original 2019 KATANA; its own "GT" named-parameter liveset ([docs](docs/mk1-format-notes.md)) |
+| **KATANA:AIR** | Guitar | Writer built, hardware untested — effects-only; amp delivered as hand-dial instructions ([docs](docs/air-format-notes.md)) |
+| **KATANA:GO** | Guitar | Writer built, hardware untested ([docs](docs/go-format-notes.md)) |
+| **KATANA:GO Bass** | Bass | Writer built, hardware untested ([docs](docs/go-format-notes.md)) |
+| **KATANA Bass** | Bass | Writer built, hardware untested — desktop 110 / 210 / Head ([docs](docs/katana-bass-format-notes.md)) |
+| **WAZA-AIR** | Guitar | Writer built, hardware untested — wireless headphone amp, effects-only ([docs](docs/waza-air-format-notes.md)) |
+| **WAZA-AIR Bass** | Bass | Writer built, hardware untested — wireless headphone amp, effects-only ([docs](docs/waza-air-format-notes.md)) |
 
 Within a generation the 50 / 100 / Head / Artist variants write a byte-identical
 patch — they differ in hardware (wattage, speaker, cab), not patch data — so the
@@ -163,12 +175,55 @@ platform-managed deploy (e.g. Render), set **Dockerfile Path** to
 | `QUOTA_RESET_DATE` | no | — | One-shot goodwill reset. Set to **today's UTC date** (`YYYY-MM-DD`) and redeploy: today's global + per-device counters are zeroed once, at boot. **Self-disarms at midnight UTC** — a stale value is inert. It's a date rather than a flag because a flag would re-fire on every restart and silently remove your daily cap |
 | `TONEAI_MODEL` | no | `claude-haiku-4-5` | Free-tier tone-design model. Operator-only — a free-tier client cannot pick a model (it spends this key). **BYOK users can**, from the `config/providers.yaml` allow-list, since their own key pays |
 | `TONEAI_TEMPERATURE` | no | `1.0` | Sampling temperature. Operator-only — there is no per-chat override |
+| `ADMIN_TOKEN` | no | — | Unlocks `GET /api/admin/logs` (see below). **Unset → the route 404s and the admin surface does not exist.** Use a long random value: `openssl rand -base64 36` |
+| `DB_PATH` | no | `data/katana.db` | SQLite path. **On a platform host this must point at the persistent disk** (e.g. `/app/data/katana.db`) — anywhere else and every deploy wipes the quota, the logs, and every device's auth |
 | `TONEAI_CONFIG_DIR` | no | bundled | Where branding / themes config is read from |
 
-The SQLite DB lives at `data/katana.db`. On an ephemeral-filesystem host, mount
-a persistent volume at `/app/data` so device auth and quota survive deploys.
+The SQLite DB holds device auth, the quota counters, and the diagnostic log. On an
+ephemeral-filesystem host, mount a persistent volume at `/app/data` and point
+`DB_PATH` at it, so all three survive a deploy.
 
 See [`docker/.env.example`](docker/.env.example) for the full annotated list.
+
+### Operator telemetry
+
+Every request logs what it cost, which model ran, **whose key paid** (`keyOwner`:
+the operator's or a BYOK user's), and **what the model actually dialled** — not
+just the tone's name:
+
+```
+[chat] stream <id> done model=claude-haiku-4-5 (server) key=server in=35136 (billed 10096)
+       out=785 cacheR=10516 cacheW=14524 searches=1 est=$0.0432 (OURS)
+[chat]   patch: Rebel Rebel — Clean Twin g45 b35 m55 t75 p70 · OD Treble Boost d50 t75 ·
+       FX1 Comp · Delay off · Reverb Room 1.2s
+```
+
+Refusals are logged too (`429` quota, `503` missing key), because **the requests
+you turn away are the signal that tells you whether the limits are right** — the
+served ones only tell you what they cost.
+
+With `ADMIN_TOKEN` set, the same data is queryable across all users and survives
+the platform's log window (30-day retention on the persistent disk):
+
+```bash
+curl -H "x-admin-token: $ADMIN_TOKEN" \
+  "https://<host>/api/admin/logs?summary=1"          # rollups: spend by who paid,
+                                                     # refusals by cause, amp mix
+curl -H "x-admin-token: $ADMIN_TOKEN" \
+  "https://<host>/api/admin/logs?event=chat.rejected" # who got turned away, and why
+curl -H "x-admin-token: $ADMIN_TOKEN" \
+  "https://<host>/api/admin/logs?days=7&prompts=1"    # a week, including prompt text
+```
+
+**User prompt text is withheld unless you pass `prompts=1`.** The default response
+is safe to paste into an issue or a screenshot. The token goes in a **header, never
+a querystring** — a URL-borne secret leaks into access logs, browser history, and
+`Referer`. It is compared in constant time, and bad tokens are logged with the
+caller's IP.
+
+The **amp mix** in the summary is the quality signal worth watching: if one amp
+becomes most of the output, the model has collapsed onto a favourite and the tones
+are going samey — a regression invisible in cost and latency.
 
 ## Format docs
 
