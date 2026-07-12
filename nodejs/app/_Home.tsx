@@ -13,7 +13,7 @@ import {
   deviceInstrumentIssue, deviceInstrumentIssueMessage,
   getApiKey, saveApiKey,
   migrateLocalStorage,
-  importConversationsJson,
+
   conversationToMarkdown, downloadTextFile,
   getTtsEnabled, setTtsEnabled,
   loadTones, addTone, deleteTone, renameTone, clearAllTones,
@@ -1365,7 +1365,6 @@ export default function Home({
   const [isListening, setIsListening] = useState(false)
   const [ttsEnabled, setTtsEnabledState] = useState(false)
   const patchInputRef = useRef<HTMLInputElement>(null)
-  const importJsonRef = useRef<HTMLInputElement>(null)
 
   const abortRef = useRef<AbortController | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -2603,27 +2602,6 @@ export default function Home({
           </div>
         </div>
       </div>
-
-      {/* hidden import file input — triggered by Settings "Import…" button */}
-      <input
-        ref={importJsonRef}
-        type="file"
-        accept="application/json,.json"
-        className="hidden"
-        onChange={async e => {
-          const f = e.target.files?.[0]
-          e.target.value = ''
-          if (!f) return
-          try {
-            const text = await f.text()
-            const res = importConversationsJson(text)
-            setConversations(loadConversations())
-            setError(`Imported ${res.imported} conversation${res.imported === 1 ? '' : 's'} (${res.skipped} skipped as duplicates or invalid).`)
-          } catch (err) {
-            setError(`Import failed: ${err instanceof Error ? err.message : String(err)}`)
-          }
-        }}
-      />
 
       {settingsOpen && (
         <SettingsPanel

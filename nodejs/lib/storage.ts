@@ -471,49 +471,22 @@ export function setTtsEnabled(enabled: boolean) {
 // was dropped: the client serialized a `systemPrompt` the server never read, and
 // stored a `temperature` no UI could ever write. Both are gone.
 
-// ─── Export / Import / Reset ─────────────────────────────────────────────────
+// ─── Reset ───────────────────────────────────────────────────────────────────
+//
+// There is no whole-app export/import. The scaffold had a JSON backup pair, and
+// it exported CONVERSATIONS ONLY — not the tone library, not the gear. In a chat
+// app conversations are the asset; here they aren't. A "backup" that restores
+// chats and loses a user's saved tones and instruments is worse than none: it
+// promises safety it doesn't deliver. Neither half was reachable anyway (no
+// Export button, and the Import file input was never wired to one).
+//
+// To download a conversation, use conversationToMarkdown + downloadTextFile —
+// that IS wired, and it's the transcript a user actually wants. If real
+// backup/restore is ever wanted, it should be designed to cover tones + gear +
+// chats, not resurrected from this.
 
-export interface ToneaiExport {
-  toneai_export_version: 1
-  exported_at: string
-  conversations: Conversation[]
-}
-
-export function exportAll(): ToneaiExport {
-  return {
-    toneai_export_version: 1,
-    exported_at: new Date().toISOString(),
-    conversations: loadConversations(),
-  }
-}
-
-export interface ImportResult { imported: number; skipped: number; total: number }
-
-export function importConversationsJson(json: string): ImportResult {
-  const parsed = JSON.parse(json)
-  if (typeof parsed !== 'object' || parsed === null) throw new Error('Invalid file')
-  if (parsed.toneai_export_version !== 1) throw new Error('Unsupported export version')
-  if (!Array.isArray(parsed.conversations)) throw new Error('No conversations in file')
-
-  const existing = loadConversations()
-  const existingIds = new Set(existing.map(c => c.id))
-  let imported = 0
-  let skipped = 0
-  for (const conv of parsed.conversations as Conversation[]) {
-    if (!conv?.id || typeof conv.id !== 'string') { skipped++; continue }
-    if (existingIds.has(conv.id)) { skipped++; continue }
-    existing.push(conv)
-    existingIds.add(conv.id)
-    imported++
-  }
-  existing.sort((a, b) => b.updatedAt - a.updatedAt)
-  saveConversations(existing)
-  return { imported, skipped, total: parsed.conversations.length }
-}
-
-// Wipes every toneai_* localStorage key (conversations, theme, provider, model,
-// web search, generation settings, send key). Also drops the auth token +
-// device id so the next session starts completely fresh.
+// Wipes every toneai_* localStorage key. Also drops the auth token + device id
+// so the next session starts completely fresh.
 export function resetAllData() {
   if (typeof window === 'undefined') return
   const toRemove: string[] = []
