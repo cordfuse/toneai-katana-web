@@ -6,6 +6,7 @@ import type { ModelMessage, LanguageModel } from 'ai'
 import { anthropic, createAnthropic } from '@ai-sdk/anthropic'
 
 import { DEFAULT_MODEL } from './models'
+import { summarizeUsage, type RequestUsage } from './usage'
 import {
   buildToneTool, buildTonePatchEvent, TONE_TOOL_NAME,
   type ToneContext, type TonePatchEvent,
@@ -181,26 +182,42 @@ interface ResolvedSearch {
   consumeSourceChunks: boolean
 }
 
-// Max web searches the model may run per assistant turn. This is the primary
-// cost governor for search (searches bill to the server key on the free tier);
-// combined with FREE_DAILY_LIMIT it bounds the daily search ceiling to
-// requests/day * maxUses. Operator-tunable; clamped 1..10 so a bad value can't
-// disable search (0) or blow the budget. Default 3 — enough to identify the
-// artist/song rig, pull settings, and cross-check, without wandering.
+// Max web searches the model may run per assistant turn. Caps the per-request
+// SEARCH FEE ($10/1,000 searches). Note this is NOT the main cost governor —
+// measurement showed roughly one search per request, so the fee is a small share
+// of the bill. The tokens the search RESULTS cost are the expensive part, and
+// dynamic filtering (below) is what governs those. Clamped 1..10 so a bad value
+// can't disable search (0) or blow the budget.
 const WEB_SEARCH_MAX_USES: number = (() => {
   const raw = parseInt(process.env.TONEAI_WEB_SEARCH_MAX_USES ?? '', 10)
   return Number.isFinite(raw) ? Math.min(10, Math.max(1, raw)) : 3
 })()
 
+// DYNAMIC FILTERING (web_search_20260209) — TRIED AND MEASURED, REJECTED
+// 2026-07-12. Do NOT "upgrade" to it without re-measuring: the docs make it sound
+// like a free win for exactly our problem, and on this workload it is the
+// opposite.
+//
+// The pitch: with basic search every result is loaded into context whole, most of
+// it irrelevant; with 20260209 Claude writes and runs code that filters results
+// BEFORE they reach the context — "this reduces token use on search-heavy
+// requests." True — for search-HEAVY requests.
+//
+// Measured, same three artist-rig prompts, Sonnet 4.6, totalUsage per request:
+//
+//   basic   (20250305)   33k / 36k / 38k input, 1 search    $0.093 / $0.099 / $0.105
+//   dynamic (20260209)   96k / 64k / 67k input, 2 searches  $0.195 / $0.127 / $0.136
+//
+// About 2x WORSE. Dynamic filtering runs the search from inside code execution:
+// the model writes filter code, runs it, iterates. That machinery has its own
+// token cost, and it provoked two searches where basic made one. A tone design
+// does roughly ONE search — there isn't enough result payload for the filtering
+// to recover what the wrapper costs. It would likely win on a genuinely
+// search-heavy task (many searches over large pages). That isn't this app.
 function resolveSearch(webSearchEnabled: boolean, providerId: string): ResolvedSearch {
   if (!webSearchEnabled || !hasNativeWebSearch(providerId)) {
     return { tools: {}, consumeSourceChunks: false }
   }
-  // Anthropic's server-side web search. We pick the 2025-03-05 version (rather
-  // than 2026-02-09) because the newer one defaults to "programmatic" tool
-  // calling, which Haiku 4.5 doesn't support and any model without the
-  // programmatic capability rejects with HTTP 400. 2025-03-05 works across all
-  // current Claude models (Opus/Sonnet/Haiku). maxUses caps searches per turn.
   return {
     tools: { web_search: anthropic.tools.webSearch_20250305({ maxUses: WEB_SEARCH_MAX_USES }) },
     consumeSourceChunks: true,
@@ -232,6 +249,12 @@ export interface RunChatOptions {
    * design_tone_patch tool is offered and its calls become tone_patch events.
    */
   tone?: ToneContext
+  /**
+   * Called once with the request's token usage after the run completes.
+   * Best-effort and non-blocking: a failure here must never affect the user's
+   * response, so the caller's errors are swallowed.
+   */
+  onUsage?: (usage: RequestUsage) => void
 }
 
 export type StreamEvent =
@@ -315,6 +338,11 @@ export async function* runChatStream(
   // Track how many sources we've already yielded so each tool round only
   // yields the newly-collected ones, not the full accumulating list.
   let yieldedSources = 0
+  // Count the searches ourselves. Anthropic bills $10/1,000 and reports the count
+  // as `server_tool_use.web_search_requests`, but the AI SDK does not surface
+  // that on its usage object — so the tool-calls we see on the stream ARE the
+  // measurement. One web_search tool-call = one billed search.
+  let webSearches = 0
 
   for await (const chunk of result.fullStream) {
     switch (chunk.type) {
@@ -336,6 +364,7 @@ export async function* runChatStream(
         // labelling on the web_search case.
         let query: string | undefined
         if (chunk.toolName === 'web_search') {
+          webSearches++
           const input = chunk.input as { query?: string } | undefined
           query = input?.query
         }
@@ -374,6 +403,19 @@ export async function* runChatStream(
       default:
         // finish, finish-step, start, reasoning, source — not surfaced today.
         break
+    }
+  }
+
+  // Token accounting, once the run is done. `totalUsage` — NOT `usage` — because
+  // it sums every step: in a tool loop the accumulated search results are
+  // re-sent as input on each step, and that amplification is the thing we're
+  // trying to see. Strictly best-effort; a usage-reporting failure must never
+  // turn a delivered answer into an error.
+  if (options.onUsage) {
+    try {
+      options.onUsage(summarizeUsage(await result.totalUsage, model, webSearches))
+    } catch {
+      /* diagnostics are never load-bearing */
     }
   }
 }
