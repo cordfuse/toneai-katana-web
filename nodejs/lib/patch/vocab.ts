@@ -23,6 +23,8 @@ import {
 import {
   BASS_AMP_TYPES, BASS_DRIVE_TYPES, BASS_FX_TYPES, BASS_DELAY_TYPES, BASS_REVERB_TYPES,
 } from './bass/enums'
+import { WAZA_AMP_TYPES } from './waza/enums'
+import { WAZA_BASS_AMP_TYPES, WAZA_BASS_BOOSTER_TYPES, WAZA_BASS_FX_TYPES } from './waza-bass/enums'
 
 export interface DeviceVocab {
   amps: readonly string[]
@@ -49,6 +51,16 @@ const MK3_VOCAB: DeviceVocab = {
 // INSTRUCTIONS (not written to the .tsl; docs/air-format-notes.md).
 const AIR_VOCAB: DeviceVocab = {
   amps: AIR_AMP_TYPES, boosters: AIR_BOOSTER_NAMES, fx: AIR_FX_NAMES,
+  delays: AIR_DELAY_NAMES, reverbs: AIR_REVERB_NAMES,
+}
+// WAZA-AIR (guitar) — same effect vocabulary as KATANA:AIR, own amp panel voices.
+const WAZA_VOCAB: DeviceVocab = {
+  amps: WAZA_AMP_TYPES, boosters: AIR_BOOSTER_NAMES, fx: AIR_FX_NAMES,
+  delays: AIR_DELAY_NAMES, reverbs: AIR_REVERB_NAMES,
+}
+// WAZA-AIR BASS — bass amp/booster/FX voices; delay + reverb shared with Air.
+const WAZA_BASS_VOCAB: DeviceVocab = {
+  amps: WAZA_BASS_AMP_TYPES, boosters: WAZA_BASS_BOOSTER_TYPES, fx: WAZA_BASS_FX_TYPES,
   delays: AIR_DELAY_NAMES, reverbs: AIR_REVERB_NAMES,
 }
 // GO guitar mode — Gen 3-style, amp stored in-patch. 5-voice amp like Air.
@@ -78,6 +90,8 @@ const BY_GENERATION: Partial<Record<Generation, DeviceVocab>> = {
   go: GO_VOCAB,
   gobass: GO_BASS_VOCAB,
   basshead: BASS_VOCAB,
+  waza: WAZA_VOCAB,
+  wazabass: WAZA_BASS_VOCAB,
 }
 
 export function vocabForGeneration(gen: Generation): DeviceVocab {

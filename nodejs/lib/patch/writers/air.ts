@@ -26,6 +26,20 @@ import { writePatchName as writeName16 } from '../writer'
 
 const AIR_META = { formatRev: '0000', device: 'KATANA-AIR', name: '', keyPrefix: 'User%' }
 
+// The flat "Air" family — KATANA:AIR, WAZA-AIR, WAZA-AIR BASS — all share this
+// 2335-byte User%Patch image and the SAME effect offsets (verified: the WAZA apps
+// only differ from KATANA:AIR in system/control params and the amp/effect VOICES,
+// not the patch layout). So the writer is config-driven: one builder, one offset
+// map, per-device template + enum tables + device string.
+export interface AirModel {
+  meta: { formatRev: string; device: string; keyPrefix: string }
+  template: () => SectionMap
+  boosters: Map<string, number>
+  fx: Map<string, number>
+  delays: Map<string, number>
+  reverbs: Map<string, number>
+}
+
 // Verified byte offsets within the flat Patch image (docs/air-format-notes.md).
 const O = {
   name:    0,                                             // 16 ASCII
@@ -58,25 +72,25 @@ function lookup(map: Map<string, number>, name: string): number | undefined {
   return map.get(name)
 }
 
-/** Set one mod slot (FX1/FX2): type + switch. Off (or no Air equivalent) → SW 0. */
-function writeFx(s: SectionMap, slot: { sw: number; type: number }, fx: ModFx | undefined): void {
+/** Set one mod slot (FX1/FX2): type + switch. Off (or no equivalent) → SW 0. */
+function writeFx(s: SectionMap, slot: { sw: number; type: number }, fx: ModFx | undefined, fxMap: Map<string, number>): void {
   if (!fx?.on) { put(s, slot.sw, 0); return }
-  const b = lookup(AIR_FX_BY_NAME, fx.type)
-  if (b === undefined) { put(s, slot.sw, 0); return } // no Air counterpart → leave off
+  const b = lookup(fxMap, fx.type)
+  if (b === undefined) { put(s, slot.sw, 0); return } // no counterpart → leave off
   put(s, slot.sw, 1)
   put(s, slot.type, b)
 }
 
-/** Build the Air flat Patch image from tone intent, overlaid on the template.
- *  Effects only — the amp is not stored (see airAmpSettings). */
-export function buildAirSections(patch: TonePatch): SectionMap {
-  const s = templateSections()
+/** Build an Air-family flat Patch image from tone intent, overlaid on the model's
+ *  template. Effects only — the amp is not stored (see airAmpSettings). */
+export function buildAirImage(patch: TonePatch, model: AirModel): SectionMap {
+  const s = model.template()
 
   // Patch name — 16 ASCII at offset 0.
   writeName16(s.get('Patch')!, patch.name)
 
   // Booster / OD (ODDS block).
-  const bst = lookup(AIR_BOOSTER_BY_NAME, patch.booster.type)
+  const bst = lookup(model.boosters, patch.booster.type)
   if (patch.booster.on && bst !== undefined) {
     put(s, O.booster.sw, 1)
     put(s, O.booster.type, bst)
@@ -88,11 +102,11 @@ export function buildAirSections(patch: TonePatch): SectionMap {
   }
 
   // Mod slots: fx1 → FX1, fx2 → FX2.
-  writeFx(s, O.fx1, patch.fx1)
-  writeFx(s, O.fx2, patch.fx2)
+  writeFx(s, O.fx1, patch.fx1, model.fx)
+  writeFx(s, O.fx2, patch.fx2, model.fx)
 
   // Delay.
-  const dly = lookup(AIR_DELAY_BY_NAME, patch.delay.type)
+  const dly = lookup(model.delays, patch.delay.type)
   if (patch.delay.on && dly !== undefined) {
     put(s, O.delay.sw, 1)
     put(s, O.delay.type, dly)
@@ -104,7 +118,7 @@ export function buildAirSections(patch: TonePatch): SectionMap {
   }
 
   // Reverb.
-  const rev = lookup(AIR_REVERB_BY_NAME, patch.reverb.type)
+  const rev = lookup(model.reverbs, patch.reverb.type)
   if (patch.reverb.on && rev !== undefined) {
     put(s, O.reverb.sw, 1)
     put(s, O.reverb.type, rev)
@@ -117,9 +131,29 @@ export function buildAirSections(patch: TonePatch): SectionMap {
   return s
 }
 
-/** Build the Air .tsl liveset object for one patch (effects only). */
+/** KATANA:AIR model — the reference Air device. */
+export const KATANA_AIR_MODEL: AirModel = {
+  meta: AIR_META,
+  template: templateSections,
+  boosters: AIR_BOOSTER_BY_NAME,
+  fx: AIR_FX_BY_NAME,
+  delays: AIR_DELAY_BY_NAME,
+  reverbs: AIR_REVERB_BY_NAME,
+}
+
+/** Build the KATANA:AIR flat Patch image (effects only). */
+export function buildAirSections(patch: TonePatch): SectionMap {
+  return buildAirImage(patch, KATANA_AIR_MODEL)
+}
+
+/** Build a .tsl liveset object for one patch of any Air-family model. */
+export function writeAirFamilyTsl(patch: TonePatch, model: AirModel): object {
+  return toTsl(buildAirImage(patch, model), { ...model.meta, name: patch.name })
+}
+
+/** Build the KATANA:AIR .tsl liveset object for one patch (effects only). */
 export function writeAirTsl(patch: TonePatch): object {
-  return toTsl(buildAirSections(patch), { ...AIR_META, name: patch.name })
+  return writeAirFamilyTsl(patch, KATANA_AIR_MODEL)
 }
 
 export interface AirAmpSettings {

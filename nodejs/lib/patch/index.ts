@@ -23,6 +23,7 @@ import { writeAirTsl } from './writers/air'
 import { writeGoTsl, writeGoBassTsl } from './writers/go'
 import { writeBassTsl } from './writers/bass'
 import { writeMk1Tsl } from './writers/mk1-liveset'
+import { writeWazaAirTsl, writeWazaAirBassTsl } from './writers/waza'
 
 // MkI registers its flat-image writer as a side effect.
 import './writers/mk1'
@@ -42,6 +43,10 @@ export { buildAirSections, writeAirTsl, airAmpSettings, type AirAmpSettings } fr
 export { buildGoSections, writeGoTsl, buildGoBassSections, writeGoBassTsl } from './writers/go'
 export { buildBassSections, writeBassTsl } from './writers/bass'
 export { buildMk1Patch, writeMk1Tsl } from './writers/mk1-liveset'
+export {
+  buildWazaAirSections, buildWazaAirBassSections, writeWazaAirTsl, writeWazaAirBassTsl,
+  wazaAmpSettings, wazaBassAmpSettings,
+} from './writers/waza'
 export {
   type ConvertNote, type ConvertedIntent, type ConvertedTone,
   canConvert, convertIntent, convertTone,
@@ -76,6 +81,8 @@ export function writePatchTsl(
   if (generation === 'mk2') return writeMk2Tsl(patch)
   if (generation === 'mk3') return writeMk3Tsl(patch)
   if (generation === 'air') return writeAirTsl(patch)
+  if (generation === 'waza') return writeWazaAirTsl(patch)
+  if (generation === 'wazabass') return writeWazaAirBassTsl(patch)
   if (generation === 'go') return writeGoTsl(patch)
   if (generation === 'gobass') return writeGoBassTsl(patch)
   if (generation === 'basshead') return writeBassTsl(patch)

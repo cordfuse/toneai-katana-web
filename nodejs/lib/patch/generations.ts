@@ -9,7 +9,7 @@
 
 import type { KatanaDevice } from '@/lib/storage'
 
-export type Generation = 'mk1' | 'mk2' | 'mk3' | 'go' | 'gobass' | 'air' | 'basshead'
+export type Generation = 'mk1' | 'mk2' | 'mk3' | 'go' | 'gobass' | 'air' | 'basshead' | 'waza' | 'wazabass'
 
 export type Confidence =
   /** Writer validated against real sample files (round-trip byte-identical). */
@@ -27,7 +27,7 @@ export interface GenerationProfile {
   /** The `device` string written into the .tsl liveset. */
   deviceString: string
   /** Librarian binary extension for a single patch. */
-  fileExt: '.kat' | '.kat2' | '.kat3' | '.katgo' | '.katair' | '.katbass'
+  fileExt: '.kat' | '.kat2' | '.kat3' | '.katgo' | '.katair' | '.katbass' | '.wazaair' | '.wazabass'
   /** Device selector index from the app (MK1=1, MK2=2, MK3=3, GO=4). Air is a
    *  separate app (BOSS Tone Studio for KATANA:AIR), not the guitar Librarian —
    *  index 5 marks it as out-of-band rather than a Librarian slot. */
@@ -129,6 +129,34 @@ export const GENERATIONS: Record<Generation, GenerationProfile> = {
     confidence: 'verified',
     addressing: 'golden-template overlay (bass/template.ts) + UserPatch% block offsets (bass enums); .tsl formatRev 0000, device "KATANA BASS", verified vs data/fixtures/ bass export',
   },
+  waza: {
+    id: 'waza',
+    label: 'WAZA-AIR',
+    deviceString: 'WAZA-AIR', // confirmed from a real export
+    fileExt: '.wazaair',
+    selectorIndex: 5,
+    // 'verified': WAZA-AIR is the flat 2335-byte User%Patch image (same shape +
+    // effect offsets as KATANA:AIR — verified from the app model + a real bank),
+    // and the golden template round-trips a real export byte-for-byte
+    // (waza/__tests__). Effects-only: the amp is global panel state, surfaced as
+    // hand-dial instructions (wazaAmpSettings). Booster/FX/delay/reverb voices are
+    // KATANA:AIR's; amp voices open with FLAT instead of ACOUSTIC.
+    confidence: 'verified',
+    addressing: 'golden-template overlay (waza/template.ts) + flat User%Patch offsets (shared with Air); .tsl formatRev 0000, effects-only, verified vs data/fixtures/ WAZA-AIR bank',
+  },
+  wazabass: {
+    id: 'wazabass',
+    label: 'WAZA-AIR Bass',
+    deviceString: 'WAZA-AIR BASS',
+    fileExt: '.wazabass',
+    selectorIndex: 5,
+    // 'verified': same flat User%Patch image + effect offsets as the Air family,
+    // with bass-specific amp/booster/FX voices (delay + reverb shared). Golden
+    // template round-trips a real bass export byte-for-byte (waza-bass/__tests__).
+    // Effects-only; amp surfaced as instructions (wazaBassAmpSettings).
+    confidence: 'verified',
+    addressing: 'golden-template overlay (waza-bass/template.ts) + flat User%Patch offsets (shared with Air); .tsl formatRev 0000, effects-only, verified vs data/fixtures/ WAZA-AIR BASS bank',
+  },
   air: {
     id: 'air',
     label: 'KATANA:AIR',
@@ -159,6 +187,8 @@ export function generationForDevice(device: KatanaDevice): Generation {
   if (device.endsWith('-mk1')) return 'mk1'
   if (device.endsWith('-mk2')) return 'mk2'
   if (device.endsWith('-mk3')) return 'mk3'
+  if (device === 'waza-air-bass') return 'wazabass'  // before the waza-air prefix
+  if (device.startsWith('waza-air')) return 'waza'
   if (device.startsWith('katana-air')) return 'air'
   if (device === 'katana-go-bass') return 'gobass'  // before the katana-go prefix
   if (device.startsWith('katana-go')) return 'go'

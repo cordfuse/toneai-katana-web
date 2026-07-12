@@ -243,6 +243,7 @@ export function saveTheme(theme: Theme) {
 export type KatanaDevice =
   | 'katana-mk1' | 'katana-mk2' | 'katana-mk3' | 'katana-air'
   | 'katana-go' | 'katana-go-bass' | 'katana-bass'
+  | 'waza-air' | 'waza-air-bass'
 
 // `supported` gates what the user can actually select. MkII and Gen 3 are both
 // proven against real exports today; the others stay LISTED (so players see their
@@ -272,6 +273,8 @@ export const KATANA_DEVICES: { id: KatanaDevice; label: string; instrument: Kata
   { id: 'katana-go-bass', label: 'KATANA:GO Bass',  instrument: 'bass',   supported: true  },
   { id: 'katana-bass',    label: 'KATANA Bass',     instrument: 'bass',   supported: true  },
   { id: 'katana-mk1',     label: 'KATANA MkI',      instrument: 'guitar', supported: true  },
+  { id: 'waza-air',       label: 'WAZA-AIR',        instrument: 'guitar', supported: true  },
+  { id: 'waza-air-bass',  label: 'WAZA-AIR Bass',   instrument: 'bass',   supported: true  },
 ]
 
 const DEVICE_INSTRUMENT = new Map<KatanaDevice, KatanaInstrument>(

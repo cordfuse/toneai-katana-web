@@ -39,8 +39,8 @@ export function katanaSystemPrompt(ctx: ToneContext): string {
     ``,
     `Target amp: ${ctx.deviceLabel}.`,
     // ── Device format facts (what the amp file can hold) ──
-    ctx.device === 'katana-air'
-      ? `NOTE: the KATANA:AIR patch file stores ONLY the effects chain — the amp voicing (AMP TYPE + gain/EQ) is a global front-panel setting, not saved per patch. Still choose the best amp voice and realistic knob values; the app delivers them to the player as hand-dial instructions alongside the file. Pick the amp voice from the list below.`
+    ctx.device === 'katana-air' || ctx.device === 'waza-air' || ctx.device === 'waza-air-bass'
+      ? `NOTE: the ${ctx.deviceLabel} patch file stores ONLY the effects chain — the amp voicing (AMP TYPE + gain/EQ) is a global front-panel setting, not saved per patch. Still choose the best amp voice and realistic knob values; the app delivers them to the player as hand-dial instructions alongside the file. Pick the amp voice from the list below.`
       : ``,
     ctx.device === 'katana-bass'
       ? `NOTE: this amp has ONE combined time slot — it can run a delay OR a reverb, not both at once. Choose the one the sound depends on (a slapback/echo part → delay; an ambient wash → reverb).`
