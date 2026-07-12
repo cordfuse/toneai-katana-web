@@ -471,29 +471,23 @@ export function setTtsEnabled(enabled: boolean) {
 // was dropped: the client serialized a `systemPrompt` the server never read, and
 // stored a `temperature` no UI could ever write. Both are gone.
 
-// ─── Reset ───────────────────────────────────────────────────────────────────
+// ─── No export / import / reset ──────────────────────────────────────────────
 //
-// There is no whole-app export/import. The scaffold had a JSON backup pair, and
-// it exported CONVERSATIONS ONLY — not the tone library, not the gear. In a chat
-// app conversations are the asset; here they aren't. A "backup" that restores
-// chats and loses a user's saved tones and instruments is worse than none: it
-// promises safety it doesn't deliver. Neither half was reachable anyway (no
-// Export button, and the Import file input was never wired to one).
+// The scaffold shipped all three. None was reachable here, and none is the right
+// feature for this app:
+//
+//   exportAll / importConversationsJson — a JSON backup pair that covered
+//     CONVERSATIONS ONLY: not the tone library, not the gear. In a chat app
+//     conversations are the asset; here they aren't. A backup that restores
+//     chats and loses a user's saved tones and instruments promises a safety it
+//     doesn't deliver.
+//
+//   resetAllData — wiped every toneai_* key plus auth_token and device_id. It
+//     had no caller and no button. Note what it did NOT do: reset the server's
+//     quota. The daily pool is a global counter in SQLite keyed on the UTC date,
+//     not per-device — so clearing storage never bought anyone free requests.
 //
 // To download a conversation, use conversationToMarkdown + downloadTextFile —
-// that IS wired, and it's the transcript a user actually wants. If real
-// backup/restore is ever wanted, it should be designed to cover tones + gear +
-// chats, not resurrected from this.
-
-// Wipes every toneai_* localStorage key. Also drops the auth token + device id
-// so the next session starts completely fresh.
-export function resetAllData() {
-  if (typeof window === 'undefined') return
-  const toRemove: string[] = []
-  for (let i = 0; i < localStorage.length; i++) {
-    const k = localStorage.key(i)
-    if (!k) continue
-    if (k.startsWith('toneai_') || k === 'auth_token' || k === 'device_id') toRemove.push(k)
-  }
-  for (const k of toRemove) localStorage.removeItem(k)
-}
+// that IS wired, and it's the transcript a user actually wants. If backup /
+// restore or a "clear my data" control is ever wanted, design it deliberately to
+// cover tones + gear + chats; don't resurrect these.
