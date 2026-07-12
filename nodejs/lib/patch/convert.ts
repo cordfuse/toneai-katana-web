@@ -79,6 +79,14 @@ const AMP_TO_CANON: Partial<Record<Generation, Record<string, AmpCanon>>> = {
   mk2: MK2_AMP_CANON, mk3: MK3_AMP_CANON, air: AIR_AMP_CANON, go: GO_AMP_CANON,
 }
 
+// Generations that can take part in a conversion — every one with a writer + a
+// tone vocabulary. Guitar generations translate amps through the character canon
+// above; the bass generations (gobass / basshead) have no such canon (their amp
+// voices — VINTAGE / FLAT / MODERN — aren't guitar characters), so they translate
+// amps by NAME instead, like effects. The instrument gate in canConvert keeps the
+// two families from ever crossing, so name-vs-canon never mix within one convert.
+const CONVERTIBLE = new Set<Generation>(['mk2', 'mk3', 'air', 'go', 'gobass', 'basshead'])
+
 // Representative amp per bucket, per generation. Air has no PUSHED voice, so
 // pushed maps to its nearest, CRUNCH.
 const AMP_FROM_CANON: Partial<Record<Generation, Record<AmpCanon, string>>> = {
@@ -88,12 +96,20 @@ const AMP_FROM_CANON: Partial<Record<Generation, Record<AmpCanon, string>>> = {
   go: { acoustic: 'ACOUSTIC', clean: 'CLEAN', pushed: 'CRUNCH', crunch: 'CRUNCH', lead: 'LEAD', brown: 'BROWN' },
 }
 
-/** Translate an amp name from one generation to another via its character bucket.
- *  Falls back to 'crunch' if the source name is unrecognized (defensive — a valid
- *  intent always resolves). Returns the target name; never fails. */
-function convertAmp(name: string, from: Generation, to: Generation): string {
-  const canon = AMP_TO_CANON[from]?.[name] ?? 'crunch'
-  return AMP_FROM_CANON[to]?.[canon] ?? name
+/** Translate an amp name from one generation to another. Two paths:
+ *   • Both generations have a character canon (guitar) → map through the bucket.
+ *   • Neither does (bass↔bass) → match by name, falling back to the target's first
+ *     voice when the source voice has no counterpart (e.g. GO bass FLAT, which the
+ *     desktop KATANA BASS lacks → its first voice, VINTAGE).
+ *  Returns a name that is always valid on the target; never fails. */
+function convertAmp(name: string, from: Generation, to: Generation, targetAmps: readonly string[]): string {
+  const fromCanon = AMP_TO_CANON[from]
+  const toCanon = AMP_FROM_CANON[to]
+  if (fromCanon && toCanon) {
+    const canon = fromCanon[name] ?? 'crunch'
+    return toCanon[canon] ?? name
+  }
+  return matchByName(name, targetAmps) ?? targetAmps[0] ?? name
 }
 
 // ── conversion ───────────────────────────────────────────────────────────────
@@ -119,12 +135,14 @@ export interface ConvertedIntent {
  *      guard; it also lets bass↔bass conversion work for free once a second bass
  *      device with a canon exists, without leaking across instruments.
  *   2. Different generation — nothing to do converting a device to itself.
- *   3. Both generations have an amp-character canon (a proven convert vocabulary).
+ *   3. Both generations are convertible — have a writer + tone vocabulary. Guitar
+ *      devices translate amps by character canon; bass devices by name (see
+ *      convertAmp). The instrument gate keeps the two families from crossing.
  */
 export function canConvert(from: KatanaDevice, to: KatanaDevice): boolean {
   if (instrumentForDevice(from) !== instrumentForDevice(to)) return false
   const f = generationForDevice(from), t = generationForDevice(to)
-  return f !== t && !!AMP_TO_CANON[f] && !!AMP_TO_CANON[t]
+  return f !== t && CONVERTIBLE.has(f) && CONVERTIBLE.has(t)
 }
 
 /** Re-voice a tone intent for another device. Numerics copy unchanged; names are
@@ -139,8 +157,8 @@ export function convertIntent(patch: TonePatch, from: KatanaDevice, to: KatanaDe
 
   const vocab = vocabForGeneration(toGen)
 
-  // Amp — always present; character-bucket remap.
-  const newAmp = convertAmp(patch.ampA.type, fromGen, toGen)
+  // Amp — always present; character-bucket remap (guitar) or name match (bass).
+  const newAmp = convertAmp(patch.ampA.type, fromGen, toGen, vocab.amps)
   if (newAmp !== patch.ampA.type) notes.push({ field: 'Amp', from: patch.ampA.type, to: newAmp })
   next.ampA.type = newAmp
 
@@ -161,10 +179,24 @@ export function convertIntent(patch: TonePatch, from: KatanaDevice, to: KatanaDe
   convertFx(next.fx1, 'FX 1')
   convertFx(next.fx2, 'FX 2')
 
-  // Delay / reverb — identical sets across gens, so a match always exists; the
-  // ?? keeps us safe if that ever stops being true.
-  if (patch.delay.on) next.delay.type = matchByName(patch.delay.type, vocab.delays) ?? next.delay.type
-  if (patch.reverb.on) next.reverb.type = matchByName(patch.reverb.type, vocab.reverbs) ?? next.reverb.type
+  // Delay / reverb — sets are identical across the guitar gens, but the two bass
+  // devices differ (GO bass has PAN / STEREO delays the desktop KATANA BASS lacks).
+  // Match by name; when there's no counterpart, fall back to the target's first
+  // type (keeping the timing/feedback/level intact) rather than leave a name the
+  // writer would reject. Note the swap so the UI can surface it.
+  const remapTimeFx = (
+    fx: { on: boolean; type: string }, target: readonly string[], label: string,
+  ) => {
+    if (!fx.on) return
+    const m = matchByName(fx.type, target)
+    if (m) { fx.type = m; return }
+    if (target.length && fx.type !== target[0]) {
+      notes.push({ field: label, from: fx.type, to: target[0] })
+      fx.type = target[0]
+    }
+  }
+  remapTimeFx(next.delay, vocab.delays, 'Delay')
+  remapTimeFx(next.reverb, vocab.reverbs, 'Reverb')
 
   return { patch: next, notes }
 }
