@@ -160,6 +160,7 @@ platform-managed deploy (e.g. Render), set **Dockerfile Path** to
 | `FREE_DAILY_LIMIT` | no | `100` | Global daily free-tier ceiling, shared by everyone — **this is the budget cap**. A served tone costs ~$0.03, so 100/day ≈ $3/day. Resets midnight UTC |
 | `FREE_DEVICE_DAILY_LIMIT` | no | `10` | What one device may take from that pool per day — the fairness cap, so one visitor can't drain the day for everyone. Kept at 10% of the pool |
 | `TONEAI_WEB_SEARCH_MAX_USES` | no | `2` | Max web searches per response (clamped 1–10). Search always-on; this is the per-request cost cap |
+| `QUOTA_RESET_DATE` | no | — | One-shot goodwill reset. Set to **today's UTC date** (`YYYY-MM-DD`) and redeploy: today's global + per-device counters are zeroed once, at boot. **Self-disarms at midnight UTC** — a stale value is inert. It's a date rather than a flag because a flag would re-fire on every restart and silently remove your daily cap |
 | `TONEAI_MODEL` | no | `claude-haiku-4-5` | Free-tier tone-design model. Operator-only — a free-tier client cannot pick a model (it spends this key). **BYOK users can**, from the `config/providers.yaml` allow-list, since their own key pays |
 | `TONEAI_TEMPERATURE` | no | `1.0` | Sampling temperature. Operator-only — there is no per-chat override |
 | `TONEAI_CONFIG_DIR` | no | bundled | Where branding / themes config is read from |

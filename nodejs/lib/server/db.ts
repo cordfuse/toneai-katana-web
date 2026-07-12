@@ -58,9 +58,91 @@ if (process.env.NEXT_PHASE !== 'phase-production-build') {
       ctx        TEXT
     );
     CREATE INDEX IF NOT EXISTS idx_logs_device_ts ON logs (device_id, ts);
+
+    -- Records that an operator-requested quota reset has already run for a given
+    -- UTC date. Makes the reset IDEMPOTENT across restarts: Render recycles a
+    -- container on every deploy, on a crash, and on an instance replacement, and
+    -- without this a crash loop on reset day would re-zero the counters on every
+    -- boot — silently removing the daily cap entirely. See applyQuotaReset().
+    CREATE TABLE IF NOT EXISTS quota_reset (
+      date       TEXT PRIMARY KEY,
+      applied_at INTEGER NOT NULL
+    );
   `)
+  applyQuotaReset(db)
 } else {
   db = null as unknown as DatabaseSync
+}
+
+/**
+ * Operator-requested quota reset — a goodwill "everyone gets their allowance
+ * back today" switch, driven entirely from the environment. Runs once at boot.
+ *
+ *     QUOTA_RESET_DATE=2026-07-12
+ *
+ * Set it to TODAY'S UTC date and redeploy: today's global and per-device counters
+ * are zeroed. No admin endpoint, no shell access, no secret to leak.
+ *
+ * WHY A DATE AND NOT A BOOLEAN. A bare flag (QUOTA_RESET=1) fires on every boot,
+ * and the app cannot unset its own environment variable. Render restarts a
+ * container on deploys, crashes and instance recycles — so a flag left set would
+ * silently re-zero the quota forever, which is the same as having no daily cap at
+ * all, with nothing in the UI to tell you. A DATE disarms itself: once the clock
+ * passes midnight UTC, a forgotten value is just an inert string.
+ *
+ * The quota_reset table then makes it idempotent WITHIN the day, so three
+ * restarts on reset day still perform exactly one reset.
+ *
+ * Deliberately NOT wired to `DELETE FROM logs` or anything else. It resets
+ * counters. A switch that quietly does more than its name says is how an operator
+ * destroys data they meant to keep.
+ */
+function applyQuotaReset(database: DatabaseSync): void {
+  const requested = process.env.QUOTA_RESET_DATE?.trim()
+  if (!requested) return
+
+  const today = new Date().toISOString().slice(0, 10)
+  if (requested !== today) {
+    // Stale or future value — inert, but say so. A silent no-op here looks
+    // identical to a reset that worked, and the operator is waiting to hear.
+    console.log(
+      `[quota] QUOTA_RESET_DATE=${requested} is not today (${today}) — no reset. ` +
+      `Set it to today's UTC date to reset the counters.`,
+    )
+    return
+  }
+
+  const already = database
+    .prepare('SELECT date FROM quota_reset WHERE date = ?')
+    .get(today) as unknown as { date: string } | undefined
+  if (already) {
+    console.log(`[quota] reset for ${today} already applied — skipping (idempotent across restarts).`)
+    return
+  }
+
+  const before = database
+    .prepare('SELECT count FROM daily_quota WHERE date = ?')
+    .get(today) as unknown as { count: number } | undefined
+
+  database.exec('BEGIN')
+  try {
+    database.prepare('DELETE FROM daily_quota WHERE date = ?').run(today)
+    database.prepare('DELETE FROM daily_quota_device WHERE date = ?').run(today)
+    database.prepare('INSERT INTO quota_reset (date, applied_at) VALUES (?, ?)').run(today, Date.now())
+    database.exec('COMMIT')
+  } catch (err) {
+    database.exec('ROLLBACK')
+    console.error('[quota] reset FAILED — counters unchanged:', err)
+    return
+  }
+
+  // Loud on purpose. This hands free capacity back to the world; it should never
+  // be something you discover later in a bill.
+  console.log(
+    `[quota] RESET APPLIED for ${today} — global counter was ${before?.count ?? 0}, now 0; ` +
+    `all per-device counters cleared. Remove QUOTA_RESET_DATE when you're done ` +
+    `(it self-disarms at midnight UTC regardless).`,
+  )
 }
 
 export default db
