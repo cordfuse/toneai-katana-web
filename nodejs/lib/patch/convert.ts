@@ -21,7 +21,7 @@
 // is always importable (docs/CLAUDE.md: "a patch the amp rejects is worse than
 // no patch"). What was approximated is reported in `notes` for the UI to show.
 
-import type { KatanaDevice } from '@/lib/storage'
+import { type KatanaDevice, instrumentForDevice } from '@/lib/storage'
 import type { TonePatch, ModFx } from './intent'
 import { generationForDevice, type Generation } from './generations'
 import { vocabForGeneration } from './vocab'
@@ -111,9 +111,18 @@ export interface ConvertedIntent {
   notes: ConvertNote[]
 }
 
-/** True when both devices have a proven writer + vocabulary, so conversion is
- *  meaningful (today: MkII and Gen 3). */
+/** True when a tone for `from` can be meaningfully re-voiced for `to`.
+ *
+ *  Three gates:
+ *   1. SAME INSTRUMENT — a guitar tone is never converted to a bass rig or vice
+ *      versa (different amps/EQ/voicing). This is the explicit cross-instrument
+ *      guard; it also lets bass↔bass conversion work for free once a second bass
+ *      device with a canon exists, without leaking across instruments.
+ *   2. Different generation — nothing to do converting a device to itself.
+ *   3. Both generations have an amp-character canon (a proven convert vocabulary).
+ */
 export function canConvert(from: KatanaDevice, to: KatanaDevice): boolean {
+  if (instrumentForDevice(from) !== instrumentForDevice(to)) return false
   const f = generationForDevice(from), t = generationForDevice(to)
   return f !== t && !!AMP_TO_CANON[f] && !!AMP_TO_CANON[t]
 }

@@ -25,6 +25,10 @@ test('canConvert only across proven, distinct generations', () => {
   assert.equal(canConvert('katana-go', 'katana-air'), true, 'GO <-> Air both convertible')
   assert.equal(canConvert('katana-mk2', 'katana-mk2'), false, 'same device')
   assert.equal(canConvert('katana-mk2', 'katana-mk1'), false, 'MkI has no convert vocabulary')
+  // Cross-instrument is blocked explicitly by the instrument gate, both directions.
+  assert.equal(canConvert('katana-mk2', 'katana-go-bass'), false, 'guitar tone -> bass rig blocked')
+  assert.equal(canConvert('katana-go', 'katana-go-bass'), false, 'GO guitar -> GO bass blocked')
+  assert.equal(canConvert('katana-go-bass', 'katana-mk2'), false, 'bass tone -> guitar rig blocked')
 })
 
 test('MkII -> Gen 3: names land in the Gen 3 vocabulary', () => {

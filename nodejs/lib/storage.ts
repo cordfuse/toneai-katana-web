@@ -249,6 +249,12 @@ export type KatanaDevice =
 // amp is on the roadmap) but are not selectable, and the picker shows a note to
 // that effect. Flip a row to true as each writer is proven.
 //
+/** Instrument a device is played with. First-class because it gates cross-device
+ *  conversion: a guitar tone must never be converted to a bass rig or vice versa
+ *  (different amps, EQ, voicing entirely). Dual-mode hardware (GO) is split into
+ *  one device per instrument, so every entry is unambiguously one or the other. */
+export type KatanaInstrument = 'guitar' | 'bass'
+
 // MK1/MK2/MK3/GO mirror the guitar Katana Librarian's device selector. `katana-air`
 // is the KATANA:AIR (its own BOSS Tone Studio app) — an effects-only .tsl (the amp
 // is global panel state, so a generated Air tone ships amp settings as INSTRUCTIONS
@@ -257,15 +263,26 @@ export type KatanaDevice =
 // block layout, bass vocabulary, pending a real bass export; docs/go-format-notes.md).
 // `katana-bass` is a separate roadmap placeholder for the DESKTOP bass line
 // (110 / 210 / Head) — confirmed to share the MkII .tsl family; writer pending.
-export const KATANA_DEVICES: { id: KatanaDevice; label: string; supported: boolean }[] = [
-  { id: 'katana-mk2',     label: 'KATANA MkII',     supported: true  },
-  { id: 'katana-mk3',     label: 'KATANA Gen 3',    supported: true  },
-  { id: 'katana-air',     label: 'KATANA:AIR',      supported: true  },
-  { id: 'katana-go',      label: 'KATANA:GO',       supported: true  },
-  { id: 'katana-go-bass', label: 'KATANA:GO Bass',  supported: true  },
-  { id: 'katana-mk1',     label: 'KATANA MkI',      supported: false },
-  { id: 'katana-bass',    label: 'KATANA Bass',     supported: false },
+export const KATANA_DEVICES: { id: KatanaDevice; label: string; instrument: KatanaInstrument; supported: boolean }[] = [
+  { id: 'katana-mk2',     label: 'KATANA MkII',     instrument: 'guitar', supported: true  },
+  { id: 'katana-mk3',     label: 'KATANA Gen 3',    instrument: 'guitar', supported: true  },
+  { id: 'katana-air',     label: 'KATANA:AIR',      instrument: 'guitar', supported: true  },
+  { id: 'katana-go',      label: 'KATANA:GO',       instrument: 'guitar', supported: true  },
+  { id: 'katana-go-bass', label: 'KATANA:GO Bass',  instrument: 'bass',   supported: true  },
+  { id: 'katana-mk1',     label: 'KATANA MkI',      instrument: 'guitar', supported: false },
+  { id: 'katana-bass',    label: 'KATANA Bass',     instrument: 'bass',   supported: false },
 ]
+
+const DEVICE_INSTRUMENT = new Map<KatanaDevice, KatanaInstrument>(
+  KATANA_DEVICES.map(d => [d.id, d.instrument]),
+)
+
+/** The instrument a device is played with. Defaults to guitar for an unknown id
+ *  (the overwhelming majority) and falls back to a `bass` substring so a future
+ *  bass device is never mis-typed as guitar before its row is added. */
+export function instrumentForDevice(device: KatanaDevice): KatanaInstrument {
+  return DEVICE_INSTRUMENT.get(device) ?? (device.includes('bass') ? 'bass' : 'guitar')
+}
 
 const DEVICE_KEY = 'katana_device'
 const DEFAULT_DEVICE: KatanaDevice = 'katana-mk2'
