@@ -155,42 +155,71 @@ interface AppSettings {
 
 **This app is Anthropic-only.** Not multi-provider. Two modes:
 
-| Mode | Key | Limit |
-|------|-----|-------|
-| **Free** | server's key | **5 tones/device/day**, under a **50/day global pool** shared by everyone |
-| **BYOK** | user's Anthropic key | unbounded; never touches either counter |
+| Mode | Key | Model | Limit |
+|------|-----|-------|-------|
+| **Free** | server's key | Haiku 4.5, fixed — the client's `model` is ignored outright, because it would be spending the operator's key | **10 tones/device/day**, under a **100/day global pool** shared by everyone |
+| **BYOK** | user's Anthropic key | **user's choice** from the `providers.yaml` allow-list (incl. Opus) — their key pays, so their call | unbounded; never touches either counter |
 
 ### The numbers are a budget, and they were measured
 
-A served request costs **~$0.09** — measured, not estimated (usage is now logged
-on every request; see `lib/server/usage.ts`). So the global pool IS the bill:
-50/day ≈ **$4.50/day, ~$135/month** at full draw.
+A served tone costs **~$0.03** — measured, not estimated (usage is logged on every
+request; see `lib/server/usage.ts`). So the global pool IS the bill:
+100/day ≈ **$3/day, ~$90/month** at full draw, and only if the pool is drained
+every day.
 
-It defaulted to **1000/day** for months, which is a **~$90/day** ceiling nobody
-had chosen. That is how a $20 day happened.
+It defaulted to **1000/day** for months, which at the model in use then (~$0.09/tone)
+was a **~$90/day** ceiling nobody had chosen. That is how a $20 day happened.
 
-Where the ~$0.09 goes on a request that runs one web search:
+Keep the per-device cap at **10% of the pool**. 10-of-100 and 5-of-50 are the same
+fairness guarantee — it is the *ratio*, not the absolute, that decides how many
+people a full pool can serve.
+
+Where the ~$0.03 goes on a tone that runs one web search:
 
 | | share |
 |---|---|
-| Cache writes (a 5-step tool loop re-caching a growing prefix) | ~34% |
-| Billed input (mostly search results, which bill as input tokens) | ~30% |
-| Output (the write-up) | ~20% |
-| The web-search fee itself ($10/1,000 searches) | ~11% |
-| Cache reads | ~5% |
+| Cache writes (the search results, re-cached each request) | ~45% |
+| Billed input (mostly the search results themselves) | ~20% |
+| Output (the write-up) | ~12% |
+| The web-search fee itself ($10/1,000 searches) | ~33% of the *floor* |
+| Cache reads | ~4% |
 
-Two things to know before trying to "fix" this:
+**Everything below is a measured dead end. Read it before "optimising" the cost.**
 
 - **The search payload is not optional, and the obvious remedy backfires.** Search
   results bill as input tokens. The documented fix — the web-search tool's
   *dynamic filtering* — was measured here and made it about **2x worse**: it runs
   the search inside code execution, and that wrapper costs more than the filtering
-  saves when a request makes ~1 search. Don't re-run the experiment; the numbers
-  are in the comment in `lib/server/ai-tools.ts`.
+  saves when a request makes ~1 search.
+- **A 1-hour cache TTL is worse, not better.** The theory is that the ~15.7k system
+  prefix keeps expiring and being rewritten. It does not — `cacheR` logs a constant
+  ~15.7k, so at the default 5m TTL it is already a reliable hit. The ~10k written
+  per request is the *search results*, which nothing reads back in a single-turn
+  conversation. A 1h TTL doesn't remove that write, it just reprices it 1.25x → 2x:
+  $0.033 became $0.051 per tone. Reverted.
+- **`maxUses` is insurance, not a saving.** Across 10 measured requests — including
+  deliberately obscure prompts — the model used exactly **one** search every time,
+  and zero on an abstract mood request. The ceiling is never reached.
+- **The search fee is a hard floor.** $10/1,000 searches is model-independent. No
+  model choice gets a researched tone below ~$0.016.
 - **Both limits are needed; they do different jobs.** The global cap is the
   BUDGET. The per-device cap is FAIRNESS — without it one visitor drains the whole
   day, spending the budget *and* denying everyone else. `device_id` is a
   client-generated UUID, so the device cap is a speed bump, not a wall.
+
+### Whose key, whose model — the logs must say
+
+Every log line (server console, `slog`, and the client diagnostics download)
+carries two independent facts:
+
+| field | meaning |
+|---|---|
+| `keyOwner` | `server` = **we** pay. `user` = their key pays, and the `est$` is **their** bill |
+| `modelPicker` | `server` = our `TONEAI_MODEL` default. `user` = they chose it in Settings |
+
+**Any spend rollup must filter on `keyOwner`** or it will bill the operator for
+tones users paid for themselves. A BYOK Opus tone costs ~$0.30 — without the flag
+that reads as a hole in the budget rather than someone else's invoice.
 
 Consequences, in the order they'll bite:
 

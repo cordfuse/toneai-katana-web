@@ -157,10 +157,10 @@ platform-managed deploy (e.g. Render), set **Dockerfile Path** to
 |---|---|---|---|
 | `JWT_SECRET` | **yes** | — | Signs device tokens. `openssl rand -base64 32` |
 | `ANTHROPIC_API_KEY` | for free tier | — | Powers the shared free daily quota. Unset = BYOK only |
-| `FREE_DAILY_LIMIT` | no | `50` | Global daily free-tier ceiling, shared by everyone — **this is the budget cap**. A served request costs ~$0.09, so 50/day ≈ $4.50/day. Resets midnight UTC |
-| `FREE_DEVICE_DAILY_LIMIT` | no | `5` | What one device may take from that pool per day — the fairness cap, so one visitor can't drain the day for everyone |
-| `TONEAI_WEB_SEARCH_MAX_USES` | no | `3` | Max web searches per response (clamped 1–10). Search always-on; this is the per-request cost cap |
-| `TONEAI_MODEL` | no | `claude-sonnet-4-6` | Tone-design model. Operator-only — the client cannot pick a model (it spends this key on the free tier). Must be an id in `config/providers.yaml` |
+| `FREE_DAILY_LIMIT` | no | `100` | Global daily free-tier ceiling, shared by everyone — **this is the budget cap**. A served tone costs ~$0.03, so 100/day ≈ $3/day. Resets midnight UTC |
+| `FREE_DEVICE_DAILY_LIMIT` | no | `10` | What one device may take from that pool per day — the fairness cap, so one visitor can't drain the day for everyone. Kept at 10% of the pool |
+| `TONEAI_WEB_SEARCH_MAX_USES` | no | `2` | Max web searches per response (clamped 1–10). Search always-on; this is the per-request cost cap |
+| `TONEAI_MODEL` | no | `claude-haiku-4-5` | Free-tier tone-design model. Operator-only — a free-tier client cannot pick a model (it spends this key). **BYOK users can**, from the `config/providers.yaml` allow-list, since their own key pays |
 | `TONEAI_TEMPERATURE` | no | `1.0` | Sampling temperature. Operator-only — there is no per-chat override |
 | `TONEAI_CONFIG_DIR` | no | bundled | Where branding / themes config is read from |
 

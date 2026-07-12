@@ -32,15 +32,23 @@
 import db from './db'
 
 /** The operator's daily budget ceiling, shared by everyone. THIS NUMBER IS THE
- *  BILL: a served request costs roughly $0.09 (measured — see lib/server/usage.ts),
- *  so 50/day is about $4.50/day, ~$135/month worst case. It was 1000 by default,
- *  which was a ~$90/day ceiling nobody had chosen. Change it deliberately. */
-export const FREE_DAILY_LIMIT = parseInt(process.env.FREE_DAILY_LIMIT ?? '50', 10)
+ *  BILL: a served tone costs roughly $0.03 (measured on Haiku 4.5 — see
+ *  lib/server/usage.ts), so 100/day is about $3/day, ~$90/month worst case, and
+ *  only if the pool is drained every single day.
+ *
+ *  It was 1000 by default — a ceiling nobody had chosen, which at the old model's
+ *  ~$0.09/tone was ~$90 PER DAY. Change this deliberately: it is the only thing
+ *  bounding what a day can cost. */
+export const FREE_DAILY_LIMIT = parseInt(process.env.FREE_DAILY_LIMIT ?? '100', 10)
 
-/** What one device may take from that pool per day. Enough to genuinely try the
- *  product (a few tones plus a retry), small enough that the pool serves ten
- *  people a day rather than one. */
-export const FREE_DEVICE_DAILY_LIMIT = parseInt(process.env.FREE_DEVICE_DAILY_LIMIT ?? '5', 10)
+/** What one device may take from that pool per day. Deliberately 10% of the pool:
+ *  generous enough to genuinely try the product (several tones plus retries),
+ *  bounded enough that one visitor cannot drain the day for everyone else.
+ *
+ *  Keep the RATIO if you change either number — 10-of-100 and 5-of-50 are the same
+ *  fairness guarantee, and it is the ratio, not the absolute, that decides how
+ *  many people a full pool can serve. */
+export const FREE_DEVICE_DAILY_LIMIT = parseInt(process.env.FREE_DEVICE_DAILY_LIMIT ?? '10', 10)
 
 /** UTC date, `YYYY-MM-DD`. The quota resets at midnight UTC. */
 function today(): string {

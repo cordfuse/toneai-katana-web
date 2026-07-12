@@ -26,10 +26,10 @@ Measured, a tone costs roughly **3 cents**. The free tier is capped at:
 
 | Limit | Value |
 |---|---|
-| Per device, per day | **5 tones** |
-| Shared pool, per day (everyone) | **50 tones** |
+| Per device, per day | **10 tones** |
+| Shared pool, per day (everyone) | **100 tones** |
 
-Both reset at midnight UTC. The shared pool is the important one: if the day's 50
+Both reset at midnight UTC. The shared pool is the important one: if the day's 100
 tones are gone, they're gone for everybody, even if you personally have some left.
 You can see both numbers live in the app under **⋮ → Usage**.
 
@@ -191,6 +191,8 @@ TONEAI_MODEL=claude-sonnet-4-6
 # yourself is the server's key, and the quota applies to it.
 FREE_DAILY_LIMIT=1000
 FREE_DEVICE_DAILY_LIMIT=1000
+# (The hosted app defaults to 100 and 10. On your own instance you're the only
+#  user and it's your key either way, so raise them.)
 
 # How many web searches the model may run per tone. Raise it if you find
 # tones for obscure material are under-researched.
