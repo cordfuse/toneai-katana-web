@@ -99,19 +99,32 @@ export async function getProviders(): Promise<ProvidersResponse> {
 
 // ─── Free-tier quota ─────────────────────────────────────────────────────────
 
-export interface QuotaResult {
+export interface QuotaCounter {
   remaining: number
   limit: number
-  /** ISO timestamp of the next UTC midnight, when the pool refills. */
+}
+
+export interface QuotaResult {
+  /** This device's own daily allowance. */
+  device: QuotaCounter
+  /** The pool shared by every free user — the operator's daily budget. */
+  global: QuotaCounter
+  /** ISO timestamp of the next UTC midnight, when both refill. */
   resetsAt: string
+  /** False when the call went out before auth completed; `device` is then a
+   *  placeholder (a full allowance), not this device's real count. */
+  identified: boolean
 }
 
 /**
- * Global free-tier counter. Unauthenticated by design — it exposes only an
- * aggregate count, and the pill needs it before the first chat request.
+ * Both free-tier counters. The token is sent when we have one — without it the
+ * server still returns the shared pool, so a cold load isn't blocked on auth.
  */
 export async function getQuota(): Promise<QuotaResult> {
-  const res = await fetch(`${BASE}/quota`)
+  const token = getToken()
+  const res = await fetch(`${BASE}/quota`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  })
   if (!res.ok) throw new Error(`Quota fetch failed: ${res.status}`)
   return res.json()
 }

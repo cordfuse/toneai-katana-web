@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDeviceIdFromRequest } from '@/lib/server/jwt'
-import { checkAndIncrementQuota, refundQuota } from '@/lib/server/quota'
+import { checkAndIncrementQuota, refundQuota, FREE_DEVICE_DAILY_LIMIT } from '@/lib/server/quota'
 import {
   runChat, runChatStream, findProvider, isModelValidForProvider,
 } from '@/lib/server/ai-tools'
@@ -167,16 +167,28 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // Quota: free mode only, a single shared daily pool. BYOK bypasses it (it
-  // costs us no tokens). The slot is reserved up front (before the LLM call)
-  // so concurrent requests can't over-serve; if the request then fails without
-  // delivering output, the error paths below refund it via refundQuota().
+  // Quota: free mode only. TWO limits — this device's daily allowance, and the
+  // shared pool underneath it (see lib/server/quota.ts for why both). BYOK
+  // bypasses both; it costs us no tokens. Slots are reserved up front (before the
+  // LLM call) so concurrent requests can't over-serve; a request that then fails
+  // without delivering output refunds them via refundQuota(deviceId).
+  //
+  // The two refusals get DIFFERENT words on purpose. "You've used your share" and
+  // "the pool everyone shares is empty" feel completely different to a user, and
+  // have different fixes — one is wait-or-BYOK, the other is nothing-you-did.
   let spentFreeQuota = false
   if (!byokKey) {
-    const quota = checkAndIncrementQuota()
+    const quota = checkAndIncrementQuota(deviceId)
     if (!quota.allowed) {
-      const error = "Today's free requests have all been used, shared across everyone. Add your own Anthropic API key in Settings to keep going, or come back tomorrow."
-      return NextResponse.json({ error, remaining: quota.remaining }, { status: 429 })
+      const error = quota.blockedBy === 'device'
+        ? `You've used your ${FREE_DEVICE_DAILY_LIMIT} free tones for today. Add your own Anthropic API key in Settings for unlimited use, or come back tomorrow.`
+        : "Today's free tones have all been used — the pool is shared across everyone. Add your own Anthropic API key in Settings to keep going, or come back tomorrow."
+      return NextResponse.json({
+        error,
+        blockedBy: quota.blockedBy,
+        deviceRemaining: quota.deviceRemaining,
+        globalRemaining: quota.globalRemaining,
+      }, { status: 429 })
     }
     spentFreeQuota = true
   }
@@ -272,7 +284,7 @@ export async function POST(request: NextRequest) {
         console.error(`[chat] stream ${streamId} error:`, err)
         // Refund the free slot only if the run failed before delivering any
         // output — a partial stream already spent tokens, so it stays counted.
-        if (spentFreeQuota && chars === 0) refundQuota()
+        if (spentFreeQuota && chars === 0) refundQuota(deviceId)
         slog(deviceId, requestId, 'error', 'chat.error', friendlyError(err), {
           ms: Date.now() - startedAt, stream: true,
         })
@@ -353,7 +365,7 @@ export async function POST(request: NextRequest) {
     console.error('[chat] error:', err)
     // Non-stream runChat either returns a full result or throws — a throw means
     // nothing was delivered, so refund the reserved free slot.
-    if (spentFreeQuota) refundQuota()
+    if (spentFreeQuota) refundQuota(deviceId)
     slog(deviceId, requestId, 'error', 'chat.error', friendlyError(err), {
       ms: Date.now() - startedAt, stream: false,
     })
