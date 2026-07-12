@@ -259,7 +259,7 @@ export async function POST(request: NextRequest) {
         console.log(
           `[chat] stream ${streamId} done` +
           ` in=${usage.inputTokens ?? '?'} (billed ${usage.noCacheTokens ?? '?'})` +
-          ` out=${usage.outputTokens ?? '?'}` +
+          ` out=${usage.outputTokens ?? '?'} prose=${chars}ch` +
           ` cacheR=${usage.cacheReadTokens ?? 0} cacheW=${usage.cacheWriteTokens ?? 0}` +
           ` searches=${usage.webSearches ?? 0} est=$${usage.estUsd ?? '?'}`,
         )
