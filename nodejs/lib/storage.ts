@@ -285,6 +285,56 @@ export function instrumentForDevice(device: KatanaDevice): KatanaInstrument {
   return DEVICE_INSTRUMENT.get(device) ?? (device.includes('bass') ? 'bass' : 'guitar')
 }
 
+// ─── Device × played-instrument rule ─────────────────────────────────────────
+//
+// Two axes, deliberately independent (docs — instrument-voicing rule):
+//   • the DEVICE is the amp → it fixes the patch FORMAT (which .tsl gets written).
+//   • the played INSTRUMENT (your active gear) → it drives the VOICING only.
+// They are NOT symmetric, because the amps aren't:
+//   • Guitar amps are general-purpose — a bass through a guitar KATANA is a real,
+//     common rig. Guitar amp + guitar / bass / no gear are ALL allowed.
+//   • Bass amps are purpose-built — a KATANA Bass only has bass preamp voices and
+//     a bass-shaped EQ/effects set, so an electric guitar through it produces a
+//     bass-voiced patch no guitarist wants. Bass amp + guitar gear is BLOCKED.
+// A device must be chosen at all — there is no silent default at generate time.
+
+/** The instrument the player is actually holding (their active gear's kind). */
+export type PlayedInstrument = KatanaInstrument
+
+export type DeviceInstrumentIssue =
+  /** No (valid, supported) amp is selected — the writer has no target. */
+  | { code: 'no-device' }
+  /** A guitar is being played through a bass amp — not a supported combination. */
+  | { code: 'guitar-on-bass-amp' }
+
+/**
+ * Validate a device against the instrument being played. Returns `null` when the
+ * combination is allowed to generate, or an issue code when it must be blocked.
+ * A null/absent `played` is always allowed — voicing then falls back to the amp's
+ * own class. Shared by the client pre-submit guard and the server 400.
+ */
+export function deviceInstrumentIssue(
+  device: KatanaDevice | null | undefined,
+  played: PlayedInstrument | null | undefined,
+): DeviceInstrumentIssue | null {
+  if (!device || !SUPPORTED_DEVICES.has(device)) return { code: 'no-device' }
+  if (instrumentForDevice(device) === 'bass' && played === 'guitar') {
+    return { code: 'guitar-on-bass-amp' }
+  }
+  return null
+}
+
+/** User-facing, actionable copy for a blocked combination. Shared client+server
+ *  so the pre-submit message and the server error read identically. */
+export function deviceInstrumentIssueMessage(issue: DeviceInstrumentIssue): string {
+  switch (issue.code) {
+    case 'no-device':
+      return 'Select an amp before generating a tone.'
+    case 'guitar-on-bass-amp':
+      return "A bass amp can't voice an electric guitar. Switch to a guitar KATANA, or set a bass as your active gear."
+  }
+}
+
 const DEVICE_KEY = 'katana_device'
 const DEFAULT_DEVICE: KatanaDevice = 'katana-mk2'
 

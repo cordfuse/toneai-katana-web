@@ -9,11 +9,12 @@ import { createStream, attachReplay } from '@/lib/server/stream-buffer'
 import { resolveLocalizableString, languageNameForLocale } from '@/lib/i18n'
 import { resolveLocale } from '@/lib/i18n/server'
 import { katanaSystemPrompt, type ToneContext } from '@/lib/server/tone'
-import { KATANA_DEVICES, type KatanaDevice } from '@/lib/storage'
+import {
+  KATANA_DEVICES, type KatanaDevice, type PlayedInstrument,
+  deviceInstrumentIssue, deviceInstrumentIssueMessage,
+} from '@/lib/storage'
 import { slog } from '@/lib/server/log'
 import { DEFAULT_MODEL } from '@/lib/server/models'
-
-const DEFAULT_DEVICE: KatanaDevice = 'katana-mk2'
 
 // A short, safe summary of the user's prompt for the diagnostic log — the last
 // user turn's text only (image blocks stripped), truncated. Never the raw
@@ -35,13 +36,22 @@ function promptSummary(messages: unknown): string | undefined {
   return undefined
 }
 
-// Resolve the tone context from the request: which KATANA to write for and the
-// player's rig descriptor. Falls back to the default device on anything unknown.
-function resolveToneContext(rawDevice: unknown, rawRig: unknown): ToneContext {
-  const device = KATANA_DEVICES.find(d => d.id === rawDevice)?.id ?? DEFAULT_DEVICE
+// Resolve the tone context from the request: which KATANA to write for, the
+// instrument the player is holding, and their rig descriptor. The device is NOT
+// defaulted — a missing/invalid/unsupported device is a hard error (validated by
+// the caller via deviceInstrumentIssue), so the server never silently writes for
+// an amp the user didn't choose.
+function resolveToneContext(
+  device: KatanaDevice, played: PlayedInstrument | undefined, rawRig: unknown,
+): ToneContext {
   const deviceLabel = KATANA_DEVICES.find(d => d.id === device)?.label ?? 'KATANA'
   const rig = typeof rawRig === 'string' && rawRig.trim() ? rawRig.trim() : undefined
-  return { device, deviceLabel, rig }
+  return { device, deviceLabel, rig, instrument: played }
+}
+
+/** The played-instrument kind from the request body, or undefined if absent. */
+function parseInstrument(raw: unknown): PlayedInstrument | undefined {
+  return raw === 'guitar' || raw === 'bass' ? raw : undefined
 }
 
 export const maxDuration = 300
@@ -97,6 +107,7 @@ export async function POST(request: NextRequest) {
     temperature: clientTemperature,
     device: clientDevice,
     rig: clientRig,
+    instrument: clientInstrument,
   } = body
 
   // BYOK. The mode is DERIVED from the presence of a key — there is no mode
@@ -108,6 +119,18 @@ export async function POST(request: NextRequest) {
 
   if (!Array.isArray(messages) || messages.length === 0) {
     return NextResponse.json({ error: 'Invalid messages' }, { status: 400 })
+  }
+
+  // Device × instrument rule (lib/storage deviceInstrumentIssue). Checked BEFORE
+  // provider/model/quota so a rejected combination never spends a free slot:
+  //   • no valid amp selected → error (no silent default).
+  //   • guitar played through a bass amp → error (bass amp can't voice a guitar).
+  // A bass through a guitar amp, or no gear at all, is allowed and falls through.
+  const device = KATANA_DEVICES.find(d => d.id === clientDevice && d.supported)?.id
+  const playedInstrument = parseInstrument(clientInstrument)
+  const deviceIssue = deviceInstrumentIssue(device, playedInstrument)
+  if (deviceIssue) {
+    return NextResponse.json({ error: deviceInstrumentIssueMessage(deviceIssue) }, { status: 400 })
   }
 
 
@@ -205,7 +228,9 @@ export async function POST(request: NextRequest) {
   const activeLocale = await resolveLocale(localeCodes, defaultLocale)
   // The tone-designer prompt + schema are the product and stay server-side; the
   // client cannot override them (docs/settings.md § Inference is server-side).
-  const toneCtx = resolveToneContext(clientDevice, clientRig)
+  // device is guaranteed valid here — deviceInstrumentIssue returns 'no-device'
+  // for anything falsy/unsupported and we returned 400 above.
+  const toneCtx = resolveToneContext(device!, playedInstrument, clientRig)
   const systemPrompt = applyLocaleHint(katanaSystemPrompt(toneCtx), activeLocale)
   const temperature  = resolveTemperature(clientTemperature)
   const runOpts = { webSearch: wantWebSearch, temperature, apiKey: byokKey, tone: toneCtx }

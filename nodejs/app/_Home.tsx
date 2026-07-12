@@ -10,6 +10,7 @@ import {
   loadConversations, upsertConversation, deleteConversation, renameConversation,
   clearAllConversations, autoTitle, relativeTime, getTheme, saveTheme, type Theme,
   getDefaultDevice, saveDefaultDevice, KATANA_DEVICES, type KatanaDevice,
+  deviceInstrumentIssue, deviceInstrumentIssueMessage,
   getApiKey, saveApiKey,
   getSelectedProvider, setSelectedProvider, getSelectedModel, setSelectedModel,
   getCustomSystemPrompt, setCustomSystemPrompt,
@@ -1992,6 +1993,16 @@ export default function Home({
   // user turn). Pushes an empty assistant placeholder, streams the response
   // into it, persists. Shared by send, editAndResend, regenerate.
   const runFlowWith = useCallback(async (newMessages: ChatMessage[]) => {
+    // Device × instrument pre-gate (mirrors the server 400) — catch it here so we
+    // never spend an API call on a blocked combination. Applies to send, edit,
+    // and regenerate (all route through here).
+    const played = activeInstrument(gear)?.kind
+    const issue = deviceInstrumentIssue(device, played)
+    if (issue) {
+      setError(deviceInstrumentIssueMessage(issue))
+      return
+    }
+
     setMessages(newMessages)
     setError(null)
     setStreaming(true)
@@ -2025,6 +2036,7 @@ export default function Home({
           systemPrompt: customSystemPrompt ?? undefined,
           temperature: customTemperature ?? undefined,
           device,
+          instrument: played,
           rig: (() => {
             const inst = activeInstrument(gear)
             return inst ? describeRig(inst, position === 'auto' ? undefined : position) : undefined

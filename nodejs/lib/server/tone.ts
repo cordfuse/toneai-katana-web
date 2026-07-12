@@ -3,7 +3,7 @@
 // the tone schema ARE the product (docs/settings.md § Inference is server-side).
 
 import { tool, jsonSchema } from 'ai'
-import type { KatanaDevice } from '@/lib/storage'
+import { type KatanaDevice, type PlayedInstrument, instrumentForDevice } from '@/lib/storage'
 import { buildToneSchema } from '@/lib/patch/schema'
 import { vocabForDevice } from '@/lib/patch/vocab'
 import {
@@ -16,6 +16,10 @@ export interface ToneContext {
   deviceLabel: string
   /** The player's rig, e.g. "Les Paul, bridge humbucker". Optional. */
   rig?: string
+  /** The instrument the player is actually holding (their active gear's kind).
+   *  Drives VOICING independently of the amp: a bass through a guitar KATANA is
+   *  voiced for bass. Absent → falls back to the amp's own class. */
+  instrument?: PlayedInstrument
 }
 
 /**
@@ -24,20 +28,33 @@ export interface ToneContext {
  */
 export function katanaSystemPrompt(ctx: ToneContext): string {
   const vocab = vocabForDevice(ctx.device)
+  // Two independent axes. The DEVICE fixes the format facts below (what the amp
+  // can load). The played INSTRUMENT drives voicing — a bass through a guitar amp
+  // is voiced for bass. With no gear, voicing falls back to the amp's own class.
+  const ampClass = instrumentForDevice(ctx.device)
+  const played: PlayedInstrument = ctx.instrument ?? ampClass
+  const crossUse = ctx.instrument !== undefined && ctx.instrument !== ampClass
   return [
     `You are ToneAI Kat, a tone designer for the BOSS KATANA amplifier. The player asks for a sound — a song, an artist, or a description — and you dial in a patch for their amp.`,
     ``,
     `Target amp: ${ctx.deviceLabel}.`,
+    // ── Device format facts (what the amp file can hold) ──
     ctx.device === 'katana-air'
       ? `NOTE: the KATANA:AIR patch file stores ONLY the effects chain — the amp voicing (AMP TYPE + gain/EQ) is a global front-panel setting, not saved per patch. Still choose the best amp voice and realistic knob values; the app delivers them to the player as hand-dial instructions alongside the file. Pick the amp voice from the list below.`
       : ``,
-    ctx.device === 'katana-go-bass'
-      ? `NOTE: this is a BASS setup — the player is using a bass guitar through a KATANA:GO in bass mode. Voice everything for bass: the amp voices (VINTAGE / FLAT / MODERN) are bass amps, and the drive/FX lists are bass-specific. Design low-end-appropriate tones (tight lows, defined mids, controlled grit) — do not treat it like a six-string guitar patch.`
-      : ``,
     ctx.device === 'katana-bass'
-      ? `NOTE: this is a BASS setup — the player is using a bass guitar through a KATANA BASS (desktop head/combo). Voice everything for bass: the preamp voices (VINTAGE / MODERN) are bass amps and the drive/FX lists are bass-specific. Design low-end-appropriate tones (tight lows, defined mids, controlled grit) — do not treat it like a six-string guitar patch. This amp has ONE combined time slot: it can run a delay OR a reverb, not both at once, so choose the one the sound depends on (a slapback/echo part → delay; an ambient part → reverb).`
+      ? `NOTE: this amp has ONE combined time slot — it can run a delay OR a reverb, not both at once. Choose the one the sound depends on (a slapback/echo part → delay; an ambient wash → reverb).`
       : ``,
-    ctx.rig ? `Their guitar: ${ctx.rig}. Voice the patch for that instrument.` : ``,
+    // ── Voicing (driven by the instrument in the player's hands) ──
+    played === 'bass'
+      ? `The player is playing a BASS guitar. Voice everything for bass: tight, controlled lows, defined low-mids, grit kept in check — do NOT voice it like a six-string electric.`
+      : `The player is playing an electric guitar. Voice for electric guitar.`,
+    crossUse && played === 'bass'
+      ? `This is a bass run through a GUITAR amp: keep gain conservative (guitar amps get flubby on low notes), push the lows and low-mids, and roll off excess high end so it doesn't get clanky.`
+      : ``,
+    ctx.rig
+      ? `Their ${played === 'bass' ? 'bass' : 'guitar'}: ${ctx.rig}. Voice the patch for that instrument.`
+      : ``,
     ``,
     `When a request names a song, artist, or specific recorded tone whose real rig or settings you are not certain of, use the web_search tool FIRST to ground your choices — the player's actual amp, pedals, and known settings — then design. When the request is a plain description ("warm clean", "tight metal"), no search is needed.`,
     ``,
