@@ -3,6 +3,7 @@ import { getDeviceIdFromRequest } from '@/lib/server/jwt'
 import { checkAndIncrementQuota, refundQuota, FREE_DEVICE_DAILY_LIMIT, FREE_DAILY_LIMIT } from '@/lib/server/quota'
 import { scrubString } from '@/lib/log/scrub'
 import { describePatch, type TonePatch } from '@/lib/patch/intent'
+import { mapProviderError } from '@/lib/server/provider-errors'
 import {
   runChat, runChatStream, findProvider, isModelValidForProvider,
 } from '@/lib/server/ai-tools'
@@ -266,14 +267,20 @@ export async function POST(request: NextRequest) {
   // running?", "ollama pull <model>") lived here. There are no local providers —
   // Anthropic is the only entry in the registry — so those branches could never
   // fire. What's left is the provider's own message.
-  // SCRUBBED, not raw. This message goes to two places a secret must never reach:
-  // the browser, and the `msg` column of the log table. Provider errors are
-  // outside our control and can quote back request material, so the key shape is
-  // stripped here rather than trusted not to appear. The comment on `byokKey`
-  // above promised this; until now nothing actually did it.
+  // MAPPED and SCRUBBED, never raw.
+  //
+  // Mapped, because the raw provider text is what 29 real users saw on day one:
+  // 18 got "Your credit balance is too low" and 11 got "invalid x-api-key", and
+  // neither tells a guitarist the thing they need to know (a Claude Pro
+  // subscription is not API credit). mapProviderError() branches on keyOwner —
+  // the same error means "top up your account" to a BYOK user and "the free tier
+  // is down" to everyone else.
+  //
+  // Scrubbed, because this string reaches both the browser and the `msg` column of
+  // the log table, and a provider is free to quote request material back at us.
   const friendlyError = (err: unknown): string => {
     const raw = err instanceof Error ? err.message : String(err)
-    return scrubString(raw) || 'Internal server error'
+    return mapProviderError(raw, keyOwner) || 'Internal server error'
   }
 
   // Web search honors the client toggle. It runs through Anthropic's native
@@ -396,6 +403,12 @@ export async function POST(request: NextRequest) {
           // revoked, rate-limited) — a completely different diagnosis from our
           // key failing, and indistinguishable without this.
           model, keyOwner, modelPicker,
+          // The PROVIDER'S OWN WORDS, kept alongside the friendly text. `msg` now
+          // holds what the user was shown, which is a translation — and a
+          // translation is exactly what you must not diagnose from. Reading these
+          // raw strings is how the BYOK failures were found in the first place; a
+          // log that only stores our own copy would have hidden them.
+          providerError: scrubString(err instanceof Error ? err.message : String(err)),
         })
         push(`data: ${JSON.stringify({ type: 'error', message: friendlyError(err) })}\n\n`)
       } finally {
@@ -479,6 +492,7 @@ export async function POST(request: NextRequest) {
     slog(deviceId, requestId, 'error', 'chat.error', friendlyError(err), {
       ms: Date.now() - startedAt, stream: false,
       model, keyOwner, modelPicker,
+      providerError: scrubString(err instanceof Error ? err.message : String(err)),
     })
     return NextResponse.json({ error: friendlyError(err) }, { status: 500 })
   }

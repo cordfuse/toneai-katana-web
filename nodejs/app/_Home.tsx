@@ -321,9 +321,18 @@ const GITHUB_ICON_PATH = 'M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.83
 
 const WHATS_NEW: { version: string; items: { text: string; sub?: string }[] }[] = [
   {
+    version: '0.10.0',
+    items: [
+      { text: 'A bigger free tier, and it costs a third of what it did', sub: 'Tones now generate on a leaner model — same amps, same care, roughly a third of the cost to run. That paid for a larger free allowance: 10 tones a day each, from a shared pool of 100. Tap ⋮ → Usage to see both.' },
+      { text: 'Bring your own key, pick your own model', sub: 'Add an Anthropic API key in Settings and there is no daily limit — and now you choose the model too, up to Opus for the sounds that are genuinely hard to pin down. Your key, your call. There is a full guide in the repo.' },
+      { text: 'Straighter answers', sub: 'No more thinking-out-loud before the patch arrives — just the tone and a short explanation of why.' },
+      { text: 'Honest about which amps are proven', sub: 'Only the KATANA MkII has been verified on real hardware — it is the amp we own. Every other writer is our best work from the format itself, and may well be right; we just cannot promise it. If you own another KATANA, load a patch and tell us what happened.' },
+    ],
+  },
+  {
     version: '0.9.0',
     items: [
-      { text: 'Your whole KATANA lineup — 9 amps', sub: 'From the original MkI to the wireless WAZA-AIR: MkI, MkII, Gen 3, KATANA:AIR, GO, GO Bass, KATANA Bass, WAZA-AIR, and WAZA-AIR Bass. Pick yours and design straight for it — every writer is verified byte-clean against a real export.' },
+      { text: 'Your whole KATANA lineup — 9 amps', sub: 'From the original MkI to the wireless WAZA-AIR: MkI, MkII, Gen 3, KATANA:AIR, GO, GO Bass, KATANA Bass, WAZA-AIR, and WAZA-AIR Bass. Pick yours and design straight for it.' },
       { text: 'Bass, done right', sub: 'Dedicated bass amps (KATANA Bass, GO Bass, WAZA-AIR Bass) join the roster — and if you run a bass through a guitar KATANA, your tones are voiced for bass automatically.' },
       { text: 'Voicing follows your instrument', sub: 'Set a guitar or bass in My Gear and every patch is dialled for what’s in your hands, whatever amp you’re on. A guitar can’t be dialled for a bass amp, so the app steers you right.' },
       { text: 'Convert across the whole line', sub: 'Re-voice any saved tone for a different amp you own — guitar-to-guitar or bass-to-bass — and download it ready to import.' },
@@ -333,7 +342,7 @@ const WHATS_NEW: { version: string; items: { text: string; sub?: string }[] }[] 
   {
     version: '0.8.0',
     items: [
-      { text: 'KATANA Gen 3 support', sub: 'Pick Gen 3 as your amp and design for it directly — its .tsl writer is verified byte-clean against real Gen 3 exports, with the Gen 3 amp voices and effects.' },
+      { text: 'KATANA Gen 3 support', sub: 'Pick Gen 3 as your amp and design for it directly — its .tsl writer round-trips byte-clean against reference Gen 3 exports, with the Gen 3 amp voices and effects.' },
       { text: 'Convert a tone to your amp', sub: 'Got a tone built for a different KATANA than you play? Open it and convert — the patch is re-voiced for your amp, saved to My Tones, and ready to download.' },
     ],
   },

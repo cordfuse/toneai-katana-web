@@ -416,13 +416,31 @@ async function drainStream(
         } else if (obj.type === 'tone_patch' && (obj as { patch?: unknown }).patch) {
           hooks.onTonePatch?.(obj as unknown as TonePatchResult)
         } else if (obj.type === 'error') {
-          throw new Error(obj.message ?? 'Stream error')
+          // The SERVER deliberately reported a failure. Name it, so the catch
+          // below can tell it apart from a dropped socket — see the guard there.
+          const e = new Error(obj.message ?? 'Stream error')
+          e.name = 'StreamError'
+          throw e
         }
       }
     }
   } catch (err) {
     // User-initiated cancel never reconnects.
     if (err instanceof Error && err.name === 'AbortError') throw err
+
+    // A SERVER-REPORTED ERROR IS NOT A DROPPED CONNECTION — do not reconnect.
+    //
+    // This guard is the whole fix for a bug that silently swallowed every stream
+    // failure. An `{type:'error'}` event threw, landed here, and was treated as a
+    // lost socket: the client replayed the stream, the run was already finished
+    // (`past=0, done=true`), and the error evaporated. The user saw an empty
+    // response and no explanation.
+    //
+    // That is almost certainly what the 29 failed BYOK requests on launch day
+    // looked like from the user's side: paste a key, ask for a tone, watch nothing
+    // happen. Reconnecting cannot help — the server already told us why it failed.
+    if (err instanceof Error && err.name === 'StreamError') throw err
+
     // No streamId → first POST never gave us one (older server, or POST
     // failed before headers). Can't reconnect.
     if (!streamId) throw err
