@@ -60,33 +60,33 @@ variants within a generation write a byte-identical patch — they differ in
 hardware (wattage, speaker, cab), not patch data. So the picker lists **one
 entry per generation**.
 
-All nine amps in the lineup have a writer, and every writer round-trips
-byte-clean against a reference liveset. But **round-tripping a file is not the
-same as an amp accepting it**, and it is worth being straight about which is
-which:
+All nine amps in the lineup have a writer, and every writer round-trips byte-clean
+against a reference liveset. **That is not the same as an amp accepting the patch**,
+and it would be dishonest to present it as if it were.
 
-- **KATANA MkII** — verified against the real hardware. The maintainer owns one;
-  patches have been loaded and played.
-- **KATANA Gen 3** — the second amp we'd stand behind today.
-- **Everything else** — built from format research and verified against reference
-  files, **but never confirmed on the physical amp.** No one on the project owns
-  one.
+**Only the KATANA MkII is verified on real hardware.** It is the amp the maintainer
+owns, so it is the only one where a generated patch has actually been loaded and
+played. Every other writer is built from format research and proven against
+reference files — which is real work, and is *not* a substitute for a physical amp
+saying yes.
 
-If you own one of the unconfirmed amps, **generating a tone and telling us what
-happened is the single most useful thing you can do** — working or broken, that is
-the information the writer needs. Open an issue.
+The picker offers all nine, deliberately. The writers are our best honest attempt
+and they may well be correct; we simply cannot promise it. **If you own anything
+other than a MkII, generating a tone and telling us what happened is the single
+most useful contribution you can make** — working or broken, that is the missing
+information. [Open an issue](https://github.com/cordfuse/toneai-katana-web/issues).
 
 | Device | Instrument | Status |
 |---|---|---|
 | **KATANA MkII** | Guitar | **Verified on hardware** ([docs](docs/tsl-format.md)) |
-| **KATANA Gen 3** | Guitar | **Verified** ([docs](docs/gen3-format-notes.md)) |
-| **KATANA MkI** | Guitar | Writer built, hardware untested — the original 2019 KATANA; its own "GT" named-parameter liveset ([docs](docs/mk1-format-notes.md)) |
-| **KATANA:AIR** | Guitar | Writer built, hardware untested — effects-only; amp delivered as hand-dial instructions ([docs](docs/air-format-notes.md)) |
-| **KATANA:GO** | Guitar | Writer built, hardware untested ([docs](docs/go-format-notes.md)) |
-| **KATANA:GO Bass** | Bass | Writer built, hardware untested ([docs](docs/go-format-notes.md)) |
-| **KATANA Bass** | Bass | Writer built, hardware untested — desktop 110 / 210 / Head ([docs](docs/katana-bass-format-notes.md)) |
-| **WAZA-AIR** | Guitar | Writer built, hardware untested — wireless headphone amp, effects-only ([docs](docs/waza-air-format-notes.md)) |
-| **WAZA-AIR Bass** | Bass | Writer built, hardware untested — wireless headphone amp, effects-only ([docs](docs/waza-air-format-notes.md)) |
+| **KATANA Gen 3** | Guitar | Writer built; unverified on hardware ([docs](docs/gen3-format-notes.md)) |
+| **KATANA MkI** | Guitar | Writer built; unverified on hardware — the original 2019 KATANA; its own "GT" named-parameter liveset ([docs](docs/mk1-format-notes.md)) |
+| **KATANA:AIR** | Guitar | Writer built; unverified on hardware — effects-only; amp delivered as hand-dial instructions ([docs](docs/air-format-notes.md)) |
+| **KATANA:GO** | Guitar | Writer built; unverified on hardware ([docs](docs/go-format-notes.md)) |
+| **KATANA:GO Bass** | Bass | Writer built; unverified on hardware ([docs](docs/go-format-notes.md)) |
+| **KATANA Bass** | Bass | Writer built; unverified on hardware — desktop 110 / 210 / Head ([docs](docs/katana-bass-format-notes.md)) |
+| **WAZA-AIR** | Guitar | Writer built; unverified on hardware — wireless headphone amp, effects-only ([docs](docs/waza-air-format-notes.md)) |
+| **WAZA-AIR Bass** | Bass | Writer built; unverified on hardware — wireless headphone amp, effects-only ([docs](docs/waza-air-format-notes.md)) |
 
 Within a generation the 50 / 100 / Head / Artist variants write a byte-identical
 patch — they differ in hardware (wattage, speaker, cab), not patch data — so the
