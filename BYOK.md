@@ -170,54 +170,62 @@ open source: **[github.com/cordfuse/toneai-katana-web](https://github.com/cordfu
 
 Then the key lives in your own environment file and never leaves your machine.
 
-Two ways to do it. **Docker is the easier one** — it needs nothing installed but
-Docker itself.
+Three ways, easiest first.
 
-### Option A — Docker (recommended)
+### Option A — Docker, one command (recommended)
+
+**No clone, no build, no toolchain.** A prebuilt image is published to GitHub's
+container registry on every release. You need Docker and nothing else:
+
+```bash
+docker run -d \
+  --name toneai-kat \
+  -p 3008:3000 \
+  -e ANTHROPIC_API_KEY=sk-ant-... \
+  -e JWT_SECRET="$(openssl rand -base64 32)" \
+  -v toneai-kat-data:/app/data \
+  ghcr.io/cordfuse/toneai-katana-web:latest
+```
+
+The app is at **http://localhost:3008**. That's it.
+
+What those lines do:
+
+| | |
+|---|---|
+| `ANTHROPIC_API_KEY` | your key — the server uses it for every tone |
+| `JWT_SECRET` | signs your browser's device token; any long random string |
+| `-v toneai-kat-data:/app/data` | keeps the small database (auth, quota, logs) across restarts. Drop it and you start fresh every time |
+| `-p 3008:3000` | change `3008` if that port is taken |
+
+Useful afterwards:
+
+```bash
+docker logs -f toneai-kat        # watch it run — the cost per tone is logged here
+docker stop toneai-kat           # stop
+docker rm -f toneai-kat && docker pull ghcr.io/cordfuse/toneai-katana-web:latest
+                                 # update to the newest release
+```
+
+Pin a version instead of `latest` if you'd rather not move: `:0.10.0`.
+
+### Option B — Docker Compose (from a clone)
+
+Use this if you want to change the branding, put it behind a real domain, or build
+from source.
 
 ```bash
 git clone https://github.com/cordfuse/toneai-katana-web.git
 cd toneai-katana-web/docker
-cp .env.example .env
-```
-
-Edit `.env` — the only two lines you *must* set:
-
-```bash
-# Your Anthropic key. The server uses it for every request.
-ANTHROPIC_API_KEY=sk-ant-...
-
-# Signs the browser's device token. Any long random string:
-#   openssl rand -base64 32
-JWT_SECRET=...
-```
-
-Then bring it up:
-
-```bash
+cp .env.example .env     # set ANTHROPIC_API_KEY and JWT_SECRET
 docker compose up -d --build
 ```
 
-The app is at **http://localhost:3008**. (Change the left-hand number in the
-`ports:` line of `docker-compose.yml` if 3008 is taken.)
-
-Useful bits:
-
-```bash
-docker compose logs -f          # watch it run — cost per tone is logged here
-docker compose down             # stop it
-docker compose up -d --build    # rebuild after a git pull
-```
-
-Your tones, gear and settings live in your browser. The container keeps the SQLite
-database (device auth, quota, logs) in a named Docker volume, so it survives
-restarts and rebuilds.
-
-There are two other compose files in `docker/` if you want to put it on a real
-domain: `docker-compose.prod.yml` (Caddy with automatic HTTPS) and
+Also at **http://localhost:3008**. Two other compose files sit alongside it:
+`docker-compose.prod.yml` (Caddy with automatic HTTPS for a public domain) and
 `docker-compose.internal-caddy.yml` (join an existing reverse proxy).
 
-### Option B — Node directly
+### Option C — Node directly
 
 Needs **Node 24 or newer** (the app uses `node:sqlite`, no experimental flags).
 
