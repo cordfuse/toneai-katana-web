@@ -162,13 +162,36 @@ interface AppSettings {
 
 Consequences, in the order they'll bite:
 
-### Drop the inherited provider stack
+### The inherited provider stack — dropped (done)
 
-The fork carries **nine `@ai-sdk/*` providers** from the scaffold (bedrock, cohere,
-google, groq, mistral, openai, openai-compatible, perplexity, anthropic) and
-defaults to Google Gemini. Anthropic-only means: keep `@ai-sdk/anthropic`,
-delete the other eight, remove the PROVIDER row from the settings panel, and
-drop the provider pill from the composer.
+The fork arrived with **nine `@ai-sdk/*` providers** from the scaffold (bedrock,
+cohere, google, groq, mistral, openai, openai-compatible, perplexity, anthropic),
+defaulting to Google Gemini. All eight non-Anthropic providers are gone, along
+with the provider row in settings and the provider pill in the composer.
+
+The scaffold's **local**-provider support (Ollama / LM Studio / llama.cpp — a
+baseURL, a live `/v1/models` probe, "is the server running?" error handling) is
+also gone. It was unreachable from the day the registry dropped to one cloud
+provider, but it survived as dead code for months and read as a supported
+direction. It isn't one: `ProviderCategory` is now `'cloud'` and nothing else.
+
+### Provider and model are SERVER decisions
+
+Neither is the client's to choose, and the request body's `provider` and `model`
+are ignored outright. This is a **cost** boundary, not just a tidiness one: on
+the free tier the model spends the operator's key, so a client-chosen model is a
+client-chosen bill. A hand-crafted request could otherwise select Opus (2.5x
+Sonnet per token) and charge it to us.
+
+Operators pick the model with `TONEAI_MODEL`, validated against the allow-list in
+`config/providers.yaml`. Opus is deliberately **not** in that list — Sonnet is
+more than capable of tone design.
+
+The same rule covers **temperature** (`TONEAI_TEMPERATURE`, operator-only) and
+the **system prompt**, which is built server-side per request and cannot be
+overridden. The scaffold exposed both as per-conversation user settings; those
+chains lingered here as dead code — the client sent a `systemPrompt` the server
+never even read — and are now removed.
 
 ### The global cap has a hole — it needs a per-device sub-cap
 
