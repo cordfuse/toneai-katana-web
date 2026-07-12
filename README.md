@@ -157,7 +157,8 @@ platform-managed deploy (e.g. Render), set **Dockerfile Path** to
 |---|---|---|---|
 | `JWT_SECRET` | **yes** | — | Signs device tokens. `openssl rand -base64 32` |
 | `ANTHROPIC_API_KEY` | for free tier | — | Powers the shared free daily quota. Unset = BYOK only |
-| `FREE_DAILY_LIMIT` | no | `1000` | Global daily free-tier ceiling (shared, resets midnight UTC) |
+| `FREE_DAILY_LIMIT` | no | `50` | Global daily free-tier ceiling, shared by everyone — **this is the budget cap**. A served request costs ~$0.09, so 50/day ≈ $4.50/day. Resets midnight UTC |
+| `FREE_DEVICE_DAILY_LIMIT` | no | `5` | What one device may take from that pool per day — the fairness cap, so one visitor can't drain the day for everyone |
 | `TONEAI_WEB_SEARCH_MAX_USES` | no | `3` | Max web searches per response (clamped 1–10). Search always-on; this is the per-request cost cap |
 | `TONEAI_MODEL` | no | `claude-sonnet-4-6` | Tone-design model. Operator-only — the client cannot pick a model (it spends this key on the free tier). Must be an id in `config/providers.yaml` |
 | `TONEAI_TEMPERATURE` | no | `1.0` | Sampling temperature. Operator-only — there is no per-chat override |

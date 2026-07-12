@@ -33,6 +33,17 @@ if (process.env.NEXT_PHASE !== 'phase-production-build') {
       count INTEGER NOT NULL DEFAULT 0
     );
 
+    -- Per-device free-tier counter, one row per (UTC date, device). Sits UNDER
+    -- the global pool above: the device cap is the fairness limit (one visitor
+    -- can't drain the day for everyone), the global one is the budget limit.
+    -- Same implicit date rollover, so no cron. See lib/server/quota.ts.
+    CREATE TABLE IF NOT EXISTS daily_quota_device (
+      date      TEXT NOT NULL,
+      device_id TEXT NOT NULL,
+      count     INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY (date, device_id)
+    );
+
     -- Server-side diagnostic log. Rows are scoped to a device so a user can
     -- download only their own server events (see lib/server/log.ts +
     -- app/api/logs). Retention is bounded by age on every write — no cron.

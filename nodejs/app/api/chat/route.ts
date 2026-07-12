@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDeviceIdFromRequest } from '@/lib/server/jwt'
-import { checkAndIncrementQuota, refundQuota } from '@/lib/server/quota'
+import { checkAndIncrementQuota, refundQuota, FREE_DEVICE_DAILY_LIMIT } from '@/lib/server/quota'
 import {
   runChat, runChatStream, findProvider, isModelValidForProvider,
 } from '@/lib/server/ai-tools'
@@ -15,6 +15,7 @@ import {
 } from '@/lib/storage'
 import { slog } from '@/lib/server/log'
 import { DEFAULT_MODEL } from '@/lib/server/models'
+import type { RequestUsage } from '@/lib/server/usage'
 
 // A short, safe summary of the user's prompt for the diagnostic log — the last
 // user turn's text only (image blocks stripped), truncated. Never the raw
@@ -73,9 +74,9 @@ function applyLocaleHint(systemPrompt: string, locale: string): string {
   return `${systemPrompt}\n\nRespond in ${language} unless the user writes in a different language.`
 }
 
-// Generation defaults — env var (operator deploy default) → hardcoded fallback.
-// Client may override per-request via the request body; resolveGen() applies
-// request → env → hardcoded.
+// Sampling temperature: operator dial only (TONEAI_TEMPERATURE → hardcoded).
+// The client cannot override it — there is no UI for it and the body's value is
+// not read.
 const HARDCODED_TEMPERATURE = 1.0
 function envNumber(name: string): number | undefined {
   const raw = process.env[name]
@@ -83,10 +84,7 @@ function envNumber(name: string): number | undefined {
   const n = Number(raw)
   return Number.isFinite(n) ? n : undefined
 }
-function resolveTemperature(clientValue: unknown): number {
-  if (typeof clientValue === 'number' && Number.isFinite(clientValue)) return clientValue
-  return envNumber('TONEAI_TEMPERATURE') ?? HARDCODED_TEMPERATURE
-}
+const TEMPERATURE = envNumber('TONEAI_TEMPERATURE') ?? HARDCODED_TEMPERATURE
 export async function POST(request: NextRequest) {
   console.log('[chat] request received')
   const deviceId = getDeviceIdFromRequest(request.headers.get('Authorization'))
@@ -104,7 +102,6 @@ export async function POST(request: NextRequest) {
     messages, stream: wantStream,
     // note: `provider` and `model` in the body are ignored on purpose (see below)
     webSearch,
-    temperature: clientTemperature,
     device: clientDevice,
     rig: clientRig,
     instrument: clientInstrument,
@@ -170,16 +167,28 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // Quota: free mode only, a single shared daily pool. BYOK bypasses it (it
-  // costs us no tokens). The slot is reserved up front (before the LLM call)
-  // so concurrent requests can't over-serve; if the request then fails without
-  // delivering output, the error paths below refund it via refundQuota().
+  // Quota: free mode only. TWO limits — this device's daily allowance, and the
+  // shared pool underneath it (see lib/server/quota.ts for why both). BYOK
+  // bypasses both; it costs us no tokens. Slots are reserved up front (before the
+  // LLM call) so concurrent requests can't over-serve; a request that then fails
+  // without delivering output refunds them via refundQuota(deviceId).
+  //
+  // The two refusals get DIFFERENT words on purpose. "You've used your share" and
+  // "the pool everyone shares is empty" feel completely different to a user, and
+  // have different fixes — one is wait-or-BYOK, the other is nothing-you-did.
   let spentFreeQuota = false
   if (!byokKey) {
-    const quota = checkAndIncrementQuota()
+    const quota = checkAndIncrementQuota(deviceId)
     if (!quota.allowed) {
-      const error = "Today's free requests have all been used, shared across everyone. Add your own Anthropic API key in Settings to keep going, or come back tomorrow."
-      return NextResponse.json({ error, remaining: quota.remaining }, { status: 429 })
+      const error = quota.blockedBy === 'device'
+        ? `You've used your ${FREE_DEVICE_DAILY_LIMIT} free tones for today. Add your own Anthropic API key in Settings for unlimited use, or come back tomorrow.`
+        : "Today's free tones have all been used — the pool is shared across everyone. Add your own Anthropic API key in Settings to keep going, or come back tomorrow."
+      return NextResponse.json({
+        error,
+        blockedBy: quota.blockedBy,
+        deviceRemaining: quota.deviceRemaining,
+        globalRemaining: quota.globalRemaining,
+      }, { status: 429 })
     }
     spentFreeQuota = true
   }
@@ -212,7 +221,7 @@ export async function POST(request: NextRequest) {
   // for anything falsy/unsupported and we returned 400 above.
   const toneCtx = resolveToneContext(device!, playedInstrument, clientRig)
   const systemPrompt = applyLocaleHint(katanaSystemPrompt(toneCtx), activeLocale)
-  const temperature  = resolveTemperature(clientTemperature)
+  const temperature  = TEMPERATURE
   const runOpts = { webSearch: wantWebSearch, temperature, apiKey: byokKey, tone: toneCtx }
 
   console.log(`[chat] msgs=${messages.length} provider=${provider} model=${model} stream=${!!wantStream} websearch=${wantWebSearch} temp=${temperature} locale=${activeLocale}`)
@@ -244,23 +253,38 @@ export async function POST(request: NextRequest) {
     void (async () => {
       let tone: string | undefined
       let chars = 0
+      // Token usage for this request, filled by runChatStream's onUsage once the
+      // run completes (see runOpts below). Logged on the chat.response line so
+      // every served request carries its own cost, not just its latency.
+      let usage: RequestUsage = {}
       try {
-        for await (const event of runChatStream(messages, provider, model, systemPrompt, runOpts)) {
+        for await (const event of runChatStream(
+          messages, provider, model, systemPrompt,
+          { ...runOpts, onUsage: u => { usage = u } },
+        )) {
           const e = event as { type?: string; content?: string; patch?: { name?: string }; name?: string }
           if (e?.type === 'delta' && typeof e.content === 'string') chars += e.content.length
           if (e?.type === 'tone_patch') tone = e.patch?.name ?? e.name ?? tone
           push(`data: ${JSON.stringify(event)}\n\n`)
         }
         push(`data: ${JSON.stringify({ type: 'done' })}\n\n`)
-        console.log(`[chat] stream ${streamId} done`)
+        console.log(
+          `[chat] stream ${streamId} done` +
+          ` in=${usage.inputTokens ?? '?'} (billed ${usage.noCacheTokens ?? '?'})` +
+          ` out=${usage.outputTokens ?? '?'} prose=${chars}ch` +
+          ` cacheR=${usage.cacheReadTokens ?? 0} cacheW=${usage.cacheWriteTokens ?? 0}` +
+          ` searches=${usage.webSearches ?? 0} est=$${usage.estUsd ?? '?'}`,
+        )
         slog(deviceId, requestId, 'info', 'chat.response', tone ? `tone: ${tone}` : undefined, {
           ms: Date.now() - startedAt, chars, tone, stream: true,
+          model, webSearch: wantWebSearch, byok: !!byokKey,
+          ...usage,
         })
       } catch (err) {
         console.error(`[chat] stream ${streamId} error:`, err)
         // Refund the free slot only if the run failed before delivering any
         // output — a partial stream already spent tokens, so it stays counted.
-        if (spentFreeQuota && chars === 0) refundQuota()
+        if (spentFreeQuota && chars === 0) refundQuota(deviceId)
         slog(deviceId, requestId, 'error', 'chat.error', friendlyError(err), {
           ms: Date.now() - startedAt, stream: true,
         })
@@ -341,7 +365,7 @@ export async function POST(request: NextRequest) {
     console.error('[chat] error:', err)
     // Non-stream runChat either returns a full result or throws — a throw means
     // nothing was delivered, so refund the reserved free slot.
-    if (spentFreeQuota) refundQuota()
+    if (spentFreeQuota) refundQuota(deviceId)
     slog(deviceId, requestId, 'error', 'chat.error', friendlyError(err), {
       ms: Date.now() - startedAt, stream: false,
     })

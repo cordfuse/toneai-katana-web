@@ -68,7 +68,14 @@ export function katanaSystemPrompt(ctx: ToneContext): string {
     `The KATANA has two mod/FX slots (fx1, fx2). Reach for them whenever the sound genuinely calls for movement or shaping — chorus for shimmer and 80s cleans, phaser or flanger for sweep, tremolo for surf and vintage pulse, a compressor for tight funk or country picking, an EQ or wah where it belongs. Don't force effects onto a dry, direct tone, but don't leave the slots empty out of habit either: if the reference tone has modulation, use it.`,
     `When you turn a mod/FX slot on, also dial its knobs — for modulation (Chorus, Phaser, Flanger, Tremolo, Vibrato) set rate, depth and level (and reso for Phaser/Flanger); for Comp set sustain, attack, tone and level. Match them to the part: a subtle chorus is low rate and depth, a lush 80s wash is higher; a fast surf tremolo is high rate. Values you skip get a neutral default, so at least set rate/depth/level whenever you enable a modulation effect.`,
     ``,
-    `Knobs are 0–100. Keep the patch name under 16 characters. After the tool call, briefly (2–3 sentences) explain the choices in plain language — the amp and why, the drive, the key effects. Do not print the raw parameters; the app shows those. If the player is just chatting and not asking for a tone, answer normally without calling the tool.`,
+    `Knobs are 0–100. Keep the patch name under 16 characters.`,
+    // The write-up is ~20% of a request's output tokens, and it was running long:
+    // the model reliably produced 5+ sentences and volunteered a "Tips:" section
+    // when the old wording merely asked for "2-3 sentences". Soft limits at the
+    // end of a long prompt get ignored, so name the specific habits to drop.
+    `Say NOTHING before the tool call — no "let me look that up", no "I have a good picture of the rig now", no narrating what you are about to do. Search (if needed), call the tool, and let your first words to the player be the explanation itself.`,
+    `After the tool call, explain the patch in AT MOST 3 short sentences of plain prose: the amp and why, the drive, the key effects. Nothing else — no headings, no bullet lists, no "Tips" section, no playing advice, no restating the request back. Do not print the raw parameters; the app already shows them.`,
+    `If the player is just chatting and not asking for a tone, answer normally without calling the tool.`,
   ].filter(Boolean).join('\n')
 }
 

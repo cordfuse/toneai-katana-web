@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { v4 as uuidv4 } from 'uuid'
-import { sendChatStream, getQuota, initAuth, getProviders, downloadDiagnostics, type MultimodalMessage, type ContentBlock } from '@/lib/api'
+import { sendChatStream, getQuota, initAuth, getProviders, downloadDiagnostics, type QuotaResult, type MultimodalMessage, type ContentBlock } from '@/lib/api'
 import { installClientLogCapture } from '@/lib/log/client'
 import {
   loadConversations, upsertConversation, deleteConversation, renameConversation,
@@ -201,6 +201,11 @@ const RefreshIcon = () => (
 )
 const GlobeIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+)
+// Usage — a gauge needle. An amp's VU meter is the closest thing a guitarist
+// already reads as "how much have I got left".
+const GaugeIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21a9 9 0 1 1 9-9"/><path d="M12 12l5-3"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg>
 )
 const AttachIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
@@ -456,48 +461,131 @@ function WelcomeModal({ onDismiss }: { onDismiss: () => void }) {
 
 // ─── settings panel (right drawer) ───────────────────────────────────────────
 
-// ─── Free-tier quota pill ───────────────────────────────────────────────────
+// ─── Usage modal ────────────────────────────────────────────────────────────
 //
-// Shows what's left of the GLOBAL daily pool (shared across all users), so it
-// polls: another user's request moves this number without us doing anything.
+// The free tier has TWO limits and a user is entitled to see both:
 //
-// `optimistic` is the count of requests this client has submitted but not yet
-// seen reflected in a server response. The pill subtracts it so the number
-// drops the instant you hit send, rather than when the stream finishes —
-// mighty-ai-qr-web refreshes only after the response lands, which reads as a
-// frozen counter on a slow generation. The server's number always wins on the
-// next poll, so drift self-corrects.
-function QuotaPill({ version, optimistic }: { version: number; optimistic: number }) {
-  const [quota, setQuota] = useState<{ remaining: number; limit: number } | null>(null)
+//   Your tones    this device's daily allowance — the one YOU spend
+//   Shared pool   the pool every free user draws from — the operator's budget
+//
+// Showing only one would hide the reason the other one bit. A user with 8 of
+// their own tones left, refused because the pool ran dry, is owed the explanation
+// that it wasn't them.
+//
+// This replaced a navbar pill that counted down the global pool alone. The pill's
+// single number couldn't say which limit was about to stop you, and there was no
+// room to explain what "shared" meant.
+//
+// `optimistic` is the count of requests this client has submitted but not yet seen
+// reflected by the server. Both counters subtract it, so numbers move the instant
+// you hit send rather than when the stream finishes. The server's number wins on
+// the next read, so drift self-corrects.
+function UsageModal({
+  onClose, optimistic, apiKey, t,
+}: {
+  onClose: () => void
+  optimistic: number
+  apiKey: string | null
+  t: (k: string, d: string) => string
+}) {
+  const [quota, setQuota] = useState<QuotaResult | null>(null)
+  const [failed, setFailed] = useState(false)
 
-  const fetchQuota = useCallback(() => {
-    getQuota().then(q => setQuota({ remaining: q.remaining, limit: q.limit })).catch(() => {})
+  useEffect(() => {
+    getQuota().then(setQuota).catch(() => setFailed(true))
   }, [])
 
-  useEffect(() => { fetchQuota() }, [fetchQuota, version])
-  useEffect(() => {
-    const id = setInterval(fetchQuota, 30_000)
-    return () => clearInterval(id)
-  }, [fetchQuota])
+  // BYOK spends the user's own key and touches neither counter, so counting
+  // anything down at them would be a lie.
+  const byok = !!apiKey
 
-  if (!quota) return null
+  const Bar = ({ remaining, limit }: { remaining: number; limit: number }) => {
+    const pct = limit > 0 ? Math.max(0, Math.min(100, (remaining / limit) * 100)) : 0
+    const empty = remaining === 0
+    const low = !empty && pct <= 20
+    return (
+      <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
+        <div
+          className={`h-full rounded-full transition-all ${
+            empty ? 'bg-red-500' : low ? 'bg-amber-500' : 'bg-primary'
+          }`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+    )
+  }
 
-  const remaining = Math.max(0, quota.remaining - optimistic)
-  const low = remaining <= Math.max(1, Math.floor(quota.limit * 0.05))
-  const empty = remaining === 0
+  const Row = ({
+    label, hint, counter,
+  }: {
+    label: string
+    hint: string
+    counter: { remaining: number; limit: number }
+  }) => {
+    const remaining = Math.max(0, counter.remaining - optimistic)
+    return (
+      <div>
+        <div className="flex items-baseline justify-between gap-3">
+          <span className="text-sm text-fg">{label}</span>
+          <span className="text-sm tabular-nums text-fg-3">
+            {remaining} <span className="text-fg-4">of {counter.limit} left</span>
+          </span>
+        </div>
+        <Bar remaining={remaining} limit={counter.limit} />
+        <p className="mt-1.5 text-[11px] leading-relaxed text-fg-4">{hint}</p>
+      </div>
+    )
+  }
 
   return (
-    <div
-      title={empty
-        ? 'The shared free-request pool is empty. It refills at midnight UTC — or add your own Anthropic API key in Settings.'
-        : `${remaining} of ${quota.limit} free requests left today, shared across all users. Refills at midnight UTC.`}
-      className={`flex items-center rounded-xl border px-2.5 h-8 text-xs font-medium select-none tabular-nums transition-colors ${
-        empty || low
-          ? 'border-red-500/40 text-red-400'
-          : 'border-white/10 bg-surface-2 text-fg-4'
-      }`}
-    >
-      {remaining} left
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
+      <div
+        className="w-full max-w-sm rounded-2xl border border-white/10 bg-surface-2 p-5 shadow-2xl"
+        onClick={e => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t('usage.title', 'Usage')}
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-base font-semibold text-fg">{t('usage.title', 'Usage')}</h2>
+          <button
+            onClick={onClose}
+            className="flex h-7 w-7 items-center justify-center rounded-lg text-fg-4 hover:bg-surface-3 hover:text-fg transition-colors"
+            aria-label={t('common.close', 'Close')}
+          >
+            ✕
+          </button>
+        </div>
+
+        {byok ? (
+          <p className="text-sm leading-relaxed text-fg-3">
+            {t('usage.byok',
+              "You're using your own Anthropic API key, so there's no limit here — tones you generate don't touch the free allowance or the shared pool.")}
+          </p>
+        ) : failed ? (
+          <p className="text-sm text-fg-3">{t('usage.failed', "Couldn't load your usage. Try again in a moment.")}</p>
+        ) : !quota ? (
+          <p className="text-sm text-fg-4">{t('usage.loading', 'Loading…')}</p>
+        ) : (
+          <div className="space-y-4">
+            <Row
+              label={t('usage.yours', 'Your free tones')}
+              hint={t('usage.yoursHint', 'Your own allowance for today.')}
+              counter={quota.device}
+            />
+            <Row
+              label={t('usage.shared', 'Shared pool')}
+              hint={t('usage.sharedHint',
+                'Used by everyone on the free tier. If it runs out, it’s out for the day — even if you still have tones left.')}
+              counter={quota.global}
+            />
+            <p className="border-t border-white/10 pt-3 text-[11px] leading-relaxed text-fg-4">
+              {t('usage.resets', 'Both reset at midnight UTC.')}{' '}
+              {t('usage.byokHint', 'Add your own Anthropic API key in Settings for unlimited use.')}
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
@@ -1317,6 +1405,7 @@ export default function Home({
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
+  const [usageOpen, setUsageOpen] = useState(false)
   // Welcome banner: shown once per app version. Starts false so SSR and first
   // client paint agree; the mount effect flips it on when the stored "seen"
   // version differs from the running one (i.e. a new release dropped).
@@ -1331,9 +1420,10 @@ export default function Home({
   // Pickup position is per-request and deliberately NOT persisted. 'auto' lets
   // the model choose from the positions the active instrument actually has.
   const [position, setPosition] = useState<PositionChoice>('auto')
-  // Quota pill: `quotaVersion` forces a re-fetch; `optimisticSpend` counts
-  // requests submitted but not yet reconciled with a server response.
-  const [quotaVersion, setQuotaVersion] = useState(0)
+  // `optimisticSpend` counts requests submitted but not yet reconciled with a
+  // server response, so the Usage modal's numbers reflect a send immediately
+  // rather than only once the stream finishes. (There is no `quotaVersion` any
+  // more: the pill polled, the modal just fetches fresh each time it opens.)
   const [optimisticSpend, setOptimisticSpend] = useState(0)
   const [confirmDelete, setConfirmDelete] = useState<{ label: string; doDelete: () => void } | null>(null)
   const [search, setSearch] = useState('')
@@ -2103,7 +2193,6 @@ export default function Home({
       // same tick means the authoritative number replaces the guess.
       if (spendsQuota) {
         setOptimisticSpend(n => Math.max(0, n - 1))
-        setQuotaVersion(v => v + 1)
       }
     }
   }, [activeId, conversations, provider, apiKey, device, gear, position, buildWireMessages, updateUrl])
@@ -2231,9 +2320,10 @@ export default function Home({
             <h1 className="text-sm font-medium text-fg lg:hidden">{appName}</h1>
           )}
           <div className="flex-1" />
-          {/* Free-tier counter. Hidden entirely in BYOK mode — a countdown
-              would imply a limit that doesn't apply to the user's own key. */}
-          {!apiKey && freeTierAvailable && <QuotaPill version={quotaVersion} optimistic={optimisticSpend} />}
+          {/* The free-tier pill used to live here. It counted down the shared pool
+              alone, which couldn't say WHICH limit was about to stop you and had
+              no room to explain what "shared" meant. Both counters now live in the
+              Usage modal (kebab → Usage). */}
           {/* New chat + Settings — promoted out of the kebab to bare icons.
               These are the two items reached often enough to warrant a direct
               tap (the device pill in the composer also opens Settings). */}
@@ -2271,6 +2361,16 @@ export default function Home({
                 <>
                   <div className="fixed inset-0 z-30" onClick={() => setHeaderMenuOpen(false)} />
                   <div className="absolute right-0 top-full z-40 mt-1 min-w-[12rem] rounded-lg border border-white/10 bg-surface-2 shadow-xl overflow-hidden animate-dropdown origin-top">
+                    {/* Usage — both free-tier counters and what they mean. Shown
+                        even in BYOK mode: the modal then explains that neither
+                        limit applies, which is the answer a BYOK user wants. */}
+                    <button
+                      onClick={() => { setHeaderMenuOpen(false); setUsageOpen(true) }}
+                      className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-fg hover:bg-surface-3 transition-colors"
+                    >
+                      <GaugeIcon />
+                      <span>{t('header.usage', 'Usage')}</span>
+                    </button>
                     <button
                       onClick={() => { setHeaderMenuOpen(false); window.location.reload() }}
                       className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-fg hover:bg-surface-3 transition-colors"
@@ -2603,6 +2703,14 @@ export default function Home({
         </div>
       </div>
 
+      {usageOpen && (
+        <UsageModal
+          onClose={() => setUsageOpen(false)}
+          optimistic={optimisticSpend}
+          apiKey={apiKey}
+          t={t}
+        />
+      )}
       {settingsOpen && (
         <SettingsPanel
           theme={theme}
