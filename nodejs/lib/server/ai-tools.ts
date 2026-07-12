@@ -121,11 +121,25 @@ function toModelMessages(
 ): ModelMessage[] {
   const out: ModelMessage[] = []
 
-  // System message — Anthropic prompt-caching marker goes here. The system
-  // prompt is by definition stable across a multi-turn chat, so it's the
-  // highest-leverage marker for cache hits. ephemeral = 5-min TTL, no extra
-  // cost beyond a one-time cache-write fee on first turn; subsequent turns
-  // pay ~10% of normal input tokens for the cached portion.
+  // System message — the Anthropic prompt-caching marker goes here. Everything up
+  // to and including the system prompt (tool schemas + the tone tool's enum
+  // vocabulary + this prompt, ~10.5k tokens) is byte-identical for EVERY user and
+  // EVERY request, so it is the highest-leverage cache breakpoint we have.
+  //
+  // TTL STAYS AT THE 5m DEFAULT. A 1h TTL was TRIED AND MEASURED, REJECTED
+  // 2026-07-12 — do not "optimise" it back without re-reading this.
+  //
+  // The theory was that the prefix kept expiring between requests and being
+  // re-written. It does not: `cacheR` logs a constant ~15.7k on every request,
+  // so the prefix is ALREADY a reliable cache hit at 5m. There was no expiry to
+  // fix. What a 1h TTL actually did was reprice the per-request cache WRITE from
+  // 1.25x to 2.0x — cost went from $0.033-0.047 up to $0.045-0.051 per tone.
+  //
+  // The ~10k written on each request is NOT this prefix; it tracks the size of
+  // the WEB-SEARCH RESULTS (it moves with the payload: 5.7k here, 13.5k there).
+  // Something writes those results to cache every request, and since each tone is
+  // a single-turn conversation, nothing ever reads them back. That write is the
+  // remaining waste in this system and it is NOT addressable from this line.
   out.push(
     providerId === 'anthropic'
       ? {
@@ -183,14 +197,23 @@ interface ResolvedSearch {
 }
 
 // Max web searches the model may run per assistant turn. Caps the per-request
-// SEARCH FEE ($10/1,000 searches). Note this is NOT the main cost governor —
-// measurement showed roughly one search per request, so the fee is a small share
-// of the bill. The tokens the search RESULTS cost are the expensive part, and
-// dynamic filtering (below) is what governs those. Clamped 1..10 so a bad value
-// can't disable search (0) or blow the budget.
+// SEARCH FEE ($10/1,000 searches) AND the result tokens each search drags into
+// context, which are the expensive part (~6-14k billed input tokens per search).
+//
+// 2 is INSURANCE, NOT A SAVING. Measured across 10 requests — including
+// deliberately hard prompts (Bardo Pond, MBV's glide guitar, a Little Feat deep
+// cut) — the model used exactly ONE search every time, and zero on an abstract
+// "warm but broken, like a radio in another room" request, which it correctly
+// judged needed no research at all. The ceiling is never reached in practice, so
+// lowering it costs nothing in tone accuracy; it exists to stop a future prompt
+// from sending the model into a search loop at ~$0.04 a lap.
+//
+// If tone quality ever regresses on obscure material, raise this first — it is
+// the setting most likely to be starving the model of research.
+// Clamped 1..10 so a bad value can't disable search (0) or blow the budget.
 const WEB_SEARCH_MAX_USES: number = (() => {
   const raw = parseInt(process.env.TONEAI_WEB_SEARCH_MAX_USES ?? '', 10)
-  return Number.isFinite(raw) ? Math.min(10, Math.max(1, raw)) : 3
+  return Number.isFinite(raw) ? Math.min(10, Math.max(1, raw)) : 2
 })()
 
 // DYNAMIC FILTERING (web_search_20260209) — TRIED AND MEASURED, REJECTED

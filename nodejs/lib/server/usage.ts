@@ -23,7 +23,14 @@
  *  https://platform.claude.com/docs/en/about-claude/pricing (read 2026-07-12). */
 interface ModelPrice {
   input: number
+  /** 5-minute cache write: 1.25x the base input rate. This is the one we pay —
+   *  the breakpoint in ai-tools.ts uses the default 5m TTL. */
   cacheWrite5m: number
+  /** 1-hour cache write: 2x the base input rate. Kept for reference only. A 1h TTL
+   *  was measured and rejected (see ai-tools.ts) — it repriced an unavoidable
+   *  write upward without removing it. If it is ever revisited, switch the
+   *  multiplier used in summarizeUsage() too, or the log will understate cost. */
+  cacheWrite1h: number
   cacheRead: number
   output: number
 }
@@ -37,9 +44,9 @@ interface ModelPrice {
 // the default here despite the higher sticker price. If Sonnet 5 is ever made
 // the default again, update these numbers first.
 const PRICES: Record<string, ModelPrice> = {
-  'claude-sonnet-4-6': { input: 3.00, cacheWrite5m: 3.75, cacheRead: 0.30, output: 15.00 },
-  'claude-sonnet-5':   { input: 2.00, cacheWrite5m: 2.50, cacheRead: 0.20, output: 10.00 },
-  'claude-haiku-4-5':  { input: 1.00, cacheWrite5m: 1.25, cacheRead: 0.10, output: 5.00 },
+  'claude-sonnet-4-6': { input: 3.00, cacheWrite5m: 3.75, cacheWrite1h: 6.00, cacheRead: 0.30, output: 15.00 },
+  'claude-sonnet-5':   { input: 2.00, cacheWrite5m: 2.50, cacheWrite1h: 4.00, cacheRead: 0.20, output: 10.00 },
+  'claude-haiku-4-5':  { input: 1.00, cacheWrite5m: 1.25, cacheWrite1h: 2.00, cacheRead: 0.10, output: 5.00 },
 }
 
 /** $10 per 1,000 searches, charged on top of the tokens the results cost. */
