@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDeviceIdFromRequest } from '@/lib/server/jwt'
-import { checkAndIncrementQuota, refundQuota, FREE_DEVICE_DAILY_LIMIT } from '@/lib/server/quota'
+import { checkAndIncrementQuota, refundQuota, FREE_DEVICE_DAILY_LIMIT, FREE_DAILY_LIMIT } from '@/lib/server/quota'
+import { scrubString } from '@/lib/log/scrub'
 import {
   runChat, runChatStream, findProvider, isModelValidForProvider,
 } from '@/lib/server/ai-tools'
@@ -115,6 +116,10 @@ export async function POST(request: NextRequest) {
   const byokKey = typeof rawKey === 'string' && rawKey.trim().length > 0 ? rawKey.trim() : undefined
 
   if (!Array.isArray(messages) || messages.length === 0) {
+    console.log('[chat] rejected 400 reason=invalid_messages')
+    slog(deviceId, requestId, 'warn', 'chat.rejected', 'invalid messages', {
+      status: 400, reason: 'invalid_messages',
+    })
     return NextResponse.json({ error: 'Invalid messages' }, { status: 400 })
   }
 
@@ -127,6 +132,13 @@ export async function POST(request: NextRequest) {
   const playedInstrument = parseInstrument(clientInstrument)
   const deviceIssue = deviceInstrumentIssue(device, playedInstrument)
   if (deviceIssue) {
+    // Worth counting: a spike here means the amp/instrument picker is confusing
+    // people, not that users are doing something exotic.
+    console.log(`[chat] rejected 400 reason=device_instrument issue=${deviceIssue} device=${clientDevice ?? 'none'} instrument=${playedInstrument ?? 'none'}`)
+    slog(deviceId, requestId, 'warn', 'chat.rejected', deviceInstrumentIssueMessage(deviceIssue), {
+      status: 400, reason: 'device_instrument', issue: deviceIssue,
+      device: clientDevice, instrument: playedInstrument,
+    })
     return NextResponse.json({ error: deviceInstrumentIssueMessage(deviceIssue) }, { status: 400 })
   }
 
@@ -139,7 +151,12 @@ export async function POST(request: NextRequest) {
   const providerInfo = findProvider(providerId)
   if (!providerInfo) {
     // Only reachable if config/providers.yaml is misconfigured — an operator
-    // error at deploy time, not something a caller can trigger.
+    // error at deploy time, not something a caller can trigger. Which is exactly
+    // why it's logged at error level: it means the deploy is broken for everyone.
+    console.error(`[chat] rejected 500 reason=unknown_provider provider=${providerId} — config/providers.yaml is misconfigured; the app is broken for every user.`)
+    slog(deviceId, requestId, 'error', 'chat.rejected', `unknown provider '${providerId}'`, {
+      status: 500, reason: 'unknown_provider', provider: providerId,
+    })
     return NextResponse.json({ error: `Unknown provider '${providerId}'` }, { status: 500 })
   }
 
@@ -185,6 +202,14 @@ export async function POST(request: NextRequest) {
   if (!byokKey && providerInfo.category === 'cloud') {
     const requiredKey = providerInfo.envKey
     if (requiredKey && !process.env[requiredKey]) {
+      // THIS ONE IS AN ALARM, NOT A STATISTIC. It fires when the server's key is
+      // missing — which, in production, means every free user is being turned away
+      // right now. Previously this returned silently and the first you'd know was
+      // a complaint. Logged at error level so it stands out in the stream.
+      console.error(`[chat] rejected 503 reason=no_server_key — THE FREE TIER IS DOWN: ${requiredKey} is not set. Every free user is being refused.`)
+      slog(deviceId, requestId, 'error', 'chat.rejected', 'free tier unavailable — server key missing', {
+        status: 503, reason: 'no_server_key', keyOwner, modelPicker,
+      })
       return NextResponse.json({
         error: "The free tier isn't available right now. Add your own Anthropic API key in Settings to continue.",
       }, { status: 503 })
@@ -207,6 +232,23 @@ export async function POST(request: NextRequest) {
       const error = quota.blockedBy === 'device'
         ? `You've used your ${FREE_DEVICE_DAILY_LIMIT} free tones for today. Add your own Anthropic API key in Settings for unlimited use, or come back tomorrow.`
         : "Today's free tones have all been used — the pool is shared across everyone. Add your own Anthropic API key in Settings to keep going, or come back tomorrow."
+
+      // THE REFUSALS ARE THE DEMAND SIGNAL, and they used to vanish silently.
+      // The served requests tell you what the free tier COST. Only these tell you
+      // what it was WORTH — how many people wanted a tone and were turned away.
+      // Without them you cannot answer "is 100/10 too tight?", which is the whole
+      // reason the limits exist. blockedBy separates the two very different
+      // stories: 'device' = one person used their share (working as designed);
+      // 'global' = the pool ran dry and EVERYONE is now locked out (the day is
+      // over, and if this fires early and often the cap is too low).
+      console.log(`[chat] rejected 429 reason=quota blockedBy=${quota.blockedBy} deviceRemaining=${quota.deviceRemaining} globalRemaining=${quota.globalRemaining}`)
+      slog(deviceId, requestId, 'warn', 'chat.rejected', `quota exhausted (${quota.blockedBy})`, {
+        status: 429, reason: 'quota', blockedBy: quota.blockedBy,
+        deviceRemaining: quota.deviceRemaining,
+        globalRemaining: quota.globalRemaining,
+        deviceLimit: FREE_DEVICE_DAILY_LIMIT,
+        globalLimit: FREE_DAILY_LIMIT,
+      })
       return NextResponse.json({
         error,
         blockedBy: quota.blockedBy,
@@ -223,9 +265,14 @@ export async function POST(request: NextRequest) {
   // running?", "ollama pull <model>") lived here. There are no local providers —
   // Anthropic is the only entry in the registry — so those branches could never
   // fire. What's left is the provider's own message.
+  // SCRUBBED, not raw. This message goes to two places a secret must never reach:
+  // the browser, and the `msg` column of the log table. Provider errors are
+  // outside our control and can quote back request material, so the key shape is
+  // stripped here rather than trusted not to appear. The comment on `byokKey`
+  // above promised this; until now nothing actually did it.
   const friendlyError = (err: unknown): string => {
     const raw = err instanceof Error ? err.message : String(err)
-    return raw || 'Internal server error'
+    return scrubString(raw) || 'Internal server error'
   }
 
   // Web search honors the client toggle. It runs through Anthropic's native
