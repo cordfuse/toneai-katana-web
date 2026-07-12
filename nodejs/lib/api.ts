@@ -204,7 +204,9 @@ export async function downloadDiagnostics(): Promise<void> {
 
 export interface ChatOpts {
   provider?: string
-  model?: string
+  // No `model`: the server picks it and ignores any model in the request body.
+  // It spends the operator's key on the free tier, so it is not the client's
+  // to choose. Operators set TONEAI_MODEL (config/providers.yaml validates it).
   webSearch?: boolean
   systemPrompt?: string
   temperature?: number
@@ -270,7 +272,7 @@ export async function sendChat(messages: Message[] | MultimodalMessage[], signal
   const requestId = uuidv4()
   const startedAt = Date.now()
   clog('info', 'chat.request', lastPrompt(messages), {
-    device: opts.device, model: opts.model, webSearch: opts.webSearch, byok: !!apiKey, stream: false,
+    device: opts.device, webSearch: opts.webSearch, byok: !!apiKey, stream: false,
   }, requestId)
 
   const res = await fetch(`${BASE}/chat`, {
@@ -324,7 +326,7 @@ export async function sendChatStream(
   const requestId = uuidv4()
   const startedAt = Date.now()
   clog('info', 'chat.request', lastPrompt(messages), {
-    device: opts.device, model: opts.model, webSearch: opts.webSearch, byok: !!apiKey, stream: true,
+    device: opts.device, webSearch: opts.webSearch, byok: !!apiKey, stream: true,
   }, requestId)
 
   // Capture the generated tone's name for the response log without disturbing

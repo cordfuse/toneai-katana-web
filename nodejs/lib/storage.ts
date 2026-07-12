@@ -393,7 +393,6 @@ export function saveApiKey(key: string | null) {
 // back to its registry default if anything's stale or unknown.
 
 const PROVIDER_KEY = 'toneai_provider'
-const MODELS_KEY = 'toneai_models'  // JSON map: { providerId: modelId }
 
 export function getSelectedProvider(): string | null {
   if (typeof window === 'undefined') return null
@@ -404,19 +403,40 @@ export function setSelectedProvider(provider: string) {
   localStorage.setItem(PROVIDER_KEY, provider)
 }
 
-function loadModelMap(): Record<string, string> {
-  if (typeof window === 'undefined') return {}
-  try { return JSON.parse(localStorage.getItem(MODELS_KEY) ?? '{}') } catch { return {} }
-}
+// There is no model preference. The model is a SERVER decision — on the free
+// tier it spends the operator's key, so letting the client choose would let a
+// caller bill an expensive model to us. The server ignores any `model` in the
+// request body (app/api/chat/route.ts); operators set TONEAI_MODEL.
 
-export function getSelectedModel(provider: string): string | null {
-  return loadModelMap()[provider] ?? null
-}
+// ─── Stored-state migration ──────────────────────────────────────────────────
+//
+// Browsers keep whatever the LAST build wrote, so a returning user arrives with
+// storage shaped by a version we no longer ship. This is the one place that
+// reconciles it. Called once on mount, before anything reads storage, and NOT
+// behind any network call — an offline user must migrate too.
+//
+// Every step must be idempotent (it runs on every load) and must never throw:
+// storage is not load-bearing, and a migration that breaks the app is worse
+// than a stale key.
+//
+// Keys deliberately left alone: `toneai_provider` (still valid — Anthropic),
+// `katana_device`, `toneai_gear`, `toneai_tones`, `toneai_conversations`
+// (unchanged schemas), `device_id` / `auth_token` (server-issued identity —
+// clearing them would orphan a user's quota identity for no reason).
 
-export function setSelectedModel(provider: string, model: string) {
-  const map = loadModelMap()
-  map[provider] = model
-  localStorage.setItem(MODELS_KEY, JSON.stringify(map))
+/** `toneai_models` — the per-provider model pin written by builds that had a
+ *  model picker. The picker is gone and the server owns the model, so the key
+ *  is dead. Purge it rather than leave something that looks meaningful to the
+ *  next person reading a user's storage. */
+const LEGACY_MODELS_KEY = 'toneai_models'
+
+export function migrateLocalStorage(): void {
+  if (typeof window === 'undefined') return
+  try {
+    localStorage.removeItem(LEGACY_MODELS_KEY)
+  } catch {
+    /* private mode / quota errors — never break boot over a migration */
+  }
 }
 
 // Web search is always on — it's core to tone accuracy, so there's no user

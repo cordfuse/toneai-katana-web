@@ -12,7 +12,7 @@ import {
   getDefaultDevice, saveDefaultDevice, KATANA_DEVICES, type KatanaDevice,
   deviceInstrumentIssue, deviceInstrumentIssueMessage,
   getApiKey, saveApiKey,
-  getSelectedProvider, setSelectedProvider, getSelectedModel, setSelectedModel,
+  getSelectedProvider, migrateLocalStorage,
   getCustomSystemPrompt, setCustomSystemPrompt,
   getTemperature, setTemperature,
   exportAll, importConversationsJson, resetAllData,
@@ -1355,8 +1355,9 @@ export default function Home({
   const [provider, setProviderState] = useState<string>('anthropic')
   // Pre-hydration placeholder only; replaced by the provider's real defaultModel
   // (env-driven, Sonnet) once /api/providers resolves.
-  const [model, setModelState] = useState<string>('claude-sonnet-5')
-  const [modelOpen, setModelOpen] = useState(false)
+  // NOTE: there is deliberately no `model` state. The model is a server-side
+  // decision (it spends the operator's key on the free tier) — the client
+  // neither picks it nor sends it. See app/api/chat/route.ts.
   // Live model list per provider id — populated lazily when the dropdown
   // opens. For local providers this is the actual installed-models list
   // returned by the local server's /v1/models endpoint.
@@ -1517,6 +1518,12 @@ export default function Home({
       window.addEventListener('popstate', onPop)
     }
     // No cleanup needed — initialized.current guard prevents re-binding.
+
+    // Bring stored state up to date with this build BEFORE anything reads it,
+    // and outside the network path below — a migration must not be contingent
+    // on a fetch succeeding, or an offline user never gets migrated.
+    migrateLocalStorage()
+
     // Auth, then load providers. The provider list endpoint requires auth,
     // so we sequence rather than parallel.
     void (async () => {
@@ -1531,16 +1538,12 @@ export default function Home({
         setProviders(list)
         setFreeTierAvailable(features.freeTier !== false)
         // Resolve initial provider: stored choice (if still valid + available)
-        // → first available → first in list. Then resolve model the same way.
+        // → first available → first in list.
         const stored = getSelectedProvider()
         const storedIsValid = stored && list.some(p => p.id === stored && p.available)
         const firstAvailable = list.find(p => p.available)
         const chosen = storedIsValid ? stored! : (firstAvailable?.id ?? list[0]?.id ?? 'anthropic')
         setProviderState(chosen)
-        const chosenInfo = list.find(p => p.id === chosen)
-        const storedModel = getSelectedModel(chosen)
-        const storedModelValid = storedModel && chosenInfo?.models.some(m => m.id === storedModel)
-        setModelState(storedModelValid ? storedModel! : (chosenInfo?.defaultModel ?? 'claude-sonnet-5'))
       } catch (e) {
         console.error('providers fetch failed:', e)
       }
@@ -1761,22 +1764,6 @@ export default function Home({
     if (!rig) { setPosition('auto'); return }
     setPosition(prev => (prev === 'auto' || positionsFor(rig).includes(prev) ? prev : 'auto'))
   }, [gear])
-
-  const handleProvider = useCallback((p: string) => {
-    setProviderState(p)
-    setSelectedProvider(p)
-    // Restore the user's last-used model for the new provider, else its default.
-    const info = providers.find(x => x.id === p)
-    if (!info) return
-    const stored = getSelectedModel(p)
-    const storedValid = stored && info.models.some(m => m.id === stored)
-    setModelState(storedValid ? stored! : info.defaultModel)
-  }, [providers])
-
-  const handleModel = useCallback((m: string) => {
-    setModelState(m)
-    setSelectedModel(provider, m)
-  }, [provider])
 
   // URL sync helper. Soft-update only (history.replaceState) — we never
   // re-mount Home for in-app navigation, only on hard refresh / shared
@@ -2042,7 +2029,7 @@ export default function Home({
         },
         abort.signal,
         {
-          provider, model, webSearch: true, apiKey,
+          provider, webSearch: true, apiKey,
           systemPrompt: customSystemPrompt ?? undefined,
           temperature: customTemperature ?? undefined,
           device,
@@ -2144,7 +2131,7 @@ export default function Home({
         setQuotaVersion(v => v + 1)
       }
     }
-  }, [activeId, conversations, provider, model, apiKey, customSystemPrompt, customTemperature, device, gear, position, buildWireMessages, updateUrl])
+  }, [activeId, conversations, provider, apiKey, customSystemPrompt, customTemperature, device, gear, position, buildWireMessages, updateUrl])
 
   // One-click starter prompts: skip the input field entirely, fire the
   // prompt as a user message immediately. Mirrors the empty-state chip
