@@ -42,11 +42,14 @@ services:
       # Operator overrides any of these by uncommenting the matching line
       # in .env. Anything left at the default is just baseline behavior.
 
-      # Tone-design model (Anthropic-only app).
-      TONEAI_MODEL: ${TONEAI_MODEL:-claude-sonnet-5}
+      # Tone-design model (Anthropic-only app). Haiku 4.5 is the default on a
+      # measured basis: ~2.4x cheaper per tone than Sonnet for comparable tones.
+      # This line used to pin claude-sonnet-5, which SILENTLY OVERRODE the app's
+      # default — a self-hoster would have paid ~3x without ever choosing to.
+      TONEAI_MODEL: ${TONEAI_MODEL:-claude-haiku-4-5}
 
-      # Sampling temperature — server-side default. Users can override
-      # per-conversation in the Settings panel.
+      # Sampling temperature — operator-only. There is no per-conversation
+      # override; the client cannot set this (the old Settings dial is gone).
       TONEAI_TEMPERATURE: ${TONEAI_TEMPERATURE:-1.0}
 
     volumes:

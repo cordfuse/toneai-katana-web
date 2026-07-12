@@ -168,45 +168,94 @@ Tap a selected model again to go back to the default.
 If you'd rather not hand your key to a website at all, run the app yourself. It's
 open source: **[github.com/cordfuse/toneai-katana-web](https://github.com/cordfuse/toneai-katana-web)**
 
-Then the key lives in your own environment file and never leaves your machine:
+Then the key lives in your own environment file and never leaves your machine.
+
+Two ways to do it. **Docker is the easier one** — it needs nothing installed but
+Docker itself.
+
+### Option A — Docker (recommended)
+
+```bash
+git clone https://github.com/cordfuse/toneai-katana-web.git
+cd toneai-katana-web/docker
+cp .env.example .env
+```
+
+Edit `.env` — the only two lines you *must* set:
+
+```bash
+# Your Anthropic key. The server uses it for every request.
+ANTHROPIC_API_KEY=sk-ant-...
+
+# Signs the browser's device token. Any long random string:
+#   openssl rand -base64 32
+JWT_SECRET=...
+```
+
+Then bring it up:
+
+```bash
+docker compose up -d --build
+```
+
+The app is at **http://localhost:3008**. (Change the left-hand number in the
+`ports:` line of `docker-compose.yml` if 3008 is taken.)
+
+Useful bits:
+
+```bash
+docker compose logs -f          # watch it run — cost per tone is logged here
+docker compose down             # stop it
+docker compose up -d --build    # rebuild after a git pull
+```
+
+Your tones, gear and settings live in your browser. The container keeps the SQLite
+database (device auth, quota, logs) in a named Docker volume, so it survives
+restarts and rebuilds.
+
+There are two other compose files in `docker/` if you want to put it on a real
+domain: `docker-compose.prod.yml` (Caddy with automatic HTTPS) and
+`docker-compose.internal-caddy.yml` (join an existing reverse proxy).
+
+### Option B — Node directly
+
+Needs **Node 24 or newer** (the app uses `node:sqlite`, no experimental flags).
 
 ```bash
 git clone https://github.com/cordfuse/toneai-katana-web.git
 cd toneai-katana-web/nodejs
 cp .env.example .env.local
-```
-
-Edit `.env.local`:
-
-```bash
-# Your key — the server uses this for every request.
-ANTHROPIC_API_KEY=sk-ant-...
-
-# The model the server uses. Optional; defaults to claude-haiku-4-5.
-# Must be one of the ids in config/providers.yaml.
-TONEAI_MODEL=claude-sonnet-4-6
-
-# Free-tier limits. On your own instance you're the only user, so you'll
-# probably want these high — or just leave them, since a key you supply
-# yourself is the server's key, and the quota applies to it.
-FREE_DAILY_LIMIT=1000
-FREE_DEVICE_DAILY_LIMIT=1000
-# (The hosted app defaults to 100 and 10. On your own instance you're the only
-#  user and it's your key either way, so raise them.)
-
-# How many web searches the model may run per tone. Raise it if you find
-# tones for obscure material are under-researched.
-TONEAI_WEB_SEARCH_MAX_USES=2
-```
-
-Then:
-
-```bash
 npm install
 npm run dev
 ```
 
-The app runs at `http://localhost:3000`. There's a Docker setup in `docker/` too.
+The app runs at **http://localhost:3000**.
+
+### Settings worth knowing
+
+Both options read the same variables. Everything except the key and the JWT secret
+is optional:
+
+```bash
+# The model the server uses. Defaults to claude-haiku-4-5 — the cheapest, and
+# what the hosted app runs. Must be an id from nodejs/config/providers.yaml:
+#   claude-haiku-4-5 · claude-sonnet-4-6 · claude-sonnet-5 · claude-opus-4-8
+TONEAI_MODEL=claude-sonnet-4-6
+
+# Free-tier limits. On your own instance you are the only user and it is your key
+# either way, so raise them — the hosted app uses 100 and 10 to bound its bill.
+FREE_DAILY_LIMIT=1000
+FREE_DEVICE_DAILY_LIMIT=1000
+
+# How many web searches the model may run per tone (1–10). Raise it if tones for
+# obscure material feel under-researched — it is the setting most likely to be
+# starving the model, and it costs about 3 cents a search.
+TONEAI_WEB_SEARCH_MAX_USES=2
+```
+
+**On your own instance the quota is still active**, and it counts against *your*
+key — that's what the two `FREE_*` lines above are for. Raise them or you'll cap
+yourself at 10 tones a day.
 
 ---
 
