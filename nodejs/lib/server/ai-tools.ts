@@ -78,19 +78,18 @@ export function getAvailableProviders(): PublicProviderInfo[] {
     id: p.id,
     label: p.label,
     category: p.category,
-    // Cloud: available iff its API-key env is set. Local: always reported
-    // available — chat call surfaces a clear ECONNREFUSED if the server
-    // isn't running, which is more useful than gating the picker here.
-    available: p.category === 'local' ? true : !!(p.envKey && process.env[p.envKey]),
+    // Available iff its API-key env is set.
+    available: !!(p.envKey && process.env[p.envKey]),
     defaultModel: p.defaultModel,
     models: p.models,
   }))
 }
 
+/** Is `model` in this provider's allow-list? Guards TONEAI_MODEL against an
+ *  operator typo — a model the provider doesn't serve would 404 at call time. */
 export function isModelValidForProvider(provider: string, model: string): boolean {
   const p = PROVIDERS.find(x => x.id === provider)
   if (!p) return false
-  if (p.category === 'local') return typeof model === 'string' && model.length > 0
   return p.models.some(m => m.id === model)
 }
 

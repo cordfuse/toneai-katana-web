@@ -385,28 +385,13 @@ export function saveApiKey(key: string | null) {
   else localStorage.removeItem(API_KEY_KEY)
 }
 
-// ─── Provider + model preferences ────────────────────────────────────────────
+// ─── Provider + model preferences: there are none ────────────────────────────
 //
-// Provider selection is a single string; model selection is per-provider
-// (so switching back to Anthropic remembers you were on Sonnet, not Opus).
-// Both fall back gracefully — server-side validates the selection and falls
-// back to its registry default if anything's stale or unknown.
-
-const PROVIDER_KEY = 'toneai_provider'
-
-export function getSelectedProvider(): string | null {
-  if (typeof window === 'undefined') return null
-  return localStorage.getItem(PROVIDER_KEY)
-}
-
-export function setSelectedProvider(provider: string) {
-  localStorage.setItem(PROVIDER_KEY, provider)
-}
-
-// There is no model preference. The model is a SERVER decision — on the free
+// This app is Anthropic-only and the model is a SERVER decision — on the free
 // tier it spends the operator's key, so letting the client choose would let a
-// caller bill an expensive model to us. The server ignores any `model` in the
-// request body (app/api/chat/route.ts); operators set TONEAI_MODEL.
+// caller bill an expensive model to us. The server ignores any `provider` or
+// `model` in the request body (app/api/chat/route.ts); operators set
+// TONEAI_MODEL. Nothing is stored, because there is nothing to choose.
 
 // ─── Stored-state migration ──────────────────────────────────────────────────
 //
@@ -419,21 +404,34 @@ export function setSelectedProvider(provider: string) {
 // storage is not load-bearing, and a migration that breaks the app is worse
 // than a stale key.
 //
-// Keys deliberately left alone: `toneai_provider` (still valid — Anthropic),
-// `katana_device`, `toneai_gear`, `toneai_tones`, `toneai_conversations`
-// (unchanged schemas), `device_id` / `auth_token` (server-issued identity —
-// clearing them would orphan a user's quota identity for no reason).
+// Keys deliberately left alone: `katana_device`, `toneai_gear`, `toneai_tones`,
+// `toneai_conversations` (unchanged schemas), `device_id` / `auth_token`
+// (server-issued identity — clearing them would orphan a user's quota identity
+// for no reason).
 
-/** `toneai_models` — the per-provider model pin written by builds that had a
- *  model picker. The picker is gone and the server owns the model, so the key
- *  is dead. Purge it rather than leave something that looks meaningful to the
- *  next person reading a user's storage. */
-const LEGACY_MODELS_KEY = 'toneai_models'
+/** Keys written by builds that had settings this app no longer has. Each is
+ *  dead: nothing reads them, and the features they configured are gone.
+ *
+ *  `toneai_models`         per-provider model pin — there is no model picker.
+ *  `toneai_provider`       provider pin — the app is Anthropic-only.
+ *  `toneai_system_prompt`  custom system prompt — the tone-designer prompt IS
+ *                          the product; it is built server-side and the client
+ *                          could never override it (the server never read it).
+ *  `toneai_temperature`    per-conversation temperature — operator dial only.
+ *
+ *  Purge them rather than leave keys that look meaningful to whoever reads a
+ *  user's storage next. */
+const DEAD_KEYS = [
+  'toneai_models',
+  'toneai_provider',
+  'toneai_system_prompt',
+  'toneai_temperature',
+]
 
 export function migrateLocalStorage(): void {
   if (typeof window === 'undefined') return
   try {
-    localStorage.removeItem(LEGACY_MODELS_KEY)
+    for (const k of DEAD_KEYS) localStorage.removeItem(k)
   } catch {
     /* private mode / quota errors — never break boot over a migration */
   }
@@ -461,87 +459,35 @@ export function setTtsEnabled(enabled: boolean) {
 }
 
 
-// ─── Generation settings (user overrides — operator defaults via env) ────────
+// ─── Generation settings ─────────────────────────────────────────────────────
 //
-// Both are `null` when the user hasn't set them; in that case the server uses
-// its own defaults (temperature falls back to TONEAI_TEMPERATURE, then a
-// hardcoded default; the tone designer's system prompt is fixed server-side).
-// Read/written as strings since localStorage is string-only — callers convert.
+// There are no user-facing generation settings. The tone-designer system prompt
+// and the tone schema ARE the product — they are built server-side and the
+// client cannot override them (app/api/chat/route.ts). Temperature is an
+// operator dial only (TONEAI_TEMPERATURE).
+//
+// The scaffold this app grew from exposed both as per-conversation overrides.
+// Those chains survived here as dead code long after the settings UI for them
+// was dropped: the client serialized a `systemPrompt` the server never read, and
+// stored a `temperature` no UI could ever write. Both are gone.
 
-const SYSTEM_PROMPT_KEY = 'toneai_system_prompt'
-const TEMPERATURE_KEY   = 'toneai_temperature'
-
-export function getCustomSystemPrompt(): string | null {
-  if (typeof window === 'undefined') return null
-  return localStorage.getItem(SYSTEM_PROMPT_KEY)
-}
-export function setCustomSystemPrompt(s: string | null) {
-  if (s && s.trim().length > 0) localStorage.setItem(SYSTEM_PROMPT_KEY, s)
-  else localStorage.removeItem(SYSTEM_PROMPT_KEY)
-}
-
-export function getTemperature(): number | null {
-  if (typeof window === 'undefined') return null
-  const v = localStorage.getItem(TEMPERATURE_KEY)
-  if (v === null) return null
-  const n = Number(v)
-  return Number.isFinite(n) ? n : null
-}
-export function setTemperature(t: number | null) {
-  if (t === null) localStorage.removeItem(TEMPERATURE_KEY)
-  else localStorage.setItem(TEMPERATURE_KEY, String(t))
-}
-
-// ─── Export / Import / Reset ─────────────────────────────────────────────────
-
-export interface ToneaiExport {
-  toneai_export_version: 1
-  exported_at: string
-  conversations: Conversation[]
-}
-
-export function exportAll(): ToneaiExport {
-  return {
-    toneai_export_version: 1,
-    exported_at: new Date().toISOString(),
-    conversations: loadConversations(),
-  }
-}
-
-export interface ImportResult { imported: number; skipped: number; total: number }
-
-export function importConversationsJson(json: string): ImportResult {
-  const parsed = JSON.parse(json)
-  if (typeof parsed !== 'object' || parsed === null) throw new Error('Invalid file')
-  if (parsed.toneai_export_version !== 1) throw new Error('Unsupported export version')
-  if (!Array.isArray(parsed.conversations)) throw new Error('No conversations in file')
-
-  const existing = loadConversations()
-  const existingIds = new Set(existing.map(c => c.id))
-  let imported = 0
-  let skipped = 0
-  for (const conv of parsed.conversations as Conversation[]) {
-    if (!conv?.id || typeof conv.id !== 'string') { skipped++; continue }
-    if (existingIds.has(conv.id)) { skipped++; continue }
-    existing.push(conv)
-    existingIds.add(conv.id)
-    imported++
-  }
-  existing.sort((a, b) => b.updatedAt - a.updatedAt)
-  saveConversations(existing)
-  return { imported, skipped, total: parsed.conversations.length }
-}
-
-// Wipes every toneai_* localStorage key (conversations, theme, provider, model,
-// web search, generation settings, send key). Also drops the auth token +
-// device id so the next session starts completely fresh.
-export function resetAllData() {
-  if (typeof window === 'undefined') return
-  const toRemove: string[] = []
-  for (let i = 0; i < localStorage.length; i++) {
-    const k = localStorage.key(i)
-    if (!k) continue
-    if (k.startsWith('toneai_') || k === 'auth_token' || k === 'device_id') toRemove.push(k)
-  }
-  for (const k of toRemove) localStorage.removeItem(k)
-}
+// ─── No export / import / reset ──────────────────────────────────────────────
+//
+// The scaffold shipped all three. None was reachable here, and none is the right
+// feature for this app:
+//
+//   exportAll / importConversationsJson — a JSON backup pair that covered
+//     CONVERSATIONS ONLY: not the tone library, not the gear. In a chat app
+//     conversations are the asset; here they aren't. A backup that restores
+//     chats and loses a user's saved tones and instruments promises a safety it
+//     doesn't deliver.
+//
+//   resetAllData — wiped every toneai_* key plus auth_token and device_id. It
+//     had no caller and no button. Note what it did NOT do: reset the server's
+//     quota. The daily pool is a global counter in SQLite keyed on the UTC date,
+//     not per-device — so clearing storage never bought anyone free requests.
+//
+// To download a conversation, use conversationToMarkdown + downloadTextFile —
+// that IS wired, and it's the transcript a user actually wants. If backup /
+// restore or a "clear my data" control is ever wanted, design it deliberately to
+// cover tones + gear + chats; don't resurrect these.

@@ -24,8 +24,6 @@ interface RawProviderEntry {
   label?: unknown
   category?: unknown
   envKey?: unknown
-  baseURLEnv?: unknown
-  defaultBaseURL?: unknown
   defaultModel?: unknown
   models?: unknown
 }
@@ -56,8 +54,8 @@ function validateModels(providerId: string, raw: unknown): ModelInfo[] {
 }
 
 function validateCategory(providerId: string, raw: unknown): ProviderCategory {
-  if (raw !== 'cloud' && raw !== 'local') {
-    throw new ProviderConfigError(`provider ${providerId}: category must be 'cloud' or 'local'`)
+  if (raw !== 'cloud') {
+    throw new ProviderConfigError(`provider ${providerId}: category must be 'cloud'`)
   }
   return raw
 }
@@ -67,7 +65,7 @@ function validateCategory(providerId: string, raw: unknown): ProviderCategory {
  *
  * @param factories — keyed by provider id, each receives the resolved
  *                    ProviderInfo at call time so per-provider config
- *                    (envKey, baseURLEnv, defaultBaseURL) reads from
+ *                    (envKey) reads from
  *                    YAML and isn't hard-coded in a closure. Entries
  *                    with no matching YAML provider are silently ignored
  *                    (lets you keep a factory around for a provider the
@@ -117,8 +115,8 @@ export function loadProvidersConfig(
     // Build the ProviderInfo with a placeholder createModel, fill the
     // category-specific config, then bind the factory to the now-resolved
     // ProviderInfo via partial application. The factory closure captures
-    // `info` by reference, so it sees the YAML-loaded envKey / baseURLEnv /
-    // defaultBaseURL at call time — not at module load.
+    // `info` by reference, so it sees the YAML-loaded envKey at call time —
+    // not at module load.
     const info: ProviderInfo = {
       id: providerId,
       label: entry.label,
@@ -128,22 +126,10 @@ export function loadProvidersConfig(
       // Placeholder — replaced below once info is fully populated.
       createModel: () => { throw new Error(`provider ${providerId}: createModel called before binding`) },
     }
-    if (category === 'cloud') {
-      if (typeof entry.envKey !== 'string' || entry.envKey.length === 0) {
-        throw new ProviderConfigError(`provider ${providerId}: cloud providers require envKey`)
-      }
-      info.envKey = entry.envKey
-    } else {
-      // category === 'local'
-      if (typeof entry.baseURLEnv !== 'string' || entry.baseURLEnv.length === 0) {
-        throw new ProviderConfigError(`provider ${providerId}: local providers require baseURLEnv`)
-      }
-      if (typeof entry.defaultBaseURL !== 'string' || entry.defaultBaseURL.length === 0) {
-        throw new ProviderConfigError(`provider ${providerId}: local providers require defaultBaseURL`)
-      }
-      info.baseURLEnv = entry.baseURLEnv
-      info.defaultBaseURL = entry.defaultBaseURL
+    if (typeof entry.envKey !== 'string' || entry.envKey.length === 0) {
+      throw new ProviderConfigError(`provider ${providerId}: cloud providers require envKey`)
     }
+    info.envKey = entry.envKey
     info.createModel = (modelId: string, apiKey?: string) => factory(modelId, info, apiKey)
     out.push(info)
   }
