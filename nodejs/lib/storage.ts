@@ -419,6 +419,23 @@ export function setSelectedModel(provider: string, model: string) {
   localStorage.setItem(MODELS_KEY, JSON.stringify(map))
 }
 
+// A stored model pin outlives a change to the registry default: an existing
+// user who was on Sonnet 5 keeps sending Sonnet 5 forever, because it's still
+// a valid id. That silently exempts precisely the people already using the app
+// from a default chosen on cost grounds. This clears the pin ONCE per marker
+// value so everyone lands back on the registry default; bump MODELS_RESET when
+// a future default change needs the same treatment. A user who re-picks a model
+// afterwards keeps it — this resets the stale pin, it doesn't remove the choice.
+const MODELS_RESET_KEY = 'toneai_models_reset'
+const MODELS_RESET = '2026-07-12-sonnet-4-6'
+
+export function migrateModelPrefs(): void {
+  if (typeof window === 'undefined') return
+  if (localStorage.getItem(MODELS_RESET_KEY) === MODELS_RESET) return
+  localStorage.removeItem(MODELS_KEY)
+  localStorage.setItem(MODELS_RESET_KEY, MODELS_RESET)
+}
+
 // Web search is always on — it's core to tone accuracy, so there's no user
 // toggle. The server offers the native search tool on every request and the
 // model decides when to actually search (capped by TONEAI_WEB_SEARCH_MAX_USES).

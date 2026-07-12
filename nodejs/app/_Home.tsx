@@ -12,7 +12,7 @@ import {
   getDefaultDevice, saveDefaultDevice, KATANA_DEVICES, type KatanaDevice,
   deviceInstrumentIssue, deviceInstrumentIssueMessage,
   getApiKey, saveApiKey,
-  getSelectedProvider, setSelectedProvider, getSelectedModel, setSelectedModel,
+  getSelectedProvider, setSelectedProvider, getSelectedModel, setSelectedModel, migrateModelPrefs,
   getCustomSystemPrompt, setCustomSystemPrompt,
   getTemperature, setTemperature,
   exportAll, importConversationsJson, resetAllData,
@@ -90,6 +90,11 @@ const BUILT_IN_THEME_GROUPS: { label: string; ids: Theme[] }[] = [
 ]
 
 const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION ?? '0.1.0'
+
+// Pre-hydration placeholder for the model picker only. The authoritative default
+// is the provider registry's defaultModel (config/providers.yaml), fetched from
+// /api/providers; this is what renders for the instant before that resolves.
+const DEFAULT_MODEL_ID = 'claude-sonnet-4-6'
 
 // Branding pulled from window.__TONEAI (injected by app/layout.tsx from
 // the runtime toneai.config.json read). All fields fall back to "ToneAI Kat"
@@ -1355,7 +1360,7 @@ export default function Home({
   const [provider, setProviderState] = useState<string>('anthropic')
   // Pre-hydration placeholder only; replaced by the provider's real defaultModel
   // (env-driven, Sonnet) once /api/providers resolves.
-  const [model, setModelState] = useState<string>('claude-sonnet-5')
+  const [model, setModelState] = useState<string>(DEFAULT_MODEL_ID)
   const [modelOpen, setModelOpen] = useState(false)
   // Live model list per provider id — populated lazily when the dropdown
   // opens. For local providers this is the actual installed-models list
@@ -1538,9 +1543,12 @@ export default function Home({
         const chosen = storedIsValid ? stored! : (firstAvailable?.id ?? list[0]?.id ?? 'anthropic')
         setProviderState(chosen)
         const chosenInfo = list.find(p => p.id === chosen)
+        // Drop a stale model pin before reading it, so a registry default change
+        // reaches existing users instead of only new ones (see migrateModelPrefs).
+        migrateModelPrefs()
         const storedModel = getSelectedModel(chosen)
         const storedModelValid = storedModel && chosenInfo?.models.some(m => m.id === storedModel)
-        setModelState(storedModelValid ? storedModel! : (chosenInfo?.defaultModel ?? 'claude-sonnet-5'))
+        setModelState(storedModelValid ? storedModel! : (chosenInfo?.defaultModel ?? DEFAULT_MODEL_ID))
       } catch (e) {
         console.error('providers fetch failed:', e)
       }

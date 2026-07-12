@@ -13,5 +13,5 @@
 // provider's `defaultModel` at registry load (ai-tools.ts), so the client
 // picker and the server agree on one env-driven default.
 
-export const DEFAULT_MODEL = process.env.TONEAI_MODEL?.trim() || 'claude-sonnet-5'
+export const DEFAULT_MODEL = process.env.TONEAI_MODEL?.trim() || 'claude-sonnet-4-6'
 export const LIGHT_MODEL = process.env.TONEAI_MODEL_LIGHT?.trim() || 'claude-haiku-4-5'

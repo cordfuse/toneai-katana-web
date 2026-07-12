@@ -36,8 +36,15 @@ providers:
     label: Anthropic
     category: cloud
     envKey: ANTHROPIC_API_KEY
-    defaultModel: claude-sonnet-5
+    # Sonnet 4.6, not Sonnet 5, is the default — a cost decision, not a
+    # capability one. Sonnet 5 bills on a newer tokenizer that produces ~30%
+    # more tokens for the same text, so once its introductory pricing ends
+    # (2026-08-31) it costs ~25% more per unit of text than 4.6. Both support
+    # the web-search tool's dynamic filtering, which is the lever that actually
+    # governs this app's token bill. See docs/cost.md.
+    defaultModel: claude-sonnet-4-6
     models:
-      - { id: claude-opus-4-8,  label: Claude Opus 4.8 }
-      - { id: claude-sonnet-5,  label: Claude Sonnet 5 }
-      - { id: claude-haiku-4-5, label: Claude Haiku 4.5 }
+      - { id: claude-opus-4-8,   label: Claude Opus 4.8 }
+      - { id: claude-sonnet-5,   label: Claude Sonnet 5 }
+      - { id: claude-sonnet-4-6, label: Claude Sonnet 4.6 }
+      - { id: claude-haiku-4-5,  label: Claude Haiku 4.5 }
