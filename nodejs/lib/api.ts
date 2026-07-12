@@ -99,12 +99,23 @@ export async function getProviders(): Promise<ProvidersResponse> {
 
 // ─── Free-tier quota ─────────────────────────────────────────────────────────
 
+/** What an uncapped counter reports. The SAME word the operator writes in the
+ *  environment — one vocabulary from config to API to UI.
+ *
+ *  Deliberately not `null`: null is overloaded (missing field? failed parse?) and
+ *  JavaScript does arithmetic on it silently — `null - 5` is `-5`, so a forgotten
+ *  branch yields a plausible wrong number. `'unlimited' - 5` is NaN, and the union
+ *  type below makes the compiler demand the branch in the first place. */
+export type Unlimited = 'unlimited'
+
 export interface QuotaCounter {
-  /** `null` = unlimited. There is nothing to count down. */
-  remaining: number | null
-  /** `null` = unlimited (the operator set the limit to `unlimited`; only reachable
-   *  on a self-hosted instance, where the operator's key is also the user's). */
-  limit: number | null
+  remaining: number | Unlimited
+  limit: number | Unlimited
+}
+
+/** Narrow a counter value. Prefer this to comparing the literal by hand. */
+export function isUnlimited(v: number | Unlimited): v is Unlimited {
+  return v === 'unlimited'
 }
 
 export interface QuotaResult {

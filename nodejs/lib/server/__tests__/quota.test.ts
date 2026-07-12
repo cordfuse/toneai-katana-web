@@ -10,6 +10,15 @@ import {
   readQuota, checkAndIncrementQuota, refundQuota, FREE_DEVICE_DAILY_LIMIT,
 } from '../quota'
 
+/** These tests run against the SHIPPED limits (100/10), which are finite. If someone
+ *  runs the suite with FREE_*_LIMIT=unlimited the counters carry the literal
+ *  'unlimited' and every arithmetic assertion below is meaningless — so say so
+ *  loudly rather than coercing a string into a number and asserting nonsense. */
+const num = (v: number | 'unlimited'): number => {
+  assert.notEqual(v, 'unlimited', 'these tests require a finite quota — unset FREE_*_LIMIT=unlimited')
+  return v as number
+}
+
 let n = 0
 const freshDevice = () => `test-device-${process.pid}-${Date.now()}-${n++}`
 
@@ -21,8 +30,8 @@ test('a consumed slot comes off BOTH the device allowance and the shared pool', 
   assert.equal(r.allowed, true)
 
   const after = readQuota(dev)
-  assert.equal(after.device.remaining, before.device.remaining! - 1, 'device allowance spent')
-  assert.equal(after.global.remaining, before.global.remaining! - 1, 'shared pool spent')
+  assert.equal(after.device.remaining, num(before.device.remaining) - 1, 'device allowance spent')
+  assert.equal(after.global.remaining, num(before.global.remaining) - 1, 'shared pool spent')
 
   refundQuota(dev)
   const back = readQuota(dev)
@@ -58,7 +67,7 @@ test('a device is cut off at its own limit — and stops draining the shared poo
   // device cap is that one visitor can't keep drawing it down.
   const poolAfter = readQuota(dev).global.remaining
   assert.equal(
-    poolAfter, poolBefore! - FREE_DEVICE_DAILY_LIMIT,
+    poolAfter, num(poolBefore) - FREE_DEVICE_DAILY_LIMIT,
     'a device-capped refusal must not spend a pool slot',
   )
 

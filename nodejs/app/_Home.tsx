@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { v4 as uuidv4 } from 'uuid'
-import { sendChatStream, getQuota, initAuth, getProviders, downloadDiagnostics, type QuotaResult, type MultimodalMessage, type ContentBlock } from '@/lib/api'
+import { sendChatStream, getQuota, initAuth, getProviders, downloadDiagnostics, isUnlimited, type QuotaResult, type QuotaCounter, type MultimodalMessage, type ContentBlock } from '@/lib/api'
 import { installClientLogCapture } from '@/lib/log/client'
 import {
   loadConversations, upsertConversation, deleteConversation, renameConversation,
@@ -535,9 +535,9 @@ function UsageModal({
   // anything down at them would be a lie.
   const byok = !!apiKey
 
-  // Both limits set to `unlimited` — a self-hosted instance. `limit: null` is the
-  // server saying "there is no cap", so there is nothing to render a bar for.
-  const uncapped = !!quota && quota.device.limit === null && quota.global.limit === null
+  // Both limits set to `unlimited` — a self-hosted instance. The server says so in
+  // the same word the operator typed, so there is nothing to render a bar for.
+  const uncapped = !!quota && isUnlimited(quota.device.limit) && isUnlimited(quota.global.limit)
 
   const Bar = ({ remaining, limit }: { remaining: number; limit: number }) => {
     const pct = limit > 0 ? Math.max(0, Math.min(100, (remaining / limit) * 100)) : 0
@@ -560,12 +560,12 @@ function UsageModal({
   }: {
     label: string
     hint: string
-    counter: { remaining: number | null; limit: number | null }
+    counter: QuotaCounter
   }) => {
-    // null = the operator set this limit to `unlimited` (only meaningful on a
-    // self-hosted instance). There is nothing to count down and no bar to fill —
-    // drawing an empty or full one would be a lie either way.
-    if (counter.limit === null || counter.remaining === null) {
+    // The operator set this limit to `unlimited` (only meaningful on a self-hosted
+    // instance). There is nothing to count down and no bar to fill — drawing an
+    // empty or full one would be a lie either way.
+    if (isUnlimited(counter.limit) || isUnlimited(counter.remaining)) {
       return (
         <div>
           <div className="flex items-baseline justify-between gap-3">

@@ -115,23 +115,36 @@ export interface QuotaResult {
   allowed: boolean
   /** Set only when allowed === false. */
   blockedBy?: QuotaBlock
-  /** Remaining for THIS device after this call. `null` = unlimited. */
-  deviceRemaining: number | null
-  /** Remaining in the shared pool after this call. `null` = unlimited. */
-  globalRemaining: number | null
+  /** Remaining for THIS device after this call. `'unlimited'` = no cap. */
+  deviceRemaining: number | Unlimited
+  /** Remaining in the shared pool after this call. `'unlimited'` = no cap. */
+  globalRemaining: number | Unlimited
 }
 
 interface CountRow { count: number }
 
+/** The literal an uncapped counter reports, on the wire and in the client's types.
+ *  The SAME word the operator writes in the environment — one vocabulary from
+ *  config to API to UI, with nothing to translate and nothing to infer. */
+export const UNLIMITED_WIRE = 'unlimited' as const
+export type Unlimited = typeof UNLIMITED_WIRE
+
 /** One counter as the API reports it.
  *
- *  `limit: null` means UNLIMITED — and null, not Infinity, because
- *  `JSON.stringify(Infinity)` is `null` anyway. Making that explicit stops the
- *  client from having to guess what a null it never expected was supposed to mean.
- *  `remaining` is null for the same reason: there is no meaningful count-down. */
+ *  UNLIMITED IS THE STRING 'unlimited', NOT null, AND NOT Infinity.
+ *
+ *  - Infinity cannot survive JSON: `JSON.stringify(Infinity)` is `null`. So a
+ *    naive implementation ships a null it never intended.
+ *  - null is worse than useless here because it is OVERLOADED — it is also what a
+ *    missing field, a failed parse, or a serialisation quirk looks like. Worse,
+ *    JavaScript does arithmetic on it silently: `null - 5` is `-5`. A client that
+ *    forgets to branch produces a plausible WRONG NUMBER instead of an error.
+ *  - 'unlimited' cannot do that. `'unlimited' - 5` is NaN — visibly broken rather
+ *    than quietly wrong — and the union type forces the client to handle it.
+ */
 export interface QuotaCounter {
-  remaining: number | null
-  limit: number | null
+  remaining: number | Unlimited
+  limit: number | Unlimited
 }
 
 export interface QuotaView {
@@ -139,10 +152,17 @@ export interface QuotaView {
   global: QuotaCounter
 }
 
-/** Shape one counter for the wire, collapsing an infinite limit to nulls. */
+/** Shape one counter for the wire. An infinite limit becomes the literal. */
 function counter(limit: number, used: number): QuotaCounter {
-  if (!Number.isFinite(limit)) return { remaining: null, limit: null }
+  if (!Number.isFinite(limit)) return { remaining: UNLIMITED_WIRE, limit: UNLIMITED_WIRE }
   return { remaining: Math.max(0, limit - used), limit }
+}
+
+/** True when a counter has no cap. Use this rather than testing the literal by
+ *  hand — a stringly-typed comparison scattered across the codebase is how the
+ *  next sentinel change breaks something quietly. */
+export function isUnlimited(v: number | Unlimited): v is Unlimited {
+  return v === UNLIMITED_WIRE
 }
 
 /** Read both counters without consuming anything. Backs `GET /api/quota`.
