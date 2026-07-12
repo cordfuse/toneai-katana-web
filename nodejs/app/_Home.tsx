@@ -321,12 +321,19 @@ const GITHUB_ICON_PATH = 'M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.83
 
 const WHATS_NEW: { version: string; items: { text: string; sub?: string }[] }[] = [
   {
-    version: '0.10.0',
+    version: '0.10.1',
+    // The FIRST item is the welcome modal's headline (WelcomeModal renders
+    // items[0] large, the rest as bullets). It has to make sense to someone who
+    // has never opened the app before — so the free tier leads, and the BYOK
+    // apology, which means nothing to a newcomer, sits right beneath it where the
+    // people it is actually for will still see it.
     items: [
-      { text: 'A bigger free tier, and it costs a third of what it did', sub: 'Tones now generate on a leaner model — same amps, same care, roughly a third of the cost to run. That paid for a larger free allowance: 10 tones a day each, from a shared pool of 100. Tap ⋮ → Usage to see both.' },
-      { text: 'Bring your own key, pick your own model', sub: 'Add an Anthropic API key in Settings and there is no daily limit — and now you choose the model too, up to Opus for the sounds that are genuinely hard to pin down. Your key, your call. There is a full guide in the repo.' },
-      { text: 'Straighter answers', sub: 'No more thinking-out-loud before the patch arrives — just the tone and a short explanation of why.' },
-      { text: 'Honest about which amps are proven', sub: 'Only the KATANA MkII has been verified on real hardware — it is the amp we own. Every other writer is our best work from the format itself, and may well be right; we just cannot promise it. If you own another KATANA, load a patch and tell us what happened.' },
+      { text: 'A bigger free tier, and it costs a third of what it did', sub: 'Tones now generate on a leaner model — same amps, same care, roughly a third of the cost to run. That paid for a larger free allowance, not a smaller one: 10 tones a day each, from a shared pool of 100. Tap ⋮ → Usage to see both.' },
+      { text: 'If your API key didn’t work, that was our fault — try again', sub: 'A bug swallowed the error and showed you a blank screen, so a key that failed looked like an app that was broken. Fixed — you now get told exactly what went wrong. The most common cause by far: a Claude Pro or Max subscription is NOT API credit. They are billed separately, and you need credit on the account.' },
+      { text: 'Bring your own key, pick your own model', sub: 'Add an Anthropic API key in Settings and the daily limit disappears — and only then do you choose the model, up to Opus for sounds that are genuinely hard to pin down. On the free tier we pay for every tone, so the model has to be our call; bring your own key and it becomes yours. The cost per tone is shown next to each model.' },
+      { text: 'Straighter answers', sub: 'No more thinking-out-loud before the patch arrives — just the tone, and a short explanation of why.' },
+      { text: 'Honest about which amps are proven', sub: 'Only the KATANA MkII has been verified on real hardware — it is the amp we own. Every other writer, Gen 3 included, is our best work from the format itself. It may well be right; we simply cannot promise it. If you own another KATANA, load a patch and tell us what happened — that is the missing piece.' },
+      { text: 'Run it yourself, with no limits', sub: 'One Docker command and your key never leaves your machine. Self-hosted instances can set the daily limits to “unlimited”. The guide is linked under the API key box in Settings.' },
     ],
   },
   {
