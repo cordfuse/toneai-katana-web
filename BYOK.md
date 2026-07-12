@@ -5,12 +5,13 @@ costs real money to generate, and one person paying the bill can only give away 
 much.
 
 If you've hit the limit, or you want better tones than the free tier's model can
-produce, you can plug in your own Anthropic API key. It takes about five minutes,
-and you'll typically spend **a few cents a day** unless you're generating tones
-constantly.
+produce, you can plug in your own Anthropic API key. It takes about five minutes.
+A tone costs roughly **3 to 4 cents** on the default model — so what you spend
+depends entirely on how many you make, and $5 of credit goes a long way.
 
 This guide covers the whole thing: signing up, creating a key, what it costs,
-choosing a model, and how to stop paying if you change your mind.
+choosing a model, running the app yourself, and how to stop paying if you change
+your mind.
 
 ---
 
@@ -22,7 +23,8 @@ EQ and effects against the KATANA's real parameter set. That research is what
 makes the tones good, and it's also what makes them cost money — every request
 pays for the search and for the model's reading of the results.
 
-Measured, a tone costs roughly **3 cents**. The free tier is capped at:
+Measured in production, a tone costs roughly **3 to 4 cents**. The free tier is
+capped at:
 
 | Limit | Value |
 |---|---|
@@ -43,20 +45,26 @@ either counter.
 You pay Anthropic directly, per request, for exactly what you use. There's no
 subscription and no minimum.
 
-At the app's default model (Haiku 4.5), a tone costs about **3 cents**. Some real
-measured examples:
+On the default model (Haiku 4.5), a tone costs about **3–4 cents**. These are real
+measured requests, not estimates:
 
 | What you asked for | Cost |
 |---|---|
-| A tone that needed web research ("Rebel Rebel") | ~$0.03 |
+| A tone that needed web research ("Black Dog") | ~$0.036 |
+| Another ("Rebel Rebel") | ~$0.030 |
 | A tone from a vague description ("warm but broken, like a radio in another room") | ~$0.005 |
 | A plain question ("what does the presence knob do?") | ~$0.002 |
 
-So **$5 of credit is somewhere around 150 researched tones.** If you're an
-occasional user, a single $5 top-up may last you months.
+Why the spread: a tone about a specific song runs a **web search**, and the results
+of that search are the bulk of the cost. A vague, feel-based request needs no
+research, so it's nearly free. A question that produces no patch at all is cheaper
+still.
+
+So **$5 of credit is roughly 140 researched tones.** If you're an occasional user,
+a single $5 top-up may last months.
 
 The cost scales with the model you pick — see [Choosing a model](#choosing-a-model)
-below. Opus is roughly 10x Haiku per tone.
+below. Opus is roughly 8–10x Haiku per tone.
 
 ---
 
@@ -149,17 +157,21 @@ else's money.
 
 | Model | Cost per tone | When to pick it |
 |---|---|---|
-| **Claude Haiku 4.5** *(default)* | ~$0.03 | Cheapest. What the free tier runs. Good tones for well-documented songs. |
+| **Claude Haiku 4.5** *(default)* | ~$0.035 | Cheapest. What the free tier runs. Good tones for well-documented songs. |
 | **Claude Sonnet 5** | ~$0.07 | Better reasoning about obscure or ambiguous sounds. |
 | **Claude Sonnet 4.6** | ~$0.09 | Similar to Sonnet 5; slightly different flavour. |
 | **Claude Opus 4.8** | ~$0.30 | The strongest reasoning available. Overkill for most tones — but if a sound is genuinely hard to pin down, this is the one that will reason its way there. |
 
-**Start with the default.** Haiku was chosen after an A/B against Sonnet on the same
-prompts, and it picked comparable amps and settings for about a third of the cost.
+The dropdown shows the cost next to each model, so you never discover the
+difference on your bill instead of in the app.
+
+**Start with the default.** Haiku wasn't picked to be cheap — it was picked after an
+A/B against Sonnet on the same prompts, where both models independently chose the
+same amp and drive for *Rebel Rebel*, within a few points on the knobs. It produced
+comparable tones for well under half the cost.
+
 The bigger models earn their money on hard, vague, or obscure requests — not on
 "Highway to Hell".
-
-Tap a selected model again to go back to the default.
 
 ---
 
@@ -257,7 +269,9 @@ FREE_DEVICE_DAILY_LIMIT=1000
 
 # How many web searches the model may run per tone (1–10). Raise it if tones for
 # obscure material feel under-researched — it is the setting most likely to be
-# starving the model, and it costs about 3 cents a search.
+# starving the model. Each extra search adds roughly 1–2 cents (a $0.01 search fee,
+# plus the tokens its results cost). In practice the model uses exactly one, even
+# on obscure material, so this is a ceiling rather than a target.
 TONEAI_WEB_SEARCH_MAX_USES=2
 ```
 
@@ -269,30 +283,44 @@ yourself at 10 tones a day.
 
 ## Troubleshooting
 
-**"Invalid API key" / 401**
-The key is wrong, was mistyped, or has been deleted in the Console. Keys start with
-`sk-ant-`. Make sure you copied the whole thing and didn't pick up a trailing space.
+> **If you tried BYOK before 2026-07-12 and got a blank response — that was our
+> bug, not your key.** The app was throwing the error away and showing you nothing.
+> It's fixed: you now get told what actually went wrong. Worth trying again.
 
-**"Insufficient credit" / 400**
-Your Anthropic account has no credit. Go to **Settings → Billing** in the Console
-and top up. This is the most common problem, and it catches people who already pay
-for Claude Pro — a Pro subscription is not API credit.
+These are the real failures, in the order people actually hit them.
 
-**"Rate limit exceeded" / 429 with your own key**
-This is Anthropic rate-limiting your account, not the app's quota. New accounts
-start on a low tier and it rises automatically as you spend. Wait a moment and
-retry.
+**"There's no credit on that API key."**
+By far the most common — nearly two thirds of all failed attempts. Your Anthropic
+account has no credit on it. Go to **Settings → Billing** in the
+[Console](https://console.anthropic.com) and add some; the minimum is $5.
+
+**This catches people who already pay for Claude.** A **Claude Pro or Max
+subscription is not API credit** — they are billed completely separately. Having Pro
+does not give you API access, and it never will. You need credit on the account, and
+it's cheap: $5 is around 140 tones.
+
+**"That API key isn't valid."**
+The key is mistyped, incomplete, or has been deleted in the Console. Keys start with
+`sk-ant-` and are shown **only once**, when you create them. Check for a missing
+character or a trailing space — or just create a new one, which costs nothing.
+
+**"Anthropic is rate-limiting your account."**
+Their limit on your key, not ours. New accounts start on a low tier and it rises
+automatically as you use it. Wait a moment and try again.
+
+**"Anthropic's servers are busy."**
+Nothing wrong with your key or your request. Try again shortly.
 
 **Tones got worse after I changed the model**
 Go back to the default. Bigger isn't automatically better here — the task is
-constrained (pick amp and effects from a fixed list), and the smaller models are
-good at it. If tones for obscure songs feel thin, raising the search budget helps
-more than raising the model.
+constrained (pick an amp and effects from a fixed list), and the smaller models are
+good at it. If tones for obscure songs feel thin, raising the search budget
+(`TONEAI_WEB_SEARCH_MAX_USES`, self-hosted only) helps more than raising the model.
 
 **I want to stop paying immediately**
-Click **Remove key → use free mode** in Settings, then delete the key in the
-Anthropic Console under **Settings → API keys**. Deleting the key is what actually
-guarantees nothing can spend on it.
+Click **Remove key → use free mode** in Settings. Then **delete the key** in the
+Anthropic Console under **Settings → API keys** — deleting it is the only thing that
+truly guarantees nothing can spend on it, wherever a copy might be.
 
 ---
 
