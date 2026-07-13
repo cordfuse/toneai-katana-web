@@ -321,6 +321,19 @@ const GITHUB_ICON_PATH = 'M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.83
 
 const WHATS_NEW: { version: string; items: { text: string; sub?: string }[] }[] = [
   {
+    version: '0.11.0',
+    // The FIRST item is the welcome modal's headline. This one is not a feature —
+    // it is an apology and a correction, and it earns the headline because until
+    // today every high-gain patch this app produced was genuinely unusable on the
+    // amp. Anyone who tried one and concluded the app was junk was right, and they
+    // deserve to be told plainly rather than to find a "fixes and improvements".
+    items: [
+      { text: 'High-gain patches were unusable. They are fixed — please try again', sub: 'Every patch we generated was missing its noise gate, and carried a stray EQ curve underneath the one we dialled. On a clean tone you would never notice. On anything with real gain, the amp squealed the moment you touched the strings — which is exactly what some of you told us. The gate is now part of the tone, chosen for the patch, and the EQ you get is the EQ we designed. If you gave up on a metal or lead tone, generate it again.' },
+      { text: 'Your pickups now change the patch', sub: 'A single coil — a Strat pickup, a P-90 — hums far more than a humbucker, and it gets worse the more gain sits in front of it. Tell us what is in your guitar under Settings → My Gear, and the noise gate is set for it. The pickup selector also stops hiding your pickups when it is left on Auto.' },
+      { text: 'Still only the MkII is proven on hardware', sub: 'It is the amp we own. Every other writer, Gen 3 included, is our best work from the format itself. If you own another KATANA, load a patch and tell us what happened — working or broken, that is the missing piece.' },
+    ],
+  },
+  {
     version: '0.10.1',
     // The FIRST item is the welcome modal's headline (WelcomeModal renders
     // items[0] large, the rest as bullets). It has to make sense to someone who
