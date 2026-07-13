@@ -50,3 +50,22 @@ test('device FORMAT facts survive independent of instrument', () => {
 })
 
 void base
+
+// The pickup decides how much noise there is to GATE, not just the tone. Given a
+// P-90 neck and a humbucker bridge, the model dialled the identical gate for both,
+// because nothing told it the pickup changes the noise. Guard the rule's presence.
+test('the prompt tells the model a single coil needs more gate than a humbucker', () => {
+  const p = katanaSystemPrompt({
+    device: 'katana-mk2',
+    deviceLabel: 'KATANA MkII',
+    rig: 'Les Paul, neck P-90 style',
+  })
+  assert.match(p, /single coil/i)
+  assert.match(p, /noise-suppressor threshold/i)
+  assert.match(p, /never leave a hot single coil ungated/i)
+})
+
+test('with no rig, the pickup rule is not emitted — there is nothing to say it about', () => {
+  const p = katanaSystemPrompt({ device: 'katana-mk2', deviceLabel: 'KATANA MkII' })
+  assert.doesNotMatch(p, /single coil/i)
+})

@@ -216,6 +216,8 @@ export interface ChatOpts {
   device?: string
   /** The player's rig descriptor (e.g. "Les Paul, bridge humbucker"). */
   rig?: string
+  /** How much the active pickup hums — the server sets the noise gate from it. */
+  pickupNoise?: 'humbucking' | 'single-coil' | 'mixed'
   /** The instrument the player is holding (active gear kind) — drives voicing,
    *  and gates the guitar-through-a-bass-amp combination server-side. */
   instrument?: 'guitar' | 'bass'

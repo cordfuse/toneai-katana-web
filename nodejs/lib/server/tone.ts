@@ -4,10 +4,12 @@
 
 import { tool, jsonSchema } from 'ai'
 import { type KatanaDevice, type PlayedInstrument, instrumentForDevice } from '@/lib/storage'
+import type { PickupNoise } from '@/lib/gear'
 import { buildToneSchema } from '@/lib/patch/schema'
 import { vocabForDevice } from '@/lib/patch/vocab'
 import {
   writePatchTsl, tslString, tslFilename, profileForDevice,
+  calibrateGateForPickup, defaultNoiseSuppressor,
   type TonePatch,
 } from '@/lib/patch'
 
@@ -20,6 +22,10 @@ export interface ToneContext {
    *  Drives VOICING independently of the amp: a bass through a guitar KATANA is
    *  voiced for bass. Absent → falls back to the amp's own class. */
   instrument?: PlayedInstrument
+  /** How much the player's ACTIVE pickup hums. Decides the noise gate, in code —
+   *  see calibrateGateForPickup. Absent → treated as humbucking (no correction),
+   *  because inventing a single coil the player doesn't have would over-gate them. */
+  pickupNoise?: PickupNoise
 }
 
 /**
@@ -55,6 +61,14 @@ export function katanaSystemPrompt(ctx: ToneContext): string {
     ctx.rig
       ? `Their ${played === 'bass' ? 'bass' : 'guitar'}: ${ctx.rig}. Voice the patch for that instrument.`
       : ``,
+    // The pickup drives the GATE, not just the tone. This had to be said outright:
+    // given a P-90 in the neck and a humbucker in the bridge, the model dialled the
+    // identical noise suppressor for both, because nothing ever told it that the
+    // pickup changes how much noise there is to suppress. It adjusted EQ and gain
+    // and left the gate alone.
+    ctx.rig
+      ? `The PICKUP decides how much noise there is to gate, not only the tone. A single coil — Strat/Tele single-coil, P-90, lipstick, foil — hums and buzzes far more than a humbucker, and it gets worse the more gain is in front of it. For the same gain, give a single coil a noticeably higher noise-suppressor threshold than a humbucker (roughly 8-12 more), and never leave a hot single coil ungated on a high-gain patch. A humbucker can sit lower, and on a quiet clean it usually needs no gate at all.`
+      : ``,
     ``,
     `When a request names a song, artist, or specific recorded tone whose real rig or settings you are not certain of, use the web_search tool FIRST to ground your choices — the player's actual amp, pedals, and known settings — then design. When the request is a plain description ("warm clean", "tight metal"), no search is needed.`,
     ``,
@@ -67,6 +81,8 @@ export function katanaSystemPrompt(ctx: ToneContext): string {
     ``,
     `The KATANA has two mod/FX slots (fx1, fx2). Reach for them whenever the sound genuinely calls for movement or shaping — chorus for shimmer and 80s cleans, phaser or flanger for sweep, tremolo for surf and vintage pulse, a compressor for tight funk or country picking, an EQ or wah where it belongs. Don't force effects onto a dry, direct tone, but don't leave the slots empty out of habit either: if the reference tone has modulation, use it.`,
     `When you turn a mod/FX slot on, also dial its knobs — for modulation (Chorus, Phaser, Flanger, Tremolo, Vibrato) set rate, depth and level (and reso for Phaser/Flanger); for Comp set sustain, attack, tone and level. Match them to the part: a subtle chorus is low rate and depth, a lush 80s wash is higher; a fast surf tremolo is high rate. Values you skip get a neutral default, so at least set rate/depth/level whenever you enable a modulation effect.`,
+    ``,
+    `Set the noise suppressor deliberately on EVERY patch — it is part of the tone, not an afterthought. Any patch with real dirt (crunch, lead, high gain, or a booster pushing a gained amp) needs the gate ON, or it hisses and squeals as soon as the player touches the strings and the tone is unusable. Cleans and low-gain tones want it OFF, so note tails can bloom. Scale the threshold with the gain in front of it, and when in doubt set it lower — a slightly open gate leaves a little hiss, a gate set too high chops off quiet notes.`,
     ``,
     `Knobs are 0–100. Keep the patch name under 16 characters.`,
     // The write-up is ~20% of a request's output tokens, and it was running long:
@@ -127,11 +143,28 @@ export interface TonePatchEvent {
  * target device. Returns null if the device has no writer yet (e.g. MkI/MkIII/
  * GO) — the caller drops it rather than emitting a broken card.
  */
+/**
+ * Apply the pickup correction to the gate the model chose, BEFORE the writer sees it.
+ *
+ * The prompt asks for this and the model does not reliably do it — measured, it gave
+ * a P-90 two more threshold than a humbucker where the rule says 8-12. So the rule is
+ * enforced here instead. The model's gate is an opinion; this is the guarantee.
+ *
+ * Also runs the derived gate through the same correction, so a patch where the model
+ * omitted the gate entirely still gets calibrated for the pickup rather than for an
+ * imaginary humbucker.
+ */
+function gateCalibrated(patch: TonePatch, ctx: ToneContext): TonePatch {
+  const noise = ctx.pickupNoise ?? 'humbucking'
+  const ns = patch.noiseSuppressor ?? defaultNoiseSuppressor(patch)
+  return { ...patch, noiseSuppressor: calibrateGateForPickup(ns, noise) }
+}
+
 export function buildTonePatchEvent(
   input: Record<string, unknown>,
   ctx: ToneContext,
 ): TonePatchEvent | null {
-  const patch = toTonePatch(input)
+  const patch = gateCalibrated(toTonePatch(input), ctx)
   const song = typeof input.sourceSong === 'string' ? input.sourceSong : undefined
   const artist = typeof input.sourceArtist === 'string' ? input.sourceArtist : undefined
   // A layout that isn't round-trip verified still writes (allowUnvalidated), but
