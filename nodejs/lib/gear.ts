@@ -248,6 +248,58 @@ export function equippedPickups(i: Instrument): PickupType[] {
 }
 
 /**
+ * Does this pickup HUM?
+ *
+ * A single coil is an antenna. It picks up mains hum and every switching supply in
+ * the room, and the more gain you put in front of it the louder that noise gets. A
+ * humbucker cancels it by construction. This is a fact about ELECTRICITY, not taste,
+ * and it decides how much noise gate a patch needs — which is why it lives here, as
+ * a property of the pickup, rather than in a prompt where a model may or may not act
+ * on it.
+ *
+ * Stacked coils and rails are hum-cancelling designs in a single-coil footprint, so
+ * they belong with the humbuckers. Actives are low-impedance and quiet. Piezo and PCB
+ * are not magnetic pickups at all.
+ */
+const NOISY_PICKUPS = new Set<PickupType>(['single-coil', 'p90', 'lipstick', 'foil'])
+
+export function isNoisyPickup(p: PickupType): boolean {
+  return NOISY_PICKUPS.has(p)
+}
+
+/** How much hum the amp is going to have to deal with. */
+export type PickupNoise = 'humbucking' | 'single-coil' | 'mixed'
+
+/**
+ * Classify the noise the ACTIVE pickup selection will produce.
+ *
+ *   position given  -> the pickup at that position decides it.
+ *   position 'auto' -> the model picks the position, so we cannot know which pickup
+ *                      it voiced for. If the guitar has both kinds fitted (a Les Paul
+ *                      with a P-90 neck and a humbucker bridge — a real instrument,
+ *                      Steve's), the honest answer is 'mixed', and the gate lands
+ *                      halfway. Guessing 'humbucking' would under-gate a P-90 into a
+ *                      high-gain patch, which is the exact failure we are fixing.
+ */
+export function pickupNoise(i: Instrument, position: PickupPosition | undefined): PickupNoise {
+  const equipped = equippedPickups(i)
+  if (equipped.length === 0) return 'humbucking'   // nothing fitted; nothing to hum
+
+  if (position) {
+    const type = pickupAt(i, position)
+    // A combined position (neck+bridge) resolves to a single type only when both
+    // slots match; when it doesn't, pickupAt returns undefined and 'mixed' is right.
+    if (!type) return equipped.some(isNoisyPickup) ? 'mixed' : 'humbucking'
+    return isNoisyPickup(type) ? 'single-coil' : 'humbucking'
+  }
+
+  const noisy = equipped.filter(isNoisyPickup).length
+  if (noisy === 0) return 'humbucking'
+  if (noisy === equipped.length) return 'single-coil'
+  return 'mixed'
+}
+
+/**
  * Physical name of slot `idx` on a body with `len` slots. Slots are ordered
  * neck -> bridge, so the ends are always neck and bridge and anything between
  * is middle. A one-slot body is a bridge pickup by convention (Junior, Esquire).

@@ -4,10 +4,12 @@
 
 import { tool, jsonSchema } from 'ai'
 import { type KatanaDevice, type PlayedInstrument, instrumentForDevice } from '@/lib/storage'
+import type { PickupNoise } from '@/lib/gear'
 import { buildToneSchema } from '@/lib/patch/schema'
 import { vocabForDevice } from '@/lib/patch/vocab'
 import {
   writePatchTsl, tslString, tslFilename, profileForDevice,
+  calibrateGateForPickup, defaultNoiseSuppressor,
   type TonePatch,
 } from '@/lib/patch'
 
@@ -20,6 +22,10 @@ export interface ToneContext {
    *  Drives VOICING independently of the amp: a bass through a guitar KATANA is
    *  voiced for bass. Absent → falls back to the amp's own class. */
   instrument?: PlayedInstrument
+  /** How much the player's ACTIVE pickup hums. Decides the noise gate, in code —
+   *  see calibrateGateForPickup. Absent → treated as humbucking (no correction),
+   *  because inventing a single coil the player doesn't have would over-gate them. */
+  pickupNoise?: PickupNoise
 }
 
 /**
@@ -137,11 +143,28 @@ export interface TonePatchEvent {
  * target device. Returns null if the device has no writer yet (e.g. MkI/MkIII/
  * GO) — the caller drops it rather than emitting a broken card.
  */
+/**
+ * Apply the pickup correction to the gate the model chose, BEFORE the writer sees it.
+ *
+ * The prompt asks for this and the model does not reliably do it — measured, it gave
+ * a P-90 two more threshold than a humbucker where the rule says 8-12. So the rule is
+ * enforced here instead. The model's gate is an opinion; this is the guarantee.
+ *
+ * Also runs the derived gate through the same correction, so a patch where the model
+ * omitted the gate entirely still gets calibrated for the pickup rather than for an
+ * imaginary humbucker.
+ */
+function gateCalibrated(patch: TonePatch, ctx: ToneContext): TonePatch {
+  const noise = ctx.pickupNoise ?? 'humbucking'
+  const ns = patch.noiseSuppressor ?? defaultNoiseSuppressor(patch)
+  return { ...patch, noiseSuppressor: calibrateGateForPickup(ns, noise) }
+}
+
 export function buildTonePatchEvent(
   input: Record<string, unknown>,
   ctx: ToneContext,
 ): TonePatchEvent | null {
-  const patch = toTonePatch(input)
+  const patch = gateCalibrated(toTonePatch(input), ctx)
   const song = typeof input.sourceSong === 'string' ? input.sourceSong : undefined
   const artist = typeof input.sourceArtist === 'string' ? input.sourceArtist : undefined
   // A layout that isn't round-trip verified still writes (allowUnvalidated), but

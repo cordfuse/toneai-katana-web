@@ -12,6 +12,7 @@ import { createStream, attachReplay } from '@/lib/server/stream-buffer'
 import { resolveLocalizableString, languageNameForLocale } from '@/lib/i18n'
 import { resolveLocale } from '@/lib/i18n/server'
 import { katanaSystemPrompt, type ToneContext } from '@/lib/server/tone'
+import type { PickupNoise } from '@/lib/gear'
 import {
   KATANA_DEVICES, type KatanaDevice, type PlayedInstrument,
   deviceInstrumentIssue, deviceInstrumentIssueMessage,
@@ -47,10 +48,18 @@ function promptSummary(messages: unknown): string | undefined {
 // an amp the user didn't choose.
 function resolveToneContext(
   device: KatanaDevice, played: PlayedInstrument | undefined, rawRig: unknown,
+  rawPickupNoise: unknown,
 ): ToneContext {
   const deviceLabel = KATANA_DEVICES.find(d => d.id === device)?.label ?? 'KATANA'
   const rig = typeof rawRig === 'string' && rawRig.trim() ? rawRig.trim() : undefined
-  return { device, deviceLabel, rig, instrument: played }
+  // Validated against the known set rather than trusted: an unknown value must fall
+  // back to 'humbucking' (no gate correction), never to a made-up single coil, since
+  // over-gating chops the player's quiet notes.
+  const pickupNoise: PickupNoise | undefined =
+    rawPickupNoise === 'single-coil' || rawPickupNoise === 'mixed' || rawPickupNoise === 'humbucking'
+      ? rawPickupNoise
+      : undefined
+  return { device, deviceLabel, rig, instrument: played, pickupNoise }
 }
 
 /** The played-instrument kind from the request body, or undefined if absent. */
@@ -108,6 +117,7 @@ export async function POST(request: NextRequest) {
     device: clientDevice,
     rig: clientRig,
     instrument: clientInstrument,
+    pickupNoise: clientPickupNoise,
   } = body
 
   // BYOK. The mode is DERIVED from the presence of a key — there is no mode
@@ -298,7 +308,7 @@ export async function POST(request: NextRequest) {
   // client cannot override them (docs/settings.md § Inference is server-side).
   // device is guaranteed valid here — deviceInstrumentIssue returns 'no-device'
   // for anything falsy/unsupported and we returned 400 above.
-  const toneCtx = resolveToneContext(device!, playedInstrument, clientRig)
+  const toneCtx = resolveToneContext(device!, playedInstrument, clientRig, clientPickupNoise)
   const systemPrompt = applyLocaleHint(katanaSystemPrompt(toneCtx), activeLocale)
   const temperature  = TEMPERATURE
   const runOpts = { webSearch: wantWebSearch, temperature, apiKey: byokKey, tone: toneCtx }

@@ -23,6 +23,8 @@
 // to string is what lets one intent shape carry MkII, Gen 3, etc. — the schema
 // handed to the model still constrains the names per device (lib/patch/vocab).
 
+import type { PickupNoise } from '@/lib/gear'
+
 /** A 0–100 UI knob value. Not a byte — the writer scales it. */
 export type Knob = number
 
@@ -104,6 +106,38 @@ export interface NoiseSuppressor {
   threshold: Knob
   /** 0–100. How quickly the gate closes after the note dies. */
   release: Knob
+}
+
+/**
+ * Raise the gate for a noisy pickup. DETERMINISTIC — not left to the model.
+ *
+ * The prompt asks the model to give a single coil 8-12 more threshold than a
+ * humbucker. Measured, on the same prompt and the same gain with only the pickup
+ * changed, it gave it TWO:
+ *
+ *   bridge humbucker -> threshold 48
+ *   neck P-90        -> threshold 50
+ *
+ * That is the same failure we already hit once on this codebase, when we asked the
+ * model nicely not to narrate before a tool call and it narrated anyway. The lesson
+ * held then and holds now: if a rule must be true, ENFORCE IT IN CODE. A prompt is
+ * guidance; a function is a guarantee.
+ *
+ * So the model's gate is a starting point, and this is the correction applied to it
+ * on the way to the writer. It only ever raises — a model that already understood the
+ * pickup keeps its (higher) choice.
+ *
+ * `mixed` gets half the bump: the player left the position on auto with both kinds of
+ * pickup fitted, so we genuinely do not know which one they'll select, and splitting
+ * the difference beats under-gating a P-90 into a high-gain patch.
+ */
+export function calibrateGateForPickup(ns: NoiseSuppressor, noise: PickupNoise): NoiseSuppressor {
+  if (!ns.on) return ns
+  const bump = noise === 'single-coil' ? 10 : noise === 'mixed' ? 5 : 0
+  if (bump === 0) return ns
+  // Cap at 60. Past that the gate stops being a gate and starts eating the player's
+  // quiet notes, which sounds like a broken patch rather than a noisy one.
+  return { ...ns, threshold: Math.min(60, Math.max(ns.threshold, ns.threshold + bump)) }
 }
 
 /**

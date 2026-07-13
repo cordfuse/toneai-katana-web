@@ -27,7 +27,7 @@ import { ToneCard, ToneModal } from './_ToneCard'
 import { useT, useLocale, useAvailableLocales, setLocaleAndReload, labelForLocale } from '@/lib/i18n/client'
 import {
   type GearState, type PositionChoice,
-  loadGear, saveGear, activeInstrument, describeRig, positionsFor, positionLabel, equippedPickups,
+  loadGear, saveGear, activeInstrument, describeRig, positionsFor, positionLabel, equippedPickups, pickupNoise,
 } from '@/lib/gear'
 import { sampleTonePrompts } from '@/lib/prompts'
 import { GearSection, GearModal } from './_Gear'
@@ -2275,6 +2275,15 @@ export default function Home({
           rig: (() => {
             const inst = activeInstrument(gear)
             return inst ? describeRig(inst, position === 'auto' ? undefined : position) : undefined
+          })(),
+          // How much the selected pickup HUMS. The server sets the noise gate from
+          // this in code, because the model does not reliably act on it when merely
+          // told (measured: it gave a P-90 two more threshold than a humbucker, where
+          // the rule asks for 8-12). A single coil into a high-gain patch is exactly
+          // the case that squeals, so this cannot be left to persuasion.
+          pickupNoise: (() => {
+            const inst = activeInstrument(gear)
+            return inst ? pickupNoise(inst, position === 'auto' ? undefined : position) : undefined
           })(),
         },
         {
