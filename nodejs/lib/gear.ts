@@ -356,6 +356,22 @@ export function describeRig(i: Instrument, position: PickupPosition | undefined)
     const type = pickupAt(i, position)
     const posLabel = positionLabel(position, equipped.length).toLowerCase()
     parts.push(type ? `${posLabel} ${PICKUP_LABEL[type]}` : `${posLabel} pickups`)
+  } else {
+    // NO POSITION CHOSEN — the 'auto' pill, which is the DEFAULT everyone is on.
+    //
+    // This used to emit nothing at all: a Les Paul with a P-90 in the neck and a
+    // humbucker in the bridge was described to the model as, in full, "Les Paul".
+    // So auto — which claims to let the model pick the position to suit the tone —
+    // asked it to choose from a list it was never shown, and every pickup-dependent
+    // decision (gain staging, and above all how much noise gate the guitar needs)
+    // was made blind. A single coil hums; a humbucker doesn't; the model could not
+    // tell which it was voicing for.
+    //
+    // Auto now means what it says: here is what is fitted, you choose.
+    const list = fitted(i)
+      .map(s => `${s.pos} ${PICKUP_LABEL[s.type]}`)
+      .join(' / ')
+    parts.push(`${list} — pick whichever position suits the part`)
   }
 
   const desc = parts.join(', ') || 'unspecified instrument'

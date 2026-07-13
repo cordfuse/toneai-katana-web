@@ -55,6 +55,14 @@ export function katanaSystemPrompt(ctx: ToneContext): string {
     ctx.rig
       ? `Their ${played === 'bass' ? 'bass' : 'guitar'}: ${ctx.rig}. Voice the patch for that instrument.`
       : ``,
+    // The pickup drives the GATE, not just the tone. This had to be said outright:
+    // given a P-90 in the neck and a humbucker in the bridge, the model dialled the
+    // identical noise suppressor for both, because nothing ever told it that the
+    // pickup changes how much noise there is to suppress. It adjusted EQ and gain
+    // and left the gate alone.
+    ctx.rig
+      ? `The PICKUP decides how much noise there is to gate, not only the tone. A single coil — Strat/Tele single-coil, P-90, lipstick, foil — hums and buzzes far more than a humbucker, and it gets worse the more gain is in front of it. For the same gain, give a single coil a noticeably higher noise-suppressor threshold than a humbucker (roughly 8-12 more), and never leave a hot single coil ungated on a high-gain patch. A humbucker can sit lower, and on a quiet clean it usually needs no gate at all.`
+      : ``,
     ``,
     `When a request names a song, artist, or specific recorded tone whose real rig or settings you are not certain of, use the web_search tool FIRST to ground your choices — the player's actual amp, pedals, and known settings — then design. When the request is a plain description ("warm clean", "tight metal"), no search is needed.`,
     ``,
