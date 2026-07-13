@@ -83,6 +83,59 @@ export interface Reverb {
 }
 
 /**
+ * The noise suppressor — the gate between the pickups and a high-gain preamp.
+ *
+ * THIS IS NOT A GARNISH. It is why a real player's metal patch is playable and
+ * ours was not. Every patch this app has ever produced shipped with the gate OFF
+ * (NS1_ON_OFF = 0), because the writer never wrote the byte and the donor template
+ * it clones is a CLEAN patch, which has no use for one. Stack gain 85 on top of a
+ * clean patch's settings and the amp howls the moment you touch the strings — which
+ * is exactly what a MkII owner reported.
+ *
+ * A gate is not optional above roughly half gain. It is part of the tone.
+ *
+ * `threshold` is how loud the signal must be to open the gate: too low and the hiss
+ * comes through anyway, too high and quiet notes get chopped off. It scales with how
+ * much dirt is in front of it. `release` is how fast it shuts once you stop.
+ */
+export interface NoiseSuppressor {
+  on: boolean
+  /** 0–100. Higher = gate opens later. Scale it with gain. */
+  threshold: Knob
+  /** 0–100. How quickly the gate closes after the note dies. */
+  release: Knob
+}
+
+/**
+ * Pick a sane gate for a patch that didn't specify one.
+ *
+ * The model SHOULD choose this (it knows whether it's designing a jazz clean or a
+ * djent chug), and the schema asks it to. But the writer must never emit a patch
+ * with an unconsidered gate again, so this is the floor: derive it from how much
+ * gain is actually in the signal path.
+ *
+ * Deliberately conservative. A gate that is slightly too open leaves a little hiss;
+ * a gate that is too aggressive eats the tail of every note and sounds broken. When
+ * guessing, err toward hiss.
+ */
+export function defaultNoiseSuppressor(p: TonePatch): NoiseSuppressor {
+  // Total dirt in front of the gate: preamp gain, plus whatever the booster adds.
+  const drive = p.booster?.on ? (p.booster.drive ?? 0) : 0
+  const heat = p.ampA.gain + drive * 0.4
+
+  // Below this, a gate does more harm than good — cleans keep their bloom.
+  if (heat < 45) return { on: false, threshold: 0, release: 50 }
+
+  // Ramp the threshold with the heat, and CAP IT WELL BELOW the top of the range.
+  // This is the derived fallback, not a considered choice, so it must fail in the
+  // forgiving direction: a slightly open gate leaves a little hiss (annoying), a gate
+  // set too high swallows the tail of every quiet note (sounds broken, and the player
+  // blames the patch). ~15 at the edge of breakup, ~44 for a fully saturated stack.
+  const threshold = Math.round(Math.min(45, 15 + (heat - 45) * 0.45))
+  return { on: true, threshold, release: 50 }
+}
+
+/**
  * A single Katana patch as tone intent.
  *
  * `name` is capped at 16 ASCII chars by the format (PATCH_NAME, offset 0–15,
@@ -101,6 +154,12 @@ export interface TonePatch {
   fx2?: ModFx
   delay: Delay
   reverb: Reverb
+  /** The gate. Omitted → the writer derives one from the gain
+   *  (defaultNoiseSuppressor). It is NEVER left to the donor template. */
+  noiseSuppressor?: NoiseSuppressor
+  /** 0–100 patch output level, so one tone isn't twice as loud as the next.
+   *  Omitted → 100 (unity), written explicitly rather than inherited. */
+  patchLevel?: Knob
 }
 
 /** A neutral starting patch — clean amp, everything else off. Useful as the
@@ -157,6 +216,12 @@ export function describePatch(p: TonePatch): string {
   parts.push(p.reverb.on
     ? `Reverb ${p.reverb.type} ${p.reverb.timeS.toFixed(1)}s`
     : 'Reverb off')
+
+  // The gate goes in the log line because it is the parameter that made patches
+  // unplayable while nobody was looking. Report what will actually be WRITTEN —
+  // the derived gate when the model didn't choose one — not just what it said.
+  const ns = p.noiseSuppressor ?? defaultNoiseSuppressor(p)
+  parts.push(ns.on ? `NS thr${ns.threshold}` : 'NS off')
 
   return parts.join(' · ')
 }

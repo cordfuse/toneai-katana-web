@@ -59,7 +59,7 @@ export function buildToneSchema(vocab: DeviceVocab): Record<string, unknown> {
   return {
     type: 'object',
     additionalProperties: false,
-    required: ['name', 'ampA', 'booster', 'delay', 'reverb'],
+    required: ['name', 'ampA', 'booster', 'delay', 'reverb', 'noiseSuppressor'],
     properties: {
       name: {
         type: 'string',
@@ -107,6 +107,37 @@ export function buildToneSchema(vocab: DeviceVocab): Record<string, unknown> {
           timeS: { type: 'number', minimum: 0.1, maximum: 20, description: 'Reverb time in seconds.' },
           level: knob,
         },
+      },
+
+      // REQUIRED on purpose. This was optional-by-omission for the app's whole life —
+      // the writer never wrote it, so every patch shipped with the gate the template's
+      // donor happened to have (off), and high-gain tones squealed on the real amp.
+      // Making the model state it means a gate is now a tone DECISION, like gain.
+      noiseSuppressor: {
+        type: 'object',
+        additionalProperties: false,
+        required: ['on', 'threshold', 'release'],
+        description:
+          'The noise gate. Turn it ON for anything with real dirt — crunch, lead, ' +
+          'metal, or any patch with a booster pushing an already-gained amp. Without ' +
+          'it a high-gain patch hisses and squeals the moment the player touches the ' +
+          'strings, and is unusable. Leave it OFF for cleans and low-gain tones, where ' +
+          'it would choke the note tails. Threshold scales with how much gain is in ' +
+          'front of it: ~15-25 at the edge of breakup, ~35-45 for high gain, ~50+ only ' +
+          'for extreme saturation. Too high chops quiet notes; when unsure, go lower.',
+        properties: {
+          on: { type: 'boolean' },
+          threshold: knob,
+          release: knob,
+        },
+      },
+
+      patchLevel: {
+        ...knob,
+        description:
+          'Patch output level, 0-100. Default 100. Lower it only if this tone would ' +
+          'otherwise be much louder than a normal patch (e.g. heavy compression plus a ' +
+          'hot booster). Do not use it as a substitute for the amp level.',
       },
     },
   }

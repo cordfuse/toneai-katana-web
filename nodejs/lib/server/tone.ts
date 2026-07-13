@@ -68,6 +68,8 @@ export function katanaSystemPrompt(ctx: ToneContext): string {
     `The KATANA has two mod/FX slots (fx1, fx2). Reach for them whenever the sound genuinely calls for movement or shaping — chorus for shimmer and 80s cleans, phaser or flanger for sweep, tremolo for surf and vintage pulse, a compressor for tight funk or country picking, an EQ or wah where it belongs. Don't force effects onto a dry, direct tone, but don't leave the slots empty out of habit either: if the reference tone has modulation, use it.`,
     `When you turn a mod/FX slot on, also dial its knobs — for modulation (Chorus, Phaser, Flanger, Tremolo, Vibrato) set rate, depth and level (and reso for Phaser/Flanger); for Comp set sustain, attack, tone and level. Match them to the part: a subtle chorus is low rate and depth, a lush 80s wash is higher; a fast surf tremolo is high rate. Values you skip get a neutral default, so at least set rate/depth/level whenever you enable a modulation effect.`,
     ``,
+    `Set the noise suppressor deliberately on EVERY patch — it is part of the tone, not an afterthought. Any patch with real dirt (crunch, lead, high gain, or a booster pushing a gained amp) needs the gate ON, or it hisses and squeals as soon as the player touches the strings and the tone is unusable. Cleans and low-gain tones want it OFF, so note tails can bloom. Scale the threshold with the gain in front of it, and when in doubt set it lower — a slightly open gate leaves a little hiss, a gate set too high chops off quiet notes.`,
+    ``,
     `Knobs are 0–100. Keep the patch name under 16 characters.`,
     // The write-up is ~20% of a request's output tokens, and it was running long:
     // the model reliably produced 5+ sentences and volunteered a "Tips:" section

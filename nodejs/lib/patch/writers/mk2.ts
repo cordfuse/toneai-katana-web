@@ -17,7 +17,7 @@
 // type; unit not pinned), and per-effect model sub-selectors (e.g. comp model)
 // inherit the template default.
 
-import type { TonePatch, ModFx } from '../intent'
+import { defaultNoiseSuppressor, type TonePatch, type ModFx } from '../intent'
 import { AMP_BY_NAME, OD_DS_BY_NAME, FX_BY_NAME, DELAY_BY_NAME, REVERB_BY_NAME } from '../enums'
 import { MK2_OFFSETS, FX_PARAM_LAYOUT } from '../mk2/sections'
 import { templateSections } from '../mk2/template'
@@ -123,6 +123,44 @@ export function buildMk2Sections(patch: TonePatch): SectionMap {
     put(s, O.revTime, reverbTimeByte(patch.reverb.timeS))
     put(s, O.revLevel, knob(patch.reverb.level))
   }
+
+  // ── Playability. Every byte below was previously INHERITED from the donor. ────
+  //
+  // The donor is a clean patch, so these arrived on a gain-85 metal tone as: gate
+  // OFF, a stranger's contour EQ ON, and solo/level bytes nobody chose. The patch
+  // loaded fine and was unplayable. Set them all, on every patch, every time.
+
+  // The gate. The model chooses it (it knows a djent chug from a jazz clean); if it
+  // didn't, derive one from the gain rather than leaving it to chance.
+  const ns = patch.noiseSuppressor ?? defaultNoiseSuppressor(patch)
+  put(s, O.nsOn, ns.on ? 1 : 0)
+  put(s, O.nsThreshold, knob(ns.threshold))
+  put(s, O.nsRelease, knob(ns.release))
+
+  // Output level. Unity unless the model says otherwise, so tones sit at a
+  // consistent volume against each other.
+  put(s, O.patchLevel, knob(patch.patchLevel ?? 100))
+
+  // All three solo boosts OFF. A patch that arrives with a hidden boost engaged is
+  // simply louder than the tone it claims to be. Loudness is the amp level's job.
+  put(s, O.odSoloSw, 0)
+  put(s, O.odSoloLevel, 50)
+  put(s, O.ampSoloSw, 0)
+  put(s, O.ampSoloLevel, 50)
+  put(s, O.prmSoloSw, 0)
+  put(s, O.prmSoloLevel, 50)
+
+  // Contour and bright OFF. Both stack extra EQ on top of the amp's own tone
+  // stack. With them on, the bass/mid/treble/presence the model dialled aren't
+  // what the player hears — which makes every EQ decision a lie.
+  put(s, O.contourSw, 0)
+  put(s, O.contourSelect, 0)
+  put(s, O.ampBright, 0)
+
+  // Gain range: MID (1), written explicitly. Same value the donor carried, so this
+  // changes nothing today — but it is now a decision instead of an inheritance.
+  // Unverified: if a real amp reports the gain range is wrong, suspect this first.
+  put(s, O.ampGainSw, 1)
 
   return s
 }

@@ -92,6 +92,56 @@ export const MK2_OFFSETS = {
   fx1Type: { section: 'Fx(1)', offset: 1 },
   fx2On:   { section: 'Fx(2)', offset: 0 },
   fx2Type: { section: 'Fx(2)', offset: 1 },
+
+  // ── Playability parameters. THESE WERE THE BUG. ──────────────────────────────
+  //
+  // None of these were written. They came from whatever patch the template was
+  // cloned from — a community "Mayer Tone", i.e. a CLEAN patch — and were then
+  // shipped underneath every tone this app produced, including the high-gain ones.
+  // The gate was off, a stranger's contour EQ was on, and the solo switches and
+  // level were whatever that player happened to leave them at.
+  //
+  // A patch is not just the knobs the model picked. It is every byte the amp reads.
+  // Everything below is now set deliberately on every patch.
+
+  // Noise suppressor — section Patch_1. The gate. Off in the donor, hence off in
+  // every patch we ever shipped; the reason a gain-85 tone squealed on touch.
+  nsOn:        { section: 'Patch_1', offset: 38 },
+  nsThreshold: { section: 'Patch_1', offset: 39 },
+  nsRelease:   { section: 'Patch_1', offset: 40 },
+
+  // Patch output level — so one tone isn't twice as loud as the next.
+  patchLevel:  { section: 'Patch_1', offset: 48 },
+
+  // Solo boosts. THREE separate ones, and any of them left on makes a patch
+  // arrive far louder than intended. Forced off; the model expresses loudness
+  // through amp level, not through a hidden boost.
+  odSoloSw:     { section: 'Patch_0', offset: 5 },
+  odSoloLevel:  { section: 'Patch_0', offset: 6 },
+  ampSoloSw:    { section: 'Patch_0', offset: 27 },
+  ampSoloLevel: { section: 'Patch_0', offset: 28 },
+  prmSoloSw:    { section: 'Patch_1', offset: 84 },
+  prmSoloLevel: { section: 'Patch_1', offset: 85 },
+
+  // Contour — a fixed EQ curve stacked on top of the amp's own EQ. The donor had
+  // it ON with curve 2, so every tone secretly carried one player's mid-scoop.
+  // Forced off: the model already shapes the tone with bass/mid/treble/presence,
+  // and a second invisible EQ underneath it makes those knobs mean nothing.
+  contourSw:     { section: 'Patch_1', offset: 86 },
+  contourSelect: { section: 'Patch_1', offset: 87 },
+
+  // Amp bright switch — a treble lift on top of the treble knob. Off, same reason.
+  ampBright: { section: 'Patch_0', offset: 25 },
+
+  // Preamp gain-range switch (LOW / MID / HIGH, by inference from the GT-series
+  // preamp block this derives from).
+  //
+  // HONESTY: the VALUES are not verified — only the offset is, and only from the
+  // decompiled table. The donor sits at 1, which we believe is MID, the normal
+  // setting. We write 1 EXPLICITLY rather than inherit it, so the value is a
+  // decision on the record instead of an accident. If a real MkII says a generated
+  // patch's gain range is wrong, THIS is the first byte to suspect.
+  ampGainSw: { section: 'Patch_0', offset: 26 },
 } as const
 
 /** One tunable knob within an FX effect: which ModFx field feeds it, the byte
