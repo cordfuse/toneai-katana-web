@@ -321,6 +321,17 @@ const GITHUB_ICON_PATH = 'M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.83
 
 const WHATS_NEW: { version: string; items: { text: string; sub?: string }[] }[] = [
   {
+    version: '0.12.0',
+    // Like 0.11.0, the headline is a correction rather than a feature: until now
+    // every patch carried a stranger's tone underneath the one you asked for, and
+    // on the original KATANA the reverb type was written wrong outright. Say it plainly.
+    items: [
+      { text: 'The tone you asked for is the tone you get now', sub: 'Every patch we built started from a copy of one real patch and changed only the handful of settings you asked for — so a stranger’s compressor, EQ, and reverb tail rode underneath every tone, whatever you dialled. Ask for a clean surf or blues sound with a touch of reverb and it came out swamped and pushed backwards. Every patch now starts from your amp’s own factory defaults, so the settings we don’t touch stay neutral instead of inherited. If a tone came out wrong before, generate it again.' },
+      { text: 'Original KATANA (MkI): the reverb was flat-out wrong', sub: 'The MkI stores its reverb type differently from the newer amps, and we were writing the wrong value — ask for Spring and the amp loaded Hall, almost the opposite of what you wanted. Fixed to match the amp. The same correction sharpens FX and overdrive selection on the MkI too.' },
+      { text: 'A work in progress — and only the MkII is proven on hardware', sub: 'It is the amp we own. GO, Gen 3, Bass and the rest are rebuilt from each amp’s own factory settings and are our best work from the format, but this is still in progress and we need you. If you own another KATANA, load a patch and tell us what happened — working or broken, that report is the missing piece.' },
+    ],
+  },
+  {
     version: '0.11.0',
     // The FIRST item is the welcome modal's headline. This one is not a feature —
     // it is an apology and a correction, and it earns the headline because until
