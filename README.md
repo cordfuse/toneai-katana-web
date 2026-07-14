@@ -4,6 +4,12 @@
 vibe — ToneAI Kat designs the tone and hands you a ready-to-import `.tsl` patch
 for BOSS Tone Studio.
 
+> **Work in progress — testers wanted.** This is under active development and
+> community feedback drives it. Only the KATANA MkII is verified on real hardware
+> (it's the amp we own). If you play any other KATANA, generate a tone, load it,
+> and tell us how it went — working or broken, that report is the most useful
+> thing you can contribute.
+
 <p align="center">
   <img src="docs/screenshots/02-home.png" width="30%" alt="Home" />
   <img src="docs/screenshots/03-chat.png" width="30%" alt="Chat with a generated tone" />
