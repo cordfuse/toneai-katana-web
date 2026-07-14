@@ -8,25 +8,30 @@
 // its own shape: clone a real patch's params, overlay the intent fields by NAME,
 // and wrap it in the GT envelope.
 //
-// Enum params use the CONTIGUOUS option index of the shared name lists
-// (lib/patch/enums.ts) — NOT the `.kat` byte values the flat-image writer uses,
-// which diverge for FX/reverb. Verified against the real export.
+// Enum params store the amp's `.kat` BYTE value (e.g. reverb Spring = 5), the
+// SAME encoding the flat-image `.kat` writer uses — the GT liveset is a thin JSON
+// wrapper around the native `.kat` parameter memory, so a reverb/FX/OD selector
+// carries its raw byte, not a 0-based list position. This matters because those
+// byte sets are SPARSE (reverb is {1,3,4,5,6}, FX skips 11/13/17/24, OD skips
+// 7/19): the byte and the option index diverge above the first gap. Encoding the
+// index instead scrambles the selectors — asking for Spring (index 3) writes byte
+// 3, which the amp reads as Hall. Proven by the real GT export, whose reverb_type
+// values are {1,3,4} with the gap at 2 that only a sparse byte set explains.
+// Amp types happen to be contiguous (0..32), so those were never affected.
 
 import type { TonePatch, AmpChannel } from '../intent'
-import { AMP_NAMES, OD_DS_NAMES, FX_NAMES, DELAY_NAMES, REVERB_NAMES } from '../enums'
+import { AMP_BY_NAME, OD_DS_BY_NAME, FX_BY_NAME, DELAY_BY_NAME, REVERB_BY_NAME } from '../enums'
 import { templatePatch, templateLiveSetData, MK1_DEVICE, MK1_VERSION, type Mk1Patch } from '../mk1/template'
 
 const clampInt = (v: number, lo: number, hi: number) => (v < lo ? lo : v > hi ? hi : Math.round(v))
 const knob = (v: number) => clampInt(v, 0, 100)
 
-// MkI's GT liveset stores enum params as the CONTIGUOUS option index (0..N) of
-// the name list — NOT the `.kat` byte value the flat-image writer uses (those
-// diverge for FX/reverb). Verified against the real export: preamp_a_type=11 =
-// AMP_NAMES[11] (Crunch), reverb_type=3 = REVERB_NAMES[3] (Spring).
-function enumIndex(list: readonly string[], name: string, kind: string): number {
-  const i = list.indexOf(name)
-  if (i < 0) throw new Error(`unknown KATANA MkI ${kind}: "${name}"`)
-  return i
+// Resolve an enum name to its `.kat` byte value — the value the GT liveset stores
+// (see the file header for why this is the byte, not the option index).
+function enumByte(map: Map<string, number>, name: string, kind: string): number {
+  const b = map.get(name)
+  if (b === undefined) throw new Error(`unknown KATANA MkI ${kind}: "${name}"`)
+  return b
 }
 
 /** Set a named param, asserting it exists in the template (a typo would silently
@@ -38,7 +43,7 @@ function set(params: Record<string, number>, name: string, value: number): void 
 
 /** Overlay one preamp channel's named params (A or B share the suffix set). */
 function writeChannel(params: Record<string, number>, ch: AmpChannel, prefix: 'preamp_a' | 'preamp_b'): void {
-  set(params, `${prefix}_type`, enumIndex(AMP_NAMES, ch.type, 'amp type'))
+  set(params, `${prefix}_type`, enumByte(AMP_BY_NAME, ch.type, 'amp type'))
   set(params, `${prefix}_gain`, knob(ch.gain))
   set(params, `${prefix}_bass`, knob(ch.bass))
   set(params, `${prefix}_middle`, knob(ch.middle))
@@ -63,7 +68,7 @@ export function buildMk1Patch(patch: TonePatch): Mk1Patch {
   // OD / DS booster slot.
   set(params, 'od_ds_on_off', patch.booster.on ? 1 : 0)
   if (patch.booster.on) {
-    set(params, 'od_ds_type', enumIndex(OD_DS_NAMES, patch.booster.type, 'OD/DS type'))
+    set(params, 'od_ds_type', enumByte(OD_DS_BY_NAME, patch.booster.type, 'OD/DS type'))
     set(params, 'od_ds_drive', knob(patch.booster.drive))
     set(params, 'od_ds_tone', knob(patch.booster.tone))
     set(params, 'od_ds_effect_level', knob(patch.booster.level))
@@ -71,14 +76,14 @@ export function buildMk1Patch(patch: TonePatch): Mk1Patch {
 
   // FX1 / FX2 — type + on/off only; per-FX sub-trees stay genuine (as .kat writer).
   set(params, 'fx1_on_off', patch.fx1?.on ? 1 : 0)
-  if (patch.fx1?.on) set(params, 'fx1_fx_type', enumIndex(FX_NAMES, patch.fx1.type, 'FX type'))
+  if (patch.fx1?.on) set(params, 'fx1_fx_type', enumByte(FX_BY_NAME, patch.fx1.type, 'FX type'))
   set(params, 'fx2_on_off', patch.fx2?.on ? 1 : 0)
-  if (patch.fx2?.on) set(params, 'fx2_fx_type', enumIndex(FX_NAMES, patch.fx2.type, 'FX type'))
+  if (patch.fx2?.on) set(params, 'fx2_fx_type', enumByte(FX_BY_NAME, patch.fx2.type, 'FX type'))
 
   // Delay — 2-byte (hi/lo, 7-bit) time, like the modern format but decimal here.
   set(params, 'delay_on_off', patch.delay.on ? 1 : 0)
   if (patch.delay.on) {
-    set(params, 'delay_type', enumIndex(DELAY_NAMES, patch.delay.type, 'delay type'))
+    set(params, 'delay_type', enumByte(DELAY_BY_NAME, patch.delay.type, 'delay type'))
     const ms = clampInt(patch.delay.timeMs, 1, 2000)
     set(params, 'delay_delay_time_h', (ms >> 7) & 0x7f)
     set(params, 'delay_delay_time_l', ms & 0x7f)
@@ -89,7 +94,7 @@ export function buildMk1Patch(patch: TonePatch): Mk1Patch {
   // Reverb — single decimal TIME (linear seconds approximation, one sample/type).
   set(params, 'reverb_on_off', patch.reverb.on ? 1 : 0)
   if (patch.reverb.on) {
-    set(params, 'reverb_type', enumIndex(REVERB_NAMES, patch.reverb.type, 'reverb type'))
+    set(params, 'reverb_type', enumByte(REVERB_BY_NAME, patch.reverb.type, 'reverb type'))
     set(params, 'reverb_time', clampInt(patch.reverb.timeS * 10, 1, 100))
     set(params, 'reverb_effect_level', knob(patch.reverb.level))
   }
