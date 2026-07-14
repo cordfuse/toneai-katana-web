@@ -74,7 +74,41 @@ const TONE_SECTIONS = new Set([
   'amp', 'booster', 'bacomp', 'comp', 'complimiter', 'drive', 'blend',
   'fxdetail', 'delay', 'reverb', 'eq', 'eqeach', 'eqpeq', 'eqge10',
   'ns', 'contour',
+  // KATANA Bass names its tone tails differently — `prm_patch_delay_detail`,
+  // `reverb_detail`, `ns_detail`, and a two-band `low_mid`/`high_mid` EQ instead
+  // of the guitar amps' `EQ_EACH`/`EQ_PEQ`/`EQ_GE10`. Same tone categories, so
+  // they belong on the same allowlist. (Bass has no per-patch AMP section in its
+  // model — its preamp voicing IS the drive + these EQ bands.)
+  'delaydetail', 'reverbdetail', 'nsdetail', 'lowmid', 'highmid',
 ])
+
+// This tool ONLY handles section-keyed devices (go, gen3, bass), where a param's
+// address IS its byte offset inside its `.tsl` section. The flat AIR family
+// (KATANA:AIR, WAZA-AIR, WAZA-AIR BASS) stores the whole patch as one packed
+// 2335-byte blob, and its model addresses are the device's SPARSE memory
+// addresses — they run to ~4600 with gaps the `.tsl` packs out, so `addr` is NOT
+// the blob offset. Writing factory bytes at `addr` there would land them on the
+// wrong parameters and corrupt the patch. A flat model is refused, not guessed.
+// If the AIR family ever needs factory neutralization, it needs the verified
+// address→offset packing map (a handful of anchors live in writers/air.ts), not
+// this script.
+function assertSectionKeyed(model) {
+  // Signature of a flat model: one dominant section whose addresses overrun any
+  // plausible section length. Bail before writing a single byte.
+  const sizes = Object.values(model.sections).map((p) => p.length)
+  const biggest = Math.max(...sizes)
+  const flatSection = Object.entries(model.sections).find(([, p]) => p.length === biggest)
+  const maxAddr = Math.max(...flatSection[1].map((p) => p.addr))
+  if (biggest > 200 && maxAddr > 2000) {
+    throw new Error(
+      `${flatSection[0]} looks like a FLAT patch image (${biggest} params, addr up to ${maxAddr}). ` +
+        `This script only handles section-keyed devices — the flat AIR family needs the ` +
+        `address→offset packing map, not raw device addresses. Refusing to write a corrupt template.`,
+    )
+  }
+}
+
+assertSectionKeyed(model)
 
 let changed = 0
 const mapped = []

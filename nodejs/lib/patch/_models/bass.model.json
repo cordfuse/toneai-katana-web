@@ -17,7 +17,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "USB INPUT LEVEL"
+    "name": "USB INPUT LEVEL",
+    "prm": "PRM_SYS_USB_INPUT_LEVEL"
    },
    {
     "addr": 1,
@@ -26,7 +27,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "USB OUT LEVEL"
+    "name": "USB OUT LEVEL",
+    "prm": "PRM_SYS_USB_OUT_LEV"
    },
    {
     "addr": 2,
@@ -35,7 +37,8 @@
     "init": 25,
     "min": 0,
     "max": 100,
-    "name": "USB MIX LEVEL"
+    "name": "USB MIX LEVEL",
+    "prm": "PRM_SYS_USB_MIX_LEV"
    },
    {
     "addr": 3,
@@ -44,7 +47,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "USB LOOPBACK"
+    "name": "USB LOOPBACK",
+    "prm": "PRM_SYS_USB_LOOPBACK"
    },
    {
     "addr": 4,
@@ -53,7 +57,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "USB2 OUT LEVEL"
+    "name": "USB2 OUT LEVEL",
+    "prm": "PRM_SYS_USB_2_OUT_LEV"
    },
    {
     "addr": 5,
@@ -62,7 +67,8 @@
     "init": 0,
     "min": 0,
     "max": 3,
-    "name": "LINE OUT AIR FEEL"
+    "name": "LINE OUT AIR FEEL",
+    "prm": "PRM_SYS_LINE_OUT_MODE"
    },
    {
     "addr": 6,
@@ -71,7 +77,8 @@
     "init": 0,
     "min": 0,
     "max": 4,
-    "name": "AMP IN HPF TYPE"
+    "name": "AMP IN HPF TYPE",
+    "prm": "PRM_SYS_PWR_AMP_IN_HPF_TYPE"
    },
    {
     "addr": 7,
@@ -80,7 +87,8 @@
     "init": 0,
     "min": 0,
     "max": 99,
-    "name": "AMP IN HPF FREQ"
+    "name": "AMP IN HPF FREQ",
+    "prm": "PRM_SYS_PWR_AMP_IN_HPF_FREQ"
    },
    {
     "addr": 8,
@@ -89,7 +97,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "AMP IN LEVEL"
+    "name": "AMP IN LEVEL",
+    "prm": "PRM_SYS_PWR_AMP_IN_LEVEL"
    },
    {
     "addr": 9,
@@ -98,7 +107,8 @@
     "init": 0,
     "min": 0,
     "max": 3,
-    "name": "AMP IN TWEETER SW"
+    "name": "AMP IN TWEETER SW",
+    "prm": "PRM_SYS_PWR_AMP_IN_TWEETER_SW"
    },
    {
     "addr": 10,
@@ -107,7 +117,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "SEND RETURN MODE"
+    "name": "SEND RETURN MODE",
+    "prm": "PRM_SYS_SEND_RETURN_MODE"
    },
    {
     "addr": 11,
@@ -116,7 +127,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "SEND LEVEL"
+    "name": "SEND LEVEL",
+    "prm": "PRM_SYS_SEND_RETURN_SEND_LEVEL"
    },
    {
     "addr": 12,
@@ -125,7 +137,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "RETURN LEVEL"
+    "name": "RETURN LEVEL",
+    "prm": "PRM_SYS_SEND_RETURN_RETURN_LEVEL"
    },
    {
     "addr": 13,
@@ -143,7 +156,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "EQ SW"
+    "name": "EQ SW",
+    "prm": "PRM_SYS_EQ_SW"
    },
    {
     "addr": 17,
@@ -152,7 +166,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "EQ TYPE"
+    "name": "EQ TYPE",
+    "prm": "PRM_SYS_EQ_TYPE"
    },
    {
     "addr": 18,
@@ -161,7 +176,8 @@
     "init": 1,
     "min": 0,
     "max": 1,
-    "name": "EQ POSITION"
+    "name": "EQ POSITION",
+    "prm": "PRM_SYS_EQ_POSITION"
    },
    {
     "addr": 19,
@@ -170,7 +186,8 @@
     "init": 0,
     "min": 0,
     "max": 17,
-    "name": "PEQ LOW CUT"
+    "name": "PEQ LOW CUT",
+    "prm": "PRM_SYS_EQ_PEQ_LOW_CUT"
    },
    {
     "addr": 20,
@@ -179,7 +196,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "PEQ LOW GAIN"
+    "name": "PEQ LOW GAIN",
+    "prm": "PRM_SYS_EQ_PEQ_LOW_GAIN"
    },
    {
     "addr": 21,
@@ -188,7 +206,8 @@
     "init": 13,
     "min": 0,
     "max": 27,
-    "name": "PEQ LOW-MID FREQ"
+    "name": "PEQ LOW-MID FREQ",
+    "prm": "PRM_SYS_EQ_PEQ_LOWMID_FREQ"
    },
    {
     "addr": 22,
@@ -197,7 +216,8 @@
     "init": 1,
     "min": 0,
     "max": 5,
-    "name": "PEQ LOW-MID Q"
+    "name": "PEQ LOW-MID Q",
+    "prm": "PRM_SYS_EQ_PEQ_LOWMID_Q"
    },
    {
     "addr": 23,
@@ -206,7 +226,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "PEQ LOW-MID GAIN"
+    "name": "PEQ LOW-MID GAIN",
+    "prm": "PRM_SYS_EQ_PEQ_LOWMID_GAIN"
    },
    {
     "addr": 24,
@@ -215,7 +236,8 @@
     "init": 23,
     "min": 0,
     "max": 27,
-    "name": "PEQ HIGH-MID FREQ"
+    "name": "PEQ HIGH-MID FREQ",
+    "prm": "PRM_SYS_EQ_PEQ_HIGHMID_FREQ"
    },
    {
     "addr": 25,
@@ -224,7 +246,8 @@
     "init": 1,
     "min": 0,
     "max": 5,
-    "name": "PEQ HIGH-MID Q"
+    "name": "PEQ HIGH-MID Q",
+    "prm": "PRM_SYS_EQ_PEQ_HIGHMID_Q"
    },
    {
     "addr": 26,
@@ -233,7 +256,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "PEQ HIGH-MID GAIN"
+    "name": "PEQ HIGH-MID GAIN",
+    "prm": "PRM_SYS_EQ_PEQ_HIGHMID_GAIN"
    },
    {
     "addr": 27,
@@ -242,7 +266,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "PEQ HIGH GAIN"
+    "name": "PEQ HIGH GAIN",
+    "prm": "PRM_SYS_EQ_PEQ_HIGH_GAIN"
    },
    {
     "addr": 28,
@@ -251,7 +276,8 @@
     "init": 14,
     "min": 0,
     "max": 14,
-    "name": "PEQ HIGH CUT"
+    "name": "PEQ HIGH CUT",
+    "prm": "PRM_SYS_EQ_PEQ_HIGH_CUT"
    },
    {
     "addr": 29,
@@ -260,7 +286,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "PEQ LEVEL"
+    "name": "PEQ LEVEL",
+    "prm": "PRM_SYS_EQ_PEQ_LEVEL"
    },
    {
     "addr": 30,
@@ -269,7 +296,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "GEQ 31Hz"
+    "name": "GEQ 31Hz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND1"
    },
    {
     "addr": 31,
@@ -278,7 +306,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "GEQ 62Hz"
+    "name": "GEQ 62Hz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND2"
    },
    {
     "addr": 32,
@@ -287,7 +316,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "GEQ 125Hz"
+    "name": "GEQ 125Hz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND3"
    },
    {
     "addr": 33,
@@ -296,7 +326,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "GEQ 250Hz"
+    "name": "GEQ 250Hz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND4"
    },
    {
     "addr": 34,
@@ -305,7 +336,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "GEQ 500Hz"
+    "name": "GEQ 500Hz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND5"
    },
    {
     "addr": 35,
@@ -314,7 +346,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "GEQ 1KHz"
+    "name": "GEQ 1KHz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND6"
    },
    {
     "addr": 36,
@@ -323,7 +356,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "GEQ 2KHz"
+    "name": "GEQ 2KHz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND7"
    },
    {
     "addr": 37,
@@ -332,7 +366,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "GEQ 4KHz"
+    "name": "GEQ 4KHz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND8"
    },
    {
     "addr": 38,
@@ -341,7 +376,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "GEQ 8KHz"
+    "name": "GEQ 8KHz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND9"
    },
    {
     "addr": 39,
@@ -350,7 +386,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "GEQ 16KHz"
+    "name": "GEQ 16KHz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND10"
    },
    {
     "addr": 40,
@@ -359,7 +396,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "GEQ LEVEL"
+    "name": "GEQ LEVEL",
+    "prm": "PRM_SYS_EQ_GEQ_LEVEL"
    },
    {
     "addr": 41,
@@ -377,7 +415,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "CALIB LOWSHIFT_G"
+    "name": "CALIB LOWSHIFT_G",
+    "prm": "PRM_CALIB_LOWSHIFT_G"
    },
    {
     "addr": 49,
@@ -386,7 +425,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "CALIB LOWLEVEL_G"
+    "name": "CALIB LOWLEVEL_G",
+    "prm": "PRM_CALIB_LOWLEVEL_G"
    },
    {
     "addr": 50,
@@ -395,7 +435,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "CALIB HIGHSHIFT_G"
+    "name": "CALIB HIGHSHIFT_G",
+    "prm": "PRM_CALIB_HIGHSHIFT_G"
    },
    {
     "addr": 51,
@@ -404,7 +445,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "CALIB HIGHLEVEL_G"
+    "name": "CALIB HIGHLEVEL_G",
+    "prm": "PRM_CALIB_HIGHLEVEL_G"
    },
    {
     "addr": 52,
@@ -413,7 +455,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "CALIB LOWSHIFT_Y"
+    "name": "CALIB LOWSHIFT_Y",
+    "prm": "PRM_CALIB_LOWSHIFT_Y"
    },
    {
     "addr": 53,
@@ -422,7 +465,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "CALIB LOWLEVEL_Y"
+    "name": "CALIB LOWLEVEL_Y",
+    "prm": "PRM_CALIB_LOWLEVEL_Y"
    },
    {
     "addr": 54,
@@ -431,7 +475,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "CALIB HIGHSHIFT_Y"
+    "name": "CALIB HIGHSHIFT_Y",
+    "prm": "PRM_CALIB_HIGHSHIFT_Y"
    },
    {
     "addr": 55,
@@ -440,7 +485,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "CALIB HIGHLEVEL_Y"
+    "name": "CALIB HIGHLEVEL_Y",
+    "prm": "PRM_CALIB_HIGHLEVEL_Y"
    },
    {
     "addr": 56,
@@ -458,7 +504,8 @@
     "init": 0,
     "min": 0,
     "max": 2,
-    "name": "MUTE_TYPE"
+    "name": "MUTE_TYPE",
+    "prm": "PRM_SYS_MUTE_TYPE"
    },
    {
     "addr": 65,
@@ -467,7 +514,8 @@
     "init": 0,
     "min": 0,
     "max": 2,
-    "name": "LINEOUT_CUSTOM_SEL"
+    "name": "LINEOUT_CUSTOM_SEL",
+    "prm": "PRM_SYS_LINEOUT_CUSTOM_SEL"
    },
    {
     "addr": 66,
@@ -476,7 +524,8 @@
     "init": 1,
     "min": 0,
     "max": 4,
-    "name": "LINEOUT_MIC_TYPE_G"
+    "name": "LINEOUT_MIC_TYPE_G",
+    "prm": "PRM_SYS_LINEOUT_MIC_TYPE_G"
    },
    {
     "addr": 67,
@@ -485,7 +534,8 @@
     "init": 10,
     "min": 0,
     "max": 20,
-    "name": "LINEOUT_MIC_DISTANCE_G"
+    "name": "LINEOUT_MIC_DISTANCE_G",
+    "prm": "PRM_SYS_LINEOUT_MIC_DISTANCE_G"
    },
    {
     "addr": 68,
@@ -494,7 +544,8 @@
     "init": 4,
     "min": 0,
     "max": 10,
-    "name": "LINEOUT_MIC_POSITION_G"
+    "name": "LINEOUT_MIC_POSITION_G",
+    "prm": "PRM_SYS_LINEOUT_MIC_POSITION_G"
    },
    {
     "addr": 69,
@@ -503,7 +554,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "LINEOUT_AMBIENCE_PRE_DELAY_G"
+    "name": "LINEOUT_AMBIENCE_PRE_DELAY_G",
+    "prm": "PRM_SYS_LINEOUT_AMBIENCE_PRE_DELAY_G"
    },
    {
     "addr": 70,
@@ -512,7 +564,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "LINEOUT_AMBIENCE_LEVEL_G"
+    "name": "LINEOUT_AMBIENCE_LEVEL_G",
+    "prm": "PRM_SYS_LINEOUT_AMBIENCE_LEVEL_G"
    },
    {
     "addr": 71,
@@ -521,7 +574,8 @@
     "init": 2,
     "min": 0,
     "max": 4,
-    "name": "LINEOUT_MIC_TYPE_R"
+    "name": "LINEOUT_MIC_TYPE_R",
+    "prm": "PRM_SYS_LINEOUT_MIC_TYPE_R"
    },
    {
     "addr": 72,
@@ -530,7 +584,8 @@
     "init": 10,
     "min": 0,
     "max": 20,
-    "name": "LINEOUT_MIC_DISTANCE_R"
+    "name": "LINEOUT_MIC_DISTANCE_R",
+    "prm": "PRM_SYS_LINEOUT_MIC_DISTANCE_R"
    },
    {
     "addr": 73,
@@ -539,7 +594,8 @@
     "init": 4,
     "min": 0,
     "max": 10,
-    "name": "LINEOUT_MIC_POSITION_R"
+    "name": "LINEOUT_MIC_POSITION_R",
+    "prm": "PRM_SYS_LINEOUT_MIC_POSITION_R"
    },
    {
     "addr": 74,
@@ -548,7 +604,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "LINEOUT_AMBIENCE_PRE_DELAY_R"
+    "name": "LINEOUT_AMBIENCE_PRE_DELAY_R",
+    "prm": "PRM_SYS_LINEOUT_AMBIENCE_PRE_DELAY_R"
    },
    {
     "addr": 75,
@@ -557,7 +614,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "LINEOUT_AMBIENCE_LEVEL_R"
+    "name": "LINEOUT_AMBIENCE_LEVEL_R",
+    "prm": "PRM_SYS_LINEOUT_AMBIENCE_LEVEL_R"
    },
    {
     "addr": 76,
@@ -566,7 +624,8 @@
     "init": 4,
     "min": 0,
     "max": 4,
-    "name": "LINEOUT_MIC_TYPE_Y"
+    "name": "LINEOUT_MIC_TYPE_Y",
+    "prm": "PRM_SYS_LINEOUT_MIC_TYPE_Y"
    },
    {
     "addr": 77,
@@ -575,7 +634,8 @@
     "init": 10,
     "min": 0,
     "max": 20,
-    "name": "LINEOUT_MIC_DISTANCE_Y"
+    "name": "LINEOUT_MIC_DISTANCE_Y",
+    "prm": "PRM_SYS_LINEOUT_MIC_DISTANCE_Y"
    },
    {
     "addr": 78,
@@ -584,7 +644,8 @@
     "init": 4,
     "min": 0,
     "max": 10,
-    "name": "LINEOUT_MIC_POSITION_Y"
+    "name": "LINEOUT_MIC_POSITION_Y",
+    "prm": "PRM_SYS_LINEOUT_MIC_POSITION_Y"
    },
    {
     "addr": 79,
@@ -593,7 +654,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "LINEOUT_AMBIENCE_PRE_DELAY_Y"
+    "name": "LINEOUT_AMBIENCE_PRE_DELAY_Y",
+    "prm": "PRM_SYS_LINEOUT_AMBIENCE_PRE_DELAY_Y"
    },
    {
     "addr": 80,
@@ -602,7 +664,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "LINEOUT_AMBIENCE_LEVEL_Y"
+    "name": "LINEOUT_AMBIENCE_LEVEL_Y",
+    "prm": "PRM_SYS_LINEOUT_AMBIENCE_LEVEL_Y"
    },
    {
     "addr": 81,
@@ -620,7 +683,8 @@
     "init": 0,
     "min": 0,
     "max": 2,
-    "name": "CALIB_HPF_TYPE_G"
+    "name": "CALIB_HPF_TYPE_G",
+    "prm": "PRM_SYS_CALIB_EQ_HPF_TYPE_G"
    },
    {
     "addr": 97,
@@ -629,7 +693,8 @@
     "init": 80,
     "min": 0,
     "max": 16384,
-    "name": "CALIB_HPF_FC_G"
+    "name": "CALIB_HPF_FC_G",
+    "prm": "PRM_SYS_CALIB_EQ_HPF_FC_G"
    },
    {
     "addr": 99,
@@ -638,7 +703,8 @@
     "init": 2899,
     "min": 0,
     "max": 16384,
-    "name": "CALIB_HPF_Q_G"
+    "name": "CALIB_HPF_Q_G",
+    "prm": "PRM_SYS_CALIB_EQ_HPF_Q_G"
    },
    {
     "addr": 101,
@@ -647,7 +713,8 @@
     "init": 80,
     "min": 0,
     "max": 16384,
-    "name": "CALIB_BPF_FC_G"
+    "name": "CALIB_BPF_FC_G",
+    "prm": "PRM_SYS_CALIB_EQ_BPF_FC_G"
    },
    {
     "addr": 103,
@@ -656,7 +723,8 @@
     "init": 8192,
     "min": 0,
     "max": 16384,
-    "name": "CALIB_BPF_Q_G"
+    "name": "CALIB_BPF_Q_G",
+    "prm": "PRM_SYS_CALIB_EQ_BPF_Q_G"
    },
    {
     "addr": 105,
@@ -665,7 +733,8 @@
     "init": 8960,
     "min": 0,
     "max": 16384,
-    "name": "CALIB_BPF_G_G"
+    "name": "CALIB_BPF_G_G",
+    "prm": "PRM_SYS_CALIB_EQ_BPF_G_G"
    },
    {
     "addr": 107,
@@ -674,7 +743,8 @@
     "init": 1250,
     "min": 0,
     "max": 16384,
-    "name": "CALIB_HSF_FC_G"
+    "name": "CALIB_HSF_FC_G",
+    "prm": "PRM_SYS_CALIB_EQ_HSF_FC_G"
    },
    {
     "addr": 109,
@@ -683,7 +753,8 @@
     "init": 8960,
     "min": 0,
     "max": 16384,
-    "name": "CALIB_HSF_G_G"
+    "name": "CALIB_HSF_G_G",
+    "prm": "PRM_SYS_CALIB_EQ_HSF_G_G"
    },
    {
     "addr": 111,
@@ -692,7 +763,8 @@
     "init": 1,
     "min": 0,
     "max": 16384,
-    "name": "CALIB_HPF_TYPE_R"
+    "name": "CALIB_HPF_TYPE_R",
+    "prm": "PRM_SYS_CALIB_EQ_HPF_TYPE_Y"
    },
    {
     "addr": 113,
@@ -701,7 +773,8 @@
     "init": 80,
     "min": 0,
     "max": 16384,
-    "name": "CALIB_HPF_FC_R"
+    "name": "CALIB_HPF_FC_R",
+    "prm": "PRM_SYS_CALIB_EQ_HPF_FC_Y"
    },
    {
     "addr": 115,
@@ -710,7 +783,8 @@
     "init": 2899,
     "min": 0,
     "max": 16384,
-    "name": "CALIB_HPF_Q_R"
+    "name": "CALIB_HPF_Q_R",
+    "prm": "PRM_SYS_CALIB_EQ_HPF_Q_Y"
    },
    {
     "addr": 117,
@@ -719,7 +793,8 @@
     "init": 40,
     "min": 0,
     "max": 16384,
-    "name": "CALIB_BPF_FC_R"
+    "name": "CALIB_BPF_FC_R",
+    "prm": "PRM_SYS_CALIB_EQ_BPF_FC_Y"
    },
    {
     "addr": 119,
@@ -728,7 +803,8 @@
     "init": 6144,
     "min": 0,
     "max": 16384,
-    "name": "CALIB_BPF_Q_R"
+    "name": "CALIB_BPF_Q_R",
+    "prm": "PRM_SYS_CALIB_EQ_BPF_Q_Y"
    },
    {
     "addr": 121,
@@ -737,7 +813,8 @@
     "init": 8960,
     "min": 0,
     "max": 16384,
-    "name": "CALIB_BPF_G_R"
+    "name": "CALIB_BPF_G_R",
+    "prm": "PRM_SYS_CALIB_EQ_BPF_G_Y"
    },
    {
     "addr": 123,
@@ -746,7 +823,8 @@
     "init": 1250,
     "min": 0,
     "max": 16384,
-    "name": "CALIB_HSF_FC_R"
+    "name": "CALIB_HSF_FC_R",
+    "prm": "PRM_SYS_CALIB_EQ_HSF_FC_Y"
    },
    {
     "addr": 125,
@@ -755,7 +833,8 @@
     "init": 8192,
     "min": 0,
     "max": 16384,
-    "name": "CALIB_HSF_G_R"
+    "name": "CALIB_HSF_G_R",
+    "prm": "PRM_SYS_CALIB_EQ_HSF_G_Y"
    }
   ],
   "prm_sys_info": [
@@ -766,7 +845,8 @@
     "init": 0,
     "min": 0,
     "max": 6,
-    "name": "PATCH NUM"
+    "name": "PATCH NUM",
+    "prm": "PRM_SYS_PATCH_SEL"
    }
   ],
   "prm_midi": [
@@ -777,7 +857,8 @@
     "init": 0,
     "min": 0,
     "max": 15,
-    "name": "RX CHANNEL"
+    "name": "RX CHANNEL",
+    "prm": "PRM_SYS_MIDI_RX_CH"
    },
    {
     "addr": 1,
@@ -786,7 +867,8 @@
     "init": 16,
     "min": 1,
     "max": 63,
-    "name": "RxCcCompSw"
+    "name": "RxCcCompSw",
+    "prm": "PRM_SYS_MIDI_CC_COMP_SW"
    },
    {
     "addr": 2,
@@ -795,7 +877,8 @@
     "init": 17,
     "min": 1,
     "max": 63,
-    "name": "RxCcDriveSw"
+    "name": "RxCcDriveSw",
+    "prm": "PRM_SYS_MIDI_CC_DRIVE_SW"
    },
    {
     "addr": 3,
@@ -804,7 +887,8 @@
     "init": 18,
     "min": 1,
     "max": 63,
-    "name": "RxCcFx1Sw"
+    "name": "RxCcFx1Sw",
+    "prm": "PRM_SYS_MIDI_CC_FX1_SW"
    },
    {
     "addr": 4,
@@ -813,7 +897,8 @@
     "init": 19,
     "min": 1,
     "max": 63,
-    "name": "RxCcFx2Sw"
+    "name": "RxCcFx2Sw",
+    "prm": "PRM_SYS_MIDI_CC_FX2_SW"
    },
    {
     "addr": 5,
@@ -822,7 +907,8 @@
     "init": 20,
     "min": 1,
     "max": 63,
-    "name": "RxCcSendReturnSw"
+    "name": "RxCcSendReturnSw",
+    "prm": "PRM_SYS_MIDI_CC_XLP_SW"
    },
    {
     "addr": 6,
@@ -831,7 +917,8 @@
     "init": 21,
     "min": 1,
     "max": 63,
-    "name": "RxCcPedalFxSw"
+    "name": "RxCcPedalFxSw",
+    "prm": "PRM_SYS_MIDI_CC_PEDALFX_SW"
    },
    {
     "addr": 7,
@@ -840,7 +927,8 @@
     "init": 48,
     "min": 1,
     "max": 63,
-    "name": "RxCcExpPedal"
+    "name": "RxCcExpPedal",
+    "prm": "PRM_SYS_MIDI_CC_EXPPEDAL"
    },
    {
     "addr": 8,
@@ -849,7 +937,8 @@
     "init": 49,
     "min": 1,
     "max": 63,
-    "name": "RxCcGafcExp1"
+    "name": "RxCcGafcExp1",
+    "prm": "PRM_SYS_MIDI_CC_GAFCEXP1"
    },
    {
     "addr": 9,
@@ -858,7 +947,8 @@
     "init": 50,
     "min": 1,
     "max": 63,
-    "name": "RxCcGafcExp2"
+    "name": "RxCcGafcExp2",
+    "prm": "PRM_SYS_MIDI_CC_GAFCEXP2"
    },
    {
     "addr": 10,
@@ -876,7 +966,8 @@
     "init": 3,
     "min": 0,
     "max": 127,
-    "name": "RxPcPanel"
+    "name": "RxPcPanel",
+    "prm": "PRM_SYS_MIDI_PC_PANEL"
    },
    {
     "addr": 17,
@@ -885,7 +976,8 @@
     "init": 0,
     "min": 0,
     "max": 127,
-    "name": "RxPcACh1"
+    "name": "RxPcACh1",
+    "prm": "PRM_SYS_MIDI_PC_A1"
    },
    {
     "addr": 18,
@@ -894,7 +986,8 @@
     "init": 1,
     "min": 0,
     "max": 127,
-    "name": "RxPcACh2"
+    "name": "RxPcACh2",
+    "prm": "PRM_SYS_MIDI_PC_A2"
    },
    {
     "addr": 19,
@@ -903,7 +996,8 @@
     "init": 2,
     "min": 0,
     "max": 127,
-    "name": "RxPcACh3"
+    "name": "RxPcACh3",
+    "prm": "PRM_SYS_MIDI_PC_A3"
    },
    {
     "addr": 20,
@@ -912,7 +1006,8 @@
     "init": 4,
     "min": 0,
     "max": 127,
-    "name": "RxPcBCh1"
+    "name": "RxPcBCh1",
+    "prm": "PRM_SYS_MIDI_PC_B1"
    },
    {
     "addr": 21,
@@ -921,7 +1016,8 @@
     "init": 5,
     "min": 0,
     "max": 127,
-    "name": "RxPcBCh2"
+    "name": "RxPcBCh2",
+    "prm": "PRM_SYS_MIDI_PC_B2"
    },
    {
     "addr": 22,
@@ -930,7 +1026,8 @@
     "init": 6,
     "min": 0,
     "max": 127,
-    "name": "RxPcBCh3"
+    "name": "RxPcBCh3",
+    "prm": "PRM_SYS_MIDI_PC_B3"
    }
   ],
   "prm_patch_led": [
@@ -941,7 +1038,8 @@
     "init": 0,
     "min": 0,
     "max": 3,
-    "name": "LED COMP"
+    "name": "LED COMP",
+    "prm": "PRM_LED_COMP"
    },
    {
     "addr": 1,
@@ -950,7 +1048,8 @@
     "init": 0,
     "min": 0,
     "max": 3,
-    "name": "LED DRIVE"
+    "name": "LED DRIVE",
+    "prm": "PRM_LED_DRIVE"
    },
    {
     "addr": 2,
@@ -959,7 +1058,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "LED PAD"
+    "name": "LED PAD",
+    "prm": "PRM_LED_PAD"
    },
    {
     "addr": 3,
@@ -968,7 +1068,8 @@
     "init": 0,
     "min": 0,
     "max": 3,
-    "name": "LED SHAPE"
+    "name": "LED SHAPE",
+    "prm": "PRM_LED_SHAPE"
    },
    {
     "addr": 4,
@@ -977,7 +1078,8 @@
     "init": 0,
     "min": 0,
     "max": 3,
-    "name": "LED BLEND"
+    "name": "LED BLEND",
+    "prm": "PRM_LED_BLEND"
    },
    {
     "addr": 5,
@@ -986,7 +1088,8 @@
     "init": 0,
     "min": 0,
     "max": 3,
-    "name": "LED LOW MID"
+    "name": "LED LOW MID",
+    "prm": "PRM_LED_LOWMID"
    },
    {
     "addr": 6,
@@ -995,7 +1098,8 @@
     "init": 0,
     "min": 0,
     "max": 3,
-    "name": "LED HIGH MID"
+    "name": "LED HIGH MID",
+    "prm": "PRM_LED_HIGHMID"
    },
    {
     "addr": 7,
@@ -1004,7 +1108,8 @@
     "init": 0,
     "min": 0,
     "max": 3,
-    "name": "LED FX1"
+    "name": "LED FX1",
+    "prm": "PRM_LED_FX1"
    },
    {
     "addr": 8,
@@ -1013,7 +1118,8 @@
     "init": 0,
     "min": 0,
     "max": 3,
-    "name": "LED FX2"
+    "name": "LED FX2",
+    "prm": "PRM_LED_FX2"
    },
    {
     "addr": 9,
@@ -1022,7 +1128,8 @@
     "init": 0,
     "min": 0,
     "max": 3,
-    "name": "LED HICUT"
+    "name": "LED HICUT",
+    "prm": "PRM_LED_TWEETER"
    }
   ],
   "prm_patch_knob": [
@@ -1033,7 +1140,8 @@
     "init": 51,
     "min": 0,
     "max": 101,
-    "name": "KNOB COMP"
+    "name": "KNOB COMP",
+    "prm": "PRM_KNOB_POS_COMP"
    },
    {
     "addr": 1,
@@ -1042,7 +1150,8 @@
     "init": 51,
     "min": 0,
     "max": 101,
-    "name": "KNOB DRIVE"
+    "name": "KNOB DRIVE",
+    "prm": "PRM_KNOB_POS_DRIVE"
    },
    {
     "addr": 2,
@@ -1051,7 +1160,8 @@
     "init": 0,
     "min": 0,
     "max": 2,
-    "name": "KNOB TYPE"
+    "name": "KNOB TYPE",
+    "prm": "PRM_KNOB_POS_TYPE"
    },
    {
     "addr": 3,
@@ -1060,7 +1170,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "KNOB GAIN"
+    "name": "KNOB GAIN",
+    "prm": "PRM_KNOB_POS_GAIN"
    },
    {
     "addr": 4,
@@ -1069,7 +1180,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "KNOB VOLUME"
+    "name": "KNOB VOLUME",
+    "prm": "PRM_KNOB_POS_VOLUME"
    },
    {
     "addr": 5,
@@ -1078,7 +1190,8 @@
     "init": 0,
     "min": 0,
     "max": 101,
-    "name": "KNOB DRY LEVEL"
+    "name": "KNOB DRY LEVEL",
+    "prm": "PRM_KNOB_POS_DRY_LEVEL"
    },
    {
     "addr": 6,
@@ -1087,7 +1200,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "KNOB BASS"
+    "name": "KNOB BASS",
+    "prm": "PRM_KNOB_POS_BASS"
    },
    {
     "addr": 7,
@@ -1096,7 +1210,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "KNOB LOW MID"
+    "name": "KNOB LOW MID",
+    "prm": "PRM_KNOB_POS_LOWMID"
    },
    {
     "addr": 8,
@@ -1105,7 +1220,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "KNOB HIGH MID"
+    "name": "KNOB HIGH MID",
+    "prm": "PRM_KNOB_POS_HIGHMOD"
    },
    {
     "addr": 9,
@@ -1114,7 +1230,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "KNOB TREBLE"
+    "name": "KNOB TREBLE",
+    "prm": "PRM_KNOB_POS_TREBLE"
    },
    {
     "addr": 10,
@@ -1123,7 +1240,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "KNOB BOTTOM"
+    "name": "KNOB BOTTOM",
+    "prm": "PRM_KNOB_POS_FX1"
    },
    {
     "addr": 11,
@@ -1132,7 +1250,8 @@
     "init": 51,
     "min": 0,
     "max": 101,
-    "name": "KNOB FX2"
+    "name": "KNOB FX2",
+    "prm": "PRM_KNOB_POS_FX2"
    }
   ],
   "prm_patch_sel_color_sw": [
@@ -1143,7 +1262,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "SEL COMP SW"
+    "name": "SEL COMP SW",
+    "prm": "PRM_SEL_COMP_SW"
    },
    {
     "addr": 1,
@@ -1152,7 +1272,8 @@
     "init": 0,
     "min": 0,
     "max": 2,
-    "name": "SEL COMP COLOR"
+    "name": "SEL COMP COLOR",
+    "prm": "PRM_SEL_COMP_COLOR"
    },
    {
     "addr": 2,
@@ -1161,7 +1282,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "SEL DRIVE SW"
+    "name": "SEL DRIVE SW",
+    "prm": "PRM_SEL_DRIVE_SW"
    },
    {
     "addr": 3,
@@ -1170,7 +1292,8 @@
     "init": 0,
     "min": 0,
     "max": 2,
-    "name": "SEL DRIVE COLOR"
+    "name": "SEL DRIVE COLOR",
+    "prm": "PRM_SEL_DRIVE_COLOR"
    },
    {
     "addr": 4,
@@ -1179,7 +1302,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "SEL PAD SW"
+    "name": "SEL PAD SW",
+    "prm": "PRM_SEL_PAD_SW"
    },
    {
     "addr": 5,
@@ -1188,7 +1312,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "SEL SHAPE SW"
+    "name": "SEL SHAPE SW",
+    "prm": "PRM_SEL_SHAPE_SW"
    },
    {
     "addr": 6,
@@ -1197,7 +1322,8 @@
     "init": 0,
     "min": 0,
     "max": 2,
-    "name": "SEL SHAPE COLOR"
+    "name": "SEL SHAPE COLOR",
+    "prm": "PRM_SEL_SHAPE_COLOR"
    },
    {
     "addr": 7,
@@ -1206,7 +1332,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "SEL BLEND SW"
+    "name": "SEL BLEND SW",
+    "prm": "PRM_SEL_BLEND_SW"
    },
    {
     "addr": 8,
@@ -1215,7 +1342,8 @@
     "init": 0,
     "min": 0,
     "max": 2,
-    "name": "SEL BLEND COLOR"
+    "name": "SEL BLEND COLOR",
+    "prm": "PRM_SEL_BLEND_COLOR"
    },
    {
     "addr": 9,
@@ -1224,7 +1352,8 @@
     "init": 0,
     "min": 0,
     "max": 2,
-    "name": "SEL LOW MID COLOR"
+    "name": "SEL LOW MID COLOR",
+    "prm": "PRM_SEL_LOWMID_COLOR"
    },
    {
     "addr": 10,
@@ -1233,7 +1362,8 @@
     "init": 0,
     "min": 0,
     "max": 2,
-    "name": "SEL HIGH MID COLOR"
+    "name": "SEL HIGH MID COLOR",
+    "prm": "PRM_SEL_HIGHMID_COLOR"
    },
    {
     "addr": 11,
@@ -1242,7 +1372,8 @@
     "init": 0,
     "min": 0,
     "max": 3,
-    "name": "SEL TWEETER SW"
+    "name": "SEL TWEETER SW",
+    "prm": "PRM_SEL_HICUT"
    },
    {
     "addr": 12,
@@ -1251,7 +1382,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "SEL EFX1 SW"
+    "name": "SEL EFX1 SW",
+    "prm": "PRM_SEL_EFX1_SW"
    },
    {
     "addr": 13,
@@ -1260,7 +1392,8 @@
     "init": 0,
     "min": 0,
     "max": 2,
-    "name": "SEL EFX1 COLOR"
+    "name": "SEL EFX1 COLOR",
+    "prm": "PRM_SEL_EFX1_COLOR"
    },
    {
     "addr": 14,
@@ -1269,7 +1402,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "SEL EFX2 SW"
+    "name": "SEL EFX2 SW",
+    "prm": "PRM_SEL_EFX2_SW"
    },
    {
     "addr": 15,
@@ -1278,7 +1412,8 @@
     "init": 0,
     "min": 0,
     "max": 2,
-    "name": "SEL EFX2 COLOR"
+    "name": "SEL EFX2 COLOR",
+    "prm": "PRM_SEL_EFX2_COLOR"
    }
   ],
   "prm_patch_pedal_function": [
@@ -1289,7 +1424,8 @@
     "init": 0,
     "min": 0,
     "max": 2,
-    "name": "EXP PEDAL FUNCTION"
+    "name": "EXP PEDAL FUNCTION",
+    "prm": "PRM_PEDAL_FUNCTION_EXP_PEDAL"
    },
    {
     "addr": 1,
@@ -1298,7 +1434,8 @@
     "init": 1,
     "min": 0,
     "max": 2,
-    "name": "GAFC EXP1 FUNCTION"
+    "name": "GAFC EXP1 FUNCTION",
+    "prm": "PRM_PEDAL_FUNCTION_GAFC_EXP1"
    },
    {
     "addr": 2,
@@ -1307,7 +1444,8 @@
     "init": 1,
     "min": 0,
     "max": 2,
-    "name": "GAFC EXP2 FUNCTION"
+    "name": "GAFC EXP2 FUNCTION",
+    "prm": "PRM_PEDAL_FUNCTION_GAFC_EXP2"
    }
   ],
   "prm_patch_comp_limiter": [
@@ -1318,7 +1456,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "COMP LIMITER SEL"
+    "name": "COMP LIMITER SEL",
+    "prm": "PRM_COMP_LIMITER_GRN_SEL"
    },
    {
     "addr": 1,
@@ -1327,7 +1466,8 @@
     "init": 2,
     "min": 0,
     "max": 6,
-    "name": "COMP TYPE"
+    "name": "COMP TYPE",
+    "prm": "PRM_COMP_GRN_TYPE"
    },
    {
     "addr": 2,
@@ -1336,7 +1476,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "COMP SUSTAIN"
+    "name": "COMP SUSTAIN",
+    "prm": "PRM_COMP_GRN_SUSTAIN"
    },
    {
     "addr": 3,
@@ -1345,7 +1486,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "COMP ATTACK"
+    "name": "COMP ATTACK",
+    "prm": "PRM_COMP_GRN_ATTACK"
    },
    {
     "addr": 4,
@@ -1354,7 +1496,8 @@
     "init": 0,
     "min": -50,
     "max": 50,
-    "name": "COMP TONE"
+    "name": "COMP TONE",
+    "prm": "PRM_COMP_GRN_TONE"
    },
    {
     "addr": 5,
@@ -1363,7 +1506,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "COMP LEVEL"
+    "name": "COMP LEVEL",
+    "prm": "PRM_COMP_GRN_LEVEL"
    },
    {
     "addr": 6,
@@ -1372,7 +1516,8 @@
     "init": 0,
     "min": 0,
     "max": 2,
-    "name": "LIMITER TYPE"
+    "name": "LIMITER TYPE",
+    "prm": "PRM_LIMITER_GRN_TYPE"
    },
    {
     "addr": 7,
@@ -1381,7 +1526,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "LIMITER ATTACK"
+    "name": "LIMITER ATTACK",
+    "prm": "PRM_LIMITER_GRN_ATTACK"
    },
    {
     "addr": 8,
@@ -1390,7 +1536,8 @@
     "init": 60,
     "min": 0,
     "max": 100,
-    "name": "LIMITER THRESHOLD"
+    "name": "LIMITER THRESHOLD",
+    "prm": "PRM_LIMITER_GRN_THRESHOLD"
    },
    {
     "addr": 9,
@@ -1399,7 +1546,8 @@
     "init": 11,
     "min": 0,
     "max": 17,
-    "name": "LIMITER RATIO"
+    "name": "LIMITER RATIO",
+    "prm": "PRM_LIMITER_GRN_RATIO"
    },
    {
     "addr": 10,
@@ -1408,7 +1556,8 @@
     "init": 20,
     "min": 0,
     "max": 100,
-    "name": "LIMITER RELEASE"
+    "name": "LIMITER RELEASE",
+    "prm": "PRM_LIMITER_GRN_RELEASE"
    },
    {
     "addr": 11,
@@ -1417,7 +1566,8 @@
     "init": 25,
     "min": 0,
     "max": 100,
-    "name": "LIMITER LEVEL"
+    "name": "LIMITER LEVEL",
+    "prm": "PRM_LIMITER_GRN_LEVEL"
    }
   ],
   "prm_patch_drive": [
@@ -1428,7 +1578,8 @@
     "init": 6,
     "min": 0,
     "max": 12,
-    "name": "DRIVE TYPE"
+    "name": "DRIVE TYPE",
+    "prm": "PRM_ODDS_GRN_TYPE"
    },
    {
     "addr": 1,
@@ -1437,7 +1588,8 @@
     "init": 50,
     "min": 0,
     "max": 120,
-    "name": "DRIVE DRIVE"
+    "name": "DRIVE DRIVE",
+    "prm": "PRM_ODDS_GRN_DRIVE"
    },
    {
     "addr": 2,
@@ -1446,7 +1598,8 @@
     "init": 10,
     "min": 0,
     "max": 100,
-    "name": "DRIVE BOTTOM"
+    "name": "DRIVE BOTTOM",
+    "prm": "PRM_ODDS_GRN_BOTTOM"
    },
    {
     "addr": 3,
@@ -1455,7 +1608,8 @@
     "init": 0,
     "min": -50,
     "max": 50,
-    "name": "DRIVE TONE"
+    "name": "DRIVE TONE",
+    "prm": "PRM_ODDS_GRN_TONE"
    },
    {
     "addr": 4,
@@ -1464,7 +1618,8 @@
     "init": 40,
     "min": 0,
     "max": 100,
-    "name": "DRIVE EFFECT LEVEL"
+    "name": "DRIVE EFFECT LEVEL",
+    "prm": "PRM_ODDS_GRN_EFFECT_LEVEL"
    },
    {
     "addr": 5,
@@ -1473,7 +1628,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "DRIVE DIRECT MIX"
+    "name": "DRIVE DIRECT MIX",
+    "prm": "PRM_ODDS_GRN_DIRECT_LEVEL"
    }
   ],
   "prm_patch_blend": [
@@ -1484,7 +1640,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "BLEND DRY INPUT EFX SW"
+    "name": "BLEND DRY INPUT EFX SW",
+    "prm": "PRM_BLEND_GRN_DRY_INPUT_EFX_SW"
    },
    {
     "addr": 1,
@@ -1493,7 +1650,8 @@
     "init": 1,
     "min": 0,
     "max": 1,
-    "name": "BLEND DRY EQ SW"
+    "name": "BLEND DRY EQ SW",
+    "prm": "PRM_BLEND_GRN_DRY_EQ_SW"
    },
    {
     "addr": 2,
@@ -1502,7 +1660,8 @@
     "init": 1,
     "min": 0,
     "max": 4,
-    "name": "BLEND DRY LPF TYPE"
+    "name": "BLEND DRY LPF TYPE",
+    "prm": "PRM_BLEND_GRN_DRY_LPF_TYPE"
    },
    {
     "addr": 3,
@@ -1511,7 +1670,8 @@
     "init": 17,
     "min": 0,
     "max": 27,
-    "name": "BLEND DRY LPF FREQ"
+    "name": "BLEND DRY LPF FREQ",
+    "prm": "PRM_BLEND_GRN_DRY_LPF_FREQ"
    },
    {
     "addr": 4,
@@ -1520,7 +1680,8 @@
     "init": 1,
     "min": 0,
     "max": 4,
-    "name": "BLEND WET HPF TYPE"
+    "name": "BLEND WET HPF TYPE",
+    "prm": "PRM_BLEND_GRN_WET_HPF_TYPE"
    },
    {
     "addr": 5,
@@ -1529,7 +1690,8 @@
     "init": 11,
     "min": 0,
     "max": 27,
-    "name": "BLEND WET HPF FREQ"
+    "name": "BLEND WET HPF FREQ",
+    "prm": "PRM_BLEND_GRN_WET_HPF_FREQ"
    }
   ],
   "prm_patch_fx1": [
@@ -1540,7 +1702,8 @@
     "init": 22,
     "min": 0,
     "max": 23,
-    "name": "FX1 FX TYPE"
+    "name": "FX1 FX TYPE",
+    "prm": "PRM_FX1_GRN_FXTYPE"
    }
   ],
   "prm_patch_fx2": [
@@ -1551,7 +1714,8 @@
     "init": 0,
     "min": 0,
     "max": 2,
-    "name": "FX SEL"
+    "name": "FX SEL",
+    "prm": "PRM_FX2_GRN_SEL"
    },
    {
     "addr": 1,
@@ -1560,7 +1724,8 @@
     "init": 0,
     "min": 0,
     "max": 23,
-    "name": "FX2 FX TYPE"
+    "name": "FX2 FX TYPE",
+    "prm": "PRM_FX2_GRN_FXTYPE"
    },
    {
     "addr": 2,
@@ -1569,7 +1734,8 @@
     "init": 0,
     "min": 0,
     "max": 5,
-    "name": "DELAY TYPE"
+    "name": "DELAY TYPE",
+    "prm": "PRM_FX2_GRN_DELAY_TYPE"
    },
    {
     "addr": 3,
@@ -1578,7 +1744,8 @@
     "init": 0,
     "min": 0,
     "max": 4,
-    "name": "REVERB TYPE"
+    "name": "REVERB TYPE",
+    "prm": "PRM_FX2_GRN_REVERB_TYPE"
    }
   ],
   "prm_patch_low_mid": [
@@ -1589,7 +1756,8 @@
     "init": 11,
     "min": 0,
     "max": 27,
-    "name": "LOW MID FREQ"
+    "name": "LOW MID FREQ",
+    "prm": "PRM_LOWMID_GRN_FREQ"
    }
   ],
   "prm_patch_high_mid": [
@@ -1600,7 +1768,8 @@
     "init": 16,
     "min": 0,
     "max": 27,
-    "name": "HIGH MID FREQ"
+    "name": "HIGH MID FREQ",
+    "prm": "PRM_HIGHMID_GRN_FREQ"
    }
   ],
   "prm_chain": [
@@ -1611,7 +1780,8 @@
     "init": 1,
     "min": 0,
     "max": 1,
-    "name": "CHAIN PTN"
+    "name": "CHAIN PTN",
+    "prm": "PRM_CHAIN_PTN"
    },
    {
     "addr": 1,
@@ -1620,7 +1790,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "POSITION EQ"
+    "name": "POSITION EQ",
+    "prm": "PRM_POSITION_EQ"
    }
   ],
   "prm_patch_pedal_fx_detail": [
@@ -1631,7 +1802,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "PEDAL FX SW"
+    "name": "PEDAL FX SW",
+    "prm": "PRM_PEDAL_FX_SW"
    },
    {
     "addr": 1,
@@ -1640,7 +1812,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "PEDAL FX TYPE"
+    "name": "PEDAL FX TYPE",
+    "prm": "PRM_PEDAL_FX_TYPE"
    },
    {
     "addr": 2,
@@ -1649,7 +1822,8 @@
     "init": 0,
     "min": 0,
     "max": 5,
-    "name": "WAH TYPE"
+    "name": "WAH TYPE",
+    "prm": "PRM_PEDAL_FX_WAH_TYPE"
    },
    {
     "addr": 3,
@@ -1658,7 +1832,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "WAH PEDAL POSITION"
+    "name": "WAH PEDAL POSITION",
+    "prm": "PRM_PEDAL_FX_WAH_PEDAL_POSITION"
    },
    {
     "addr": 4,
@@ -1667,7 +1842,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "WAH PEDAL MIN"
+    "name": "WAH PEDAL MIN",
+    "prm": "PRM_PEDAL_FX_WAH_PEDAL_MIN"
    },
    {
     "addr": 5,
@@ -1676,7 +1852,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "WAH PEDAL MAX"
+    "name": "WAH PEDAL MAX",
+    "prm": "PRM_PEDAL_FX_WAH_PEDAL_MAX"
    },
    {
     "addr": 6,
@@ -1685,7 +1862,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "WAH EFFECT LEVEL"
+    "name": "WAH EFFECT LEVEL",
+    "prm": "PRM_PEDAL_FX_WAH_EFFECT_LEVEL"
    },
    {
     "addr": 7,
@@ -1694,7 +1872,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "WAH DIRECT MIX"
+    "name": "WAH DIRECT MIX",
+    "prm": "PRM_PEDAL_FX_WAH_DIRECT_MIX"
    },
    {
     "addr": 8,
@@ -1703,7 +1882,8 @@
     "init": 12,
     "min": -24,
     "max": 24,
-    "name": "PEDAL BEND PITCH"
+    "name": "PEDAL BEND PITCH",
+    "prm": "PRM_PEDAL_FX_PEDAL_BEND_PITCH_MAX"
    },
    {
     "addr": 9,
@@ -1712,7 +1892,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "PEDAL PEDAL POSITION"
+    "name": "PEDAL PEDAL POSITION",
+    "prm": "PRM_PEDAL_FX_PEDAL_BEND_PEDAL_POSITION"
    },
    {
     "addr": 10,
@@ -1721,7 +1902,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "PEDAL BEND EFFECT LEVEL"
+    "name": "PEDAL BEND EFFECT LEVEL",
+    "prm": "PRM_PEDAL_FX_PEDAL_BEND_EFFECT_LEVEL"
    },
    {
     "addr": 11,
@@ -1730,7 +1912,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "PEDAL BEND DIRECT LEVEL"
+    "name": "PEDAL BEND DIRECT LEVEL",
+    "prm": "PRM_PEDAL_FX_PEDAL_BEND_DIRECT_MIX"
    }
   ],
   "prm_patch_fx_detail": [
@@ -1741,7 +1924,8 @@
     "init": 6,
     "min": 0,
     "max": 16,
-    "name": "CHORUS XOVER FREQUENCY"
+    "name": "CHORUS XOVER FREQUENCY",
+    "prm": "PRM_FX1_2"
    },
    {
     "addr": 1,
@@ -1750,7 +1934,8 @@
     "init": 35,
     "min": 0,
     "max": 100,
-    "name": "CHORUS LOW RATE"
+    "name": "CHORUS LOW RATE",
+    "prm": "PRM_FX1_2"
    },
    {
     "addr": 2,
@@ -1759,7 +1944,8 @@
     "init": 35,
     "min": 0,
     "max": 100,
-    "name": "CHORUS LOW DEPTH"
+    "name": "CHORUS LOW DEPTH",
+    "prm": "PRM_FX1_2"
    },
    {
     "addr": 3,
@@ -1768,7 +1954,8 @@
     "init": 6,
     "min": 0,
     "max": 80,
-    "name": "CHORUS LOW PRE DELAY"
+    "name": "CHORUS LOW PRE DELAY",
+    "prm": "PRM_FX1_2"
    },
    {
     "addr": 4,
@@ -1777,7 +1964,8 @@
     "init": 15,
     "min": 0,
     "max": 100,
-    "name": "CHORUS LOW LEVEL"
+    "name": "CHORUS LOW LEVEL",
+    "prm": "PRM_FX1_2"
    },
    {
     "addr": 5,
@@ -1786,7 +1974,8 @@
     "init": 25,
     "min": 0,
     "max": 100,
-    "name": "CHORUS HIGH RATE"
+    "name": "CHORUS HIGH RATE",
+    "prm": "PRM_FX1_2"
    },
    {
     "addr": 6,
@@ -1795,7 +1984,8 @@
     "init": 48,
     "min": 0,
     "max": 100,
-    "name": "CHORUS HIGH DEPTH"
+    "name": "CHORUS HIGH DEPTH",
+    "prm": "PRM_FX1_2"
    },
    {
     "addr": 7,
@@ -1804,7 +1994,8 @@
     "init": 3,
     "min": 0,
     "max": 80,
-    "name": "CHORUS HIGH PRE DELAY"
+    "name": "CHORUS HIGH PRE DELAY",
+    "prm": "PRM_FX1_2"
    },
    {
     "addr": 8,
@@ -1813,7 +2004,8 @@
     "init": 72,
     "min": 0,
     "max": 100,
-    "name": "CHORUS HIGH LEVEL"
+    "name": "CHORUS HIGH LEVEL",
+    "prm": "PRM_FX1_2"
    },
    {
     "addr": 9,
@@ -1822,7 +2014,8 @@
     "init": 85,
     "min": 0,
     "max": 100,
-    "name": "CHORUS DIRECT MIX"
+    "name": "CHORUS DIRECT MIX",
+    "prm": "PRM_FX1_2"
    },
    {
     "addr": 10,
@@ -1831,7 +2024,8 @@
     "init": 24,
     "min": 0,
     "max": 100,
-    "name": "FLANGER RATE"
+    "name": "FLANGER RATE",
+    "prm": "PRM_FX1_FLANGER_RATE"
    },
    {
     "addr": 11,
@@ -1840,7 +2034,8 @@
     "init": 58,
     "min": 0,
     "max": 100,
-    "name": "FLANGER DEPTH"
+    "name": "FLANGER DEPTH",
+    "prm": "PRM_FX1_FLANGER_DEPTH"
    },
    {
     "addr": 12,
@@ -1849,7 +2044,8 @@
     "init": 55,
     "min": 0,
     "max": 100,
-    "name": "FLANGER MANUAL"
+    "name": "FLANGER MANUAL",
+    "prm": "PRM_FX1_FLANGER_MANUAL"
    },
    {
     "addr": 13,
@@ -1858,7 +2054,8 @@
     "init": 80,
     "min": 0,
     "max": 100,
-    "name": "FLANGER RESONANCE"
+    "name": "FLANGER RESONANCE",
+    "prm": "PRM_FX1_FLANGER_RESONANCE"
    },
    {
     "addr": 14,
@@ -1876,7 +2073,8 @@
     "init": 6,
     "min": 0,
     "max": 10,
-    "name": "FLANGER LOW CUT"
+    "name": "FLANGER LOW CUT",
+    "prm": "PRM_FX1_FLANGER_LOWCUT"
    },
    {
     "addr": 16,
@@ -1885,7 +2083,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "FLANGER EFFECT LEVEL"
+    "name": "FLANGER EFFECT LEVEL",
+    "prm": "PRM_FX1_FLANGER_E_LEVEL"
    },
    {
     "addr": 17,
@@ -1894,7 +2093,8 @@
     "init": 15,
     "min": 0,
     "max": 100,
-    "name": "FLANGER DIRECT MIX"
+    "name": "FLANGER DIRECT MIX",
+    "prm": "PRM_FX1_FLANGER_D_LEVEL"
    },
    {
     "addr": 18,
@@ -1903,7 +2103,8 @@
     "init": 0,
     "min": 0,
     "max": 3,
-    "name": "PHASER TYPE"
+    "name": "PHASER TYPE",
+    "prm": "PRM_FX1_PHASER_TYPE"
    },
    {
     "addr": 19,
@@ -1912,7 +2113,8 @@
     "init": 70,
     "min": 0,
     "max": 100,
-    "name": "PHASER RATE"
+    "name": "PHASER RATE",
+    "prm": "PRM_FX1_PHASER_RATE"
    },
    {
     "addr": 20,
@@ -1921,7 +2123,8 @@
     "init": 40,
     "min": 0,
     "max": 100,
-    "name": "PHASER DEPTH"
+    "name": "PHASER DEPTH",
+    "prm": "PRM_FX1_PHASER_DEPTH"
    },
    {
     "addr": 21,
@@ -1930,7 +2133,8 @@
     "init": 55,
     "min": 0,
     "max": 100,
-    "name": "PHASER MANUAL"
+    "name": "PHASER MANUAL",
+    "prm": "PRM_FX1_PHASER_MANUAL"
    },
    {
     "addr": 22,
@@ -1939,7 +2143,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "PHASER RESONANCE"
+    "name": "PHASER RESONANCE",
+    "prm": "PRM_FX1_PHASER_RESONANCE"
    },
    {
     "addr": 23,
@@ -1948,7 +2153,8 @@
     "init": -1,
     "min": -1,
     "max": 100,
-    "name": "PHASER STEP RATE"
+    "name": "PHASER STEP RATE",
+    "prm": "PRM_FX1_PHASER_STEPRATE"
    },
    {
     "addr": 24,
@@ -1957,7 +2163,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "PHASER EFFECT LEVEL"
+    "name": "PHASER EFFECT LEVEL",
+    "prm": "PRM_FX1_PHASER_E_LEVEL"
    },
    {
     "addr": 25,
@@ -1966,7 +2173,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "PHASER DIRECT MIX"
+    "name": "PHASER DIRECT MIX",
+    "prm": "PRM_FX1_PHASER_D_LEVEL"
    },
    {
     "addr": 26,
@@ -1975,7 +2183,8 @@
     "init": 70,
     "min": 0,
     "max": 100,
-    "name": "UNI-V RATE"
+    "name": "UNI-V RATE",
+    "prm": "PRM_FX1_UNI_V_RATE"
    },
    {
     "addr": 27,
@@ -1984,7 +2193,8 @@
     "init": 60,
     "min": 0,
     "max": 100,
-    "name": "UNI-V DEPTH"
+    "name": "UNI-V DEPTH",
+    "prm": "PRM_FX1_UNI_V_DEPTH"
    },
    {
     "addr": 28,
@@ -1993,7 +2203,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "UNI-V LEVEL"
+    "name": "UNI-V LEVEL",
+    "prm": "PRM_FX1_UNI_V_LEVEL"
    },
    {
     "addr": 29,
@@ -2002,7 +2213,8 @@
     "init": 70,
     "min": 0,
     "max": 100,
-    "name": "TREMOLO WAVE SHAPE"
+    "name": "TREMOLO WAVE SHAPE",
+    "prm": "PRM_FX1_TREMOLO_WAVESHAPE"
    },
    {
     "addr": 30,
@@ -2011,7 +2223,8 @@
     "init": 85,
     "min": 0,
     "max": 100,
-    "name": "TREMOLO RATE"
+    "name": "TREMOLO RATE",
+    "prm": "PRM_FX1_TREMOLO_RATE"
    },
    {
     "addr": 31,
@@ -2020,7 +2233,8 @@
     "init": 65,
     "min": 0,
     "max": 100,
-    "name": "TREMOLO DEPTH"
+    "name": "TREMOLO DEPTH",
+    "prm": "PRM_FX1_TREMOLO_DEPTH"
    },
    {
     "addr": 32,
@@ -2029,7 +2243,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "TREMOLO LEVEL"
+    "name": "TREMOLO LEVEL",
+    "prm": "PRM_FX1_TREMOLO_LEVEL"
    },
    {
     "addr": 33,
@@ -2038,7 +2253,8 @@
     "init": 80,
     "min": 0,
     "max": 100,
-    "name": "VIBRATO RATE"
+    "name": "VIBRATO RATE",
+    "prm": "PRM_FX1_VIBRATO_RATE"
    },
    {
     "addr": 34,
@@ -2047,7 +2263,8 @@
     "init": 45,
     "min": 0,
     "max": 100,
-    "name": "VIBRATO DEPTH"
+    "name": "VIBRATO DEPTH",
+    "prm": "PRM_FX1_VIBRATO_DEPTH"
    },
    {
     "addr": 35,
@@ -2056,7 +2273,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "VIBRATO LEVEL"
+    "name": "VIBRATO LEVEL",
+    "prm": "PRM_FX1_VIBRATO_LEVEL"
    },
    {
     "addr": 36,
@@ -2065,7 +2283,8 @@
     "init": 85,
     "min": 0,
     "max": 100,
-    "name": "ROTARY RATE"
+    "name": "ROTARY RATE",
+    "prm": "PRM_FX1_ROTARY_RATE_FAST"
    },
    {
     "addr": 37,
@@ -2074,7 +2293,8 @@
     "init": 60,
     "min": 0,
     "max": 100,
-    "name": "ROTARY DEPTH"
+    "name": "ROTARY DEPTH",
+    "prm": "PRM_FX1_ROTARY_DEPTH"
    },
    {
     "addr": 38,
@@ -2083,7 +2303,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "ROTARY LEVEL"
+    "name": "ROTARY LEVEL",
+    "prm": "PRM_FX1_ROTARY_LEVEL"
    },
    {
     "addr": 39,
@@ -2092,7 +2313,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "RING MOD MODE"
+    "name": "RING MOD MODE",
+    "prm": "PRM_FX1_RINGMOD_MODE"
    },
    {
     "addr": 40,
@@ -2101,7 +2323,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "RING MOD FREQUENCY"
+    "name": "RING MOD FREQUENCY",
+    "prm": "PRM_FX1_RINGMOD_FREQ"
    },
    {
     "addr": 41,
@@ -2110,7 +2333,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "RING MOD EFFECT LEVEL"
+    "name": "RING MOD EFFECT LEVEL",
+    "prm": "PRM_FX1_RINGMOD_E_LEVEL"
    },
    {
     "addr": 42,
@@ -2119,7 +2343,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "RING MOD DIRECT MIX"
+    "name": "RING MOD DIRECT MIX",
+    "prm": "PRM_FX1_RINGMOD_D_LEVEL"
    },
    {
     "addr": 43,
@@ -2128,7 +2353,8 @@
     "init": 45,
     "min": 0,
     "max": 100,
-    "name": "SLOW GEAR SENS"
+    "name": "SLOW GEAR SENS",
+    "prm": "PRM_FX1_SLOWGEAR_SENS"
    },
    {
     "addr": 44,
@@ -2137,7 +2363,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "SLOW GEAR RISE TIME"
+    "name": "SLOW GEAR RISE TIME",
+    "prm": "PRM_FX1_SLOWGEAR_RISETIME"
    },
    {
     "addr": 45,
@@ -2146,7 +2373,8 @@
     "init": 60,
     "min": 0,
     "max": 100,
-    "name": "SLOW GEAR LEVEL"
+    "name": "SLOW GEAR LEVEL",
+    "prm": "PRM_FX1_SLOWGEAR_LEVEL"
    },
    {
     "addr": 46,
@@ -2155,7 +2383,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "T.WAH MODE"
+    "name": "T.WAH MODE",
+    "prm": "PRM_FX1_TWAH_MODE"
    },
    {
     "addr": 47,
@@ -2164,7 +2393,8 @@
     "init": 1,
     "min": 0,
     "max": 1,
-    "name": "T.WAH POLARITY"
+    "name": "T.WAH POLARITY",
+    "prm": "PRM_FX1_TWAH_POLARITY"
    },
    {
     "addr": 48,
@@ -2173,7 +2403,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "T.WAH SENS"
+    "name": "T.WAH SENS",
+    "prm": "PRM_FX1_TWAH_SENS"
    },
    {
     "addr": 49,
@@ -2182,7 +2413,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "T.WAH FREQ"
+    "name": "T.WAH FREQ",
+    "prm": "PRM_FX1_TWAH_FREQ"
    },
    {
     "addr": 50,
@@ -2191,7 +2423,8 @@
     "init": 80,
     "min": 0,
     "max": 100,
-    "name": "T.WAH PEAK"
+    "name": "T.WAH PEAK",
+    "prm": "PRM_FX1_TWAH_PEAK"
    },
    {
     "addr": 51,
@@ -2200,7 +2433,8 @@
     "init": 10,
     "min": 0,
     "max": 100,
-    "name": "T.WAH DIRECT MIX"
+    "name": "T.WAH DIRECT MIX",
+    "prm": "PRM_FX1_TWAH_D_LEVEL"
    },
    {
     "addr": 52,
@@ -2209,7 +2443,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "T.WAH EFFECT LEVEL"
+    "name": "T.WAH EFFECT LEVEL",
+    "prm": "PRM_FX1_TWAH_LEVEL"
    },
    {
     "addr": 53,
@@ -2218,7 +2453,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "GEQ 31Hz"
+    "name": "GEQ 31Hz",
+    "prm": "PRM_FX1_GEQ_BAND1"
    },
    {
     "addr": 54,
@@ -2227,7 +2463,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "GEQ 62Hz"
+    "name": "GEQ 62Hz",
+    "prm": "PRM_FX1_GEQ_BAND2"
    },
    {
     "addr": 55,
@@ -2236,7 +2473,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "GEQ 125Hz"
+    "name": "GEQ 125Hz",
+    "prm": "PRM_FX1_GEQ_BAND3"
    },
    {
     "addr": 56,
@@ -2245,7 +2483,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "GEQ 250Hz"
+    "name": "GEQ 250Hz",
+    "prm": "PRM_FX1_GEQ_BAND4"
    },
    {
     "addr": 57,
@@ -2254,7 +2493,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "GEQ 500Hz"
+    "name": "GEQ 500Hz",
+    "prm": "PRM_FX1_GEQ_BAND5"
    },
    {
     "addr": 58,
@@ -2263,7 +2503,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "GEQ 1kHz"
+    "name": "GEQ 1kHz",
+    "prm": "PRM_FX1_GEQ_BAND6"
    },
    {
     "addr": 59,
@@ -2272,7 +2513,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "GEQ 2kHz"
+    "name": "GEQ 2kHz",
+    "prm": "PRM_FX1_GEQ_BAND7"
    },
    {
     "addr": 60,
@@ -2281,7 +2523,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "GEQ 4kHz"
+    "name": "GEQ 4kHz",
+    "prm": "PRM_FX1_GEQ_BAND8"
    },
    {
     "addr": 61,
@@ -2290,7 +2533,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "GEQ 8kHz"
+    "name": "GEQ 8kHz",
+    "prm": "PRM_FX1_GEQ_BAND9"
    },
    {
     "addr": 62,
@@ -2299,7 +2543,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "GEQ 16kHz"
+    "name": "GEQ 16kHz",
+    "prm": "PRM_FX1_GEQ_BAND10"
    },
    {
     "addr": 63,
@@ -2308,7 +2553,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "GEQ LEVEL"
+    "name": "GEQ LEVEL",
+    "prm": "PRM_FX1_GEQ_LEVEL"
    },
    {
     "addr": 64,
@@ -2317,7 +2563,8 @@
     "init": 0,
     "min": 0,
     "max": 17,
-    "name": "PEQ LOW CUT"
+    "name": "PEQ LOW CUT",
+    "prm": "PRM_FX1_PEQ_LOW_CUT"
    },
    {
     "addr": 65,
@@ -2326,7 +2573,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "PEQ LOW GAIN"
+    "name": "PEQ LOW GAIN",
+    "prm": "PRM_FX1_PEQ_LOW_GAIN"
    },
    {
     "addr": 66,
@@ -2335,7 +2583,8 @@
     "init": 13,
     "min": 0,
     "max": 27,
-    "name": "PEQ LOW-MID FREQ"
+    "name": "PEQ LOW-MID FREQ",
+    "prm": "PRM_FX1_PEQ_LOWMID_FREQ"
    },
    {
     "addr": 67,
@@ -2344,7 +2593,8 @@
     "init": 1,
     "min": 0,
     "max": 5,
-    "name": "PEQ LOW-MID Q"
+    "name": "PEQ LOW-MID Q",
+    "prm": "PRM_FX1_PEQ_LOWMID_Q"
    },
    {
     "addr": 68,
@@ -2353,7 +2603,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "PEQ LOW-MID GAIN"
+    "name": "PEQ LOW-MID GAIN",
+    "prm": "PRM_FX1_PEQ_LOWMID_GAIN"
    },
    {
     "addr": 69,
@@ -2362,7 +2613,8 @@
     "init": 23,
     "min": 0,
     "max": 27,
-    "name": "PEQ HIGH-MID FREQ"
+    "name": "PEQ HIGH-MID FREQ",
+    "prm": "PRM_FX1_PEQ_HIGHMID_FREQ"
    },
    {
     "addr": 70,
@@ -2371,7 +2623,8 @@
     "init": 1,
     "min": 0,
     "max": 5,
-    "name": "PEQ HIGH-MID Q"
+    "name": "PEQ HIGH-MID Q",
+    "prm": "PRM_FX1_PEQ_HIGHMID_Q"
    },
    {
     "addr": 71,
@@ -2380,7 +2633,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "PEQ HIGH-MID GAIN"
+    "name": "PEQ HIGH-MID GAIN",
+    "prm": "PRM_FX1_PEQ_HIGHMID_GAIN"
    },
    {
     "addr": 72,
@@ -2389,7 +2643,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "PEQ HIGH GAIN"
+    "name": "PEQ HIGH GAIN",
+    "prm": "PRM_FX1_PEQ_HIGH_GAIN"
    },
    {
     "addr": 73,
@@ -2398,7 +2653,8 @@
     "init": 14,
     "min": 0,
     "max": 14,
-    "name": "PEQ HIGH CUT"
+    "name": "PEQ HIGH CUT",
+    "prm": "PRM_FX1_PEQ_HIGH_CUT"
    },
    {
     "addr": 74,
@@ -2407,7 +2663,8 @@
     "init": 0,
     "min": -20,
     "max": 20,
-    "name": "PEQ LEVEL"
+    "name": "PEQ LEVEL",
+    "prm": "PRM_FX1_PEQ_LEVEL"
    },
    {
     "addr": 75,
@@ -2416,7 +2673,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "OCRAVE 1OCT LEVEL"
+    "name": "OCRAVE 1OCT LEVEL",
+    "prm": "PRM_FX1_OCTAVE_1OCT_LEVEL"
    },
    {
     "addr": 76,
@@ -2425,7 +2683,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "OCRAVE 2OCT LEVEL"
+    "name": "OCRAVE 2OCT LEVEL",
+    "prm": "PRM_FX1_OCTAVE_2OCT_LEVEL"
    },
    {
     "addr": 77,
@@ -2434,7 +2693,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "OCRAVE DIRECT MIX"
+    "name": "OCRAVE DIRECT MIX",
+    "prm": "PRM_FX1_OCTAVE_D_LEVEL"
    },
    {
     "addr": 78,
@@ -2443,7 +2703,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "PITCH SHIFT VOICE"
+    "name": "PITCH SHIFT VOICE",
+    "prm": "PRM_FX1_PITCHSHIFT_VOICE"
    },
    {
     "addr": 79,
@@ -2452,7 +2713,8 @@
     "init": 1,
     "min": 0,
     "max": 3,
-    "name": "PITCH SHIFT PS1:MODE"
+    "name": "PITCH SHIFT PS1:MODE",
+    "prm": "PRM_FX1_PITCHSHIFT_MODE1"
    },
    {
     "addr": 80,
@@ -2461,7 +2723,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "PITCH SHIFT PS1:PITCH"
+    "name": "PITCH SHIFT PS1:PITCH",
+    "prm": "PRM_FX1_PITCHSHIFT_PITCH1"
    },
    {
     "addr": 81,
@@ -2470,7 +2733,8 @@
     "init": 10,
     "min": -50,
     "max": 50,
-    "name": "PITCH SHIFT PS1:FINE"
+    "name": "PITCH SHIFT PS1:FINE",
+    "prm": "PRM_FX1_PITCHSHIFT_FINE1"
    },
    {
     "addr": 82,
@@ -2479,7 +2743,8 @@
     "init": 0,
     "min": 0,
     "max": 300,
-    "name": "PITCH SHIFT PS1:PRE DELAY"
+    "name": "PITCH SHIFT PS1:PRE DELAY",
+    "prm": "PRM_FX1_PITCHSHIFT_PREDELAY1"
    },
    {
     "addr": 84,
@@ -2488,7 +2753,8 @@
     "init": 70,
     "min": 0,
     "max": 100,
-    "name": "PITCH SHIFT PS1:LEVEL"
+    "name": "PITCH SHIFT PS1:LEVEL",
+    "prm": "PRM_FX1_PITCHSHIFT_LEVEL1"
    },
    {
     "addr": 85,
@@ -2497,7 +2763,8 @@
     "init": 1,
     "min": 0,
     "max": 3,
-    "name": "PITCH SHIFT PS2:MODE"
+    "name": "PITCH SHIFT PS2:MODE",
+    "prm": "PRM_FX1_PITCHSHIFT_MODE2"
    },
    {
     "addr": 86,
@@ -2506,7 +2773,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "PITCH SHIFT PS2:PITCH"
+    "name": "PITCH SHIFT PS2:PITCH",
+    "prm": "PRM_FX1_PITCHSHIFT_PITCH2"
    },
    {
     "addr": 87,
@@ -2515,7 +2783,8 @@
     "init": -10,
     "min": -50,
     "max": 50,
-    "name": "PITCH SHIFT PS2:FINE"
+    "name": "PITCH SHIFT PS2:FINE",
+    "prm": "PRM_FX1_PITCHSHIFT_FINE2"
    },
    {
     "addr": 88,
@@ -2524,7 +2793,8 @@
     "init": 0,
     "min": 0,
     "max": 300,
-    "name": "PITCH SHIFT PS2:PRE DELAY"
+    "name": "PITCH SHIFT PS2:PRE DELAY",
+    "prm": "PRM_FX1_PITCHSHIFT_PREDELAY2"
    },
    {
     "addr": 90,
@@ -2533,7 +2803,8 @@
     "init": 70,
     "min": 0,
     "max": 100,
-    "name": "PITCH SHIFT PS2:LEVEL"
+    "name": "PITCH SHIFT PS2:LEVEL",
+    "prm": "PRM_FX1_PITCHSHIFT_LEVEL2"
    },
    {
     "addr": 91,
@@ -2542,7 +2813,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "PITCH SHIFT PS1:FEEDBACK"
+    "name": "PITCH SHIFT PS1:FEEDBACK",
+    "prm": "PRM_FX1_PITCHSHIFT_FEEDBACK"
    },
    {
     "addr": 92,
@@ -2551,7 +2823,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "PITCH SHIFT DIRECT MIX"
+    "name": "PITCH SHIFT DIRECT MIX",
+    "prm": "PRM_FX1_PITCHSHIFT_D_LEVEL"
    },
    {
     "addr": 93,
@@ -2560,7 +2833,8 @@
     "init": 1,
     "min": 0,
     "max": 1,
-    "name": "HARMONIST VOICE"
+    "name": "HARMONIST VOICE",
+    "prm": "PRM_FX1_HARMONIST_VOICE"
    },
    {
     "addr": 94,
@@ -2569,7 +2843,8 @@
     "init": 12,
     "min": 0,
     "max": 29,
-    "name": "HARMONIST HR1:HARMONY"
+    "name": "HARMONIST HR1:HARMONY",
+    "prm": "PRM_FX1_HARMONIST_HARMONY1"
    },
    {
     "addr": 95,
@@ -2578,7 +2853,8 @@
     "init": 0,
     "min": 0,
     "max": 300,
-    "name": "HARMONIST HR1:PRE DELAY"
+    "name": "HARMONIST HR1:PRE DELAY",
+    "prm": "PRM_FX1_HARMONIST_PREDELAY1"
    },
    {
     "addr": 97,
@@ -2587,7 +2863,8 @@
     "init": 70,
     "min": 0,
     "max": 100,
-    "name": "HARMONIST HR1:LEVEL"
+    "name": "HARMONIST HR1:LEVEL",
+    "prm": "PRM_FX1_HARMONIST_LEVEL1"
    },
    {
     "addr": 98,
@@ -2596,7 +2873,8 @@
     "init": 7,
     "min": 0,
     "max": 29,
-    "name": "HARMONIST HR2:HARMONY"
+    "name": "HARMONIST HR2:HARMONY",
+    "prm": "PRM_FX1_HARMONIST_HARMONY2"
    },
    {
     "addr": 99,
@@ -2605,7 +2883,8 @@
     "init": 0,
     "min": 0,
     "max": 300,
-    "name": "HARMONIST HR2:PREDELAY"
+    "name": "HARMONIST HR2:PREDELAY",
+    "prm": "PRM_FX1_HARMONIST_PREDELAY2"
    },
    {
     "addr": 101,
@@ -2614,7 +2893,8 @@
     "init": 80,
     "min": 0,
     "max": 100,
-    "name": "HARMONIST HR2:LEVEL"
+    "name": "HARMONIST HR2:LEVEL",
+    "prm": "PRM_FX1_HARMONIST_LEVEL2"
    },
    {
     "addr": 102,
@@ -2623,7 +2903,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "HARMONIST HR1:FEEDBACK"
+    "name": "HARMONIST HR1:FEEDBACK",
+    "prm": "PRM_FX1_HARMONIST_FEEDBACK"
    },
    {
     "addr": 103,
@@ -2632,7 +2913,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "HARMONIST DIRECT MIX"
+    "name": "HARMONIST DIRECT MIX",
+    "prm": "PRM_FX1_HARMONIST_D_LEVEL"
    },
    {
     "addr": 104,
@@ -2641,7 +2923,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR1:C"
+    "name": "HARMONIST HR1:C",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_1"
    },
    {
     "addr": 105,
@@ -2650,7 +2933,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR1:Db"
+    "name": "HARMONIST HR1:Db",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_2"
    },
    {
     "addr": 106,
@@ -2659,7 +2943,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR1:D"
+    "name": "HARMONIST HR1:D",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_3"
    },
    {
     "addr": 107,
@@ -2668,7 +2953,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR1:Eb"
+    "name": "HARMONIST HR1:Eb",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_4"
    },
    {
     "addr": 108,
@@ -2677,7 +2963,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR1:E"
+    "name": "HARMONIST HR1:E",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_5"
    },
    {
     "addr": 109,
@@ -2686,7 +2973,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR1:F"
+    "name": "HARMONIST HR1:F",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_6"
    },
    {
     "addr": 110,
@@ -2695,7 +2983,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR1:F#"
+    "name": "HARMONIST HR1:F#",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_7"
    },
    {
     "addr": 111,
@@ -2704,7 +2993,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR1:G"
+    "name": "HARMONIST HR1:G",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_8"
    },
    {
     "addr": 112,
@@ -2713,7 +3003,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR1:Ab"
+    "name": "HARMONIST HR1:Ab",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_9"
    },
    {
     "addr": 113,
@@ -2722,7 +3013,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR1:A"
+    "name": "HARMONIST HR1:A",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_10"
    },
    {
     "addr": 114,
@@ -2731,7 +3023,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR1:Bb"
+    "name": "HARMONIST HR1:Bb",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_11"
    },
    {
     "addr": 115,
@@ -2740,7 +3033,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR1:B"
+    "name": "HARMONIST HR1:B",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_12"
    },
    {
     "addr": 116,
@@ -2749,7 +3043,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR2:C"
+    "name": "HARMONIST HR2:C",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_1"
    },
    {
     "addr": 117,
@@ -2758,7 +3053,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR2:Db"
+    "name": "HARMONIST HR2:Db",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_2"
    },
    {
     "addr": 118,
@@ -2767,7 +3063,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR2:D"
+    "name": "HARMONIST HR2:D",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_3"
    },
    {
     "addr": 119,
@@ -2776,7 +3073,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR2:Eb"
+    "name": "HARMONIST HR2:Eb",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_4"
    },
    {
     "addr": 120,
@@ -2785,7 +3083,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR2:E"
+    "name": "HARMONIST HR2:E",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_5"
    },
    {
     "addr": 121,
@@ -2794,7 +3093,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR2:F"
+    "name": "HARMONIST HR2:F",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_6"
    },
    {
     "addr": 122,
@@ -2803,7 +3103,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR2:F#"
+    "name": "HARMONIST HR2:F#",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_7"
    },
    {
     "addr": 123,
@@ -2812,7 +3113,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR2:G"
+    "name": "HARMONIST HR2:G",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_8"
    },
    {
     "addr": 124,
@@ -2821,7 +3123,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR2:Ab"
+    "name": "HARMONIST HR2:Ab",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_9"
    },
    {
     "addr": 125,
@@ -2830,7 +3133,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR2:A"
+    "name": "HARMONIST HR2:A",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_10"
    },
    {
     "addr": 126,
@@ -2839,7 +3143,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR2:Bb"
+    "name": "HARMONIST HR2:Bb",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_11"
    },
    {
     "addr": 127,
@@ -2848,7 +3153,8 @@
     "init": 0,
     "min": -24,
     "max": 24,
-    "name": "HARMONIST HR2:B"
+    "name": "HARMONIST HR2:B",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_12"
    },
    {
     "addr": 256,
@@ -2857,7 +3163,8 @@
     "init": 1,
     "min": 0,
     "max": 1,
-    "name": "HUMANIZER MODE"
+    "name": "HUMANIZER MODE",
+    "prm": "PRM_FX1_HUMANIZER_MODE"
    },
    {
     "addr": 257,
@@ -2866,7 +3173,8 @@
     "init": 0,
     "min": 0,
     "max": 4,
-    "name": "HUMANIZER VOWEL1"
+    "name": "HUMANIZER VOWEL1",
+    "prm": "PRM_FX1_HUMANIZER_VOWEL1"
    },
    {
     "addr": 258,
@@ -2875,7 +3183,8 @@
     "init": 2,
     "min": 0,
     "max": 4,
-    "name": "HUMANIZER VOWEL2"
+    "name": "HUMANIZER VOWEL2",
+    "prm": "PRM_FX1_HUMANIZER_VOWEL2"
    },
    {
     "addr": 259,
@@ -2884,7 +3193,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "HUMANIZER SENS"
+    "name": "HUMANIZER SENS",
+    "prm": "PRM_FX1_HUMANIZER_SENS"
    },
    {
     "addr": 260,
@@ -2893,7 +3203,8 @@
     "init": 80,
     "min": 0,
     "max": 100,
-    "name": "HUMANIZER RATE"
+    "name": "HUMANIZER RATE",
+    "prm": "PRM_FX1_HUMANIZER_RATE"
    },
    {
     "addr": 261,
@@ -2902,7 +3213,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "HUMANIZER DEPTH"
+    "name": "HUMANIZER DEPTH",
+    "prm": "PRM_FX1_HUMANIZER_DEPTH"
    },
    {
     "addr": 262,
@@ -2911,7 +3223,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "HUMANIZER MANUAL"
+    "name": "HUMANIZER MANUAL",
+    "prm": "PRM_FX1_HUMANIZER_MANUAL"
    },
    {
     "addr": 263,
@@ -2920,7 +3233,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "HUMANIZER LEVEL"
+    "name": "HUMANIZER LEVEL",
+    "prm": "PRM_FX1_HUMANIZER_LEVEL"
    },
    {
     "addr": 264,
@@ -2929,7 +3243,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "ENHANCER SENS"
+    "name": "ENHANCER SENS",
+    "prm": "PRM_FX1_ENHANCER_SENS"
    },
    {
     "addr": 265,
@@ -2938,7 +3253,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "ENHANCER LOW"
+    "name": "ENHANCER LOW",
+    "prm": "PRM_FX1_ENHANCER_LOW"
    },
    {
     "addr": 266,
@@ -2947,7 +3263,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "ENHANCER HIGH"
+    "name": "ENHANCER HIGH",
+    "prm": "PRM_FX1_ENHANCER_HIGH"
    },
    {
     "addr": 267,
@@ -2956,7 +3273,8 @@
     "init": 0,
     "min": 0,
     "max": 6,
-    "name": "ENHANCER LOW FREQ"
+    "name": "ENHANCER LOW FREQ",
+    "prm": "PRM_FX1_ENHANCER_LOW_FREQ"
    },
    {
     "addr": 268,
@@ -2965,7 +3283,8 @@
     "init": 0,
     "min": 0,
     "max": 10,
-    "name": "ENHANCER HIGH FREQ"
+    "name": "ENHANCER HIGH FREQ",
+    "prm": "PRM_FX1_ENHANCER_HIGH_FREQ"
    },
    {
     "addr": 269,
@@ -2974,7 +3293,8 @@
     "init": 0,
     "min": 0,
     "max": 6,
-    "name": "BASS SIM TYPE"
+    "name": "BASS SIM TYPE",
+    "prm": "PRM_FX1_GTRSIM_TYPE"
    },
    {
     "addr": 270,
@@ -2983,7 +3303,8 @@
     "init": 0,
     "min": -50,
     "max": 50,
-    "name": "BASS SIM LOW"
+    "name": "BASS SIM LOW",
+    "prm": "PRM_FX1_GTRSIM_LOW"
    },
    {
     "addr": 271,
@@ -2992,7 +3313,8 @@
     "init": 0,
     "min": -50,
     "max": 50,
-    "name": "BASS SIM HIGH"
+    "name": "BASS SIM HIGH",
+    "prm": "PRM_FX1_GTRSIM_HIGH"
    },
    {
     "addr": 272,
@@ -3001,7 +3323,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "BASS SIM LEVEL"
+    "name": "BASS SIM LEVEL",
+    "prm": "PRM_FX1_GTRSIM_LEVEL"
    },
    {
     "addr": 273,
@@ -3010,7 +3333,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "BASS SIM BODY"
+    "name": "BASS SIM BODY",
+    "prm": "PRM_FX1_GTRSIM_BODY"
    },
    {
     "addr": 274,
@@ -3019,7 +3343,8 @@
     "init": 0,
     "min": -50,
     "max": 50,
-    "name": "DEFRETTER TONE"
+    "name": "DEFRETTER TONE",
+    "prm": "PRM_FX1_DEFRETTER_TONE"
    },
    {
     "addr": 275,
@@ -3028,7 +3353,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "DEFRETTER SENS"
+    "name": "DEFRETTER SENS",
+    "prm": "PRM_FX1_DEFRETTER_SENS"
    },
    {
     "addr": 276,
@@ -3037,7 +3363,8 @@
     "init": 70,
     "min": 0,
     "max": 100,
-    "name": "DEFRETTER ATTACK"
+    "name": "DEFRETTER ATTACK",
+    "prm": "PRM_FX1_DEFRETTER_ATTACK"
    },
    {
     "addr": 277,
@@ -3046,7 +3373,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "DEFRETTER DEPTH"
+    "name": "DEFRETTER DEPTH",
+    "prm": "PRM_FX1_DEFRETTER_DEPTH"
    },
    {
     "addr": 278,
@@ -3055,7 +3383,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "DEFRETTER RESONANCE"
+    "name": "DEFRETTER RESONANCE",
+    "prm": "PRM_FX1_DEFRETTER_RESONANCE"
    },
    {
     "addr": 279,
@@ -3064,7 +3393,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "DEFRETTER E.LEVEL"
+    "name": "DEFRETTER E.LEVEL",
+    "prm": "PRM_FX1_DEFRETTER_E_LEVEL"
    },
    {
     "addr": 280,
@@ -3073,7 +3403,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "DEFRETTER D.LEVEL"
+    "name": "DEFRETTER D.LEVEL",
+    "prm": "PRM_FX1_DEFRETTER_D_LEVEL"
    },
    {
     "addr": 281,
@@ -3082,7 +3413,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "WAVE SYNTH WAVE"
+    "name": "WAVE SYNTH WAVE",
+    "prm": "PRM_FX1_WAVESYN_WAVE"
    },
    {
     "addr": 282,
@@ -3091,7 +3423,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "WAVE SYNTH CUTOFF"
+    "name": "WAVE SYNTH CUTOFF",
+    "prm": "PRM_FX1_WAVESYN_CUTOFF"
    },
    {
     "addr": 283,
@@ -3100,7 +3433,8 @@
     "init": 70,
     "min": 0,
     "max": 100,
-    "name": "WAVE SYNTH RESONANCE"
+    "name": "WAVE SYNTH RESONANCE",
+    "prm": "PRM_FX1_WAVESYN_RESONANCE"
    },
    {
     "addr": 284,
@@ -3109,7 +3443,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "WAVE SYNTH FILTER SENS"
+    "name": "WAVE SYNTH FILTER SENS",
+    "prm": "PRM_FX1_WAVESYN_FLT_SENS"
    },
    {
     "addr": 285,
@@ -3118,7 +3453,8 @@
     "init": 10,
     "min": 0,
     "max": 100,
-    "name": "WAVE SYNTH FILTER DECAY"
+    "name": "WAVE SYNTH FILTER DECAY",
+    "prm": "PRM_FX1_WAVESYN_FLT_DECAY"
    },
    {
     "addr": 286,
@@ -3127,7 +3463,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "WAVE SYNTH FILTER DEPTH"
+    "name": "WAVE SYNTH FILTER DEPTH",
+    "prm": "PRM_FX1_WAVESYN_FLT_DEPTH"
    },
    {
     "addr": 287,
@@ -3136,7 +3473,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "WAVE SYNTH SYNTH LEVEL"
+    "name": "WAVE SYNTH SYNTH LEVEL",
+    "prm": "PRM_FX1_WAVESYN_SYN_LEVEL"
    },
    {
     "addr": 288,
@@ -3145,7 +3483,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "WAVE SYNTH DIRECT MIX"
+    "name": "WAVE SYNTH DIRECT MIX",
+    "prm": "PRM_FX1_WAVESYN_D_LEVEL"
    },
    {
     "addr": 289,
@@ -3154,7 +3493,8 @@
     "init": 1,
     "min": 0,
     "max": 1,
-    "name": "AUTO WAH MODE"
+    "name": "AUTO WAH MODE",
+    "prm": "PRM_FX1_AWAH_MODE"
    },
    {
     "addr": 290,
@@ -3163,7 +3503,8 @@
     "init": 35,
     "min": 0,
     "max": 100,
-    "name": "AUTO WAH FREQ"
+    "name": "AUTO WAH FREQ",
+    "prm": "PRM_FX1_AWAH_FREQ"
    },
    {
     "addr": 291,
@@ -3172,7 +3513,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "AUTO WAH PEAK"
+    "name": "AUTO WAH PEAK",
+    "prm": "PRM_FX1_AWAH_PEAK"
    },
    {
     "addr": 292,
@@ -3181,7 +3523,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "AUTO WAH RATE"
+    "name": "AUTO WAH RATE",
+    "prm": "PRM_FX1_AWAH_RATE"
    },
    {
     "addr": 293,
@@ -3190,7 +3533,8 @@
     "init": 60,
     "min": 0,
     "max": 100,
-    "name": "AUTO WAH DEPTH"
+    "name": "AUTO WAH DEPTH",
+    "prm": "PRM_FX1_AWAH_DEPTH"
    },
    {
     "addr": 294,
@@ -3199,7 +3543,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "AUTO WAH DIRET MIX"
+    "name": "AUTO WAH DIRET MIX",
+    "prm": "PRM_FX1_AWAH_D_LEVEL"
    },
    {
     "addr": 295,
@@ -3208,7 +3553,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "AUTO WAH EFFECT LEVEL"
+    "name": "AUTO WAH EFFECT LEVEL",
+    "prm": "PRM_FX1_AWAH_LEVEL"
    },
    {
     "addr": 296,
@@ -3217,7 +3563,8 @@
     "init": 0,
     "min": 0,
     "max": 5,
-    "name": "PEDAL WAH TYPE"
+    "name": "PEDAL WAH TYPE",
+    "prm": "PRM_FX1_SUBWAH_TYPE"
    },
    {
     "addr": 297,
@@ -3226,7 +3573,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "PEDAL WAH PEDAL POS"
+    "name": "PEDAL WAH PEDAL POS",
+    "prm": "PRM_FX1_SUBWAH_PDLPOS"
    },
    {
     "addr": 298,
@@ -3235,7 +3583,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "PEDAL WAH PEDAL MIN"
+    "name": "PEDAL WAH PEDAL MIN",
+    "prm": "PRM_FX1_SUBWAH_MIN"
    },
    {
     "addr": 299,
@@ -3244,7 +3593,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "PEDAL WAH PEDAL MAX"
+    "name": "PEDAL WAH PEDAL MAX",
+    "prm": "PRM_FX1_SUBWAH_MAX"
    },
    {
     "addr": 300,
@@ -3253,7 +3603,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "PEDAL WAH EFFECT LEVEL"
+    "name": "PEDAL WAH EFFECT LEVEL",
+    "prm": "PRM_FX1_SUBWAH_E_LEVEL"
    },
    {
     "addr": 301,
@@ -3262,7 +3613,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "PEDAL WAH DIRECT MIX"
+    "name": "PEDAL WAH DIRECT MIX",
+    "prm": "PRM_FX1_SUBWAH_D_LEVEL"
    },
    {
     "addr": 302,
@@ -3271,7 +3623,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "HEAVY OCTAVE 1OCT LEVEL"
+    "name": "HEAVY OCTAVE 1OCT LEVEL",
+    "prm": "PRM_FX1_HEAVY_OCTAVE_1OCT_LEVEL"
    },
    {
     "addr": 303,
@@ -3280,7 +3633,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "HEAVY OCTAVE 2OCT LEVEL"
+    "name": "HEAVY OCTAVE 2OCT LEVEL",
+    "prm": "PRM_FX1_HEAVY_OCTAVE_2OCT_LEVEL"
    },
    {
     "addr": 304,
@@ -3289,7 +3643,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "HEAVY OCTAVE DIRECT MIX"
+    "name": "HEAVY OCTAVE DIRECT MIX",
+    "prm": "PRM_FX1_HEAVY_OCTAVE_DIRECT_LEVEL"
    },
    {
     "addr": 305,
@@ -3298,7 +3653,8 @@
     "init": 0,
     "min": 0,
     "max": 19,
-    "name": "SLICER PATTERN"
+    "name": "SLICER PATTERN",
+    "prm": "PRM_FX1_SLICER_PATTERN"
    },
    {
     "addr": 306,
@@ -3307,7 +3663,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "SLICER RATE"
+    "name": "SLICER RATE",
+    "prm": "PRM_FX1_SLICER_RATE"
    },
    {
     "addr": 307,
@@ -3316,7 +3673,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "SLICER TRIGGER SENS"
+    "name": "SLICER TRIGGER SENS",
+    "prm": "PRM_FX1_SLICER_TRIGSENS"
    },
    {
     "addr": 308,
@@ -3325,7 +3683,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "SLICER EFFECT LEVEL"
+    "name": "SLICER EFFECT LEVEL",
+    "prm": "PRM_FX1_SLICER_EFFECT_LEVEL"
    },
    {
     "addr": 309,
@@ -3334,7 +3693,8 @@
     "init": 0,
     "min": 0,
     "max": 100,
-    "name": "SLICER DIRECT MIX"
+    "name": "SLICER DIRECT MIX",
+    "prm": "PRM_FX1_SLICER_DIRECT_LEVEL"
    }
   ],
   "prm_patch_delay_detail": [
@@ -3345,7 +3705,8 @@
     "init": 400,
     "min": 1,
     "max": 2000,
-    "name": "DELAY DELAY TIME"
+    "name": "DELAY DELAY TIME",
+    "prm": "PRM_DLY_COMMON_DLY_TIME"
    },
    {
     "addr": 2,
@@ -3354,7 +3715,8 @@
     "init": 22,
     "min": 0,
     "max": 100,
-    "name": "DELAY FEEDBACK"
+    "name": "DELAY FEEDBACK",
+    "prm": "PRM_DLY_COMMON_FEEDBACK"
    },
    {
     "addr": 3,
@@ -3363,7 +3725,8 @@
     "init": 10,
     "min": 0,
     "max": 14,
-    "name": "DELAY HIGH CUT"
+    "name": "DELAY HIGH CUT",
+    "prm": "PRM_DLY_COMMON_HICUT"
    },
    {
     "addr": 4,
@@ -3372,7 +3735,8 @@
     "init": 50,
     "min": 0,
     "max": 120,
-    "name": "DELAY EFFECT LEVEL"
+    "name": "DELAY EFFECT LEVEL",
+    "prm": "PRM_DLY_COMMON_EFFECT_LEVEL"
    },
    {
     "addr": 5,
@@ -3381,7 +3745,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "DELAY DIRECT MIX"
+    "name": "DELAY DIRECT MIX",
+    "prm": "PRM_DLY_COMMON_DIRECT_LEVEL"
    },
    {
     "addr": 6,
@@ -3390,7 +3755,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "DELAY TAP TIME"
+    "name": "DELAY TAP TIME",
+    "prm": "PRM_DLY_PAN_TAPTIME"
    },
    {
     "addr": 7,
@@ -3399,7 +3765,8 @@
     "init": 100,
     "min": 1,
     "max": 1000,
-    "name": ""
+    "name": "",
+    "prm": "PRM_DLY_D1TIME"
    },
    {
     "addr": 9,
@@ -3408,7 +3775,8 @@
     "init": 22,
     "min": 0,
     "max": 100,
-    "name": ""
+    "name": "",
+    "prm": "PRM_DLY_D1FEEDBACK"
    },
    {
     "addr": 10,
@@ -3417,7 +3785,8 @@
     "init": 10,
     "min": 0,
     "max": 14,
-    "name": ""
+    "name": "",
+    "prm": "PRM_DLY_D1HICUT"
    },
    {
     "addr": 11,
@@ -3426,7 +3795,8 @@
     "init": 50,
     "min": 0,
     "max": 120,
-    "name": ""
+    "name": "",
+    "prm": "PRM_DLY_D1LEVEL"
    },
    {
     "addr": 12,
@@ -3435,7 +3805,8 @@
     "init": 400,
     "min": 1,
     "max": 1000,
-    "name": ""
+    "name": "",
+    "prm": "PRM_DLY_D2TIME"
    },
    {
     "addr": 14,
@@ -3444,7 +3815,8 @@
     "init": 22,
     "min": 0,
     "max": 100,
-    "name": ""
+    "name": "",
+    "prm": "PRM_DLY_D2FEEDBACK"
    },
    {
     "addr": 15,
@@ -3453,7 +3825,8 @@
     "init": 10,
     "min": 0,
     "max": 14,
-    "name": ""
+    "name": "",
+    "prm": "PRM_DLY_D2HICUT"
    },
    {
     "addr": 16,
@@ -3462,7 +3835,8 @@
     "init": 50,
     "min": 0,
     "max": 120,
-    "name": ""
+    "name": "",
+    "prm": "PRM_DLY_D2LEVEL"
    },
    {
     "addr": 17,
@@ -3471,7 +3845,8 @@
     "init": 40,
     "min": 0,
     "max": 100,
-    "name": "DELAY MOD RATE"
+    "name": "DELAY MOD RATE",
+    "prm": "PRM_DLY_MOD_RATE"
    },
    {
     "addr": 18,
@@ -3480,7 +3855,8 @@
     "init": 55,
     "min": 0,
     "max": 100,
-    "name": "DELAY MOD DEPTH"
+    "name": "DELAY MOD DEPTH",
+    "prm": "PRM_DLY_MOD_DEPTH"
    },
    {
     "addr": 19,
@@ -3489,7 +3865,8 @@
     "init": 1,
     "min": 0,
     "max": 1,
-    "name": "DELAY RANGE"
+    "name": "DELAY RANGE",
+    "prm": "PRM_DLY_VINTAGE_LPF"
    },
    {
     "addr": 20,
@@ -3498,7 +3875,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "DELAY FILTER"
+    "name": "DELAY FILTER",
+    "prm": "PRM_DLY_VINTAGE_FILTER"
    },
    {
     "addr": 21,
@@ -3507,7 +3885,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "DELAY FEEDBACK PHASE"
+    "name": "DELAY FEEDBACK PHASE",
+    "prm": "PRM_DLY_VINTAGE_FEEDBACK_PHASE"
    },
    {
     "addr": 22,
@@ -3516,7 +3895,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "DELAY DELAY PHASE"
+    "name": "DELAY DELAY PHASE",
+    "prm": "PRM_DLY_VINTAGE_EFFECT_PHASE"
    },
    {
     "addr": 23,
@@ -3525,7 +3905,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "DELAY MOD SW"
+    "name": "DELAY MOD SW",
+    "prm": "PRM_DLY_VINTAGE_MOD_SW"
    }
   ],
   "prm_patch_reverb_detail": [
@@ -3536,7 +3917,8 @@
     "init": 30,
     "min": 1,
     "max": 100,
-    "name": "REVERB REVERB TIME"
+    "name": "REVERB REVERB TIME",
+    "prm": "PRM_REVERB_TIME"
    },
    {
     "addr": 1,
@@ -3545,7 +3927,8 @@
     "init": 10,
     "min": 0,
     "max": 500,
-    "name": "REVERB PRE DELAY"
+    "name": "REVERB PRE DELAY",
+    "prm": "PRM_REVERB_PREDELAY"
    },
    {
     "addr": 3,
@@ -3554,7 +3937,8 @@
     "init": 14,
     "min": 0,
     "max": 17,
-    "name": "REVERB LOW CUT"
+    "name": "REVERB LOW CUT",
+    "prm": "PRM_REVERB_LOWCUT"
    },
    {
     "addr": 4,
@@ -3563,7 +3947,8 @@
     "init": 8,
     "min": 0,
     "max": 14,
-    "name": "REVERB HIGH CUT"
+    "name": "REVERB HIGH CUT",
+    "prm": "PRM_REVERB_HICUT"
    },
    {
     "addr": 5,
@@ -3572,7 +3957,8 @@
     "init": 8,
     "min": 0,
     "max": 10,
-    "name": "REVERB DENSITY"
+    "name": "REVERB DENSITY",
+    "prm": "PRM_REVERB_DENSITY"
    },
    {
     "addr": 6,
@@ -3581,7 +3967,8 @@
     "init": 35,
     "min": 0,
     "max": 100,
-    "name": "REVERB EFFECT LEVEL"
+    "name": "REVERB EFFECT LEVEL",
+    "prm": "PRM_REVERB_EFFECT_LEVEL"
    },
    {
     "addr": 7,
@@ -3590,7 +3977,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "REVERB DIRECT MIX"
+    "name": "REVERB DIRECT MIX",
+    "prm": "PRM_REVERB_DIRECT_LEVEL"
    },
    {
     "addr": 8,
@@ -3599,7 +3987,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "REVERB SPRING COLOR"
+    "name": "REVERB SPRING COLOR",
+    "prm": "PRM_REVERB_SPRING_COLOR"
    }
   ],
   "prm_patch_ns_detail": [
@@ -3610,7 +3999,8 @@
     "init": 0,
     "min": 0,
     "max": 1,
-    "name": "NS SW"
+    "name": "NS SW",
+    "prm": "PRM_NS_SW"
    },
    {
     "addr": 1,
@@ -3619,7 +4009,8 @@
     "init": 5,
     "min": 0,
     "max": 100,
-    "name": "NS THRESHOLD"
+    "name": "NS THRESHOLD",
+    "prm": "PRM_NS_THRESHOLD"
    },
    {
     "addr": 2,
@@ -3628,7 +4019,8 @@
     "init": 50,
     "min": 0,
     "max": 100,
-    "name": "NS RELEASE"
+    "name": "NS RELEASE",
+    "prm": "PRM_NS_RELEASE"
    }
   ],
   "prm_patch_sendreturn": [
@@ -3639,7 +4031,8 @@
     "init": 1,
     "min": 0,
     "max": 1,
-    "name": "SEND RETURN SW"
+    "name": "SEND RETURN SW",
+    "prm": "PRM_SEND_RETURN_SW"
    }
   ],
   "prm_patch_master": [
@@ -3650,7 +4043,8 @@
     "init": 0,
     "min": 0,
     "max": 11,
-    "name": "MASTER KEY"
+    "name": "MASTER KEY",
+    "prm": "PRM_MASTER_KEY"
    },
    {
     "addr": 1,
@@ -3659,7 +4053,8 @@
     "init": 100,
     "min": 0,
     "max": 100,
-    "name": "MASTER LEVEL"
+    "name": "MASTER LEVEL",
+    "prm": "PRM_PATCH_LEVEL"
    },
    {
     "addr": 2,
@@ -3668,7 +4063,8 @@
     "init": 0,
     "min": 0,
     "max": 3,
-    "name": "CAB RESO SEL"
+    "name": "CAB RESO SEL",
+    "prm": "PRM_CABINET_RESONANCE_TYPE"
    }
   ]
  },

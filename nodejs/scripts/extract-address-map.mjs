@@ -39,8 +39,11 @@ const resSrc = readFileSync(resPath, 'utf8')
 // grouping because the .tsl format is section-addressed.
 
 const SECTION_RE = /var\s+([A-Za-z_0-9]+)\s*=\s*\[([\s\S]*?)\];/g
+// The AIR family names params with a short label ('DIRECT MIX') and puts the real
+// identity in a trailing `// PRM_REVERB_DIRECT_MIX` comment. Capture it — for the
+// flat single-blob patch it is the only way to know which effect a param belongs to.
 const ROW_RE =
-  /\{\s*addr:\s*(0x[0-9a-fA-F]+)\s*,\s*size:\s*([^,]+?)\s*,\s*ofs:\s*(-?\d+)\s*,\s*init:\s*(-?\d+)\s*,\s*min:\s*(-?\d+)\s*,\s*max:\s*(-?\d+)\s*,\s*name:\s*'([^']*)'\s*\}/g
+  /\{\s*addr:\s*(0x[0-9a-fA-F]+)\s*,\s*size:\s*([^,]+?)\s*,\s*ofs:\s*(-?\d+)\s*,\s*init:\s*(-?\d+)\s*,\s*min:\s*(-?\d+)\s*,\s*max:\s*(-?\d+)\s*,\s*name:\s*'([^']*)'\s*\}\s*,?\s*(?:\/\/\s*(PRM[_A-Z0-9]*))?/g
 
 const sections = {}
 let sm
@@ -51,8 +54,8 @@ while ((sm = SECTION_RE.exec(addrSrc))) {
   let rm
   ROW_RE.lastIndex = 0
   while ((rm = ROW_RE.exec(body))) {
-    const [, addr, size, ofs, init, min, max, name] = rm
-    rows.push({
+    const [, addr, size, ofs, init, min, max, name, prm] = rm
+    const row = {
       addr: parseInt(addr, 16),
       size: size.trim(),
       ofs: Number(ofs),
@@ -60,7 +63,9 @@ while ((sm = SECTION_RE.exec(addrSrc))) {
       min: Number(min),
       max: Number(max),
       name,
-    })
+    }
+    if (prm) row.prm = prm // full PRM_* id (AIR family flat patch)
+    rows.push(row)
     paramCount++
   }
   if (rows.length) sections[sectionName] = rows
