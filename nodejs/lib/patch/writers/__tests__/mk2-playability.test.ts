@@ -83,6 +83,15 @@ test("the donor's contour EQ is not inherited — it made the model's EQ knobs a
   assert.equal(at(p, O.ampBright), 0)
 })
 
+test("the reverb tail is set to factory voicing, not the donor's boomy wash", () => {
+  const p: TonePatch = { ...cleanPatch(), reverb: { on: true, type: 'Hall', timeS: 2, level: 60 } }
+  assert.equal(at(p, O.revLowCut), 14, "donor's LOW_CUT 2 (no low-cut = boomy) must not leak through")
+  assert.equal(at(p, O.revHighCut), 8)
+  assert.equal(at(p, O.revDensity), 5, "donor's DENSITY 10 (thick wash) must not leak through")
+  assert.equal(at(p, O.revPreDlyHi), 0)
+  assert.equal(at(p, O.revPreDlyLo), 10)
+})
+
 test('patch level is written explicitly, defaulting to unity', () => {
   assert.equal(at(metalPatch(), O.patchLevel), 100)
   assert.equal(at({ ...metalPatch(), patchLevel: 70 }, O.patchLevel), 70)
@@ -108,7 +117,7 @@ test('the writer owns every playability byte — silent inheritance cannot creep
   )
   assert.deepEqual(
     owned('Patch_1'),
-    [0, 1, 2, 8, 38, 39, 40, 48, 84, 85, 86, 87],
-    'Patch_1 ownership changed — check the noise suppressor and solo/contour bytes',
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 38, 39, 40, 48, 84, 85, 86, 87],
+    'Patch_1 ownership changed — check the reverb tail, noise suppressor and solo/contour bytes',
   )
 })

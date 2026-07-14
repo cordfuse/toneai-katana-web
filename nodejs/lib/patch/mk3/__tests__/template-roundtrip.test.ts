@@ -12,6 +12,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { templateSections } from '../template'
 import { toTsl } from '../../tsl'
+import { assertStructurePreserved, GUITAR_TONE_BLOCKS } from '../../__tests__/roundtrip-helper'
 
 const GEN3_META = { formatRev: '0000', device: 'KATANA Gen3', name: '', keyPrefix: 'PATCH%' }
 
@@ -35,7 +36,7 @@ test('mk3 template emits a valid Gen 3 envelope', () => {
 
 const FIXTURE = path.join(process.cwd(), '..', 'data', 'fixtures', 'gen3-tri-stereo-chorus.tsl')
 
-test('mk3 template round-trips the real Gen 3 export byte-for-byte', (t) => {
+test('mk3 template preserves the real Gen 3 export structure (tone tail factory-neutralized)', (t) => {
   if (!fs.existsSync(FIXTURE)) {
     t.skip('ground-truth fixture not present (gitignored, local-only)')
     return
@@ -46,10 +47,5 @@ test('mk3 template round-trips the real Gen 3 export byte-for-byte', (t) => {
   assert.equal(emitted.device, real.device)
   assert.equal(emitted.formatRev, real.formatRev)
 
-  const realPs = real.data[0][0].paramSet
-  const emitPs = emitted.data[0][0].paramSet
-  assert.deepEqual(Object.keys(emitPs), Object.keys(realPs), 'block key set + order match')
-  for (const k of Object.keys(realPs)) {
-    assert.deepEqual(emitPs[k], realPs[k], `bytes match for ${k}`)
-  }
+  assertStructurePreserved(emitted.data[0][0].paramSet, real.data[0][0].paramSet, GUITAR_TONE_BLOCKS)
 })

@@ -86,6 +86,15 @@ export const MK2_OFFSETS = {
   revType:  { section: 'Patch_1', offset: 1 },
   revTime:  { section: 'Patch_1', offset: 2 },
   revLevel: { section: 'Patch_1', offset: 8 },
+  // Reverb TAIL — pre-delay, low/high cut, density. The writer sets type/time/
+  // level but these voicing bytes were INHERITED from the donor, so every reverb
+  // carried one patch's character: the donor's LOW_CUT 2 (almost none) + DENSITY
+  // 10 (thick) is exactly the boomy, washed-out tail. Names from param-table.json.
+  revPreDlyHi: { section: 'Patch_1', offset: 3 },
+  revPreDlyLo: { section: 'Patch_1', offset: 4 },
+  revLowCut:   { section: 'Patch_1', offset: 5 },
+  revHighCut:  { section: 'Patch_1', offset: 6 },
+  revDensity:  { section: 'Patch_1', offset: 7 },
 
   // Mod/FX blocks
   fx1On:   { section: 'Fx(1)', offset: 0 },

@@ -122,6 +122,16 @@ export function buildMk2Sections(patch: TonePatch): SectionMap {
     put(s, O.revType, enumByte(REVERB_BY_NAME, patch.reverb.type, 'reverb type'))
     put(s, O.revTime, reverbTimeByte(patch.reverb.timeS))
     put(s, O.revLevel, knob(patch.reverb.level))
+    // Reverb tail to the amp's FACTORY voicing (ktn_mk2 init patch), not the
+    // donor's. The donor carried LOW_CUT 2 + DENSITY 10 — a boomy, thick wash
+    // stacked under every reverb regardless of type. Factory is tighter and
+    // neutral, letting the chosen type/time/level actually read. Same principle
+    // as the playability block: a decision on every patch, not an inheritance.
+    put(s, O.revPreDlyHi, 0)
+    put(s, O.revPreDlyLo, 10)
+    put(s, O.revLowCut, 14)
+    put(s, O.revHighCut, 8)
+    put(s, O.revDensity, 5)
   }
 
   // ── Playability. Every byte below was previously INHERITED from the donor. ────

@@ -1,0 +1,5063 @@
+{
+ "_meta": {
+  "what": "Normalized KATANA parameter model — factory init/min/max per param + enum byte lists",
+  "source": "data/re/bass-head-assets/assets/html/js/config/address_map.js + resource.js",
+  "extracted_by": "scripts/extract-address-map.mjs",
+  "note": "Derived facts (offsets + factory defaults) from the device editor. init = factory default; enum list index = byte value; enum lists are sparse (empty string = reserved byte).",
+  "section_count": 22,
+  "param_count": 402,
+  "enum_list_count": 89
+ },
+ "sections": {
+  "prm_system": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "USB INPUT LEVEL",
+    "prm": "PRM_SYS_USB_INPUT_LEVEL"
+   },
+   {
+    "addr": 1,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "USB OUT LEVEL",
+    "prm": "PRM_SYS_USB_OUT_LEV"
+   },
+   {
+    "addr": 2,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 25,
+    "min": 0,
+    "max": 100,
+    "name": "USB MIX LEVEL",
+    "prm": "PRM_SYS_USB_MIX_LEV"
+   },
+   {
+    "addr": 3,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "USB LOOPBACK",
+    "prm": "PRM_SYS_USB_LOOPBACK"
+   },
+   {
+    "addr": 4,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "USB2 OUT LEVEL",
+    "prm": "PRM_SYS_USB_2_OUT_LEV"
+   },
+   {
+    "addr": 5,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 3,
+    "name": "LINE OUT AIR FEEL",
+    "prm": "PRM_SYS_LINE_OUT_MODE"
+   },
+   {
+    "addr": 6,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 4,
+    "name": "AMP IN HPF TYPE",
+    "prm": "PRM_SYS_PWR_AMP_IN_HPF_TYPE"
+   },
+   {
+    "addr": 7,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 99,
+    "name": "AMP IN HPF FREQ",
+    "prm": "PRM_SYS_PWR_AMP_IN_HPF_FREQ"
+   },
+   {
+    "addr": 8,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "AMP IN LEVEL",
+    "prm": "PRM_SYS_PWR_AMP_IN_LEVEL"
+   },
+   {
+    "addr": 9,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 3,
+    "name": "AMP IN TWEETER SW",
+    "prm": "PRM_SYS_PWR_AMP_IN_TWEETER_SW"
+   },
+   {
+    "addr": 10,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "SEND RETURN MODE",
+    "prm": "PRM_SYS_SEND_RETURN_MODE"
+   },
+   {
+    "addr": 11,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "SEND LEVEL",
+    "prm": "PRM_SYS_SEND_RETURN_SEND_LEVEL"
+   },
+   {
+    "addr": 12,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "RETURN LEVEL",
+    "prm": "PRM_SYS_SEND_RETURN_RETURN_LEVEL"
+   },
+   {
+    "addr": 13,
+    "size": "(PADDING | 0x3)",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 0,
+    "name": ""
+   },
+   {
+    "addr": 16,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "EQ SW",
+    "prm": "PRM_SYS_EQ_SW"
+   },
+   {
+    "addr": 17,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "EQ TYPE",
+    "prm": "PRM_SYS_EQ_TYPE"
+   },
+   {
+    "addr": 18,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 1,
+    "name": "EQ POSITION",
+    "prm": "PRM_SYS_EQ_POSITION"
+   },
+   {
+    "addr": 19,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 17,
+    "name": "PEQ LOW CUT",
+    "prm": "PRM_SYS_EQ_PEQ_LOW_CUT"
+   },
+   {
+    "addr": 20,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "PEQ LOW GAIN",
+    "prm": "PRM_SYS_EQ_PEQ_LOW_GAIN"
+   },
+   {
+    "addr": 21,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 13,
+    "min": 0,
+    "max": 27,
+    "name": "PEQ LOW-MID FREQ",
+    "prm": "PRM_SYS_EQ_PEQ_LOWMID_FREQ"
+   },
+   {
+    "addr": 22,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 5,
+    "name": "PEQ LOW-MID Q",
+    "prm": "PRM_SYS_EQ_PEQ_LOWMID_Q"
+   },
+   {
+    "addr": 23,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "PEQ LOW-MID GAIN",
+    "prm": "PRM_SYS_EQ_PEQ_LOWMID_GAIN"
+   },
+   {
+    "addr": 24,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 23,
+    "min": 0,
+    "max": 27,
+    "name": "PEQ HIGH-MID FREQ",
+    "prm": "PRM_SYS_EQ_PEQ_HIGHMID_FREQ"
+   },
+   {
+    "addr": 25,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 5,
+    "name": "PEQ HIGH-MID Q",
+    "prm": "PRM_SYS_EQ_PEQ_HIGHMID_Q"
+   },
+   {
+    "addr": 26,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "PEQ HIGH-MID GAIN",
+    "prm": "PRM_SYS_EQ_PEQ_HIGHMID_GAIN"
+   },
+   {
+    "addr": 27,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "PEQ HIGH GAIN",
+    "prm": "PRM_SYS_EQ_PEQ_HIGH_GAIN"
+   },
+   {
+    "addr": 28,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 14,
+    "min": 0,
+    "max": 14,
+    "name": "PEQ HIGH CUT",
+    "prm": "PRM_SYS_EQ_PEQ_HIGH_CUT"
+   },
+   {
+    "addr": 29,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "PEQ LEVEL",
+    "prm": "PRM_SYS_EQ_PEQ_LEVEL"
+   },
+   {
+    "addr": 30,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "GEQ 31Hz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND1"
+   },
+   {
+    "addr": 31,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "GEQ 62Hz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND2"
+   },
+   {
+    "addr": 32,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "GEQ 125Hz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND3"
+   },
+   {
+    "addr": 33,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "GEQ 250Hz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND4"
+   },
+   {
+    "addr": 34,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "GEQ 500Hz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND5"
+   },
+   {
+    "addr": 35,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "GEQ 1KHz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND6"
+   },
+   {
+    "addr": 36,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "GEQ 2KHz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND7"
+   },
+   {
+    "addr": 37,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "GEQ 4KHz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND8"
+   },
+   {
+    "addr": 38,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "GEQ 8KHz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND9"
+   },
+   {
+    "addr": 39,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "GEQ 16KHz",
+    "prm": "PRM_SYS_EQ_GEQ_BAND10"
+   },
+   {
+    "addr": 40,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "GEQ LEVEL",
+    "prm": "PRM_SYS_EQ_GEQ_LEVEL"
+   },
+   {
+    "addr": 41,
+    "size": "(PADDING | 0x7)",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 0,
+    "name": ""
+   },
+   {
+    "addr": 48,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "CALIB LOWSHIFT_G",
+    "prm": "PRM_CALIB_LOWSHIFT_G"
+   },
+   {
+    "addr": 49,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "CALIB LOWLEVEL_G",
+    "prm": "PRM_CALIB_LOWLEVEL_G"
+   },
+   {
+    "addr": 50,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "CALIB HIGHSHIFT_G",
+    "prm": "PRM_CALIB_HIGHSHIFT_G"
+   },
+   {
+    "addr": 51,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "CALIB HIGHLEVEL_G",
+    "prm": "PRM_CALIB_HIGHLEVEL_G"
+   },
+   {
+    "addr": 52,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "CALIB LOWSHIFT_Y",
+    "prm": "PRM_CALIB_LOWSHIFT_Y"
+   },
+   {
+    "addr": 53,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "CALIB LOWLEVEL_Y",
+    "prm": "PRM_CALIB_LOWLEVEL_Y"
+   },
+   {
+    "addr": 54,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "CALIB HIGHSHIFT_Y",
+    "prm": "PRM_CALIB_HIGHSHIFT_Y"
+   },
+   {
+    "addr": 55,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "CALIB HIGHLEVEL_Y",
+    "prm": "PRM_CALIB_HIGHLEVEL_Y"
+   },
+   {
+    "addr": 56,
+    "size": "(PADDING | 0x8)",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 0,
+    "name": ""
+   },
+   {
+    "addr": 64,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 2,
+    "name": "MUTE_TYPE",
+    "prm": "PRM_SYS_MUTE_TYPE"
+   },
+   {
+    "addr": 65,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 2,
+    "name": "LINEOUT_CUSTOM_SEL",
+    "prm": "PRM_SYS_LINEOUT_CUSTOM_SEL"
+   },
+   {
+    "addr": 66,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 4,
+    "name": "LINEOUT_MIC_TYPE_G",
+    "prm": "PRM_SYS_LINEOUT_MIC_TYPE_G"
+   },
+   {
+    "addr": 67,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 10,
+    "min": 0,
+    "max": 20,
+    "name": "LINEOUT_MIC_DISTANCE_G",
+    "prm": "PRM_SYS_LINEOUT_MIC_DISTANCE_G"
+   },
+   {
+    "addr": 68,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 4,
+    "min": 0,
+    "max": 10,
+    "name": "LINEOUT_MIC_POSITION_G",
+    "prm": "PRM_SYS_LINEOUT_MIC_POSITION_G"
+   },
+   {
+    "addr": 69,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "LINEOUT_AMBIENCE_PRE_DELAY_G",
+    "prm": "PRM_SYS_LINEOUT_AMBIENCE_PRE_DELAY_G"
+   },
+   {
+    "addr": 70,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "LINEOUT_AMBIENCE_LEVEL_G",
+    "prm": "PRM_SYS_LINEOUT_AMBIENCE_LEVEL_G"
+   },
+   {
+    "addr": 71,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 2,
+    "min": 0,
+    "max": 4,
+    "name": "LINEOUT_MIC_TYPE_R",
+    "prm": "PRM_SYS_LINEOUT_MIC_TYPE_R"
+   },
+   {
+    "addr": 72,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 10,
+    "min": 0,
+    "max": 20,
+    "name": "LINEOUT_MIC_DISTANCE_R",
+    "prm": "PRM_SYS_LINEOUT_MIC_DISTANCE_R"
+   },
+   {
+    "addr": 73,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 4,
+    "min": 0,
+    "max": 10,
+    "name": "LINEOUT_MIC_POSITION_R",
+    "prm": "PRM_SYS_LINEOUT_MIC_POSITION_R"
+   },
+   {
+    "addr": 74,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "LINEOUT_AMBIENCE_PRE_DELAY_R",
+    "prm": "PRM_SYS_LINEOUT_AMBIENCE_PRE_DELAY_R"
+   },
+   {
+    "addr": 75,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "LINEOUT_AMBIENCE_LEVEL_R",
+    "prm": "PRM_SYS_LINEOUT_AMBIENCE_LEVEL_R"
+   },
+   {
+    "addr": 76,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 4,
+    "min": 0,
+    "max": 4,
+    "name": "LINEOUT_MIC_TYPE_Y",
+    "prm": "PRM_SYS_LINEOUT_MIC_TYPE_Y"
+   },
+   {
+    "addr": 77,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 10,
+    "min": 0,
+    "max": 20,
+    "name": "LINEOUT_MIC_DISTANCE_Y",
+    "prm": "PRM_SYS_LINEOUT_MIC_DISTANCE_Y"
+   },
+   {
+    "addr": 78,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 4,
+    "min": 0,
+    "max": 10,
+    "name": "LINEOUT_MIC_POSITION_Y",
+    "prm": "PRM_SYS_LINEOUT_MIC_POSITION_Y"
+   },
+   {
+    "addr": 79,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "LINEOUT_AMBIENCE_PRE_DELAY_Y",
+    "prm": "PRM_SYS_LINEOUT_AMBIENCE_PRE_DELAY_Y"
+   },
+   {
+    "addr": 80,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "LINEOUT_AMBIENCE_LEVEL_Y",
+    "prm": "PRM_SYS_LINEOUT_AMBIENCE_LEVEL_Y"
+   },
+   {
+    "addr": 81,
+    "size": "(PADDING | 0xF)",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 0,
+    "name": ""
+   },
+   {
+    "addr": 96,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 2,
+    "name": "CALIB_HPF_TYPE_G",
+    "prm": "PRM_SYS_CALIB_EQ_HPF_TYPE_G"
+   },
+   {
+    "addr": 97,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 80,
+    "min": 0,
+    "max": 16384,
+    "name": "CALIB_HPF_FC_G",
+    "prm": "PRM_SYS_CALIB_EQ_HPF_FC_G"
+   },
+   {
+    "addr": 99,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 2899,
+    "min": 0,
+    "max": 16384,
+    "name": "CALIB_HPF_Q_G",
+    "prm": "PRM_SYS_CALIB_EQ_HPF_Q_G"
+   },
+   {
+    "addr": 101,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 80,
+    "min": 0,
+    "max": 16384,
+    "name": "CALIB_BPF_FC_G",
+    "prm": "PRM_SYS_CALIB_EQ_BPF_FC_G"
+   },
+   {
+    "addr": 103,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 8192,
+    "min": 0,
+    "max": 16384,
+    "name": "CALIB_BPF_Q_G",
+    "prm": "PRM_SYS_CALIB_EQ_BPF_Q_G"
+   },
+   {
+    "addr": 105,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 8960,
+    "min": 0,
+    "max": 16384,
+    "name": "CALIB_BPF_G_G",
+    "prm": "PRM_SYS_CALIB_EQ_BPF_G_G"
+   },
+   {
+    "addr": 107,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 1250,
+    "min": 0,
+    "max": 16384,
+    "name": "CALIB_HSF_FC_G",
+    "prm": "PRM_SYS_CALIB_EQ_HSF_FC_G"
+   },
+   {
+    "addr": 109,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 8960,
+    "min": 0,
+    "max": 16384,
+    "name": "CALIB_HSF_G_G",
+    "prm": "PRM_SYS_CALIB_EQ_HSF_G_G"
+   },
+   {
+    "addr": 111,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 16384,
+    "name": "CALIB_HPF_TYPE_R",
+    "prm": "PRM_SYS_CALIB_EQ_HPF_TYPE_Y"
+   },
+   {
+    "addr": 113,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 80,
+    "min": 0,
+    "max": 16384,
+    "name": "CALIB_HPF_FC_R",
+    "prm": "PRM_SYS_CALIB_EQ_HPF_FC_Y"
+   },
+   {
+    "addr": 115,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 2899,
+    "min": 0,
+    "max": 16384,
+    "name": "CALIB_HPF_Q_R",
+    "prm": "PRM_SYS_CALIB_EQ_HPF_Q_Y"
+   },
+   {
+    "addr": 117,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 40,
+    "min": 0,
+    "max": 16384,
+    "name": "CALIB_BPF_FC_R",
+    "prm": "PRM_SYS_CALIB_EQ_BPF_FC_Y"
+   },
+   {
+    "addr": 119,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 6144,
+    "min": 0,
+    "max": 16384,
+    "name": "CALIB_BPF_Q_R",
+    "prm": "PRM_SYS_CALIB_EQ_BPF_Q_Y"
+   },
+   {
+    "addr": 121,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 8960,
+    "min": 0,
+    "max": 16384,
+    "name": "CALIB_BPF_G_R",
+    "prm": "PRM_SYS_CALIB_EQ_BPF_G_Y"
+   },
+   {
+    "addr": 123,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 1250,
+    "min": 0,
+    "max": 16384,
+    "name": "CALIB_HSF_FC_R",
+    "prm": "PRM_SYS_CALIB_EQ_HSF_FC_Y"
+   },
+   {
+    "addr": 125,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 8192,
+    "min": 0,
+    "max": 16384,
+    "name": "CALIB_HSF_G_R",
+    "prm": "PRM_SYS_CALIB_EQ_HSF_G_Y"
+   }
+  ],
+  "prm_sys_info": [
+   {
+    "addr": 0,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 6,
+    "name": "PATCH NUM",
+    "prm": "PRM_SYS_PATCH_SEL"
+   }
+  ],
+  "prm_midi": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 15,
+    "name": "RX CHANNEL",
+    "prm": "PRM_SYS_MIDI_RX_CH"
+   },
+   {
+    "addr": 1,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 16,
+    "min": 1,
+    "max": 63,
+    "name": "RxCcCompSw",
+    "prm": "PRM_SYS_MIDI_CC_COMP_SW"
+   },
+   {
+    "addr": 2,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 17,
+    "min": 1,
+    "max": 63,
+    "name": "RxCcDriveSw",
+    "prm": "PRM_SYS_MIDI_CC_DRIVE_SW"
+   },
+   {
+    "addr": 3,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 18,
+    "min": 1,
+    "max": 63,
+    "name": "RxCcFx1Sw",
+    "prm": "PRM_SYS_MIDI_CC_FX1_SW"
+   },
+   {
+    "addr": 4,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 19,
+    "min": 1,
+    "max": 63,
+    "name": "RxCcFx2Sw",
+    "prm": "PRM_SYS_MIDI_CC_FX2_SW"
+   },
+   {
+    "addr": 5,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 20,
+    "min": 1,
+    "max": 63,
+    "name": "RxCcSendReturnSw",
+    "prm": "PRM_SYS_MIDI_CC_XLP_SW"
+   },
+   {
+    "addr": 6,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 21,
+    "min": 1,
+    "max": 63,
+    "name": "RxCcPedalFxSw",
+    "prm": "PRM_SYS_MIDI_CC_PEDALFX_SW"
+   },
+   {
+    "addr": 7,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 48,
+    "min": 1,
+    "max": 63,
+    "name": "RxCcExpPedal",
+    "prm": "PRM_SYS_MIDI_CC_EXPPEDAL"
+   },
+   {
+    "addr": 8,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 49,
+    "min": 1,
+    "max": 63,
+    "name": "RxCcGafcExp1",
+    "prm": "PRM_SYS_MIDI_CC_GAFCEXP1"
+   },
+   {
+    "addr": 9,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 1,
+    "max": 63,
+    "name": "RxCcGafcExp2",
+    "prm": "PRM_SYS_MIDI_CC_GAFCEXP2"
+   },
+   {
+    "addr": 10,
+    "size": "(PADDING | 0x6)",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 0,
+    "name": ""
+   },
+   {
+    "addr": 16,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 3,
+    "min": 0,
+    "max": 127,
+    "name": "RxPcPanel",
+    "prm": "PRM_SYS_MIDI_PC_PANEL"
+   },
+   {
+    "addr": 17,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 127,
+    "name": "RxPcACh1",
+    "prm": "PRM_SYS_MIDI_PC_A1"
+   },
+   {
+    "addr": 18,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 127,
+    "name": "RxPcACh2",
+    "prm": "PRM_SYS_MIDI_PC_A2"
+   },
+   {
+    "addr": 19,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 2,
+    "min": 0,
+    "max": 127,
+    "name": "RxPcACh3",
+    "prm": "PRM_SYS_MIDI_PC_A3"
+   },
+   {
+    "addr": 20,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 4,
+    "min": 0,
+    "max": 127,
+    "name": "RxPcBCh1",
+    "prm": "PRM_SYS_MIDI_PC_B1"
+   },
+   {
+    "addr": 21,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 5,
+    "min": 0,
+    "max": 127,
+    "name": "RxPcBCh2",
+    "prm": "PRM_SYS_MIDI_PC_B2"
+   },
+   {
+    "addr": 22,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 6,
+    "min": 0,
+    "max": 127,
+    "name": "RxPcBCh3",
+    "prm": "PRM_SYS_MIDI_PC_B3"
+   }
+  ],
+  "prm_patch_led": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 3,
+    "name": "LED COMP",
+    "prm": "PRM_LED_COMP"
+   },
+   {
+    "addr": 1,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 3,
+    "name": "LED DRIVE",
+    "prm": "PRM_LED_DRIVE"
+   },
+   {
+    "addr": 2,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "LED PAD",
+    "prm": "PRM_LED_PAD"
+   },
+   {
+    "addr": 3,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 3,
+    "name": "LED SHAPE",
+    "prm": "PRM_LED_SHAPE"
+   },
+   {
+    "addr": 4,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 3,
+    "name": "LED BLEND",
+    "prm": "PRM_LED_BLEND"
+   },
+   {
+    "addr": 5,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 3,
+    "name": "LED LOW MID",
+    "prm": "PRM_LED_LOWMID"
+   },
+   {
+    "addr": 6,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 3,
+    "name": "LED HIGH MID",
+    "prm": "PRM_LED_HIGHMID"
+   },
+   {
+    "addr": 7,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 3,
+    "name": "LED FX1",
+    "prm": "PRM_LED_FX1"
+   },
+   {
+    "addr": 8,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 3,
+    "name": "LED FX2",
+    "prm": "PRM_LED_FX2"
+   },
+   {
+    "addr": 9,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 3,
+    "name": "LED HICUT",
+    "prm": "PRM_LED_TWEETER"
+   }
+  ],
+  "prm_patch_knob": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 51,
+    "min": 0,
+    "max": 101,
+    "name": "KNOB COMP",
+    "prm": "PRM_KNOB_POS_COMP"
+   },
+   {
+    "addr": 1,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 51,
+    "min": 0,
+    "max": 101,
+    "name": "KNOB DRIVE",
+    "prm": "PRM_KNOB_POS_DRIVE"
+   },
+   {
+    "addr": 2,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 2,
+    "name": "KNOB TYPE",
+    "prm": "PRM_KNOB_POS_TYPE"
+   },
+   {
+    "addr": 3,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "KNOB GAIN",
+    "prm": "PRM_KNOB_POS_GAIN"
+   },
+   {
+    "addr": 4,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "KNOB VOLUME",
+    "prm": "PRM_KNOB_POS_VOLUME"
+   },
+   {
+    "addr": 5,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 101,
+    "name": "KNOB DRY LEVEL",
+    "prm": "PRM_KNOB_POS_DRY_LEVEL"
+   },
+   {
+    "addr": 6,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "KNOB BASS",
+    "prm": "PRM_KNOB_POS_BASS"
+   },
+   {
+    "addr": 7,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "KNOB LOW MID",
+    "prm": "PRM_KNOB_POS_LOWMID"
+   },
+   {
+    "addr": 8,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "KNOB HIGH MID",
+    "prm": "PRM_KNOB_POS_HIGHMOD"
+   },
+   {
+    "addr": 9,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "KNOB TREBLE",
+    "prm": "PRM_KNOB_POS_TREBLE"
+   },
+   {
+    "addr": 10,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "KNOB BOTTOM",
+    "prm": "PRM_KNOB_POS_FX1"
+   },
+   {
+    "addr": 11,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 51,
+    "min": 0,
+    "max": 101,
+    "name": "KNOB FX2",
+    "prm": "PRM_KNOB_POS_FX2"
+   }
+  ],
+  "prm_patch_sel_color_sw": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "SEL COMP SW",
+    "prm": "PRM_SEL_COMP_SW"
+   },
+   {
+    "addr": 1,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 2,
+    "name": "SEL COMP COLOR",
+    "prm": "PRM_SEL_COMP_COLOR"
+   },
+   {
+    "addr": 2,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "SEL DRIVE SW",
+    "prm": "PRM_SEL_DRIVE_SW"
+   },
+   {
+    "addr": 3,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 2,
+    "name": "SEL DRIVE COLOR",
+    "prm": "PRM_SEL_DRIVE_COLOR"
+   },
+   {
+    "addr": 4,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "SEL PAD SW",
+    "prm": "PRM_SEL_PAD_SW"
+   },
+   {
+    "addr": 5,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "SEL SHAPE SW",
+    "prm": "PRM_SEL_SHAPE_SW"
+   },
+   {
+    "addr": 6,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 2,
+    "name": "SEL SHAPE COLOR",
+    "prm": "PRM_SEL_SHAPE_COLOR"
+   },
+   {
+    "addr": 7,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "SEL BLEND SW",
+    "prm": "PRM_SEL_BLEND_SW"
+   },
+   {
+    "addr": 8,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 2,
+    "name": "SEL BLEND COLOR",
+    "prm": "PRM_SEL_BLEND_COLOR"
+   },
+   {
+    "addr": 9,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 2,
+    "name": "SEL LOW MID COLOR",
+    "prm": "PRM_SEL_LOWMID_COLOR"
+   },
+   {
+    "addr": 10,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 2,
+    "name": "SEL HIGH MID COLOR",
+    "prm": "PRM_SEL_HIGHMID_COLOR"
+   },
+   {
+    "addr": 11,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 3,
+    "name": "SEL TWEETER SW",
+    "prm": "PRM_SEL_HICUT"
+   },
+   {
+    "addr": 12,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "SEL EFX1 SW",
+    "prm": "PRM_SEL_EFX1_SW"
+   },
+   {
+    "addr": 13,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 2,
+    "name": "SEL EFX1 COLOR",
+    "prm": "PRM_SEL_EFX1_COLOR"
+   },
+   {
+    "addr": 14,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "SEL EFX2 SW",
+    "prm": "PRM_SEL_EFX2_SW"
+   },
+   {
+    "addr": 15,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 2,
+    "name": "SEL EFX2 COLOR",
+    "prm": "PRM_SEL_EFX2_COLOR"
+   }
+  ],
+  "prm_patch_pedal_function": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 2,
+    "name": "EXP PEDAL FUNCTION",
+    "prm": "PRM_PEDAL_FUNCTION_EXP_PEDAL"
+   },
+   {
+    "addr": 1,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 2,
+    "name": "GAFC EXP1 FUNCTION",
+    "prm": "PRM_PEDAL_FUNCTION_GAFC_EXP1"
+   },
+   {
+    "addr": 2,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 2,
+    "name": "GAFC EXP2 FUNCTION",
+    "prm": "PRM_PEDAL_FUNCTION_GAFC_EXP2"
+   }
+  ],
+  "prm_patch_comp_limiter": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "COMP LIMITER SEL",
+    "prm": "PRM_COMP_LIMITER_GRN_SEL"
+   },
+   {
+    "addr": 1,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 2,
+    "min": 0,
+    "max": 6,
+    "name": "COMP TYPE",
+    "prm": "PRM_COMP_GRN_TYPE"
+   },
+   {
+    "addr": 2,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "COMP SUSTAIN",
+    "prm": "PRM_COMP_GRN_SUSTAIN"
+   },
+   {
+    "addr": 3,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "COMP ATTACK",
+    "prm": "PRM_COMP_GRN_ATTACK"
+   },
+   {
+    "addr": 4,
+    "size": "INTEGER1x7",
+    "ofs": 50,
+    "init": 0,
+    "min": -50,
+    "max": 50,
+    "name": "COMP TONE",
+    "prm": "PRM_COMP_GRN_TONE"
+   },
+   {
+    "addr": 5,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "COMP LEVEL",
+    "prm": "PRM_COMP_GRN_LEVEL"
+   },
+   {
+    "addr": 6,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 2,
+    "name": "LIMITER TYPE",
+    "prm": "PRM_LIMITER_GRN_TYPE"
+   },
+   {
+    "addr": 7,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "LIMITER ATTACK",
+    "prm": "PRM_LIMITER_GRN_ATTACK"
+   },
+   {
+    "addr": 8,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 60,
+    "min": 0,
+    "max": 100,
+    "name": "LIMITER THRESHOLD",
+    "prm": "PRM_LIMITER_GRN_THRESHOLD"
+   },
+   {
+    "addr": 9,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 11,
+    "min": 0,
+    "max": 17,
+    "name": "LIMITER RATIO",
+    "prm": "PRM_LIMITER_GRN_RATIO"
+   },
+   {
+    "addr": 10,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 20,
+    "min": 0,
+    "max": 100,
+    "name": "LIMITER RELEASE",
+    "prm": "PRM_LIMITER_GRN_RELEASE"
+   },
+   {
+    "addr": 11,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 25,
+    "min": 0,
+    "max": 100,
+    "name": "LIMITER LEVEL",
+    "prm": "PRM_LIMITER_GRN_LEVEL"
+   }
+  ],
+  "prm_patch_drive": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 6,
+    "min": 0,
+    "max": 12,
+    "name": "DRIVE TYPE",
+    "prm": "PRM_ODDS_GRN_TYPE"
+   },
+   {
+    "addr": 1,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 120,
+    "name": "DRIVE DRIVE",
+    "prm": "PRM_ODDS_GRN_DRIVE"
+   },
+   {
+    "addr": 2,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 10,
+    "min": 0,
+    "max": 100,
+    "name": "DRIVE BOTTOM",
+    "prm": "PRM_ODDS_GRN_BOTTOM"
+   },
+   {
+    "addr": 3,
+    "size": "INTEGER1x7",
+    "ofs": 50,
+    "init": 0,
+    "min": -50,
+    "max": 50,
+    "name": "DRIVE TONE",
+    "prm": "PRM_ODDS_GRN_TONE"
+   },
+   {
+    "addr": 4,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 40,
+    "min": 0,
+    "max": 100,
+    "name": "DRIVE EFFECT LEVEL",
+    "prm": "PRM_ODDS_GRN_EFFECT_LEVEL"
+   },
+   {
+    "addr": 5,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "DRIVE DIRECT MIX",
+    "prm": "PRM_ODDS_GRN_DIRECT_LEVEL"
+   }
+  ],
+  "prm_patch_blend": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "BLEND DRY INPUT EFX SW",
+    "prm": "PRM_BLEND_GRN_DRY_INPUT_EFX_SW"
+   },
+   {
+    "addr": 1,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 1,
+    "name": "BLEND DRY EQ SW",
+    "prm": "PRM_BLEND_GRN_DRY_EQ_SW"
+   },
+   {
+    "addr": 2,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 4,
+    "name": "BLEND DRY LPF TYPE",
+    "prm": "PRM_BLEND_GRN_DRY_LPF_TYPE"
+   },
+   {
+    "addr": 3,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 17,
+    "min": 0,
+    "max": 27,
+    "name": "BLEND DRY LPF FREQ",
+    "prm": "PRM_BLEND_GRN_DRY_LPF_FREQ"
+   },
+   {
+    "addr": 4,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 4,
+    "name": "BLEND WET HPF TYPE",
+    "prm": "PRM_BLEND_GRN_WET_HPF_TYPE"
+   },
+   {
+    "addr": 5,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 11,
+    "min": 0,
+    "max": 27,
+    "name": "BLEND WET HPF FREQ",
+    "prm": "PRM_BLEND_GRN_WET_HPF_FREQ"
+   }
+  ],
+  "prm_patch_fx1": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 22,
+    "min": 0,
+    "max": 23,
+    "name": "FX1 FX TYPE",
+    "prm": "PRM_FX1_GRN_FXTYPE"
+   }
+  ],
+  "prm_patch_fx2": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 2,
+    "name": "FX SEL",
+    "prm": "PRM_FX2_GRN_SEL"
+   },
+   {
+    "addr": 1,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 23,
+    "name": "FX2 FX TYPE",
+    "prm": "PRM_FX2_GRN_FXTYPE"
+   },
+   {
+    "addr": 2,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 5,
+    "name": "DELAY TYPE",
+    "prm": "PRM_FX2_GRN_DELAY_TYPE"
+   },
+   {
+    "addr": 3,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 4,
+    "name": "REVERB TYPE",
+    "prm": "PRM_FX2_GRN_REVERB_TYPE"
+   }
+  ],
+  "prm_patch_low_mid": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 11,
+    "min": 0,
+    "max": 27,
+    "name": "LOW MID FREQ",
+    "prm": "PRM_LOWMID_GRN_FREQ"
+   }
+  ],
+  "prm_patch_high_mid": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 16,
+    "min": 0,
+    "max": 27,
+    "name": "HIGH MID FREQ",
+    "prm": "PRM_HIGHMID_GRN_FREQ"
+   }
+  ],
+  "prm_chain": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 1,
+    "name": "CHAIN PTN",
+    "prm": "PRM_CHAIN_PTN"
+   },
+   {
+    "addr": 1,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "POSITION EQ",
+    "prm": "PRM_POSITION_EQ"
+   }
+  ],
+  "prm_patch_pedal_fx_detail": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "PEDAL FX SW",
+    "prm": "PRM_PEDAL_FX_SW"
+   },
+   {
+    "addr": 1,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "PEDAL FX TYPE",
+    "prm": "PRM_PEDAL_FX_TYPE"
+   },
+   {
+    "addr": 2,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 5,
+    "name": "WAH TYPE",
+    "prm": "PRM_PEDAL_FX_WAH_TYPE"
+   },
+   {
+    "addr": 3,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "WAH PEDAL POSITION",
+    "prm": "PRM_PEDAL_FX_WAH_PEDAL_POSITION"
+   },
+   {
+    "addr": 4,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "WAH PEDAL MIN",
+    "prm": "PRM_PEDAL_FX_WAH_PEDAL_MIN"
+   },
+   {
+    "addr": 5,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "WAH PEDAL MAX",
+    "prm": "PRM_PEDAL_FX_WAH_PEDAL_MAX"
+   },
+   {
+    "addr": 6,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "WAH EFFECT LEVEL",
+    "prm": "PRM_PEDAL_FX_WAH_EFFECT_LEVEL"
+   },
+   {
+    "addr": 7,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "WAH DIRECT MIX",
+    "prm": "PRM_PEDAL_FX_WAH_DIRECT_MIX"
+   },
+   {
+    "addr": 8,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 12,
+    "min": -24,
+    "max": 24,
+    "name": "PEDAL BEND PITCH",
+    "prm": "PRM_PEDAL_FX_PEDAL_BEND_PITCH_MAX"
+   },
+   {
+    "addr": 9,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "PEDAL PEDAL POSITION",
+    "prm": "PRM_PEDAL_FX_PEDAL_BEND_PEDAL_POSITION"
+   },
+   {
+    "addr": 10,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "PEDAL BEND EFFECT LEVEL",
+    "prm": "PRM_PEDAL_FX_PEDAL_BEND_EFFECT_LEVEL"
+   },
+   {
+    "addr": 11,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "PEDAL BEND DIRECT LEVEL",
+    "prm": "PRM_PEDAL_FX_PEDAL_BEND_DIRECT_MIX"
+   }
+  ],
+  "prm_patch_fx_detail": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 6,
+    "min": 0,
+    "max": 16,
+    "name": "CHORUS XOVER FREQUENCY",
+    "prm": "PRM_FX1_2"
+   },
+   {
+    "addr": 1,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 35,
+    "min": 0,
+    "max": 100,
+    "name": "CHORUS LOW RATE",
+    "prm": "PRM_FX1_2"
+   },
+   {
+    "addr": 2,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 35,
+    "min": 0,
+    "max": 100,
+    "name": "CHORUS LOW DEPTH",
+    "prm": "PRM_FX1_2"
+   },
+   {
+    "addr": 3,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 6,
+    "min": 0,
+    "max": 80,
+    "name": "CHORUS LOW PRE DELAY",
+    "prm": "PRM_FX1_2"
+   },
+   {
+    "addr": 4,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 15,
+    "min": 0,
+    "max": 100,
+    "name": "CHORUS LOW LEVEL",
+    "prm": "PRM_FX1_2"
+   },
+   {
+    "addr": 5,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 25,
+    "min": 0,
+    "max": 100,
+    "name": "CHORUS HIGH RATE",
+    "prm": "PRM_FX1_2"
+   },
+   {
+    "addr": 6,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 48,
+    "min": 0,
+    "max": 100,
+    "name": "CHORUS HIGH DEPTH",
+    "prm": "PRM_FX1_2"
+   },
+   {
+    "addr": 7,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 3,
+    "min": 0,
+    "max": 80,
+    "name": "CHORUS HIGH PRE DELAY",
+    "prm": "PRM_FX1_2"
+   },
+   {
+    "addr": 8,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 72,
+    "min": 0,
+    "max": 100,
+    "name": "CHORUS HIGH LEVEL",
+    "prm": "PRM_FX1_2"
+   },
+   {
+    "addr": 9,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 85,
+    "min": 0,
+    "max": 100,
+    "name": "CHORUS DIRECT MIX",
+    "prm": "PRM_FX1_2"
+   },
+   {
+    "addr": 10,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 24,
+    "min": 0,
+    "max": 100,
+    "name": "FLANGER RATE",
+    "prm": "PRM_FX1_FLANGER_RATE"
+   },
+   {
+    "addr": 11,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 58,
+    "min": 0,
+    "max": 100,
+    "name": "FLANGER DEPTH",
+    "prm": "PRM_FX1_FLANGER_DEPTH"
+   },
+   {
+    "addr": 12,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 55,
+    "min": 0,
+    "max": 100,
+    "name": "FLANGER MANUAL",
+    "prm": "PRM_FX1_FLANGER_MANUAL"
+   },
+   {
+    "addr": 13,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 80,
+    "min": 0,
+    "max": 100,
+    "name": "FLANGER RESONANCE",
+    "prm": "PRM_FX1_FLANGER_RESONANCE"
+   },
+   {
+    "addr": 14,
+    "size": "(PADDING | 0x1)",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 0,
+    "name": ""
+   },
+   {
+    "addr": 15,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 6,
+    "min": 0,
+    "max": 10,
+    "name": "FLANGER LOW CUT",
+    "prm": "PRM_FX1_FLANGER_LOWCUT"
+   },
+   {
+    "addr": 16,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "FLANGER EFFECT LEVEL",
+    "prm": "PRM_FX1_FLANGER_E_LEVEL"
+   },
+   {
+    "addr": 17,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 15,
+    "min": 0,
+    "max": 100,
+    "name": "FLANGER DIRECT MIX",
+    "prm": "PRM_FX1_FLANGER_D_LEVEL"
+   },
+   {
+    "addr": 18,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 3,
+    "name": "PHASER TYPE",
+    "prm": "PRM_FX1_PHASER_TYPE"
+   },
+   {
+    "addr": 19,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 70,
+    "min": 0,
+    "max": 100,
+    "name": "PHASER RATE",
+    "prm": "PRM_FX1_PHASER_RATE"
+   },
+   {
+    "addr": 20,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 40,
+    "min": 0,
+    "max": 100,
+    "name": "PHASER DEPTH",
+    "prm": "PRM_FX1_PHASER_DEPTH"
+   },
+   {
+    "addr": 21,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 55,
+    "min": 0,
+    "max": 100,
+    "name": "PHASER MANUAL",
+    "prm": "PRM_FX1_PHASER_MANUAL"
+   },
+   {
+    "addr": 22,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "PHASER RESONANCE",
+    "prm": "PRM_FX1_PHASER_RESONANCE"
+   },
+   {
+    "addr": 23,
+    "size": "INTEGER1x7",
+    "ofs": 1,
+    "init": -1,
+    "min": -1,
+    "max": 100,
+    "name": "PHASER STEP RATE",
+    "prm": "PRM_FX1_PHASER_STEPRATE"
+   },
+   {
+    "addr": 24,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "PHASER EFFECT LEVEL",
+    "prm": "PRM_FX1_PHASER_E_LEVEL"
+   },
+   {
+    "addr": 25,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "PHASER DIRECT MIX",
+    "prm": "PRM_FX1_PHASER_D_LEVEL"
+   },
+   {
+    "addr": 26,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 70,
+    "min": 0,
+    "max": 100,
+    "name": "UNI-V RATE",
+    "prm": "PRM_FX1_UNI_V_RATE"
+   },
+   {
+    "addr": 27,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 60,
+    "min": 0,
+    "max": 100,
+    "name": "UNI-V DEPTH",
+    "prm": "PRM_FX1_UNI_V_DEPTH"
+   },
+   {
+    "addr": 28,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "UNI-V LEVEL",
+    "prm": "PRM_FX1_UNI_V_LEVEL"
+   },
+   {
+    "addr": 29,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 70,
+    "min": 0,
+    "max": 100,
+    "name": "TREMOLO WAVE SHAPE",
+    "prm": "PRM_FX1_TREMOLO_WAVESHAPE"
+   },
+   {
+    "addr": 30,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 85,
+    "min": 0,
+    "max": 100,
+    "name": "TREMOLO RATE",
+    "prm": "PRM_FX1_TREMOLO_RATE"
+   },
+   {
+    "addr": 31,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 65,
+    "min": 0,
+    "max": 100,
+    "name": "TREMOLO DEPTH",
+    "prm": "PRM_FX1_TREMOLO_DEPTH"
+   },
+   {
+    "addr": 32,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "TREMOLO LEVEL",
+    "prm": "PRM_FX1_TREMOLO_LEVEL"
+   },
+   {
+    "addr": 33,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 80,
+    "min": 0,
+    "max": 100,
+    "name": "VIBRATO RATE",
+    "prm": "PRM_FX1_VIBRATO_RATE"
+   },
+   {
+    "addr": 34,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 45,
+    "min": 0,
+    "max": 100,
+    "name": "VIBRATO DEPTH",
+    "prm": "PRM_FX1_VIBRATO_DEPTH"
+   },
+   {
+    "addr": 35,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "VIBRATO LEVEL",
+    "prm": "PRM_FX1_VIBRATO_LEVEL"
+   },
+   {
+    "addr": 36,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 85,
+    "min": 0,
+    "max": 100,
+    "name": "ROTARY RATE",
+    "prm": "PRM_FX1_ROTARY_RATE_FAST"
+   },
+   {
+    "addr": 37,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 60,
+    "min": 0,
+    "max": 100,
+    "name": "ROTARY DEPTH",
+    "prm": "PRM_FX1_ROTARY_DEPTH"
+   },
+   {
+    "addr": 38,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "ROTARY LEVEL",
+    "prm": "PRM_FX1_ROTARY_LEVEL"
+   },
+   {
+    "addr": 39,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "RING MOD MODE",
+    "prm": "PRM_FX1_RINGMOD_MODE"
+   },
+   {
+    "addr": 40,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "RING MOD FREQUENCY",
+    "prm": "PRM_FX1_RINGMOD_FREQ"
+   },
+   {
+    "addr": 41,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "RING MOD EFFECT LEVEL",
+    "prm": "PRM_FX1_RINGMOD_E_LEVEL"
+   },
+   {
+    "addr": 42,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "RING MOD DIRECT MIX",
+    "prm": "PRM_FX1_RINGMOD_D_LEVEL"
+   },
+   {
+    "addr": 43,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 45,
+    "min": 0,
+    "max": 100,
+    "name": "SLOW GEAR SENS",
+    "prm": "PRM_FX1_SLOWGEAR_SENS"
+   },
+   {
+    "addr": 44,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "SLOW GEAR RISE TIME",
+    "prm": "PRM_FX1_SLOWGEAR_RISETIME"
+   },
+   {
+    "addr": 45,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 60,
+    "min": 0,
+    "max": 100,
+    "name": "SLOW GEAR LEVEL",
+    "prm": "PRM_FX1_SLOWGEAR_LEVEL"
+   },
+   {
+    "addr": 46,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "T.WAH MODE",
+    "prm": "PRM_FX1_TWAH_MODE"
+   },
+   {
+    "addr": 47,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 1,
+    "name": "T.WAH POLARITY",
+    "prm": "PRM_FX1_TWAH_POLARITY"
+   },
+   {
+    "addr": 48,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "T.WAH SENS",
+    "prm": "PRM_FX1_TWAH_SENS"
+   },
+   {
+    "addr": 49,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "T.WAH FREQ",
+    "prm": "PRM_FX1_TWAH_FREQ"
+   },
+   {
+    "addr": 50,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 80,
+    "min": 0,
+    "max": 100,
+    "name": "T.WAH PEAK",
+    "prm": "PRM_FX1_TWAH_PEAK"
+   },
+   {
+    "addr": 51,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 10,
+    "min": 0,
+    "max": 100,
+    "name": "T.WAH DIRECT MIX",
+    "prm": "PRM_FX1_TWAH_D_LEVEL"
+   },
+   {
+    "addr": 52,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "T.WAH EFFECT LEVEL",
+    "prm": "PRM_FX1_TWAH_LEVEL"
+   },
+   {
+    "addr": 53,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "GEQ 31Hz",
+    "prm": "PRM_FX1_GEQ_BAND1"
+   },
+   {
+    "addr": 54,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "GEQ 62Hz",
+    "prm": "PRM_FX1_GEQ_BAND2"
+   },
+   {
+    "addr": 55,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "GEQ 125Hz",
+    "prm": "PRM_FX1_GEQ_BAND3"
+   },
+   {
+    "addr": 56,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "GEQ 250Hz",
+    "prm": "PRM_FX1_GEQ_BAND4"
+   },
+   {
+    "addr": 57,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "GEQ 500Hz",
+    "prm": "PRM_FX1_GEQ_BAND5"
+   },
+   {
+    "addr": 58,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "GEQ 1kHz",
+    "prm": "PRM_FX1_GEQ_BAND6"
+   },
+   {
+    "addr": 59,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "GEQ 2kHz",
+    "prm": "PRM_FX1_GEQ_BAND7"
+   },
+   {
+    "addr": 60,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "GEQ 4kHz",
+    "prm": "PRM_FX1_GEQ_BAND8"
+   },
+   {
+    "addr": 61,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "GEQ 8kHz",
+    "prm": "PRM_FX1_GEQ_BAND9"
+   },
+   {
+    "addr": 62,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "GEQ 16kHz",
+    "prm": "PRM_FX1_GEQ_BAND10"
+   },
+   {
+    "addr": 63,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "GEQ LEVEL",
+    "prm": "PRM_FX1_GEQ_LEVEL"
+   },
+   {
+    "addr": 64,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 17,
+    "name": "PEQ LOW CUT",
+    "prm": "PRM_FX1_PEQ_LOW_CUT"
+   },
+   {
+    "addr": 65,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "PEQ LOW GAIN",
+    "prm": "PRM_FX1_PEQ_LOW_GAIN"
+   },
+   {
+    "addr": 66,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 13,
+    "min": 0,
+    "max": 27,
+    "name": "PEQ LOW-MID FREQ",
+    "prm": "PRM_FX1_PEQ_LOWMID_FREQ"
+   },
+   {
+    "addr": 67,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 5,
+    "name": "PEQ LOW-MID Q",
+    "prm": "PRM_FX1_PEQ_LOWMID_Q"
+   },
+   {
+    "addr": 68,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "PEQ LOW-MID GAIN",
+    "prm": "PRM_FX1_PEQ_LOWMID_GAIN"
+   },
+   {
+    "addr": 69,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 23,
+    "min": 0,
+    "max": 27,
+    "name": "PEQ HIGH-MID FREQ",
+    "prm": "PRM_FX1_PEQ_HIGHMID_FREQ"
+   },
+   {
+    "addr": 70,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 5,
+    "name": "PEQ HIGH-MID Q",
+    "prm": "PRM_FX1_PEQ_HIGHMID_Q"
+   },
+   {
+    "addr": 71,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "PEQ HIGH-MID GAIN",
+    "prm": "PRM_FX1_PEQ_HIGHMID_GAIN"
+   },
+   {
+    "addr": 72,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "PEQ HIGH GAIN",
+    "prm": "PRM_FX1_PEQ_HIGH_GAIN"
+   },
+   {
+    "addr": 73,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 14,
+    "min": 0,
+    "max": 14,
+    "name": "PEQ HIGH CUT",
+    "prm": "PRM_FX1_PEQ_HIGH_CUT"
+   },
+   {
+    "addr": 74,
+    "size": "INTEGER1x7",
+    "ofs": 20,
+    "init": 0,
+    "min": -20,
+    "max": 20,
+    "name": "PEQ LEVEL",
+    "prm": "PRM_FX1_PEQ_LEVEL"
+   },
+   {
+    "addr": 75,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "OCRAVE 1OCT LEVEL",
+    "prm": "PRM_FX1_OCTAVE_1OCT_LEVEL"
+   },
+   {
+    "addr": 76,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "OCRAVE 2OCT LEVEL",
+    "prm": "PRM_FX1_OCTAVE_2OCT_LEVEL"
+   },
+   {
+    "addr": 77,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "OCRAVE DIRECT MIX",
+    "prm": "PRM_FX1_OCTAVE_D_LEVEL"
+   },
+   {
+    "addr": 78,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "PITCH SHIFT VOICE",
+    "prm": "PRM_FX1_PITCHSHIFT_VOICE"
+   },
+   {
+    "addr": 79,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 3,
+    "name": "PITCH SHIFT PS1:MODE",
+    "prm": "PRM_FX1_PITCHSHIFT_MODE1"
+   },
+   {
+    "addr": 80,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "PITCH SHIFT PS1:PITCH",
+    "prm": "PRM_FX1_PITCHSHIFT_PITCH1"
+   },
+   {
+    "addr": 81,
+    "size": "INTEGER1x7",
+    "ofs": 50,
+    "init": 10,
+    "min": -50,
+    "max": 50,
+    "name": "PITCH SHIFT PS1:FINE",
+    "prm": "PRM_FX1_PITCHSHIFT_FINE1"
+   },
+   {
+    "addr": 82,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 300,
+    "name": "PITCH SHIFT PS1:PRE DELAY",
+    "prm": "PRM_FX1_PITCHSHIFT_PREDELAY1"
+   },
+   {
+    "addr": 84,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 70,
+    "min": 0,
+    "max": 100,
+    "name": "PITCH SHIFT PS1:LEVEL",
+    "prm": "PRM_FX1_PITCHSHIFT_LEVEL1"
+   },
+   {
+    "addr": 85,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 3,
+    "name": "PITCH SHIFT PS2:MODE",
+    "prm": "PRM_FX1_PITCHSHIFT_MODE2"
+   },
+   {
+    "addr": 86,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "PITCH SHIFT PS2:PITCH",
+    "prm": "PRM_FX1_PITCHSHIFT_PITCH2"
+   },
+   {
+    "addr": 87,
+    "size": "INTEGER1x7",
+    "ofs": 50,
+    "init": -10,
+    "min": -50,
+    "max": 50,
+    "name": "PITCH SHIFT PS2:FINE",
+    "prm": "PRM_FX1_PITCHSHIFT_FINE2"
+   },
+   {
+    "addr": 88,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 300,
+    "name": "PITCH SHIFT PS2:PRE DELAY",
+    "prm": "PRM_FX1_PITCHSHIFT_PREDELAY2"
+   },
+   {
+    "addr": 90,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 70,
+    "min": 0,
+    "max": 100,
+    "name": "PITCH SHIFT PS2:LEVEL",
+    "prm": "PRM_FX1_PITCHSHIFT_LEVEL2"
+   },
+   {
+    "addr": 91,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "PITCH SHIFT PS1:FEEDBACK",
+    "prm": "PRM_FX1_PITCHSHIFT_FEEDBACK"
+   },
+   {
+    "addr": 92,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "PITCH SHIFT DIRECT MIX",
+    "prm": "PRM_FX1_PITCHSHIFT_D_LEVEL"
+   },
+   {
+    "addr": 93,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 1,
+    "name": "HARMONIST VOICE",
+    "prm": "PRM_FX1_HARMONIST_VOICE"
+   },
+   {
+    "addr": 94,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 12,
+    "min": 0,
+    "max": 29,
+    "name": "HARMONIST HR1:HARMONY",
+    "prm": "PRM_FX1_HARMONIST_HARMONY1"
+   },
+   {
+    "addr": 95,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 300,
+    "name": "HARMONIST HR1:PRE DELAY",
+    "prm": "PRM_FX1_HARMONIST_PREDELAY1"
+   },
+   {
+    "addr": 97,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 70,
+    "min": 0,
+    "max": 100,
+    "name": "HARMONIST HR1:LEVEL",
+    "prm": "PRM_FX1_HARMONIST_LEVEL1"
+   },
+   {
+    "addr": 98,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 7,
+    "min": 0,
+    "max": 29,
+    "name": "HARMONIST HR2:HARMONY",
+    "prm": "PRM_FX1_HARMONIST_HARMONY2"
+   },
+   {
+    "addr": 99,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 300,
+    "name": "HARMONIST HR2:PREDELAY",
+    "prm": "PRM_FX1_HARMONIST_PREDELAY2"
+   },
+   {
+    "addr": 101,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 80,
+    "min": 0,
+    "max": 100,
+    "name": "HARMONIST HR2:LEVEL",
+    "prm": "PRM_FX1_HARMONIST_LEVEL2"
+   },
+   {
+    "addr": 102,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "HARMONIST HR1:FEEDBACK",
+    "prm": "PRM_FX1_HARMONIST_FEEDBACK"
+   },
+   {
+    "addr": 103,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "HARMONIST DIRECT MIX",
+    "prm": "PRM_FX1_HARMONIST_D_LEVEL"
+   },
+   {
+    "addr": 104,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR1:C",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_1"
+   },
+   {
+    "addr": 105,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR1:Db",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_2"
+   },
+   {
+    "addr": 106,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR1:D",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_3"
+   },
+   {
+    "addr": 107,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR1:Eb",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_4"
+   },
+   {
+    "addr": 108,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR1:E",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_5"
+   },
+   {
+    "addr": 109,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR1:F",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_6"
+   },
+   {
+    "addr": 110,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR1:F#",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_7"
+   },
+   {
+    "addr": 111,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR1:G",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_8"
+   },
+   {
+    "addr": 112,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR1:Ab",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_9"
+   },
+   {
+    "addr": 113,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR1:A",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_10"
+   },
+   {
+    "addr": 114,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR1:Bb",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_11"
+   },
+   {
+    "addr": 115,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR1:B",
+    "prm": "PRM_FX1_HARMONIST_V1_HARM_12"
+   },
+   {
+    "addr": 116,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR2:C",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_1"
+   },
+   {
+    "addr": 117,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR2:Db",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_2"
+   },
+   {
+    "addr": 118,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR2:D",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_3"
+   },
+   {
+    "addr": 119,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR2:Eb",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_4"
+   },
+   {
+    "addr": 120,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR2:E",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_5"
+   },
+   {
+    "addr": 121,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR2:F",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_6"
+   },
+   {
+    "addr": 122,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR2:F#",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_7"
+   },
+   {
+    "addr": 123,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR2:G",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_8"
+   },
+   {
+    "addr": 124,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR2:Ab",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_9"
+   },
+   {
+    "addr": 125,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR2:A",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_10"
+   },
+   {
+    "addr": 126,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR2:Bb",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_11"
+   },
+   {
+    "addr": 127,
+    "size": "INTEGER1x7",
+    "ofs": 24,
+    "init": 0,
+    "min": -24,
+    "max": 24,
+    "name": "HARMONIST HR2:B",
+    "prm": "PRM_FX1_HARMONIST_V2_HARM_12"
+   },
+   {
+    "addr": 256,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 1,
+    "name": "HUMANIZER MODE",
+    "prm": "PRM_FX1_HUMANIZER_MODE"
+   },
+   {
+    "addr": 257,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 4,
+    "name": "HUMANIZER VOWEL1",
+    "prm": "PRM_FX1_HUMANIZER_VOWEL1"
+   },
+   {
+    "addr": 258,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 2,
+    "min": 0,
+    "max": 4,
+    "name": "HUMANIZER VOWEL2",
+    "prm": "PRM_FX1_HUMANIZER_VOWEL2"
+   },
+   {
+    "addr": 259,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "HUMANIZER SENS",
+    "prm": "PRM_FX1_HUMANIZER_SENS"
+   },
+   {
+    "addr": 260,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 80,
+    "min": 0,
+    "max": 100,
+    "name": "HUMANIZER RATE",
+    "prm": "PRM_FX1_HUMANIZER_RATE"
+   },
+   {
+    "addr": 261,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "HUMANIZER DEPTH",
+    "prm": "PRM_FX1_HUMANIZER_DEPTH"
+   },
+   {
+    "addr": 262,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "HUMANIZER MANUAL",
+    "prm": "PRM_FX1_HUMANIZER_MANUAL"
+   },
+   {
+    "addr": 263,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "HUMANIZER LEVEL",
+    "prm": "PRM_FX1_HUMANIZER_LEVEL"
+   },
+   {
+    "addr": 264,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "ENHANCER SENS",
+    "prm": "PRM_FX1_ENHANCER_SENS"
+   },
+   {
+    "addr": 265,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "ENHANCER LOW",
+    "prm": "PRM_FX1_ENHANCER_LOW"
+   },
+   {
+    "addr": 266,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "ENHANCER HIGH",
+    "prm": "PRM_FX1_ENHANCER_HIGH"
+   },
+   {
+    "addr": 267,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 6,
+    "name": "ENHANCER LOW FREQ",
+    "prm": "PRM_FX1_ENHANCER_LOW_FREQ"
+   },
+   {
+    "addr": 268,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 10,
+    "name": "ENHANCER HIGH FREQ",
+    "prm": "PRM_FX1_ENHANCER_HIGH_FREQ"
+   },
+   {
+    "addr": 269,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 6,
+    "name": "BASS SIM TYPE",
+    "prm": "PRM_FX1_GTRSIM_TYPE"
+   },
+   {
+    "addr": 270,
+    "size": "INTEGER1x7",
+    "ofs": 50,
+    "init": 0,
+    "min": -50,
+    "max": 50,
+    "name": "BASS SIM LOW",
+    "prm": "PRM_FX1_GTRSIM_LOW"
+   },
+   {
+    "addr": 271,
+    "size": "INTEGER1x7",
+    "ofs": 50,
+    "init": 0,
+    "min": -50,
+    "max": 50,
+    "name": "BASS SIM HIGH",
+    "prm": "PRM_FX1_GTRSIM_HIGH"
+   },
+   {
+    "addr": 272,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "BASS SIM LEVEL",
+    "prm": "PRM_FX1_GTRSIM_LEVEL"
+   },
+   {
+    "addr": 273,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "BASS SIM BODY",
+    "prm": "PRM_FX1_GTRSIM_BODY"
+   },
+   {
+    "addr": 274,
+    "size": "INTEGER1x7",
+    "ofs": 50,
+    "init": 0,
+    "min": -50,
+    "max": 50,
+    "name": "DEFRETTER TONE",
+    "prm": "PRM_FX1_DEFRETTER_TONE"
+   },
+   {
+    "addr": 275,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "DEFRETTER SENS",
+    "prm": "PRM_FX1_DEFRETTER_SENS"
+   },
+   {
+    "addr": 276,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 70,
+    "min": 0,
+    "max": 100,
+    "name": "DEFRETTER ATTACK",
+    "prm": "PRM_FX1_DEFRETTER_ATTACK"
+   },
+   {
+    "addr": 277,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "DEFRETTER DEPTH",
+    "prm": "PRM_FX1_DEFRETTER_DEPTH"
+   },
+   {
+    "addr": 278,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "DEFRETTER RESONANCE",
+    "prm": "PRM_FX1_DEFRETTER_RESONANCE"
+   },
+   {
+    "addr": 279,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "DEFRETTER E.LEVEL",
+    "prm": "PRM_FX1_DEFRETTER_E_LEVEL"
+   },
+   {
+    "addr": 280,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "DEFRETTER D.LEVEL",
+    "prm": "PRM_FX1_DEFRETTER_D_LEVEL"
+   },
+   {
+    "addr": 281,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "WAVE SYNTH WAVE",
+    "prm": "PRM_FX1_WAVESYN_WAVE"
+   },
+   {
+    "addr": 282,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "WAVE SYNTH CUTOFF",
+    "prm": "PRM_FX1_WAVESYN_CUTOFF"
+   },
+   {
+    "addr": 283,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 70,
+    "min": 0,
+    "max": 100,
+    "name": "WAVE SYNTH RESONANCE",
+    "prm": "PRM_FX1_WAVESYN_RESONANCE"
+   },
+   {
+    "addr": 284,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "WAVE SYNTH FILTER SENS",
+    "prm": "PRM_FX1_WAVESYN_FLT_SENS"
+   },
+   {
+    "addr": 285,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 10,
+    "min": 0,
+    "max": 100,
+    "name": "WAVE SYNTH FILTER DECAY",
+    "prm": "PRM_FX1_WAVESYN_FLT_DECAY"
+   },
+   {
+    "addr": 286,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "WAVE SYNTH FILTER DEPTH",
+    "prm": "PRM_FX1_WAVESYN_FLT_DEPTH"
+   },
+   {
+    "addr": 287,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "WAVE SYNTH SYNTH LEVEL",
+    "prm": "PRM_FX1_WAVESYN_SYN_LEVEL"
+   },
+   {
+    "addr": 288,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "WAVE SYNTH DIRECT MIX",
+    "prm": "PRM_FX1_WAVESYN_D_LEVEL"
+   },
+   {
+    "addr": 289,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 1,
+    "name": "AUTO WAH MODE",
+    "prm": "PRM_FX1_AWAH_MODE"
+   },
+   {
+    "addr": 290,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 35,
+    "min": 0,
+    "max": 100,
+    "name": "AUTO WAH FREQ",
+    "prm": "PRM_FX1_AWAH_FREQ"
+   },
+   {
+    "addr": 291,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "AUTO WAH PEAK",
+    "prm": "PRM_FX1_AWAH_PEAK"
+   },
+   {
+    "addr": 292,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "AUTO WAH RATE",
+    "prm": "PRM_FX1_AWAH_RATE"
+   },
+   {
+    "addr": 293,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 60,
+    "min": 0,
+    "max": 100,
+    "name": "AUTO WAH DEPTH",
+    "prm": "PRM_FX1_AWAH_DEPTH"
+   },
+   {
+    "addr": 294,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "AUTO WAH DIRET MIX",
+    "prm": "PRM_FX1_AWAH_D_LEVEL"
+   },
+   {
+    "addr": 295,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "AUTO WAH EFFECT LEVEL",
+    "prm": "PRM_FX1_AWAH_LEVEL"
+   },
+   {
+    "addr": 296,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 5,
+    "name": "PEDAL WAH TYPE",
+    "prm": "PRM_FX1_SUBWAH_TYPE"
+   },
+   {
+    "addr": 297,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "PEDAL WAH PEDAL POS",
+    "prm": "PRM_FX1_SUBWAH_PDLPOS"
+   },
+   {
+    "addr": 298,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "PEDAL WAH PEDAL MIN",
+    "prm": "PRM_FX1_SUBWAH_MIN"
+   },
+   {
+    "addr": 299,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "PEDAL WAH PEDAL MAX",
+    "prm": "PRM_FX1_SUBWAH_MAX"
+   },
+   {
+    "addr": 300,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "PEDAL WAH EFFECT LEVEL",
+    "prm": "PRM_FX1_SUBWAH_E_LEVEL"
+   },
+   {
+    "addr": 301,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "PEDAL WAH DIRECT MIX",
+    "prm": "PRM_FX1_SUBWAH_D_LEVEL"
+   },
+   {
+    "addr": 302,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "HEAVY OCTAVE 1OCT LEVEL",
+    "prm": "PRM_FX1_HEAVY_OCTAVE_1OCT_LEVEL"
+   },
+   {
+    "addr": 303,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "HEAVY OCTAVE 2OCT LEVEL",
+    "prm": "PRM_FX1_HEAVY_OCTAVE_2OCT_LEVEL"
+   },
+   {
+    "addr": 304,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "HEAVY OCTAVE DIRECT MIX",
+    "prm": "PRM_FX1_HEAVY_OCTAVE_DIRECT_LEVEL"
+   },
+   {
+    "addr": 305,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 19,
+    "name": "SLICER PATTERN",
+    "prm": "PRM_FX1_SLICER_PATTERN"
+   },
+   {
+    "addr": 306,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "SLICER RATE",
+    "prm": "PRM_FX1_SLICER_RATE"
+   },
+   {
+    "addr": 307,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "SLICER TRIGGER SENS",
+    "prm": "PRM_FX1_SLICER_TRIGSENS"
+   },
+   {
+    "addr": 308,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "SLICER EFFECT LEVEL",
+    "prm": "PRM_FX1_SLICER_EFFECT_LEVEL"
+   },
+   {
+    "addr": 309,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 100,
+    "name": "SLICER DIRECT MIX",
+    "prm": "PRM_FX1_SLICER_DIRECT_LEVEL"
+   }
+  ],
+  "prm_patch_delay_detail": [
+   {
+    "addr": 0,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 400,
+    "min": 1,
+    "max": 2000,
+    "name": "DELAY DELAY TIME",
+    "prm": "PRM_DLY_COMMON_DLY_TIME"
+   },
+   {
+    "addr": 2,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 22,
+    "min": 0,
+    "max": 100,
+    "name": "DELAY FEEDBACK",
+    "prm": "PRM_DLY_COMMON_FEEDBACK"
+   },
+   {
+    "addr": 3,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 10,
+    "min": 0,
+    "max": 14,
+    "name": "DELAY HIGH CUT",
+    "prm": "PRM_DLY_COMMON_HICUT"
+   },
+   {
+    "addr": 4,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 120,
+    "name": "DELAY EFFECT LEVEL",
+    "prm": "PRM_DLY_COMMON_EFFECT_LEVEL"
+   },
+   {
+    "addr": 5,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "DELAY DIRECT MIX",
+    "prm": "PRM_DLY_COMMON_DIRECT_LEVEL"
+   },
+   {
+    "addr": 6,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "DELAY TAP TIME",
+    "prm": "PRM_DLY_PAN_TAPTIME"
+   },
+   {
+    "addr": 7,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 1,
+    "max": 1000,
+    "name": "",
+    "prm": "PRM_DLY_D1TIME"
+   },
+   {
+    "addr": 9,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 22,
+    "min": 0,
+    "max": 100,
+    "name": "",
+    "prm": "PRM_DLY_D1FEEDBACK"
+   },
+   {
+    "addr": 10,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 10,
+    "min": 0,
+    "max": 14,
+    "name": "",
+    "prm": "PRM_DLY_D1HICUT"
+   },
+   {
+    "addr": 11,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 120,
+    "name": "",
+    "prm": "PRM_DLY_D1LEVEL"
+   },
+   {
+    "addr": 12,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 400,
+    "min": 1,
+    "max": 1000,
+    "name": "",
+    "prm": "PRM_DLY_D2TIME"
+   },
+   {
+    "addr": 14,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 22,
+    "min": 0,
+    "max": 100,
+    "name": "",
+    "prm": "PRM_DLY_D2FEEDBACK"
+   },
+   {
+    "addr": 15,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 10,
+    "min": 0,
+    "max": 14,
+    "name": "",
+    "prm": "PRM_DLY_D2HICUT"
+   },
+   {
+    "addr": 16,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 120,
+    "name": "",
+    "prm": "PRM_DLY_D2LEVEL"
+   },
+   {
+    "addr": 17,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 40,
+    "min": 0,
+    "max": 100,
+    "name": "DELAY MOD RATE",
+    "prm": "PRM_DLY_MOD_RATE"
+   },
+   {
+    "addr": 18,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 55,
+    "min": 0,
+    "max": 100,
+    "name": "DELAY MOD DEPTH",
+    "prm": "PRM_DLY_MOD_DEPTH"
+   },
+   {
+    "addr": 19,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 1,
+    "name": "DELAY RANGE",
+    "prm": "PRM_DLY_VINTAGE_LPF"
+   },
+   {
+    "addr": 20,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "DELAY FILTER",
+    "prm": "PRM_DLY_VINTAGE_FILTER"
+   },
+   {
+    "addr": 21,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "DELAY FEEDBACK PHASE",
+    "prm": "PRM_DLY_VINTAGE_FEEDBACK_PHASE"
+   },
+   {
+    "addr": 22,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "DELAY DELAY PHASE",
+    "prm": "PRM_DLY_VINTAGE_EFFECT_PHASE"
+   },
+   {
+    "addr": 23,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "DELAY MOD SW",
+    "prm": "PRM_DLY_VINTAGE_MOD_SW"
+   }
+  ],
+  "prm_patch_reverb_detail": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": -1,
+    "init": 30,
+    "min": 1,
+    "max": 100,
+    "name": "REVERB REVERB TIME",
+    "prm": "PRM_REVERB_TIME"
+   },
+   {
+    "addr": 1,
+    "size": "INTEGER2x7",
+    "ofs": 0,
+    "init": 10,
+    "min": 0,
+    "max": 500,
+    "name": "REVERB PRE DELAY",
+    "prm": "PRM_REVERB_PREDELAY"
+   },
+   {
+    "addr": 3,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 14,
+    "min": 0,
+    "max": 17,
+    "name": "REVERB LOW CUT",
+    "prm": "PRM_REVERB_LOWCUT"
+   },
+   {
+    "addr": 4,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 8,
+    "min": 0,
+    "max": 14,
+    "name": "REVERB HIGH CUT",
+    "prm": "PRM_REVERB_HICUT"
+   },
+   {
+    "addr": 5,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 8,
+    "min": 0,
+    "max": 10,
+    "name": "REVERB DENSITY",
+    "prm": "PRM_REVERB_DENSITY"
+   },
+   {
+    "addr": 6,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 35,
+    "min": 0,
+    "max": 100,
+    "name": "REVERB EFFECT LEVEL",
+    "prm": "PRM_REVERB_EFFECT_LEVEL"
+   },
+   {
+    "addr": 7,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "REVERB DIRECT MIX",
+    "prm": "PRM_REVERB_DIRECT_LEVEL"
+   },
+   {
+    "addr": 8,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "REVERB SPRING COLOR",
+    "prm": "PRM_REVERB_SPRING_COLOR"
+   }
+  ],
+  "prm_patch_ns_detail": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 1,
+    "name": "NS SW",
+    "prm": "PRM_NS_SW"
+   },
+   {
+    "addr": 1,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 5,
+    "min": 0,
+    "max": 100,
+    "name": "NS THRESHOLD",
+    "prm": "PRM_NS_THRESHOLD"
+   },
+   {
+    "addr": 2,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 50,
+    "min": 0,
+    "max": 100,
+    "name": "NS RELEASE",
+    "prm": "PRM_NS_RELEASE"
+   }
+  ],
+  "prm_patch_sendreturn": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 1,
+    "min": 0,
+    "max": 1,
+    "name": "SEND RETURN SW",
+    "prm": "PRM_SEND_RETURN_SW"
+   }
+  ],
+  "prm_patch_master": [
+   {
+    "addr": 0,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 11,
+    "name": "MASTER KEY",
+    "prm": "PRM_MASTER_KEY"
+   },
+   {
+    "addr": 1,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 100,
+    "min": 0,
+    "max": 100,
+    "name": "MASTER LEVEL",
+    "prm": "PRM_PATCH_LEVEL"
+   },
+   {
+    "addr": 2,
+    "size": "INTEGER1x7",
+    "ofs": 0,
+    "init": 0,
+    "min": 0,
+    "max": 3,
+    "name": "CAB RESO SEL",
+    "prm": "PRM_CABINET_RESONANCE_TYPE"
+   }
+  ]
+ },
+ "enumLists": [
+  [
+   "OFF",
+   "ON"
+  ],
+  [
+   "Ch.1",
+   "Ch.2",
+   "Ch.3",
+   "Ch.4",
+   "Ch.5",
+   "Ch.6",
+   "Ch.7",
+   "Ch.8",
+   "Ch.9",
+   "Ch.10",
+   "Ch.11",
+   "Ch.12",
+   "Ch.13",
+   "Ch.14",
+   "Ch.15",
+   "Ch.16"
+  ],
+  [
+   "LINE OUT SETTING",
+   "POWER AMP IN SETTING",
+   "GLOBAL EQ",
+   "USB SETTING",
+   "MIDI SETTING",
+   "OWNER'S MANUAL",
+   "DEVICE SETTING",
+   "VERSION",
+   "ALL DATA BACKUP"
+  ],
+  [
+   "PANEL",
+   "A: CH1",
+   "A: CH2",
+   "A: CH3",
+   "B: CH1",
+   "B: CH2",
+   "B: CH3"
+  ],
+  [
+   "",
+   "",
+   "",
+   "",
+   ""
+  ],
+  [
+   "COMP",
+   "LIMITER"
+  ],
+  [
+   "BLUES OD",
+   "NATURAL",
+   "GUV DS",
+   "METAL ZONE",
+   "MUFF FUZZ",
+   "BOOSTER",
+   "BASS OD",
+   "BASS DS",
+   "BASS MT",
+   "BASS FUZZ",
+   "HIBAND DRV",
+   "BASS DRV",
+   "BASS DI"
+  ],
+  [
+   "CHORUS",
+   "FLANGER",
+   "PHASER",
+   "UNI-V",
+   "TREMOLO",
+   "VIBRATO",
+   "ROTARY",
+   "RING MOD",
+   "SLOW GEAR",
+   "T. WAH",
+   "GRAPHIC EQ",
+   "PARAMETRIC EQ",
+   "OCTAVE",
+   "PITCH SHIFTER",
+   "HARMONIST",
+   "HUMANIZER",
+   "ENHANCER",
+   "BASS SIMULATOR",
+   "DEFRETTER",
+   "BASS SYNTH",
+   "AUTO WAH",
+   "reserved",
+   "HEAVY OCTAVE",
+   "SLICER"
+  ],
+  [
+   "DIGITAL",
+   "ANALOG",
+   "TAPE ECHO",
+   "REVERSE",
+   "MODULATE",
+   "SDE-3000"
+  ],
+  [
+   "PLATE",
+   "ROOM",
+   "HALL",
+   "SPRING",
+   "MODULATE"
+  ],
+  [
+   "FX2",
+   "DELAY",
+   "REVERB"
+  ],
+  [
+   "PARAMETRIC EQ",
+   "GE-10"
+  ],
+  [
+   "PAS->ACT",
+   "ACT->PAS",
+   "SGL->HUM",
+   "HUM->SGL",
+   "SLD->HLW",
+   "SGL->AC",
+   "HUM->AC"
+  ],
+  [
+   "CHAIN1",
+   "CHAIN2"
+  ],
+  [
+   "LPF",
+   "BPF"
+  ],
+  [
+   "DOWN",
+   "UP"
+  ],
+  [
+   "CRY WAH",
+   "VO WAH",
+   "FAT WAH",
+   "LIGHT WAH",
+   "BASS WAH",
+   "RESO WAH"
+  ],
+  [
+   "BOSS COMP",
+   "HI-BAND",
+   "LIGHT",
+   "D-COMP",
+   "ORANGE",
+   "FAT",
+   "MILD"
+  ],
+  [
+   "BOSS LIMITER",
+   "RACK 160D",
+   "VTG RACK U"
+  ],
+  [
+   "1:1",
+   "1.2:1",
+   "1.4:1",
+   "1.6:1",
+   "1.8:1",
+   "2:1",
+   "2.3:1",
+   "2.6:1",
+   "3:1",
+   "3.5:1",
+   "4:1",
+   "5:1",
+   "6:1",
+   "8:1",
+   "10:1",
+   "12:1",
+   "20:1",
+   "INF:1"
+  ],
+  [
+   "FLAT",
+   "20.0<br>Hz",
+   "25.0<br>Hz",
+   "31.5<br>Hz",
+   "40.0<br>Hz",
+   "50.0<br>Hz",
+   "63.0<br>Hz",
+   "80.0<br>Hz",
+   "100<br>Hz",
+   "125<br>Hz",
+   "160<br>Hz",
+   "200<br>Hz",
+   "250<br>Hz",
+   "315<br>Hz",
+   "400<br>Hz",
+   "500<br>Hz",
+   "630<br>Hz",
+   "800<br>Hz"
+  ],
+  [
+   "20.0<br>Hz",
+   "25.0<br>Hz",
+   "31.5<br>Hz",
+   "40.0<br>Hz",
+   "50.0<br>Hz",
+   "63.0<br>Hz",
+   "80.0<br>Hz",
+   "100<br>Hz",
+   "125<br>Hz",
+   "160<br>Hz",
+   "200<br>Hz",
+   "250<br>Hz",
+   "315<br>Hz",
+   "400<br>Hz",
+   "500<br>Hz",
+   "630<br>Hz",
+   "800<br>Hz",
+   "1.00<br>kHz",
+   "1.25<br>kHz",
+   "1.60<br>kHz",
+   "2.00<br>kHz",
+   "2.50<br>kHz",
+   "3.15<br>kHz",
+   "4.00<br>kHz",
+   "5.00<br>kHz",
+   "6.30<br>kHz",
+   "8.00<br>kHz",
+   "10.0<br>kHz"
+  ],
+  [
+   "0.5",
+   "1",
+   "2",
+   "4",
+   "8",
+   "16"
+  ],
+  [
+   "630<br>Hz",
+   "800<br>Hz",
+   "1.00<br>kHz",
+   "1.25<br>kHz",
+   "1.60<br>kHz",
+   "2.00<br>kHz",
+   "2.50<br>kHz",
+   "3.15<br>kHz",
+   "4.00<br>kHz",
+   "5.00<br>kHz",
+   "6.30<br>kHz",
+   "8.00<br>kHz",
+   "10.0<br>kHz",
+   "12.5<br>kHz",
+   "FLAT"
+  ],
+  [
+   "S->H",
+   "H->S",
+   "H->HF",
+   "S->HOLLOW",
+   "H->HOLLOW",
+   "S->AC",
+   "H->AC",
+   "P->AC"
+  ],
+  [
+   "SAW",
+   "SQUARE"
+  ],
+  [
+   "RANGE1",
+   "RANGE2",
+   "RANGE3",
+   "RANGE4"
+  ],
+  [
+   "1VOICE",
+   "2VOICE"
+  ],
+  [
+   "FAST",
+   "MEDIUM",
+   "SLOW",
+   "MONO"
+  ],
+  [
+   "SMALL",
+   "MEDIUM",
+   "BRIGHT",
+   "POWER"
+  ],
+  [
+   "4STAGE",
+   "8STAGE",
+   "12STAGE",
+   "BiPHASE"
+  ],
+  [
+   "FLAT",
+   "55<br>Hz",
+   "110<br>Hz",
+   "165<br>Hz",
+   "200<br>Hz",
+   "280<br>Hz",
+   "340<br>Hz",
+   "400<br>Hz",
+   "500<br>Hz",
+   "630<br>Hz",
+   "800<br>Hz"
+  ],
+  [
+   "P1",
+   "P2",
+   "P3",
+   "P4",
+   "P5",
+   "P6",
+   "P7",
+   "P8",
+   "P9",
+   "P10",
+   "P11",
+   "P12",
+   "P13",
+   "P14",
+   "P15",
+   "P16",
+   "P17",
+   "P18",
+   "P19",
+   "P20"
+  ],
+  [
+   "NORMAL",
+   "INTELLIGENT"
+  ],
+  [
+   "-2oct",
+   "-14th",
+   "-13th",
+   "-12th",
+   "-11th",
+   "-10th",
+   "-9th",
+   "-1oct",
+   "-7th",
+   "-6th",
+   "-5th",
+   "-4th",
+   "-3rd",
+   "-2nd",
+   "UNISON",
+   "+2nd",
+   "+3rd",
+   "+4th",
+   "+5th",
+   "+6th",
+   "+7th",
+   "+1oct",
+   "+9th",
+   "+10th",
+   "+11th",
+   "+12th",
+   "+13th",
+   "+14th",
+   "+2oct",
+   "USER"
+  ],
+  [
+   "C<br>(Am)",
+   "Db<br>(Bbm)",
+   "D<br>(Bm)",
+   "Eb<br>(Cm)",
+   "E<br>(C#m)",
+   "F<br>(Dm)",
+   "F#<br>(D#m)",
+   "G<br>(Em)",
+   "Ab<br>(Fm)",
+   "A<br>(F#m)",
+   "Bb<br>(Gm)",
+   "B<br>(G#m)"
+  ],
+  [
+   "PICKING",
+   "AUTO"
+  ],
+  [
+   "a",
+   "e",
+   "i",
+   "o",
+   "u"
+  ],
+  [
+   "CHORUS",
+   "ECHO"
+  ],
+  [
+   "D+E",
+   "D/E"
+  ],
+  [
+   "SERIES",
+   "PARALLEL",
+   "BRANCH OUT"
+  ],
+  [
+   "POST AMP",
+   "POST REV"
+  ],
+  [
+   "PARAMETRIC EQ",
+   "GE-10"
+  ],
+  [
+   "AMP IN",
+   "AMP OUT"
+  ],
+  [
+   "8kHz",
+   "17kHz"
+  ],
+  [
+   "PEDAL WAH",
+   "PEDAL BEND"
+  ],
+  [
+   "REC",
+   "LIVE",
+   "BLEND"
+  ],
+  [
+   "",
+   "",
+   ""
+  ],
+  [
+   "FLAT",
+   "-6dB<br>/oct",
+   "-12dB<br>/oct",
+   "-18dB<br>/oct",
+   "-24dB<br>/oct"
+  ],
+  [
+   "1 - 127",
+   "128"
+  ],
+  [
+   "",
+   "CC#1",
+   "CC#2",
+   "CC#3",
+   "CC#4",
+   "CC#5",
+   "CC#6",
+   "CC#7",
+   "CC#8",
+   "CC#9",
+   "CC#10",
+   "CC#11",
+   "CC#12",
+   "CC#13",
+   "CC#14",
+   "CC#15",
+   "CC#16",
+   "CC#17",
+   "CC#18",
+   "CC#19",
+   "CC#20",
+   "CC#21",
+   "CC#22",
+   "CC#23",
+   "CC#24",
+   "CC#25",
+   "CC#26",
+   "CC#27",
+   "CC#28",
+   "CC#29",
+   "CC#30",
+   "CC#31",
+   "CC#64",
+   "CC#65",
+   "CC#66",
+   "CC#67",
+   "CC#68",
+   "CC#69",
+   "CC#70",
+   "CC#71",
+   "CC#72",
+   "CC#73",
+   "CC#74",
+   "CC#75",
+   "CC#76",
+   "CC#77",
+   "CC#78",
+   "CC#79",
+   "CC#80",
+   "CC#81",
+   "CC#82",
+   "CC#83",
+   "CC#84",
+   "CC#85",
+   "CC#86",
+   "CC#87",
+   "CC#88",
+   "CC#89",
+   "CC#90",
+   "CC#91",
+   "CC#92",
+   "CC#93",
+   "CC#94",
+   "CC#95"
+  ],
+  [
+   "INPUT",
+   "POST AMP"
+  ],
+  [
+   "STEREO",
+   "DUAL"
+  ],
+  [
+   "INPUT",
+   "OUTPUT"
+  ],
+  [
+   "VOLUME",
+   "FOOT VOLUME",
+   "PEDAL FX"
+  ],
+  [
+   "BANK A/B",
+   "PEDAL FX ON/OFF",
+   "SEND/RETURN ON/OFF",
+   "EQ ON/OFF",
+   "DELAY TAP",
+   "DELAY2 TAP",
+   "BOOSTER SOLO ON/OFF",
+   "SOLO ON/OFF",
+   "GLOBAL EQ ON/OFF",
+   "EQ2 ON/OFF"
+  ],
+  [
+   "100<br>Hz",
+   "125<br>Hz",
+   "160<br>Hz",
+   "200<br>Hz",
+   "250<br>Hz",
+   "315<br>Hz",
+   "400<br>Hz",
+   "500<br>Hz",
+   "630<br>Hz",
+   "800<br>Hz",
+   "1.00<br>kHz",
+   "1.25<br>kHz",
+   "1.60<br>kHz",
+   "2.00<br>kHz",
+   "2.50<br>kHz",
+   "3.15<br>kHz",
+   "4.00<br>kHz"
+  ],
+  [
+   "DEEP EDIT",
+   "CHAIN",
+   "",
+   "COMP",
+   "DRIVE",
+   "BLEND",
+   "EQ",
+   "FX1",
+   "FX2",
+   "",
+   "PDL FX",
+   "NS",
+   "ASSIGN"
+  ],
+  [
+   "COMP",
+   "DRIVE",
+   "BLEND",
+   "EQ",
+   "FX1",
+   "FX2"
+  ],
+  [
+   "PDL FX",
+   "NS",
+   "ASSIGN"
+  ],
+  [
+   "KNOBS/EXP PEDAL",
+   "GA-FC FS/EXP"
+  ],
+  [
+   "PROGRAM MAP",
+   "CONTROL CHANGE"
+  ],
+  [
+   "PEDAL WAH",
+   "PEDAL BEND"
+  ],
+  [
+   "BLUES OD",
+   "NATURAL",
+   "GUV DS",
+   "METAL ZONE",
+   "MUFF FUZZ",
+   "BOOSTER",
+   "BASS OD",
+   "BASS DS",
+   "BASS MT",
+   "BASS FUZZ",
+   "HIBAND DRV",
+   "BASS DRV",
+   "BASS DI"
+  ],
+  [
+   "31.5<br>Hz",
+   "40.0<br>Hz",
+   "50.0<br>Hz",
+   "63.0<br>Hz",
+   "80.0<br>Hz",
+   "100<br>Hz",
+   "125<br>Hz"
+  ],
+  [
+   "800<br>Hz",
+   "1.00<br>kHz",
+   "1.25<br>kHz",
+   "1.60<br>kHz",
+   "2.00<br>kHz",
+   "2.50<br>kHz",
+   "3.15<br>kHz",
+   "4.00<br>kHz",
+   "5.00<br>kHz",
+   "6.30<br>kHz",
+   "8.00<br>kHz"
+  ],
+  [
+   "8<br>kHz",
+   "17<br>kHz"
+  ],
+  [
+   "NORMAL",
+   "INVERSE"
+  ],
+  [
+   "0.0s",
+   "0.1s",
+   "0.2s",
+   "0.3s",
+   "0.4s",
+   "0.5s",
+   "0.6s",
+   "0.7s",
+   "0.8s",
+   "0.9s",
+   "1.0s",
+   "1.1s",
+   "1.2s",
+   "1.3s",
+   "1.4s",
+   "1.5s",
+   "1.6s",
+   "1.7s",
+   "1.8s",
+   "1.9s",
+   "2.0s",
+   "2.1s",
+   "2.2s",
+   "2.3s",
+   "2.4s",
+   "2.5s",
+   "2.6s",
+   "2.7s",
+   "2.8s",
+   "2.9s",
+   "3.0s",
+   "3.1s",
+   "3.2s",
+   "3.3s",
+   "3.4s",
+   "3.5s",
+   "3.6s",
+   "3.7s",
+   "3.8s",
+   "3.9s",
+   "4.0s",
+   "4.1s",
+   "4.2s",
+   "4.3s",
+   "4.4s",
+   "4.5s",
+   "4.6s",
+   "4.7s",
+   "4.8s",
+   "4.9s",
+   "5.0s",
+   "5.1s",
+   "5.2s",
+   "5.3s",
+   "5.4s",
+   "5.5s",
+   "5.6s",
+   "5.7s",
+   "5.8s",
+   "5.9s",
+   "6.0s",
+   "6.1s",
+   "6.2s",
+   "6.3s",
+   "6.4s",
+   "6.5s",
+   "6.6s",
+   "6.7s",
+   "6.8s",
+   "6.9s",
+   "7.0s",
+   "7.1s",
+   "7.2s",
+   "7.3s",
+   "7.4s",
+   "7.5s",
+   "7.6s",
+   "7.7s",
+   "7.8s",
+   "7.9s",
+   "8.0s",
+   "8.1s",
+   "8.2s",
+   "8.3s",
+   "8.4s",
+   "8.5s",
+   "8.6s",
+   "8.7s",
+   "8.8s",
+   "8.9s",
+   "9.0s",
+   "9.1s",
+   "9.2s",
+   "9.3s",
+   "9.4s",
+   "9.5s",
+   "9.6s",
+   "9.7s",
+   "9.8s",
+   "9.9s",
+   "10.0s"
+  ],
+  [
+   "DEVICE SETTING",
+   "CALIBRATION TUNING",
+   "GLOBAL EQ",
+   "LINE OUT SETTING",
+   "MUTE TYPE",
+   "USB SETTING",
+   "MIDI SETTING",
+   "ALL DATA BACKUP",
+   "OWNER'S MANUAL",
+   "SHOW BLUETOOTH SETUP SCREEN",
+   "VERSION"
+  ],
+  [
+   "SERIES",
+   "PARALLEL"
+  ],
+  [
+   "INPUT EFX/AMP",
+   "BLEND/EQ",
+   "EFFECTS"
+  ],
+  [
+   "COMP",
+   "DRIVE",
+   "BLEND",
+   "LOW MID",
+   "HIGH MID",
+   "FX",
+   "NS",
+   "PDL FX",
+   "ASSIGN"
+  ],
+  [
+   "OFF",
+   "0 - 100"
+  ],
+  [
+   "PAGE1",
+   "PAGE2"
+  ],
+  [
+   "PAGE1",
+   "PAGE2",
+   "PAGE3",
+   "PAGE4",
+   "PAGE5",
+   "PAGE6"
+  ],
+  [
+   "FX",
+   "DELAY",
+   "REVERB"
+  ],
+  [
+   "PAGE1",
+   "PAGE2",
+   "PAGE3"
+  ],
+  [
+   "WRITE",
+   "CLEAR"
+  ],
+  [
+   "VINTAGE",
+   "OFF",
+   "MODERN\"",
+   "icon: \"images/amp_type_133_v@2x.png",
+   "images/amp_type_133_f@2x.png",
+   "images/amp_type_133_m@2x.png"
+  ],
+  [
+   "REC",
+   "LIVE",
+   "BLEND",
+   "CUSTOM SETTING"
+  ],
+  [
+   "COPY",
+   "DELETE"
+  ],
+  [
+   "0%",
+   "2%",
+   "4%",
+   "6%",
+   "8%",
+   "10%",
+   "12%",
+   "14%",
+   "16%",
+   "18%",
+   "20%",
+   "22%",
+   "24%",
+   "26%",
+   "28%",
+   "30%",
+   "32%",
+   "34%",
+   "36%",
+   "38%",
+   "40%",
+   "42%",
+   "44%",
+   "46%",
+   "48%",
+   "50%",
+   "52%",
+   "54%",
+   "56%",
+   "58%",
+   "60%",
+   "62%",
+   "64%",
+   "66%",
+   "68%",
+   "70%",
+   "72%",
+   "74%",
+   "76%",
+   "78%",
+   "80%",
+   "82%",
+   "84%",
+   "86%",
+   "88%",
+   "90%",
+   "92%",
+   "94%",
+   "96%",
+   "98%",
+   "100%",
+   "102%",
+   "104%",
+   "106%",
+   "108%",
+   "110%",
+   "112%",
+   "114%",
+   "116%",
+   "118%",
+   "120%",
+   "122%",
+   "124%",
+   "126%",
+   "128%",
+   "130%",
+   "132%",
+   "134%",
+   "136%",
+   "138%",
+   "140%",
+   "142%",
+   "144%",
+   "146%",
+   "148%",
+   "150%",
+   "152%",
+   "154%",
+   "156%",
+   "158%",
+   "160%",
+   "162%",
+   "164%",
+   "166%",
+   "168%",
+   "170%",
+   "172%",
+   "174%",
+   "176%",
+   "178%",
+   "180%",
+   "182%",
+   "184%",
+   "186%",
+   "188%",
+   "190%",
+   "192%",
+   "194%",
+   "196%",
+   "198%",
+   "200%"
+  ],
+  [
+   "1 - 127",
+   "128"
+  ],
+  [
+   "OFF",
+   "2Hz - 200Hz"
+  ],
+  [
+   "SPEAKER OUT",
+   "SPEAKER OUT、LINE OUT",
+   "LINE OUT"
+  ],
+  [
+   "0cm",
+   "1cm",
+   "2cm",
+   "3cm",
+   "4cm",
+   "5cm",
+   "6cm",
+   "7cm",
+   "8cm",
+   "9cm",
+   "10cm",
+   "11cm",
+   "12cm",
+   "13cm",
+   "14cm",
+   "15cm",
+   "16cm",
+   "17cm",
+   "18cm",
+   "19cm",
+   "20cm"
+  ],
+  [
+   "0cm",
+   "1cm",
+   "2cm",
+   "3cm",
+   "4cm",
+   "5cm",
+   "6cm",
+   "7cm",
+   "8cm",
+   "9cm",
+   "10cm"
+  ],
+  [
+   "DYN57",
+   "DYN421",
+   "CND451",
+   "CND87",
+   "RBN121"
+  ]
+ ]
+}

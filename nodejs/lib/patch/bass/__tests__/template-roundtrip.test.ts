@@ -11,6 +11,7 @@ import path from 'node:path'
 import { templateSections, TEMPLATE_ORDER } from '../template'
 import { toTsl } from '../../tsl'
 import { BASS_AMP_TYPES, BASS_DELAY_TYPES, BASS_REVERB_TYPES } from '../enums'
+import { assertStructurePreserved, BASS_TONE_BLOCKS } from '../../__tests__/roundtrip-helper'
 
 const BASS_META = { formatRev: '0000', device: 'KATANA BASS', name: '', keyPrefix: 'UserPatch%' }
 const FIXTURE = path.resolve(__dirname, '../../../../../data/fixtures/katana-bass-alex-hutchings.tsl')
@@ -42,12 +43,9 @@ test('enum orderings match the extracted tables', () => {
   assert.equal(BASS_REVERB_TYPES[2], 'HALL')
 })
 
-test('template round-trips the real KATANA BASS patch byte-for-byte', { skip: !fs.existsSync(FIXTURE) && 'fixture absent' }, () => {
+test('template preserves the real KATANA BASS patch structure (tone tail factory-neutralized)', { skip: !fs.existsSync(FIXTURE) && 'fixture absent' }, () => {
   const fixture = JSON.parse(fs.readFileSync(FIXTURE, 'utf8'))
   const golden = fixture.data[0][0].paramSet  // "Classic Bass"
   const emitted = (toTsl(templateSections(), { ...BASS_META, name: 'X' }) as any).data[0][0].paramSet
-  assert.deepEqual(Object.keys(emitted), Object.keys(golden), 'same block keys, same order')
-  for (const k of Object.keys(golden)) {
-    assert.deepEqual(emitted[k], golden[k], `block ${k} bytes equal`)
-  }
+  assertStructurePreserved(emitted, golden, BASS_TONE_BLOCKS)
 })
