@@ -39,8 +39,10 @@ for BOSS Tone Studio.
 **The model never writes a `.tsl` directly.** It fills in a constrained
 tone-intent schema (amp type, gain, EQ, the booster / mod / fx / delay / reverb
 chain), and a **deterministic writer** converts that intent into the liveset —
-building from a golden template that round-trips byte-clean against a reference
-export. A patch the amp rejects is worse than no patch at all.
+building on each amp's own **factory-default** patch, so every parameter the tone
+doesn't set stays neutral instead of inheriting a stranger's tone. The result
+round-trips byte-clean against a reference export. A patch the amp rejects is
+worse than no patch at all.
 
 ```
 "Comfortably Numb, second solo"
@@ -52,6 +54,21 @@ export. A patch the amp rejects is worse than no patch at all.
         ↓
   import in BOSS Tone Studio  →  amp
 ```
+
+### Faithful defaults (0.12.0)
+
+Every writer used to build a patch by cloning one real "donor" patch and overlaying
+only the ~15 parameters the tone chose. The other ~135 — compressor, EQ, noise gate,
+reverb tail, contour — silently carried that donor's tone into **every** patch,
+regardless of what you asked for. Ask for clean surf with a touch of reverb and you
+still got a stranger's boomy, washed-out reverb underneath it.
+
+The writers now start from each device's **factory defaults**, pulled from the amp's
+own editor, so untouched parameters are neutral. Signal-chain routing, switch enables,
+and pedal/knob assignments still match a real export byte-for-byte; only the inherited
+tone tail is reset. Separately, the KATANA MkI had a selector-encoding bug where the
+reverb type was written as a list index rather than the amp's native value — asking
+for *Spring* decoded as *Hall*. Both are fixed.
 
 ## Supported devices
 
