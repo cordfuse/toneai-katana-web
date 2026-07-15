@@ -29,8 +29,13 @@ export function buildToneSchema(vocab: DeviceVocab): Record<string, unknown> {
     additionalProperties: false,
     required: ['type', 'gain', 'bass', 'middle', 'treble', 'presence', 'level'],
     properties: {
-      type: { type: 'string', enum: [...vocab.amps], description: 'Amp model.' },
-      gain: knob, bass: knob, middle: knob, treble: knob, presence: knob, level: knob,
+      type: { type: 'string', enum: [...vocab.amps], description: 'Amp model — pick from the described list in the system prompt.' },
+      gain: { ...knob, description: 'Preamp drive. ~20-35 clean, ~40-55 crunch/breakup, ~60-75 high gain, 80+ extreme saturation only.' },
+      bass: { ...knob, description: 'Low end. High values get boomy on gained tones.' },
+      middle: { ...knob, description: 'Midrange — where a guitar cuts through. Scoop (~30) for modern metal only; most tones want 45-65.' },
+      treble: { ...knob, description: 'High end and pick attack.' },
+      presence: { ...knob, description: 'Upper-treble edge above treble. High values get harsh, especially on bright amps and single coils.' },
+      level: { ...knob, description: 'Channel volume — loudness only, never adds dirt. Usually 55-70.' },
     },
   }
 
@@ -77,8 +82,10 @@ export function buildToneSchema(vocab: DeviceVocab): Record<string, unknown> {
         required: ['on', 'type', 'drive', 'tone', 'level'],
         properties: {
           on: { type: 'boolean' },
-          type: { type: 'string', enum: [...vocab.boosters], description: 'Overdrive/distortion/booster voicing.' },
-          drive: knob, tone: knob, level: knob,
+          type: { type: 'string', enum: [...vocab.boosters], description: 'Overdrive/distortion/booster voicing — pick from the described list in the system prompt.' },
+          drive: { ...knob, description: 'How much dirt the pedal itself adds. Keep low (~20-35) when tightening an already-gained amp.' },
+          tone: { ...knob, description: 'Pedal brightness.' },
+          level: { ...knob, description: 'Pedal output into the amp — how hard it pushes the front end.' },
         },
       },
 
