@@ -164,6 +164,16 @@ export function buildTonePatchEvent(
   input: Record<string, unknown>,
   ctx: ToneContext,
 ): TonePatchEvent | null {
+  // GUARD: a valid patch MUST carry an amp channel. On an edit/redesign turn a
+  // smaller model sometimes sends only the change and omits ampA — and the whole
+  // pipeline assumes it's there (defaultNoiseSuppressor reads p.ampA.gain), so a
+  // partial patch used to throw and take down the entire turn. Drop the malformed
+  // card instead: the model's prose still reaches the player, and no crash.
+  const ampA = input.ampA as { gain?: unknown } | undefined
+  if (!ampA || typeof ampA !== 'object' || typeof ampA.gain !== 'number') {
+    console.warn('[tone] dropped a partial patch with no valid ampA (model sent only a diff)')
+    return null
+  }
   const patch = gateCalibrated(toTonePatch(input), ctx)
   const song = typeof input.sourceSong === 'string' ? input.sourceSong : undefined
   const artist = typeof input.sourceArtist === 'string' ? input.sourceArtist : undefined
