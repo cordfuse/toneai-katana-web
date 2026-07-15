@@ -321,6 +321,12 @@ const GITHUB_ICON_PATH = 'M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.83
 
 const WHATS_NEW: { version: string; items: { text: string; sub?: string }[] }[] = [
   {
+    version: '0.12.1',
+    items: [
+      { text: 'Some tones came back as an error — fixed', sub: 'On a share of requests the tone returned an error instead of a patch: the app tripped over an incomplete response from the model and dropped the whole turn. It no longer does — an incomplete patch is set aside quietly and the rest of the answer still comes through, so you get your tone. If a tone ever errored out on you, generate it again.' },
+    ],
+  },
+  {
     version: '0.12.0',
     // Like 0.11.0, the headline is a correction rather than a feature: until now
     // every patch carried a stranger's tone underneath the one you asked for, and
