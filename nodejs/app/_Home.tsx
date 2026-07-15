@@ -321,6 +321,12 @@ const GITHUB_ICON_PATH = 'M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.83
 
 const WHATS_NEW: { version: string; items: { text: string; sub?: string }[] }[] = [
   {
+    version: '0.13.0',
+    items: [
+      { text: 'Sharper, steadier tones on the free tier', sub: 'Three changes aimed squarely at tone accuracy. The designer now researches every named song or artist before it dials anything — no more designing from memory. It also knows every amp voice and pedal on your KATANA by character — what a Plexi, a Rat, or a Tube Screamer is actually for — instead of picking by name alone. And the same request now lands on the same design instead of rolling something different each time. If a tone came out wrong for you before, generate it again — this is the biggest accuracy pass yet.' },
+    ],
+  },
+  {
     version: '0.12.2',
     items: [
       { text: 'Better booster and overdrive choices', sub: 'The designer was reaching for a booster on tones that never needed one, and leaning on the same overdrive across very different songs. It now matches the drive to the record: most amp-driven rock and metal gets its gain from the amp, so the booster is left off or kept to a light mid push, and the transparent boosts (clean/treble/Centa-style) are saved for the jobs they actually do — pushing a cranked amp, brightening, a solo lift. If a tone came out with the wrong grind under it, generate it again.' },

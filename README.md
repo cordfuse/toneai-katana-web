@@ -61,6 +61,19 @@ worse than no patch at all.
   import in BOSS Tone Studio  →  amp
 ```
 
+### Accuracy pass for the free tier (0.13.0)
+
+Free-tier tones run on a smaller model, and users reported them coming out
+inaccurate. Three changes close the gap without changing the model. The designer
+now researches **every** named song or artist before dialling anything — the old
+rule let the model skip the search when it *felt* certain, a judgment small models
+get wrong. Every amp voice and effect name now carries a one-line character
+description in the prompt ("Brown — the Van Halen cranked-Marshall sound") — a
+knowledge test the big models pass from memory and small ones fail. And the
+sampling temperature dropped from 1.0 to 0.3: tone design is a structured task, and
+at 1.0 the same request rolled visibly different patches run to run. Worked design
+examples and knob-value guidance in the schema round it out.
+
 ### Booster selection (0.12.2)
 
 The tone designer chose the amp and effects well but had no guidance on the

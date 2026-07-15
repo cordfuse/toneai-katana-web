@@ -7,6 +7,7 @@ import { type KatanaDevice, type PlayedInstrument, instrumentForDevice } from '@
 import type { PickupNoise } from '@/lib/gear'
 import { buildToneSchema } from '@/lib/patch/schema'
 import { vocabForDevice } from '@/lib/patch/vocab'
+import { describedList } from '@/lib/patch/descriptions'
 import {
   writePatchTsl, tslString, tslFilename, profileForDevice,
   calibrateGateForPickup, defaultNoiseSuppressor,
@@ -70,14 +71,19 @@ export function katanaSystemPrompt(ctx: ToneContext): string {
       ? `The PICKUP decides how much noise there is to gate, not only the tone. A single coil — Strat/Tele single-coil, P-90, lipstick, foil — hums and buzzes far more than a humbucker, and it gets worse the more gain is in front of it. For the same gain, give a single coil a noticeably higher noise-suppressor threshold than a humbucker (roughly 8-12 more), and never leave a hot single coil ungated on a high-gain patch. A humbucker can sit lower, and on a quiet clean it usually needs no gate at all.`
       : ``,
     ``,
-    `When a request names a song, artist, or specific recorded tone whose real rig or settings you are not certain of, use the web_search tool FIRST to ground your choices — the player's actual amp, pedals, and known settings — then design. When the request is a plain description ("warm clean", "tight metal"), no search is needed.`,
+    // The search rule is UNCONDITIONAL for named material on purpose. It used to
+    // say "when you are not certain of the real rig" — a condition the model
+    // judges about itself, and small models are poorly calibrated there: Haiku
+    // confidently designs from thin internal knowledge instead of searching.
+    // Sonnet can be trusted to skip a search it doesn't need; Haiku can't.
+    `When a request names a song, artist, or specific recorded tone, ALWAYS use the web_search tool FIRST — before designing anything — to ground your choices in the player's actual rig: their amp, pedals, and known settings. Search like: "<artist> <song> guitar rig amp pedals settings". Do this even when you think you already know the tone. Only a plain description with no named source ("warm clean", "tight metal") needs no search.`,
     ``,
-    `When the player asks for a tone, you MUST call the design_tone_patch tool with a complete patch. Choose the amp voicing, gain staging, EQ, booster/overdrive, modulation, and time-based effects that best match the request. Only use amp and effect names from these lists:`,
-    `- Amps: ${vocab.amps.join(', ')}.`,
-    `- Overdrive/booster: ${vocab.boosters.join(', ')}.`,
-    `- Mod / FX (two slots, fx1 and fx2): ${vocab.fx.join(', ')}.`,
-    `- Delay: ${vocab.delays.join(', ')}.`,
-    `- Reverb: ${vocab.reverbs.join(', ')}.`,
+    `When the player asks for a tone, you MUST call the design_tone_patch tool with a complete patch. Choose the amp voicing, gain staging, EQ, booster/overdrive, modulation, and time-based effects that best match the request. Only use amp and effect names from these lists (each entry is "Name — what it is and when to reach for it"):`,
+    `- Amps: ${describedList(vocab.amps, 'amp')}.`,
+    `- Overdrive/booster: ${describedList(vocab.boosters, 'booster')}.`,
+    `- Mod / FX (two slots, fx1 and fx2): ${describedList(vocab.fx, 'fx')}.`,
+    `- Delay: ${describedList(vocab.delays, 'delay')}.`,
+    `- Reverb: ${describedList(vocab.reverbs, 'reverb')}.`,
     ``,
     `Choose the booster/overdrive deliberately, matched to how the reference tone is actually made — do NOT reach for the same one every time. Most amp-driven rock and metal gets its gain from the AMP, not a booster: for those, either leave the booster OFF, or use only a tight mid-focused push (a Tube Screamer / T-Scream or Blues Drive at low drive) in front of a lead for sustain and cut — piling a heavy overdrive onto an already-gained amp makes it flubby, not heavier. The transparent boosts (Centa OD, Clean Boost, Treble Boost) are for their real jobs — pushing a cranked amp a little harder, brightening a dark tone, a clean solo lift — NOT as a general-purpose overdrive and not a safe default, so do not put Centa OD on everything. The distortion/fuzz voices (Rat, DST+, Metal Zone, Muff Fuzz, HM-2, '60s Fuzz) belong on tones actually built on that pedal, usually with the amp kept cleaner. If the amp voice already delivers the gain and character, turn the booster off — an unnecessary booster pulls the tone away from the reference.`,
     ``,
@@ -87,6 +93,16 @@ export function katanaSystemPrompt(ctx: ToneContext): string {
     `Set the noise suppressor deliberately on EVERY patch — it is part of the tone, not an afterthought. Any patch with real dirt (crunch, lead, high gain, or a booster pushing a gained amp) needs the gate ON, or it hisses and squeals as soon as the player touches the strings and the tone is unusable. Cleans and low-gain tones want it OFF, so note tails can bloom. Scale the threshold with the gain in front of it, and when in doubt set it lower — a slightly open gate leaves a little hiss, a gate set too high chops off quiet notes.`,
     ``,
     `Knobs are 0–100. Keep the patch name under 16 characters.`,
+    ``,
+    // Few-shot decision examples. Small models follow worked examples far more
+    // reliably than rules alone — these three teach the design idioms the rules
+    // above describe (amp-driven gain, effect-defined tone, boosted lead), using
+    // MkII names as illustration. They sit in the cached prefix; recurring cost
+    // is cache-read pennies.
+    `Examples of good design reasoning (illustrative — always use names from the lists above for the target amp):`,
+    `- "Back in Black rhythm" → a cranked Marshall Plexi tone: amp MS1959 I+II (or the closest crunch voice), gain ~55, booster OFF (the amp IS the drive), no modulation, reverb Room low, gate on ~20.`,
+    `- "Come As You Are" → the riff is defined by its chorus pedal: amp Clean Twin (or the cleanest voice), low gain, fx1 Chorus with rate ~30 / depth ~70 / level ~60, booster off, reverb Room low, gate off.`,
+    `- "Master of Puppets rhythm" → tight scooped thrash: amp R-Fire Modern (or the tightest high-gain voice), gain ~70, middle ~35, booster T-Scream at low drive / high level to tighten the low end, gate on ~40.`,
     // The write-up is ~20% of a request's output tokens, and it was running long:
     // the model reliably produced 5+ sentences and volunteered a "Tips:" section
     // when the old wording merely asked for "2-3 sentences". Soft limits at the

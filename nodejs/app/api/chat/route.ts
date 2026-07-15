@@ -89,7 +89,14 @@ function applyLocaleHint(systemPrompt: string, locale: string): string {
 // Sampling temperature: operator dial only (TONEAI_TEMPERATURE → hardcoded).
 // The client cannot override it — there is no UI for it and the body's value is
 // not read.
-const HARDCODED_TEMPERATURE = 1.0
+//
+// 0.3, NOT 1.0. This is a structured design task, not prose: at 1.0 every knob
+// value and enum pick sampled runner-up tokens often enough that the same
+// request rolled visibly different patches run to run — which free-tier users
+// (Haiku) read as "inaccurate tones". Low temperature makes the model give its
+// best answer instead of a draw from its top few. The prose explanation gets a
+// touch drier; that trade is deliberate.
+const HARDCODED_TEMPERATURE = 0.3
 function envNumber(name: string): number | undefined {
   const raw = process.env[name]
   if (raw === undefined || raw === '') return undefined
