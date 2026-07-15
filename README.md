@@ -61,6 +61,23 @@ worse than no patch at all.
   import in BOSS Tone Studio  →  amp
 ```
 
+### Booster selection (0.12.2)
+
+The tone designer chose the amp and effects well but had no guidance on the
+booster / overdrive, so it reached for a boost on tones that don't need one and
+defaulted to the same overdrive across very different songs. It now matches the
+booster to how the record was made: amp-driven rock and metal take their gain from
+the amp (booster off, or a light mid push), while transparent boosts — Centa, clean,
+treble — are reserved for their real jobs: pushing a cranked amp, brightening, a solo
+lift. If the amp voice already carries the tone, the booster stays off.
+
+### No more dropped turns (0.12.1)
+
+A tone request could come back as an error instead of a patch: when the model
+returned an incomplete response, the writer assumed the amp block was always present
+and threw, taking down the whole turn. Incomplete patches are now set aside quietly —
+the rest of the answer still reaches you, and you get your tone.
+
 ### Faithful defaults (0.12.0)
 
 Every writer used to build a patch by cloning one real "donor" patch and overlaying
