@@ -221,16 +221,27 @@ export async function POST(request: NextRequest) {
   if (!byokKey && providerInfo.category === 'cloud') {
     const requiredKey = providerInfo.envKey
     if (requiredKey && !process.env[requiredKey]) {
-      // THIS ONE IS AN ALARM, NOT A STATISTIC. It fires when the server's key is
-      // missing — which, in production, means every free user is being turned away
-      // right now. Previously this returned silently and the first you'd know was
-      // a complaint. Logged at error level so it stands out in the stream.
-      console.error(`[chat] rejected 503 reason=no_server_key — THE FREE TIER IS DOWN: ${requiredKey} is not set. Every free user is being refused.`)
-      slog(deviceId, requestId, 'error', 'chat.rejected', 'free tier unavailable — server key missing', {
-        status: 503, reason: 'no_server_key', keyOwner, modelPicker,
-      })
+      // Two very different situations produce a missing server key:
+      //   • TONEAI_BYOK_ONLY set → the free tier was RETIRED on purpose. Expected,
+      //     permanent, not an incident. Log at info; tell the user it's gone for good.
+      //   • flag unset → the key vanished from a deploy that still means to offer a
+      //     free tier. THAT is an alarm: every free user is being turned away right
+      //     now. Log at error so it stands out.
+      const retired = process.env.TONEAI_BYOK_ONLY === '1'
+      if (retired) {
+        slog(deviceId, requestId, 'info', 'chat.rejected', 'BYOK-only mode — free tier retired', {
+          status: 503, reason: 'byok_only', keyOwner, modelPicker,
+        })
+      } else {
+        console.error(`[chat] rejected 503 reason=no_server_key — THE FREE TIER IS DOWN: ${requiredKey} is not set. Every free user is being refused. (Set TONEAI_BYOK_ONLY=1 if this is intentional.)`)
+        slog(deviceId, requestId, 'error', 'chat.rejected', 'free tier unavailable — server key missing', {
+          status: 503, reason: 'no_server_key', keyOwner, modelPicker,
+        })
+      }
       return NextResponse.json({
-        error: "The free tier isn't available right now. Add your own Anthropic API key in Settings to continue.",
+        error: retired
+          ? 'The free tier is no longer available. Add your own Anthropic API key in Settings to continue — it is used only for your own tones and never stored.'
+          : "The free tier isn't available right now. Add your own Anthropic API key in Settings to continue.",
       }, { status: 503 })
     }
   }

@@ -38,7 +38,7 @@ test('SERVER key out of credit: never tell a user to top up an account they do n
 
 test('SERVER key invalid: do not leak that OUR key is misconfigured', () => {
   const s = mapProviderError(BAD_KEY, 'server')
-  assert.match(s, /isn't available right now/i)
+  assert.match(s, /free tier is no longer available/i)
   assert.doesNotMatch(s, /sk-ant-|x-api-key|ANTHROPIC_API_KEY/i)
 })
 

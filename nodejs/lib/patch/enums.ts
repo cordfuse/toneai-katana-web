@@ -1,5 +1,12 @@
 // KATANA parameter enums — value → name maps.
 //
+// KNOWN BUG (unfixed): the TYPE orderings below are mis-encoded — OD_DS_TYPES has a
+// spurious gap at index 7 and REVERB_TYPES is scrambled vs the amp's native order,
+// and the TYPE parameter offset may be firmware-version-shifted. A patch loads with
+// the wrong effect/amp TYPE selected (Metal DS → Centa OD, Room → Plate) while knobs
+// and routing are right. Not verifiable from source alone. Full write-up + the
+// one-export fix recipe: docs/KNOWN-BUG-type-enums.md.
+//
 // GROUND TRUTH. Every table here is transcribed from the Katana Librarian APK
 // bytecode (jadx) and cross-checked against 20 factory .kat samples — see
 // docs/kat-format.md § Enum tables. These value→name maps are SHARED across
