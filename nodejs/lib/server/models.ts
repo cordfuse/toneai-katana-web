@@ -29,3 +29,15 @@
 // genuinely lighter call to make, not before.
 
 export const DEFAULT_MODEL = process.env.TONEAI_MODEL?.trim() || 'claude-haiku-4-5'
+
+/**
+ * BYOK-only mode: the free tier is retired and every request must bring its own
+ * key. The single authoritative switch — set it and free mode is off coherently
+ * across the whole app (the /providers freeTier flag and the chat route both
+ * read this). Lenient on the value so an operator can't get it subtly wrong:
+ * `1`, `true`, or `yes` (any case) all count as on. Anything else is off.
+ */
+export function isByokOnly(): boolean {
+  const v = process.env.TONEAI_BYOK_ONLY?.trim().toLowerCase()
+  return v === '1' || v === 'true' || v === 'yes'
+}

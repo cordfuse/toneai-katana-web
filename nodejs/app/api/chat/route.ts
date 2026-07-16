@@ -18,7 +18,7 @@ import {
   deviceInstrumentIssue, deviceInstrumentIssueMessage,
 } from '@/lib/storage'
 import { slog } from '@/lib/server/log'
-import { DEFAULT_MODEL } from '@/lib/server/models'
+import { DEFAULT_MODEL, isByokOnly } from '@/lib/server/models'
 import type { RequestUsage } from '@/lib/server/usage'
 
 // A short, safe summary of the user's prompt for the diagnostic log — the last
@@ -220,14 +220,18 @@ export async function POST(request: NextRequest) {
   // don't leak the internal env-var name to end users; guide them to BYOK.
   if (!byokKey && providerInfo.category === 'cloud') {
     const requiredKey = providerInfo.envKey
-    if (requiredKey && !process.env[requiredKey]) {
-      // Two very different situations produce a missing server key:
-      //   • TONEAI_BYOK_ONLY set → the free tier was RETIRED on purpose. Expected,
-      //     permanent, not an incident. Log at info; tell the user it's gone for good.
-      //   • flag unset → the key vanished from a deploy that still means to offer a
-      //     free tier. THAT is an alarm: every free user is being turned away right
-      //     now. Log at error so it stands out.
-      const retired = process.env.TONEAI_BYOK_ONLY === '1'
+    // Refuse a free-tier request when EITHER the free tier was retired on purpose
+    // (TONEAI_BYOK_ONLY=1 — the authoritative switch, key present or not) OR the
+    // server key is simply gone. The flag makes retirement a single env var:
+    // setting it turns free mode off coherently even if the key is still around.
+    const byokOnly = isByokOnly()
+    if (byokOnly || (requiredKey && !process.env[requiredKey])) {
+      // Two very different situations land here:
+      //   • byokOnly → the free tier was RETIRED on purpose. Expected, permanent,
+      //     not an incident. Log at info; tell the user it's gone for good.
+      //   • key vanished from a deploy that still means to offer a free tier. THAT
+      //     is an alarm: every free user is being turned away. Log at error.
+      const retired = byokOnly
       if (retired) {
         slog(deviceId, requestId, 'info', 'chat.rejected', 'BYOK-only mode — free tier retired', {
           status: 503, reason: 'byok_only', keyOwner, modelPicker,
