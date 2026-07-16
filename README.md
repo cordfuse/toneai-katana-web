@@ -61,6 +61,20 @@ worse than no patch at all.
   import in BOSS Tone Studio  →  amp
 ```
 
+### Gain calibration and reliability (0.13.1)
+
+Two fixes. **Gain calibration:** the model set gain as if on a real amp, but the
+KATANA's sims saturate earlier, so high-gain requests came out far hotter and noisier
+than intended (a MkII owner reported it plainly). Gain intent is now mapped onto the
+sim's usable range in code — per voice family, with a channel-level cap on dirt voices
+— so rock and metal sit in a musical range instead of a wall of noise. The mapping is
+enforced in the writer, not asked for in the prompt. **SSE reliability:** a transient
+upstream blip mid-stream could surface as a user-facing error needing a resend; the
+client now retries the replay reconnect with backoff and recovers on its own.
+
+See also [docs/KNOWN-BUG-type-enums.md](docs/KNOWN-BUG-type-enums.md) — a documented,
+unfixed effect/amp *type*-naming bug that needs one hardware export to close.
+
 ### Accuracy pass for the free tier (0.13.0)
 
 Free-tier tones run on a smaller model, and users reported them coming out

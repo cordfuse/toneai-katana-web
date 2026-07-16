@@ -321,6 +321,12 @@ const GITHUB_ICON_PATH = 'M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.83
 
 const WHATS_NEW: { version: string; items: { text: string; sub?: string }[] }[] = [
   {
+    version: '0.13.1',
+    items: [
+      { text: 'Steadier gain, fewer dropped tones', sub: 'Two fixes. High-gain tones were coming out far hotter and noisier than intended — the designer was setting gain as if on a real amp, but the KATANA models saturate earlier, so a "cranked Marshall" landed as fizz. Gain is now mapped to what the amp actually does, so rock and metal tones sit in a usable, musical range instead of a wall of noise. Separately, a tone occasionally came back as an error mid-generation and needed a resend; the app now recovers from that on its own.' },
+    ],
+  },
+  {
     version: '0.13.0',
     items: [
       { text: 'Sharper, steadier tones on the free tier', sub: 'Three changes aimed squarely at tone accuracy. The designer now researches every named song or artist before it dials anything — no more designing from memory. It also knows every amp voice and pedal on your KATANA by character — what a Plexi, a Rat, or a Tube Screamer is actually for — instead of picking by name alone. And the same request now lands on the same design instead of rolling something different each time. If a tone came out wrong for you before, generate it again — this is the biggest accuracy pass yet.' },

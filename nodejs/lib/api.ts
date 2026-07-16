@@ -346,6 +346,10 @@ export async function sendChatStream(
   // if the read drops mid-flight (e.g. mobile tab backgrounded). The server
   // sets this header on POST.
   const streamId = res.headers.get('X-Toneai-Stream-Id') ?? ''
+  // No stream id = no replay if the read drops — every mid-stream blip becomes
+  // a user-facing error. That only happens if a proxy stripped the header (or
+  // the server predates it), and it needs to be visible in diagnostics.
+  if (!streamId) clog('warn', 'chat.no_stream_id', 'X-Toneai-Stream-Id missing — reconnect disabled for this request', undefined, requestId)
 
   try {
     const result = await drainStream(res.body, streamId, 0, signal, token, onDelta, wrappedHooks)
@@ -357,7 +361,7 @@ export async function sendChatStream(
     const message = err instanceof Error ? err.message : String(err)
     // A user-initiated abort is not a failure worth flagging as an error.
     const level = err instanceof Error && err.name === 'AbortError' ? 'info' : 'error'
-    clog(level, level === 'error' ? 'chat.error' : 'chat.aborted', message, { ms: Date.now() - startedAt }, requestId)
+    clog(level, level === 'error' ? 'chat.error' : 'chat.aborted', message, { ms: Date.now() - startedAt, streamId: streamId || 'none' }, requestId)
     throw err
   }
 }
@@ -461,23 +465,38 @@ async function drainStream(
     // failed before headers). Can't reconnect.
     if (!streamId) throw err
 
-    // Attempt one reconnect. The replay endpoint resumes from lastEventId+1
-    // onwards, including any events that arrived while we were reading.
+    // Reconnect via replay, WITH RETRIES AND BACKOFF. The single-shot version
+    // of this had a hole a tester fell straight through: the read drops because
+    // the network path hiccuped, the replay fetch fires one moment into the
+    // SAME hiccup and rejects — and that rejection propagated as the user's
+    // error, without ever reaching the `!replayRes.ok` check below. The server
+    // had finished the run and buffered every event; the client just never
+    // asked twice. Three attempts at 1s/2s/3s cover the transient blips a
+    // proxy hop introduces. A 404 still aborts immediately — the buffer is
+    // gone (TTL) and retrying cannot conjure it back.
     console.warn(`[chat] reader dropped at id=${lastEventId}; reconnecting via replay`)
-    const replayRes = await fetch(`${BASE}/chat/replay/${encodeURIComponent(streamId)}`, {
-      method: 'GET',
-      signal,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Last-Event-ID': String(lastEventId),
-      },
-    })
-    if (!replayRes.ok || !replayRes.body) {
-      // 404 means the stream is gone (TTL expired or never existed). Surface
-      // the original error rather than a confusing "Stream not found".
-      throw err
+    clog('warn', 'chat.reconnect', `reader dropped at id=${lastEventId}`, { streamId })
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      await new Promise(r => setTimeout(r, 1000 * attempt))
+      if (signal?.aborted) throw err
+      let replayRes: Response
+      try {
+        replayRes = await fetch(`${BASE}/chat/replay/${encodeURIComponent(streamId)}`, {
+          method: 'GET',
+          signal,
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Last-Event-ID': String(lastEventId),
+          },
+        })
+      } catch {
+        continue // the network is still down — that is what the next attempt is for
+      }
+      if (replayRes.status === 404) throw err // stream evicted; retrying can't help
+      if (!replayRes.ok || !replayRes.body) continue
+      return drainStream(replayRes.body, streamId, lastEventId, signal, token, onDelta, hooks, accumulated, accumulatedSources)
     }
-    return drainStream(replayRes.body, streamId, lastEventId, signal, token, onDelta, hooks, accumulated, accumulatedSources)
+    throw err
   }
 
   return { message: accumulated, sources: accumulatedSources.length ? accumulatedSources : undefined }

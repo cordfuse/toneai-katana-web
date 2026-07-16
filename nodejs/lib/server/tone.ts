@@ -8,6 +8,7 @@ import type { PickupNoise } from '@/lib/gear'
 import { buildToneSchema } from '@/lib/patch/schema'
 import { vocabForDevice } from '@/lib/patch/vocab'
 import { describedList } from '@/lib/patch/descriptions'
+import { calibrateGainForDevice } from '@/lib/patch/gain-calibration'
 import {
   writePatchTsl, tslString, tslFilename, profileForDevice,
   calibrateGateForPickup, defaultNoiseSuppressor,
@@ -93,6 +94,7 @@ export function katanaSystemPrompt(ctx: ToneContext): string {
     `Set the noise suppressor deliberately on EVERY patch — it is part of the tone, not an afterthought. Any patch with real dirt (crunch, lead, high gain, or a booster pushing a gained amp) needs the gate ON, or it hisses and squeals as soon as the player touches the strings and the tone is unusable. Cleans and low-gain tones want it OFF, so note tails can bloom. Scale the threshold with the gain in front of it, and when in doubt set it lower — a slightly open gate leaves a little hiss, a gate set too high chops off quiet notes.`,
     ``,
     `Knobs are 0–100. Keep the patch name under 16 characters.`,
+    `Set gain as you would on the REAL amp being referenced — the KATANA's sims saturate earlier than the amps they model, and the app corrects for that automatically. Reason in real-amp terms and do not pre-compensate, or the patch comes out under-gained.`,
     ``,
     // Few-shot decision examples. Small models follow worked examples far more
     // reliably than rules alone — these three teach the design idioms the rules
@@ -192,7 +194,13 @@ export function buildTonePatchEvent(
     console.warn('[tone] dropped a partial patch with no valid ampA (model sent only a diff)')
     return null
   }
-  const patch = gateCalibrated(toTonePatch(input), ctx)
+  // GAIN FIRST, THEN THE GATE. The model dials gain as if the KATANA's 0-100
+  // were the real amp's knob; the sims saturate far earlier, and a MkII owner
+  // reported the result — everything over-gained, over-loud, noisy. The gain
+  // intent is compressed onto the sim's usable range (gain-calibration.ts)
+  // BEFORE the gate is derived, so the gate scales with the gain the amp will
+  // actually run.
+  const patch = gateCalibrated(calibrateGainForDevice(toTonePatch(input)), ctx)
   const song = typeof input.sourceSong === 'string' ? input.sourceSong : undefined
   const artist = typeof input.sourceArtist === 'string' ? input.sourceArtist : undefined
   // A layout that isn't round-trip verified still writes (allowUnvalidated), but

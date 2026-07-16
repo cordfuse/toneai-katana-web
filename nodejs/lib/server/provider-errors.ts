@@ -61,10 +61,11 @@ export function mapProviderError(raw: string, keyOwner: KeyOwner): string {
         'shown once, when you create them — check for a missing character or a stray ' +
         'space, or just create a new one (it costs nothing). ' +
         `Full guide: ${BYOK_GUIDE_URL}`
-      // The SERVER's key is bad. A user can do nothing about this, so don't imply
-      // they can — and don't leak which env var is wrong.
-      : "The free tier isn't available right now. Add your own Anthropic API key in " +
-        'Settings to continue.'
+      // No server key = the free tier has been retired (permanent, not a quota
+      // blip). Frame it as permanent so nobody waits for a nightly reset that is
+      // never coming; don't leak which env var is unset.
+      : 'The free tier is no longer available. Add your own Anthropic API key in ' +
+        'Settings to continue — it is used only for your own tones and never stored.'
   }
 
   if (RATE_LIMITED.test(msg)) {

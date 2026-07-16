@@ -30,7 +30,7 @@ export function buildToneSchema(vocab: DeviceVocab): Record<string, unknown> {
     required: ['type', 'gain', 'bass', 'middle', 'treble', 'presence', 'level'],
     properties: {
       type: { type: 'string', enum: [...vocab.amps], description: 'Amp model — pick from the described list in the system prompt.' },
-      gain: { ...knob, description: 'Preamp drive. ~20-35 clean, ~40-55 crunch/breakup, ~60-75 high gain, 80+ extreme saturation only.' },
+      gain: { ...knob, description: 'Preamp drive, as you would set it on the REAL amp being referenced: ~20-35 clean, ~40-55 crunch/breakup, ~60-75 high gain, 80+ extreme saturation only. The writer maps this onto the KATANA sim\'s usable range automatically — the sims saturate earlier than the amps they model, so do not pre-compensate.' },
       bass: { ...knob, description: 'Low end. High values get boomy on gained tones.' },
       middle: { ...knob, description: 'Midrange — where a guitar cuts through. Scoop (~30) for modern metal only; most tones want 45-65.' },
       treble: { ...knob, description: 'High end and pick attack.' },
