@@ -440,7 +440,17 @@ export async function POST(request: NextRequest) {
         const safeEnqueue = (chunk: Uint8Array): boolean => {
           if (closed) return false
           try { controller.enqueue(chunk); return true }
-          catch { closed = true; return false }
+          catch {
+            // The consumer is gone (tab closed, proxy dropped the socket). Say
+            // so ONCE: a delivery failure used to be invisible here — the model
+            // run completed, the patch was logged, and the user saw an error,
+            // with nothing server-side to correlate. The client is expected to
+            // come back via /api/chat/replay/[id]; if no replay line follows
+            // this one, the client never managed to reconnect.
+            closed = true
+            console.warn(`[chat] stream ${streamId} client dropped mid-stream (enqueue failed) — awaiting replay`)
+            return false
+          }
         }
 
         // Heartbeat keeps the TCP socket warm so proxies/phones don't reap
