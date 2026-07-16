@@ -720,7 +720,7 @@ function UsageModal({
 function SettingsPanel({
   theme, onTheme,
   device, onDevice,
-  apiKey, onApiKey,
+  apiKey, onApiKey, freeTierAvailable,
   byokModel, onByokModel, models, defaultModel,
   gear, onGear,
   onClose,
@@ -731,6 +731,9 @@ function SettingsPanel({
   onDevice: (d: KatanaDevice) => void
   apiKey: string | null
   onApiKey: (k: string | null) => void
+  /** Whether the server still offers a free tier. False in BYOK-only mode — the
+   *  key stops being optional and the copy says so. */
+  freeTierAvailable: boolean
   /** BYOK-only model choice; null = "whatever the server defaults to". */
   byokModel: string | null
   onByokModel: (m: string | null) => void
@@ -962,7 +965,7 @@ function SettingsPanel({
                 value={keyDraft}
                 onChange={e => setKeyDraft(e.target.value)}
                 onBlur={() => onApiKey(keyDraft.trim().length > 0 ? keyDraft.trim() : null)}
-                placeholder="sk-ant-…  (optional)"
+                placeholder={freeTierAvailable ? 'sk-ant-…  (optional)' : 'sk-ant-…  (required)'}
                 spellCheck={false}
                 autoComplete="off"
                 className="w-full rounded-lg border border-white/10 bg-surface-2 px-3 py-2.5 pr-16 text-xs font-mono text-fg placeholder:text-fg-4 placeholder:font-sans outline-none focus:ring-1 focus:ring-primary/40"
@@ -979,7 +982,9 @@ function SettingsPanel({
             <p className="mt-1.5 text-[10px] text-fg-4 leading-relaxed">
               {apiKey
                 ? 'Using your key — no daily limit. Stored in this browser only.'
-                : 'Free mode — shared daily limit across all users. Add a key to lift it.'}
+                : freeTierAvailable
+                  ? 'Free mode — shared daily limit across all users. Add a key to lift it.'
+                  : 'A key is required — the free tier has been retired. It is used only for your own tones and never stored.'}
             </p>
             <a
               href={BYOK_GUIDE_URL}
@@ -2949,6 +2954,7 @@ export default function Home({
           onDevice={handleDevice}
           apiKey={apiKey}
           onApiKey={handleApiKey}
+          freeTierAvailable={freeTierAvailable}
           byokModel={byokModel}
           onByokModel={handleByokModel}
           models={models}
