@@ -31,7 +31,7 @@ services:
     environment:
       TONEAI_CONFIG_DIR: /app/config
       TONEAI_MODEL: ${TONEAI_MODEL:-claude-sonnet-5}
-      TONEAI_TEMPERATURE: ${TONEAI_TEMPERATURE:-1.0}
+      TONEAI_TEMPERATURE: ${TONEAI_TEMPERATURE:-0.3}
 
     volumes:
       # Operator config (branding/themes/icons), read from the host.

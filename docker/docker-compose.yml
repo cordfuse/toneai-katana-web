@@ -50,7 +50,7 @@ services:
 
       # Sampling temperature — operator-only. There is no per-conversation
       # override; the client cannot set this (the old Settings dial is gone).
-      TONEAI_TEMPERATURE: ${TONEAI_TEMPERATURE:-1.0}
+      TONEAI_TEMPERATURE: ${TONEAI_TEMPERATURE:-0.3}
 
     volumes:
       # The persistent config volume. Single mount point for ALL operator
